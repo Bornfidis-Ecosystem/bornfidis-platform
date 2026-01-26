@@ -18,6 +18,7 @@
 # misc
 .DS_Store
 *.pem
+%AppData%/
 
 # debug
 npm-debug.log*
