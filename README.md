@@ -1,20 +1,31 @@
-# Bornfidis Provisions - Booking & Inquiry System (Phase 1)
+# Bornfidis Platform 🌱
 
-A production-ready Next.js application for Bornfidis Provisions, a faith-anchored food enterprise offering premium chef services and catering.
+The Bornfidis Platform is a regenerative digital infrastructure designed to connect
+farmers, chefs, communities, and cooperatives through technology, trust, and local value creation.
+
+## Vision
+To build self-sustaining food and hospitality ecosystems that regenerate land,
+people, and enterprise — starting in Jamaica and replicable globally.
+
+## Core Capabilities
+- Farmer, Chef, and Community Onboarding
+- Booking & Event Inquiries
+- SMS & Email Notifications
+- Offline & Voice-Enabled Submissions
+- Admin Dashboards & Matching Systems
+- Supabase + Prisma + Next.js Architecture
+
+## Tech Stack
+- Next.js (App Router)
+- Supabase (PostgreSQL + Auth)
+- Prisma ORM
+- Tailwind CSS
+- Twilio (SMS)
+- Resend (Email)
 
 ## Project Overview
 
-This is Phase 1 of the Bornfidis Provisions platform - a minimal booking and inquiry system that allows customers to request chef services or catering. Admin reviews submissions and follows up offline.
-
-**This is NOT a marketplace or SaaS app** - it's a simple, focused booking system.
-
-## Tech Stack
-
-- **Framework:** Next.js 14+ (App Router) + TypeScript
-- **Styling:** Tailwind CSS
-- **Database:** Supabase (PostgreSQL)
-- **Email:** Resend
-- **Hosting:** Vercel
+This is the full Bornfidis Platform - a comprehensive booking and farmer coordination system that allows customers to request chef services or catering. Admin reviews submissions, coordinates with farmers, and manages the entire event lifecycle.
 
 ## Project Structure
 
@@ -195,9 +206,6 @@ For questions or issues, contact: brian@bornfidis.com
 
 ---
 
-**Phase 1 Status:** ✅ Complete
+**Status:** Active development — private beta.
 
-Next phases will include:
-- Phase 1B: Stripe payment integration
-- Phase 2: Proper authentication, analytics
-- Phase 3+: Marketplace features
+**Stewardship:** Built and stewarded by the Bornfidis Ecosystem.
