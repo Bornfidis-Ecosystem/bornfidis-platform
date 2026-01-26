@@ -1,0 +1,490 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+  schemas   = ["public"]
+}
+
+enum FarmerIntakeStatus {
+  received
+  parsed
+  profile_created
+  needs_review
+  needs_followup
+
+  @@schema("public")
+}
+
+// ============================================================================
+// User Roles Enum (Phase 4)
+// ============================================================================
+
+enum UserRole {
+  ADMIN
+  COORDINATOR
+  CHEF
+  FARMER
+  VOLUNTEER
+
+  @@schema("public")
+}
+
+// ============================================================================
+// Payout Status Enum (Phase 4.5)
+// ============================================================================
+
+enum PayoutStatus {
+  PENDING
+  APPROVED
+  PAID
+
+  @@schema("public")
+}
+
+model Farmer {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  parish    String?
+  acres     Float?
+  language  String   @default("en")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  intakes FarmerIntake[]
+  crops   FarmerCrop[]
+
+  // Phase 4: Booking assignments
+  bookingAssignments BookingFarmer[]
+  prepAssignments    PrepFarmerAssignment[]
+
+  // Phase 4.5: Payouts
+  payouts FarmerPayout[]
+
+  @@map("farmers")
+  @@schema("public")
+}
+
+model FarmerCrop {
+  id        String   @id @default(uuid())
+  farmerId  String   @map("farmer_id")
+  crop      String
+  createdAt DateTime @default(now()) @map("created_at")
+
+  farmer Farmer @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  @@unique([farmerId, crop])
+  @@map("farmer_crops")
+  @@schema("public")
+}
+
+// Intake table (matches Supabase table structure)
+// Note: Column names in PostgreSQL may be stored as lowercase or camelCase
+// Adjust @map directives based on actual database column names
+model Intake {
+  id         String   @id @default(uuid())
+  createdAt  DateTime @default(now()) @map("createdAt") @db.Timestamptz
+  channel    String
+  from       String   @map("from")
+  message    String   @db.Text
+  farmerName String?  @map("farmerName")
+  status     String   @default("new")
+  type       String   @default("inquiry")
+
+  @@map("intakes")
+  @@schema("public")
+}
+
+model FarmerIntake {
+  id               String             @id @default(uuid())
+  createdAt        DateTime           @default(now()) @map("created_at")
+  channel          String             @default("whatsapp")
+  fromPhone        String             @map("from_phone")
+  messageText      String?            @map("message_text") @db.Text
+  mediaUrl         String?            @map("media_url")
+  mediaContentType String?            @map("media_content_type")
+  transcript       String?            @db.Text
+  extractedJson    Json?              @map("extracted_json")
+  farmerId         String?            @map("farmer_id")
+  parsedJson       Json?              @map("parsed_json")
+  parsedData       Json?              @map("parsed_data")
+  status           FarmerIntakeStatus @default(received)
+  error            String?            @db.Text
+
+  farmer Farmer? @relation(fields: [farmerId], references: [id], onDelete: SetNull)
+
+  @@map("farmer_intakes")
+  @@schema("public")
+}
+
+model WhatsAppMessage {
+  id          String   @id @default(uuid())
+  createdAt   DateTime @default(now()) @map("created_at")
+  phoneNumber String   @map("phone_number")
+  messageText String   @map("message_text") @db.Text
+  farmerName  String?  @map("farmer_name")
+
+  @@map("whatsapp_messages")
+  @@schema("public")
+}
+
+// ============================================================================
+// Drizzle Migration Models
+// ============================================================================
+
+model User {
+  id           String    @id @default(uuid())
+  openId       String?   @map("open_id")
+  name         String?
+  email        String?
+  loginMethod  String?   @map("login_method")
+  role         UserRole? @default(FARMER)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  lastSignedIn DateTime? @map("last_signed_in")
+
+  @@map("users")
+  @@schema("public")
+}
+
+model Submission {
+  id         String   @id @default(uuid())
+  type       String?
+  name       String?
+  phone      String?
+  email      String?
+  location   String?
+  acres      Float?
+  crops      String?
+  experience String?
+  language   String?
+  wasOffline Boolean? @default(false) @map("was_offline")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@map("submissions")
+  @@schema("public")
+}
+
+model Phase {
+  id          String  @id @default(uuid())
+  number      Int?
+  title       String?
+  description String? @db.Text
+  startMonth  String? @map("start_month")
+  endMonth    String? @map("end_month")
+  status      String?
+
+  months Month[]
+
+  @@map("phases")
+  @@schema("public")
+}
+
+model Month {
+  id         String  @id @default(uuid())
+  phaseId    String? @map("phase_id")
+  number     Int?
+  title      String?
+  objectives String? @db.Text
+  status     String?
+
+  phase        Phase?        @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  deliverables Deliverable[]
+  metrics      Metric[]
+
+  @@map("months")
+  @@schema("public")
+}
+
+model Deliverable {
+  id          String   @id @default(uuid())
+  monthId     String?  @map("month_id")
+  title       String?
+  description String?  @db.Text
+  completed   Boolean? @default(false)
+
+  month Month? @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@map("deliverables")
+  @@schema("public")
+}
+
+model Metric {
+  id      String  @id @default(uuid())
+  monthId String? @map("month_id")
+  name    String?
+  target  Float?
+  actual  Float?
+  unit    String?
+
+  month Month? @relation(fields: [monthId], references: [id], onDelete: Cascade)
+
+  @@map("metrics")
+  @@schema("public")
+}
+
+// ============================================================================
+// Booking System Models
+// ============================================================================
+
+model BookingInquiry {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  // Customer Info
+  name             String
+  email            String?
+  phone            String?
+  whatsapp         String?
+  preferredContact String? @map("preferred_contact")
+
+  // Event Details
+  eventType     String?  @map("event_type")
+  eventDate     DateTime @map("event_date") @db.Date
+  eventTime     String?  @map("event_time")
+  location      String
+  locationCity  String?  @map("location_city")
+  locationState String?  @map("location_state")
+
+  // Service Specs
+  guests              Int?    @db.Integer
+  budgetRange         String? @map("budget_range")
+  dietary             String? @db.Text
+  dietaryRestrictions String? @map("dietary_restrictions") @db.Text
+  menuPreferences     String? @map("menu_preferences") @db.Text
+  specialRequests     String? @map("special_requests") @db.Text
+  notes               String? @db.Text
+
+  // Admin Fields
+  status          String    @default("New")
+  statusUpdatedAt DateTime? @map("status_updated_at")
+  followUpDate    DateTime? @map("follow_up_date") @db.Date
+  adminNotes      String?   @map("admin_notes") @db.Text
+  internalNotes   String?   @map("internal_notes") @db.Text
+
+  // Phase 3A: Quote + Deposit
+  quoteCurrency        String?   @map("quote_currency")
+  quoteSubtotalCents   Int?      @default(0) @map("quote_subtotal_cents")
+  quoteTaxCents        Int?      @default(0) @map("quote_tax_cents")
+  quoteTotalCents      Int?      @default(0) @map("quote_total_cents")
+  quoteDepositCents    Int?      @default(0) @map("quote_deposit_cents")
+  quoteSentAt          DateTime? @map("quote_sent_at")
+  stripePaymentLinkUrl String?   @map("stripe_payment_link_url")
+  stripeInvoiceId      String?   @map("stripe_invoice_id")
+  stripePaymentStatus  String?   @map("stripe_payment_status")
+  quotePdfUrl          String?   @map("quote_pdf_url")
+
+  // Phase 3A: Deposit Payment
+  stripeSessionId       String?   @map("stripe_session_id")
+  stripePaymentIntentId String?   @map("stripe_payment_intent_id")
+  depositAmountCents    Int?      @map("deposit_amount_cents")
+  paidAt                DateTime? @map("paid_at")
+
+  // Phase 3B: Quote Builder
+  quoteStatus            String?   @map("quote_status")
+  quoteNotes             String?   @map("quote_notes") @db.Text
+  depositPercent         Int?      @default(30) @map("deposit_percent")
+  subtotalCents          Int?      @default(0) @map("subtotal_cents")
+  taxCents               Int?      @default(0) @map("tax_cents")
+  serviceFeeCents        Int?      @default(0) @map("service_fee_cents")
+  totalCents             Int?      @default(0) @map("total_cents")
+  balanceSessionId       String?   @map("balance_session_id")
+  balancePaymentIntentId String?   @map("balance_payment_intent_id")
+  balancePaidAt          DateTime? @map("balance_paid_at")
+  balanceAmountCents     Int?      @default(0) @map("balance_amount_cents")
+  fullyPaidAt            DateTime? @map("fully_paid_at")
+  quoteUpdatedAt         DateTime? @map("quote_updated_at")
+
+  // Phase 3C: Final Balance
+  quoteServiceFeeCents Int?  @default(0) @map("quote_service_fee_cents")
+  depositPercentage    Int?  @default(30) @map("deposit_percentage")
+  quoteLineItems       Json? @default("[]") @map("quote_line_items")
+
+  // Phase 4B: Customer Portal
+  customerPortalToken          String?   @map("customer_portal_token")
+  customerPortalTokenCreatedAt DateTime? @map("customer_portal_token_created_at")
+  customerPortalTokenRevokedAt DateTime? @map("customer_portal_token_revoked_at")
+
+  // Phase 5B: Chef Assignment & Payout
+  assignedChefId        String?   @map("assigned_chef_id")
+  chefPayoutAmountCents Int?      @map("chef_payout_amount_cents")
+  chefPayoutStatus      String?   @default("not_applicable") @map("chef_payout_status")
+  chefPayoutBlockers    String[]  @map("chef_payout_blockers")
+  chefPayoutPaidAt      DateTime? @map("chef_payout_paid_at")
+  stripeTransferId      String?   @map("stripe_transfer_id")
+
+  // Phase 5D: Completion + Payout Release
+  jobCompletedAt   DateTime? @map("job_completed_at")
+  jobCompletedBy   String?   @map("job_completed_by")
+  payoutHold       Boolean?  @default(false) @map("payout_hold")
+  payoutHoldReason String?   @map("payout_hold_reason") @db.Text
+  payoutReleasedAt DateTime? @map("payout_released_at")
+
+  // Tracking
+  referralSource String? @map("referral_source")
+  utmSource      String? @map("utm_source")
+  utmCampaign    String? @map("utm_campaign")
+
+  // Phase 2A: Booking Timeline
+  timeline BookingTimeline[]
+
+  // Phase 3.5: Event Prep Checklist
+  prepItems BookingPrepItem[]
+
+  // Phase 4: Assigned Farmers
+  assignedFarmers BookingFarmer[]
+
+  // Phase 4.5: Farmer Payouts
+  farmerPayouts FarmerPayout[]
+
+  @@map("booking_inquiries")
+  @@schema("public")
+}
+
+// ============================================================================
+// Booking Timeline Model (Phase 2A)
+// ============================================================================
+
+model BookingTimeline {
+  id          String    @id @default(uuid())
+  bookingId   String    @map("booking_id")
+  title       String
+  order       Int
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("booking_timeline")
+  @@schema("public")
+}
+
+// ============================================================================
+// Event Prep Checklist Model (Phase 3.5)
+// ============================================================================
+
+model BookingPrepItem {
+  id          String    @id @default(uuid())
+  bookingId   String    @map("booking_id")
+  title       String
+  order       Int
+  completed   Boolean   @default(false)
+  completedAt DateTime? @map("completed_at")
+  notes       String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  // Phase 4: Farmer assignments to prep items (optional)
+  farmerAssignments PrepFarmerAssignment[]
+
+  @@map("booking_prep_items")
+  @@schema("public")
+}
+
+// ============================================================================
+// Farmer-Booking Integration Models (Phase 4)
+// ============================================================================
+
+model BookingFarmer {
+  id        String   @id @default(uuid())
+  bookingId String   @map("booking_id")
+  farmerId  String   @map("farmer_id")
+  role      String?  @db.Text // e.g. "Vegetables", "Poultry", "Herbs"
+  notes     String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  farmer  Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, farmerId])
+  @@map("booking_farmers")
+  @@schema("public")
+}
+
+model PrepFarmerAssignment {
+  id         String    @id @default(uuid())
+  prepItemId String    @map("prep_item_id")
+  farmerId   String    @map("farmer_id")
+  quantity   String?   @db.Text
+  dueDate    DateTime? @map("due_date") @db.Date
+  confirmed  Boolean   @default(false)
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  prepItem BookingPrepItem @relation(fields: [prepItemId], references: [id], onDelete: Cascade)
+  farmer   Farmer          @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  @@map("prep_farmer_assignments")
+  @@schema("public")
+}
+
+// ============================================================================
+// SMS Reliability Models
+// ============================================================================
+
+model FailedSMS {
+  id            String    @id @default(uuid())
+  phone         String
+  message       String    @db.Text
+  error         String?   @db.Text
+  attempts      Int       @default(1)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastAttemptAt DateTime? @map("last_attempt_at")
+
+  @@map("failed_sms")
+  @@schema("public")
+}
+
+// ============================================================================
+// Chef-Farmer Matching Models
+// ============================================================================
+
+model ChefNeed {
+  id        String    @id @default(uuid())
+  chefId    String    @map("chef_id")
+  crop      String
+  quantity  Float
+  frequency String // e.g., "weekly", "biweekly", "monthly"
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("chef_needs")
+  @@schema("public")
+}
+
+// ============================================================================
+// Farmer Payout Model (Phase 4.5)
+// ============================================================================
+
+model FarmerPayout {
+  id          String       @id @default(uuid())
+  bookingId   String       @map("booking_id")
+  farmerId    String       @map("farmer_id")
+  description String
+  amount      Int // stored in cents
+  status      PayoutStatus @default(PENDING)
+  approvedAt  DateTime?    @map("approved_at")
+  paidAt      DateTime?    @map("paid_at")
+  notes       String?      @db.Text
+  createdAt   DateTime     @default(now()) @map("created_at")
+
+  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  farmer  Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  @@map("farmer_payouts")
+  @@schema("public")
+}

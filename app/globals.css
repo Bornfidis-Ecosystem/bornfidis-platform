@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #002747;
+  --gold: #FFBC00;
+  --white: #FFFFFF;
+  /* Bornfidis Colors */
+  --bornfidis-green: #1a5f3f;
+  --bornfidis-gold: #FFBC00;
+  --bornfidis-dark-green: #154a32;
+  --bornfidis-light-green: #f0fdf4;
+  --gold-dark: #e6a500;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  color: var(--navy);
+  background: var(--white);
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Prevent horizontal scrolling */
+#__next,
+[data-nextjs-scroll-focus-boundary] {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Bornfidis utility classes */
+@layer utilities {
+  .bg-bornfidis-green {
+    background-color: var(--bornfidis-green);
+  }
+
+  .text-bornfidis-green {
+    color: var(--bornfidis-green);
+  }
+
+  .bg-bornfidis-gold {
+    background-color: var(--bornfidis-gold);
+  }
+
+  .text-bornfidis-gold {
+    color: var(--bornfidis-gold);
+  }
+
+  .bg-gold-dark {
+    background-color: var(--gold-dark);
+  }
+}
