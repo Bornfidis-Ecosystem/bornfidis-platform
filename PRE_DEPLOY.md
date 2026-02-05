@@ -58,7 +58,20 @@ Optional but recommended: `RESEND_FROM_EMAIL`, Stripe vars if used, `ENABLE_WHAT
   - Assign chef → open portal
   - Chef payouts page loads
 
-## 6. Post-deploy cleanup (recommended)
+## 6. Admin login (magic link)
+
+1. Open the **live** admin login page (e.g. `https://platform.bornfidis.com/admin/login` or your Vercel production URL). Do not use `localhost` if you want the magic link to bring you back to production.
+2. Enter an **allowed** email (must be in `ADMIN_EMAIL` or `ADMIN_EMAILS` in Vercel env).
+3. Click **Send Magic Link**.
+4. In your email, click the magic link. You’ll be sent back to the **same origin** you were on when you requested the link (so use the production URL in step 1).
+
+**If the magic link sends you to localhost and you see “This site can’t be reached”:**
+
+- The link’s redirect URL is coming from where you requested the link or from Supabase’s **Site URL**.
+- **Fix:** Always request the magic link from the production login page (e.g. `https://platform.bornfidis.com/admin/login`).  
+- In **Supabase Dashboard → Authentication → URL Configuration**, set **Site URL** to your production URL (e.g. `https://platform.bornfidis.com`) and add that URL (and `/admin/login`) to **Redirect URLs** so Supabase allows the redirect.
+
+## 7. Post-deploy cleanup (recommended)
 
 - **Single lockfile:** Multiple lockfiles can confuse Vercel’s build cache. If you use **npm** only, remove the other lockfile so it’s not in any parent of the repo, e.g.:
   ```powershell
@@ -68,6 +81,7 @@ Optional but recommended: `RESEND_FROM_EMAIL`, Stripe vars if used, `ENABLE_WHAT
 
 ## References
 
+- **Vercel env checklist:** `VERCEL_ENV.md` — full list of required and optional variables
 - **Full deployment guide:** `VERCEL_DEPLOYMENT.md`
 - **Env reference:** `.env.example`
 - **Vercel config:** `vercel.json` (build, crons, API timeouts)
