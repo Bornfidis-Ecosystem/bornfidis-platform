@@ -7,6 +7,7 @@ Use this before deploying to Vercel (or your first production deploy).
 - **Admin chefs page:** `getFeaturedChefIdsForDisplay` is imported from `@/lib/featured-chefs`.
 - **Chef payouts page:** Inner `statusLabel` has no return type (avoids an SWC quirk); stray `</>` in payouts table branch removed.
 - **Succession client:** Ternary closed with `)}` instead of `}`.
+- **Coaching:** `evaluateAllChefsAction` is exported from `app/admin/coaching/actions.ts`; `EvaluateAllButton` is wired and works.
 
 ## 2. Build
 
@@ -50,7 +51,20 @@ Optional but recommended: `RESEND_FROM_EMAIL`, Stripe vars if used, `ENABLE_WHAT
 ## 5. After deploy
 
 - **Health:** `curl https://your-domain/api/health` → expect `"status":"ok"` and service checks.
-- **Smoke test:** Homepage, booking form, admin login, and one critical flow.
+- **Smoke test (≈5 min):**
+  - `/api/health`
+  - Admin login
+  - Admin → Bookings → open a booking detail
+  - Assign chef → open portal
+  - Chef payouts page loads
+
+## 6. Post-deploy cleanup (recommended)
+
+- **Single lockfile:** Multiple lockfiles can confuse Vercel’s build cache. If you use **npm** only, remove the other lockfile so it’s not in any parent of the repo, e.g.:
+  ```powershell
+  Remove-Item C:\Users\<you>\pnpm-lock.yaml -ErrorAction SilentlyContinue
+  ```
+  (Or move it outside the repo and any parent Vercel might use.)
 
 ## References
 
