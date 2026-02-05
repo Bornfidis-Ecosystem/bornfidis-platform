@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { getAllChefs } from './actions'
-import { Chef, ChefStatus } from '@/types/chef'
+import { getFeaturedChefIdsForDisplay } from '@/lib/featured-chefs'
+import { ChefStatus } from '@/types/chef'
 import SignOutButton from '@/components/admin/SignOutButton'
 import ChefListClient from './ChefListClient'
 
 /**
  * Phase 5A: Admin Chefs Management Page
+ * Chefs are Supabase-only (no Prisma). Data is loaded via getAllChefs() in ./actions which queries Supabase.
  */
 export default async function AdminChefsPage() {
   const result = await getAllChefs()
@@ -24,6 +26,7 @@ export default async function AdminChefsPage() {
   }
 
   const chefs = result.chefs || []
+  const featuredIds = await getFeaturedChefIdsForDisplay()
 
   const getStatusBadgeColor = (status: ChefStatus) => {
     switch (status) {
@@ -74,20 +77,31 @@ export default async function AdminChefsPage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-navy">All Chefs</h2>
-              <Link
-                href="/chef/apply"
-                target="_blank"
-                className="text-sm text-navy hover:underline"
-              >
-                View Application Form →
-              </Link>
+          <>
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-navy">All Chefs</h2>
+                <Link
+                  href="/chef/apply"
+                  target="_blank"
+                  className="text-sm text-navy hover:underline"
+                >
+                  View Application Form →
+                </Link>
+              </div>
             </div>
-          </div>
 
-          <ChefListClient chefs={chefs} />
+            {chefs.length === 0 ? (
+              <div className="px-6 py-12 text-center">
+                <p className="text-gray-600 mb-2">No chefs yet.</p>
+                <p className="text-sm text-gray-500 max-w-md mx-auto">
+                  If you expected data, ensure the <code className="bg-gray-100 px-1 rounded">public.chefs</code> table exists in your Supabase project. Run the migration <code className="bg-gray-100 px-1 rounded">supabase/migration-phase5a-chef-network.sql</code> in the Supabase SQL editor or via <code className="bg-gray-100 px-1 rounded">supabase db push</code>.
+                </p>
+              </div>
+            ) : (
+              <ChefListClient chefs={chefs} />
+            )}
+          </>
         </div>
       </main>
     </div>

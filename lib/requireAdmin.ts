@@ -1,41 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabaseClient, getServerAuthUser } from '@/lib/auth'
+import { createServerSupabaseClient } from '@/lib/auth'
+import { getCurrentUserRole } from '@/lib/get-user-role'
+import { hasRole, ADMIN_AREA_ROLES } from '@/lib/require-role'
 
 /**
- * Admin Guard Utility
- * 
- * Checks:
- * 1. User is authenticated
- * 2. User.role === 'admin' (from user_metadata or app_metadata)
- * 
- * Returns:
- * - For API routes: JSON error response
- * - For pages: Redirects to login or shows access denied
+ * Admin Guard Utility — Bornfidis Auth + Roles (Phase 1)
+ *
+ * Single source of truth: Prisma User.role
+ * Allowed for admin area: ADMIN, STAFF, COORDINATOR (legacy)
+ * Fallback: ADMIN_EMAILS allowlist for first-time setup before role is set
  */
 
 interface AdminGuardResult {
   user: any
+  role: string | null
   isAdmin: boolean
   error?: string
 }
 
 /**
- * Check if user is authenticated and has admin role
- * Returns user and admin status without throwing
+ * Check if user is authenticated and has admin-area role (ADMIN, STAFF, COORDINATOR).
+ * Returns user, role, and admin status without throwing.
  */
 export async function checkAdminAccess(): Promise<AdminGuardResult> {
   try {
     const supabase = await createServerSupabaseClient()
-    
-    // First, try to get the session to ensure cookies are synced
     const { data: { session } } = await supabase.auth.getSession()
-    
-    // Then get the user
     const { data: { user }, error } = await supabase.auth.getUser()
 
-    // Check authentication
     if (error || !user) {
-      // Debug logging in development
       if (process.env.NODE_ENV === 'development') {
         console.log('❌ Admin access check failed - not authenticated:', {
           error: error?.message,
@@ -45,58 +38,55 @@ export async function checkAdminAccess(): Promise<AdminGuardResult> {
       }
       return {
         user: null,
+        role: null,
         isAdmin: false,
         error: 'Not authenticated',
       }
     }
 
-    // Check admin role
-    // Supabase stores roles in user_metadata or app_metadata
-    const role = user.user_metadata?.role || user.app_metadata?.role
+    // Role from Prisma (synced from Supabase metadata / User table)
+    const role = await getCurrentUserRole()
 
-    // Fallback: Check email allowlist if role is not set
-    // This provides backward compatibility with the email-based admin system
-    if (role !== 'admin') {
-      // Import email check function
-      const { isAllowedAdminEmail } = await import('@/lib/auth')
-      
-      // If email is in allowlist, grant admin access
-      if (user.email && isAllowedAdminEmail(user.email)) {
-        // Log for debugging (only in dev)
-        if (process.env.NODE_ENV === 'development') {
-          console.log(`✅ Admin access granted via email allowlist: ${user.email}`)
-        }
-        return {
-          user,
-          isAdmin: true,
-        }
-      }
-
-      // Log role check failure for debugging
-      if (process.env.NODE_ENV === 'development') {
-        console.log('🔍 Admin role check:', {
-          email: user.email,
-          user_metadata_role: user.user_metadata?.role,
-          app_metadata_role: user.app_metadata?.role,
-          found_role: role,
-        })
-      }
-
+    if (hasRole(role, ADMIN_AREA_ROLES)) {
       return {
         user,
-        isAdmin: false,
-        error: 'Access denied: Admin role required',
+        role: role ?? null,
+        isAdmin: true,
       }
+    }
+
+    // Fallback: email allowlist for first-time setup before role is set in DB
+    const { isAllowedAdminEmail } = await import('@/lib/auth')
+    if (user.email && isAllowedAdminEmail(user.email)) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`✅ Admin access via allowlist (set role in DB): ${user.email}`)
+      }
+      return {
+        user,
+        role: role ?? null,
+        isAdmin: true,
+      }
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Admin role check:', {
+        email: user.email,
+        prismaRole: role,
+        allowed: ADMIN_AREA_ROLES,
+      })
     }
 
     return {
       user,
-      isAdmin: true,
+      role: role ?? null,
+      isAdmin: false,
+      error: 'Access denied: Admin role required',
     }
   } catch (error: any) {
     console.error('Error checking admin access:', error)
     return {
       user: null,
+      role: null,
       isAdmin: false,
       error: error.message || 'Authentication error',
     }

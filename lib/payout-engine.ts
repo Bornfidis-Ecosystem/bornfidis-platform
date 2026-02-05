@@ -1,16 +1,25 @@
 /**
  * Phase 5B: Payout Engine
  * Handles idempotent chef payouts via Stripe Connect Transfers
+ * Phase 2AV: Margin guardrails — block or allow with override (audit logged).
  */
 
 import { supabaseAdmin } from '@/lib/supabase'
+import { db } from '@/lib/db'
 import { createChefPayout, getAccountStatus } from './stripe-connect'
+import { checkMargin, logMarginOverride } from '@/lib/margin-guardrails'
+
+export type PayoutOverride = { userId: string; reason?: string }
 
 /**
  * Phase 5B: Attempt payout for a booking
  * Idempotent - will not create duplicate payouts
+ * Phase 2AV: If margin guardrail fails and block, adds to blockers unless override is provided (then logs and proceeds).
  */
-export async function tryPayoutForBooking(bookingId: string): Promise<{
+export async function tryPayoutForBooking(
+  bookingId: string,
+  override?: PayoutOverride | null
+): Promise<{
   success: boolean
   payoutCreated?: boolean
   payoutId?: string
@@ -169,6 +178,61 @@ export async function tryPayoutForBooking(bookingId: string): Promise<{
       if (!accountStatus.success || !accountStatus.payoutsEnabled) {
         blockers.push('Stripe account does not have payouts enabled')
       }
+    }
+
+    // Phase 2AV: Margin guardrails — check via Prisma booking data
+    try {
+      const prismaBooking = await db.bookingInquiry.findUnique({
+        where: { id: bookingId },
+        select: {
+          quoteTotalCents: true,
+          chefPayoutAmountCents: true,
+          chefPayoutBaseCents: true,
+          chefPayoutBonusCents: true,
+          chefRateMultiplier: true,
+          regionCode: true,
+          surgeMultiplierSnapshot: true,
+          quoteTaxCents: true,
+          quoteServiceFeeCents: true,
+          quoteSubtotalCents: true,
+        },
+      })
+      if (
+        prismaBooking?.quoteTotalCents != null &&
+        prismaBooking.quoteTotalCents > 0 &&
+        prismaBooking.chefPayoutAmountCents != null
+      ) {
+        const jobValueCents =
+          (prismaBooking.quoteTotalCents ?? 0) -
+          (prismaBooking.quoteTaxCents ?? 0) -
+          (prismaBooking.quoteServiceFeeCents ?? 0)
+        const marginResult = await checkMargin({
+          quoteTotalCents: prismaBooking.quoteTotalCents,
+          chefPayoutAmountCents: prismaBooking.chefPayoutAmountCents,
+          chefPayoutBaseCents: prismaBooking.chefPayoutBaseCents ?? 0,
+          chefPayoutBonusCents: prismaBooking.chefPayoutBonusCents ?? 0,
+          chefRateMultiplier: prismaBooking.chefRateMultiplier ?? null,
+          surgeMultiplier: prismaBooking.surgeMultiplierSnapshot ?? null,
+          jobValueCents: jobValueCents > 0 ? jobValueCents : (prismaBooking.quoteSubtotalCents ?? 0),
+          regionCode: prismaBooking.regionCode ?? null,
+        })
+        if (!marginResult.pass) {
+          if (override?.userId) {
+            await logMarginOverride(
+              bookingId,
+              override.userId,
+              'override_block',
+              override.reason ?? undefined
+            )
+          } else if (marginResult.blockOrWarn) {
+            blockers.push(
+              marginResult.message ?? marginResult.failReasons.join('; ') ?? 'Margin guardrail failed'
+            )
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Margin guardrail check failed (non-fatal):', e)
     }
 
     if (blockers.length > 0) {

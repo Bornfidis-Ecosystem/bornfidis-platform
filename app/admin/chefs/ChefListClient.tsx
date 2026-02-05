@@ -196,8 +196,11 @@ export default function ChefListClient({ chefs }: ChefListClientProps) {
                             <tr key={chef.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <div>
-                                        <div className="text-sm font-medium text-gray-900">{chef.name}</div>
+                                        <div className="text-sm font-medium text-gray-900">
+                                            <Link href={`/admin/chefs/${chef.id}`} className="text-navy hover:underline">{chef.name}</Link>
+                                        </div>
                                         <div className="text-sm text-gray-500">{chef.email}</div>
+                                        <Link href={`/admin/chefs/${chef.id}`} className="text-xs text-navy hover:underline">Tier & override</Link>
                                     </div>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">

@@ -33,6 +33,7 @@ interface PortalData {
   fully_paid: boolean
   fully_paid_at?: string
   invoice_available: boolean
+  chef?: { id: string; name: string } | null
 }
 
 async function getPortalData(token: string): Promise<PortalData | null> {

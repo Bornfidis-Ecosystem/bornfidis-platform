@@ -3,6 +3,13 @@
 ## Project Context
 Premium chef services booking platform. Faith-anchored, professional, clean design.
 
+## DNS & Architecture (MANDATORY)
+- **Read and follow:** [DNS_ARCHITECTURE_GUARDRAILS.md](./DNS_ARCHITECTURE_GUARDRAILS.md)
+- **WordPress (Hostinger):** `bornfidis.com` — marketing, shop, blog only. MUST NOT handle intake forms, workflows, or APIs.
+- **Platform (Vercel/Next.js):** `platform.bornfidis.com` — ALL operational routes: `/farmer-intake`, `/chef-intake`, `/cooperative`, `/admin`, `/api`.
+- **Linking rule:** Operational links must use `https://platform.bornfidis.com/...`. Never create intake or operational routes on the root domain.
+- **If unsure about DNS or routing:** STOP and ask before changing. Breaking domain boundaries risks data loss and farmer trust.
+
 ## Brand Guidelines
 - Colors: Forest green (#2C5F2D), Gold (#D4AF37), Cream (#F8F6F3)
 - Fonts: Montserrat (headings), Lora (body)

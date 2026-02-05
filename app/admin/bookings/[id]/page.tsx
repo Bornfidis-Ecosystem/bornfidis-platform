@@ -2,12 +2,14 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { getBookingWithQuote } from '../actions'
+import { getInsightsForBooking } from '@/lib/ai-ops-insights'
 import BookingDetailClient from './BookingDetailClient'
-import QuoteSection from './QuoteSection'
+import AiInsightsBlock from './AiInsightsBlock'
 import TimelineSection from './TimelineSection'
 import PrepSection from './PrepSection'
 import FarmerAssignmentSection from './FarmerAssignmentSection'
 import PayoutSection from './PayoutSection'
+import ChefPayoutBonusSection from './ChefPayoutBonusSection'
 import ErrorBoundary from './ErrorBoundary'
 import SignOutButton from '@/components/admin/SignOutButton'
 
@@ -38,6 +40,12 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
               >
                 ← Back to Bookings
               </Link>
+              <Link
+                href={`/admin/incidents?bookingId=${booking.id}`}
+                className="text-gold hover:underline text-sm ml-4 inline-block"
+              >
+                Log incident
+              </Link>
               <h1 className="text-2xl font-bold">Booking Details</h1>
               <p className="text-gold text-sm mt-1">{booking.name}</p>
             </div>
@@ -49,110 +57,142 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
-          {/* Customer Information */}
-          <section>
-            <h2 className="text-xl font-semibold text-navy mb-4">Customer Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Name</label>
-                <p className="text-gray-900">{booking.name}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Email</label>
-                <p className="text-gray-900">
-                  {booking.email ? (
-                    <a href={`mailto:${booking.email}`} className="text-navy hover:underline">
-                      {booking.email}
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
-                <p className="text-gray-900">
-                  {booking.phone ? (
-                    <a href={`tel:${booking.phone}`} className="text-navy hover:underline">
-                      {booking.phone}
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Created</label>
-                <p className="text-gray-900">
-                  {new Date(booking.createdAt).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                  })}
-                </p>
-              </div>
-            </div>
-          </section>
+          {/* Booking Overview - Read Only */}
+          <SlaSection booking={booking} />
+          <AiInsightsBlock insights={aiInsights} />
 
-          {/* Event Details */}
-          <section>
-            <h2 className="text-xl font-semibold text-navy mb-4">Event Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Event Date</label>
-                <p className="text-gray-900">
-                  {booking.event_date ? (
-                    new Date(booking.event_date).toLocaleDateString('en-US', {
+          <div className="bg-white border rounded-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="text-2xl">👤</span>
+              Booking Overview
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column - Customer Info */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  Customer Information
+                </h3>
+
+                <div>
+                  <label className="text-xs text-gray-500">Name</label>
+                  <p className="text-base text-gray-900 font-medium">{booking.name}</p>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Email</label>
+                  <p className="text-base text-gray-900">
+                    {booking.email ? (
+                      <a href={`mailto:${booking.email}`} className="text-navy hover:underline">
+                        {booking.email}
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Phone</label>
+                  <p className="text-base text-gray-900">
+                    {booking.phone ? (
+                      <a href={`tel:${booking.phone}`} className="text-navy hover:underline">
+                        {booking.phone}
+                      </a>
+                    ) : (
+                      '—'
+                    )}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500">Created</label>
+                  <p className="text-base text-gray-900">
+                    {new Date(booking.createdAt).toLocaleString('en-US', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
-                    })
-                  ) : (
-                    '—'
-                  )}
-                </p>
+                      hour: 'numeric',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Event Time</label>
-                <p className="text-gray-900">{booking.event_time || '—'}</p>
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-500 mb-1">Location</label>
-                <p className="text-gray-900">{booking.location}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Number of Guests</label>
-                <p className="text-gray-900">{booking.guests || '—'}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-500 mb-1">Budget Range</label>
-                <p className="text-gray-900">{booking.budget_range || '—'}</p>
+
+              {/* Right Column - Event Info */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                  Event Details
+                </h3>
+
+                <div>
+                  <label className="text-xs text-gray-500 flex items-center gap-1">
+                    📅 Event Date & Time
+                  </label>
+                  <p className="text-base text-gray-900 font-medium">
+                    {booking.event_date
+                      ? new Date(booking.event_date).toLocaleDateString('en-US', {
+                          weekday: 'long',
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })
+                      : '—'}
+                    {booking.event_time && ` at ${booking.event_time}`}
+                  </p>
+                </div>
+
+                <div>
+                  <label className="text-xs text-gray-500 flex items-center gap-1">
+                    📍 Location
+                  </label>
+                  <p className="text-base text-gray-900">{booking.location}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-gray-500 flex items-center gap-1">
+                      👥 Guests
+                    </label>
+                    <p className="text-base text-gray-900 font-medium">
+                      {booking.guests ?? '—'}
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs text-gray-500 flex items-center gap-1">
+                      💰 Budget
+                    </label>
+                    <p className="text-base text-gray-900 font-medium">
+                      {booking.budget_range ? String(booking.budget_range).replace(/_/g, ' ') : '—'}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </section>
 
-          {/* Preferences */}
-          {(booking.dietary || booking.notes) && (
-            <section>
-              <h2 className="text-xl font-semibold text-navy mb-4">Preferences & Notes</h2>
-              <div className="space-y-4">
+            {/* Customer Notes */}
+            {(booking.dietary || booking.notes) ? (
+              <div className="mt-6 pt-6 border-t">
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+                  Customer Requests
+                </h3>
+
                 {booking.dietary && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Dietary Restrictions</label>
-                    <p className="text-gray-900">{booking.dietary}</p>
+                  <div className="mb-2">
+                    <label className="text-xs text-gray-500">Dietary Restrictions</label>
+                    <p className="text-sm text-gray-900 italic">{booking.dietary}</p>
                   </div>
                 )}
+
                 {booking.notes && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">Customer Notes</label>
-                    <p className="text-gray-900 whitespace-pre-wrap">{booking.notes}</p>
+                  <div className="bg-blue-50 border border-blue-100 rounded-md p-3">
+                    <p className="text-sm text-gray-900 italic whitespace-pre-wrap">&quot;{booking.notes}&quot;</p>
                   </div>
                 )}
               </div>
-            </section>
-          )}
+            ) : null}
+          </div>
 
           {/* Admin Section - Editable */}
           <section className="border-t pt-6">
@@ -189,6 +229,23 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             </section>
           )}
 
+          {/* Phase 2Q: Chef payout breakdown + override */}
+          {booking.chef_payout_amount_cents != null && booking.chef_payout_amount_cents > 0 && (
+            <section className="border-t pt-6">
+              <ChefPayoutBonusSection
+                bookingId={booking.id}
+                chefPayoutAmountCents={booking.chef_payout_amount_cents}
+                chefPayoutBaseCents={booking.chef_payout_base_cents}
+                chefPayoutBonusCents={booking.chef_payout_bonus_cents}
+                chefPayoutBonusBreakdown={booking.chef_payout_bonus_breakdown}
+                chefPayoutBonusOverride={booking.chef_payout_bonus_override}
+                chefPayoutStatus={booking.chef_payout_status}
+                chefTierSnapshot={booking.chef_tier_snapshot}
+                chefRateMultiplier={booking.chef_rate_multiplier}
+              />
+            </section>
+          )}
+
           {/* Phase 4.5: Farmer Payouts */}
           {booking.status === 'Confirmed' && (
             <section className="border-t pt-6">
@@ -200,10 +257,6 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             </section>
           )}
 
-          {/* Quote & Deposit Section - Phase 3A (Legacy) */}
-          <section className="border-t pt-6">
-            <QuoteSection booking={booking} />
-          </section>
         </div>
       </main>
     </div>

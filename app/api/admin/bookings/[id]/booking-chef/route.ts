@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
@@ -6,6 +8,7 @@ import { BookingChef } from '@/types/booking-chef'
 /**
  * Phase 5C: Get booking chef assignment
  * GET /api/admin/bookings/[id]/booking-chef
+ * Returns 200 with empty data on error so the admin page does not break (no 500).
  */
 export async function GET(
   request: NextRequest,
@@ -24,12 +27,10 @@ export async function GET(
       .eq('booking_id', bookingId)
       .single()
 
-    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+    if (error && error.code !== 'PGRST116') {
+      // PGRST116 = no rows returned; other errors (e.g. permission denied for schema) → return empty
       console.error('Error fetching booking chef:', error)
-      return NextResponse.json(
-        { success: false, error: 'Failed to fetch assignment' },
-        { status: 500 }
-      )
+      return NextResponse.json({ success: true, booking_chef: null })
     }
 
     return NextResponse.json({
@@ -38,10 +39,7 @@ export async function GET(
     })
   } catch (error: any) {
     console.error('Error fetching booking chef:', error)
-    return NextResponse.json(
-      { success: false, error: error.message || 'Failed to fetch assignment' },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: true, booking_chef: null })
   }
 }
 

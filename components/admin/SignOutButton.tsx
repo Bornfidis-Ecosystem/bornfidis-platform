@@ -15,6 +15,20 @@ export default function SignOutButton() {
   const handleSignOut = async () => {
     setIsSigningOut(true)
     try {
+      // Phase 2AK: revoke push subscription on logout (best-effort)
+      if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then((reg) =>
+          reg.pushManager.getSubscription().then((sub) => {
+            if (sub) {
+              fetch('/api/push/unsubscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ endpoint: sub.endpoint }),
+              }).catch(() => {})
+            }
+          })
+        )
+      }
       await signOut()
       // Call server-side signout endpoint to clear cookies
       await fetch('/api/auth/signout', { method: 'POST' })

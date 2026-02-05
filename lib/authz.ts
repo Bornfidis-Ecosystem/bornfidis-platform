@@ -10,27 +10,37 @@ import { UserRole } from '@prisma/client'
 
 /**
  * Check if user can manage bookings (view, update status, etc.)
- * ADMIN and COORDINATOR can manage bookings
+ * ADMIN, STAFF, COORDINATOR can manage bookings
  */
 export function canManageBookings(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
   const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
-  return normalizedRole === 'ADMIN' || normalizedRole === 'COORDINATOR'
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR'
 }
 
 /**
  * Check if user can assign farmers to bookings
- * ADMIN and COORDINATOR can assign farmers
+ * ADMIN, STAFF, COORDINATOR can assign farmers
  */
 export function canAssignFarmers(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
   const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
-  return normalizedRole === 'ADMIN' || normalizedRole === 'COORDINATOR'
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR'
 }
 
 /**
- * Check if user can view admin dashboard and settings
- * Only ADMIN can access admin features
+ * Check if user can access admin area (dashboard, bookings, etc.)
+ * ADMIN, STAFF, COORDINATOR can access
+ */
+export function canAccessAdminArea(role: UserRole | string | null | undefined): boolean {
+  if (!role) return false
+  const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR'
+}
+
+/**
+ * Check if user can view full admin settings (e.g. user management, role assignment)
+ * Only ADMIN
  */
 export function canViewAdmin(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
@@ -40,32 +50,32 @@ export function canViewAdmin(role: UserRole | string | null | undefined): boolea
 
 /**
  * Check if user can send WhatsApp/SMS updates
- * ADMIN and COORDINATOR can send updates
+ * ADMIN, STAFF, COORDINATOR can send updates
  */
 export function canSendUpdates(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
   const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
-  return normalizedRole === 'ADMIN' || normalizedRole === 'COORDINATOR'
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR'
 }
 
 /**
  * Check if user can manage prep checklists
- * ADMIN, COORDINATOR, and CHEF can manage prep
+ * ADMIN, STAFF, COORDINATOR, and CHEF can manage prep
  */
 export function canManagePrep(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
   const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
-  return normalizedRole === 'ADMIN' || normalizedRole === 'COORDINATOR' || normalizedRole === 'CHEF'
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR' || normalizedRole === 'CHEF'
 }
 
 /**
  * Check if user can view timeline
- * ADMIN and COORDINATOR can view timeline
+ * ADMIN, STAFF, COORDINATOR can view timeline
  */
 export function canViewTimeline(role: UserRole | string | null | undefined): boolean {
   if (!role) return false
   const normalizedRole = typeof role === 'string' ? role.toUpperCase() : role
-  return normalizedRole === 'ADMIN' || normalizedRole === 'COORDINATOR'
+  return normalizedRole === 'ADMIN' || normalizedRole === 'STAFF' || normalizedRole === 'COORDINATOR'
 }
 
 /**
@@ -80,24 +90,22 @@ export function canAssignRoles(role: UserRole | string | null | undefined): bool
 
 /**
  * Get user role from Supabase Auth user object
- * Checks user_metadata, app_metadata, and falls back to Prisma User table
+ * Checks user_metadata, app_metadata; normalizes to Prisma UserRole
  */
 export function getUserRole(user: any): UserRole | null {
   if (!user) return null
-  
-  // Check Supabase metadata first (for backward compatibility)
+
   const metadataRole = user.user_metadata?.role || user.app_metadata?.role
   if (metadataRole) {
-    // Normalize to enum value
-    const normalized = metadataRole.toUpperCase()
+    const normalized = String(metadataRole).toUpperCase()
     if (Object.values(UserRole).includes(normalized as UserRole)) {
       return normalized as UserRole
     }
     // Legacy: 'admin' maps to ADMIN
-    if (metadataRole.toLowerCase() === 'admin') {
+    if (String(metadataRole).toLowerCase() === 'admin') {
       return UserRole.ADMIN
     }
   }
-  
+
   return null
 }

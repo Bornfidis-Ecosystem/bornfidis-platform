@@ -95,13 +95,15 @@ export default function UserManagementClient() {
                   <td className="border p-3">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' :
-                      user.role === 'COORDINATOR' ? 'bg-blue-100 text-blue-800' :
+                      user.role === 'STAFF' || user.role === 'COORDINATOR' ? 'bg-blue-100 text-blue-800' :
+                      user.role === 'PARTNER' ? 'bg-indigo-100 text-indigo-800' :
+                      user.role === 'USER' ? 'bg-gray-100 text-gray-800' :
                       user.role === 'CHEF' ? 'bg-green-100 text-green-800' :
                       user.role === 'FARMER' ? 'bg-yellow-100 text-yellow-800' :
-                      user.role === 'VOLUNTEER' ? 'bg-gray-100 text-gray-800' :
+                      user.role === 'VOLUNTEER' ? 'bg-gray-100 text-gray-600' :
                       'bg-gray-100 text-gray-600'
                     }`}>
-                      {user.role || 'FARMER'}
+                      {user.role || 'USER'}
                     </span>
                   </td>
                   <td className="border p-3 text-sm text-gray-600">
@@ -113,16 +115,19 @@ export default function UserManagementClient() {
                   </td>
                   <td className="border p-3">
                     <select
-                      value={user.role || 'FARMER'}
+                      value={user.role || 'USER'}
                       onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
                       disabled={updatingId === user.id}
                       className="px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-navy focus:border-transparent disabled:opacity-50"
                     >
+                      <option value="ADMIN">ADMIN</option>
+                      <option value="STAFF">STAFF</option>
+                      <option value="PARTNER">PARTNER</option>
+                      <option value="USER">USER</option>
+                      <option value="COORDINATOR">COORDINATOR</option>
+                      <option value="CHEF">CHEF</option>
                       <option value="FARMER">FARMER</option>
                       <option value="VOLUNTEER">VOLUNTEER</option>
-                      <option value="CHEF">CHEF</option>
-                      <option value="COORDINATOR">COORDINATOR</option>
-                      <option value="ADMIN">ADMIN</option>
                     </select>
                   </td>
                 </tr>

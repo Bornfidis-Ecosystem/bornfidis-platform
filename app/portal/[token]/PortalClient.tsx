@@ -6,6 +6,8 @@ import { PDFDownloadLink } from '@react-pdf/renderer'
 import { InvoicePdfDocument } from '@/components/pdf/InvoicePdf'
 import { formatUSD } from '@/lib/money'
 import { QuoteLineItem } from '@/types/booking'
+import { TrustBadges } from '@/components/TrustBadges'
+import { ReviewForm } from './ReviewForm'
 
 interface PortalData {
   booking_id: string
@@ -39,6 +41,11 @@ interface PortalData {
   fully_paid: boolean
   fully_paid_at?: string
   invoice_available: boolean
+  /** Phase 2R/2S/2U: Assigned chef (id, name, tier label, optional review stats) */
+  chef?: { id: string; name: string; tierLabel?: string; reviewStats?: { averageRating: number; count: number } } | null
+  /** Phase 2U: Can submit review (completed, no review yet) */
+  can_review?: boolean
+  has_review?: boolean
 }
 
 interface PortalClientProps {
@@ -231,6 +238,43 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
             )}
           </div>
         </div>
+
+        {/* Phase 2R: Your chef card (with trust badges) */}
+        {portalData.chef && (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
+            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+              Your Chef
+            </h2>
+            <p className="font-medium text-gray-900">
+              {portalData.chef.name}
+              {portalData.chef.tierLabel && (
+                <span className="ml-2 text-sm font-normal text-[#1a5f3f]">— {portalData.chef.tierLabel}</span>
+              )}
+            </p>
+            {portalData.chef.reviewStats && portalData.chef.reviewStats.count > 0 && (
+              <p className="text-sm text-gray-600 mt-1">
+                Rated {portalData.chef.reviewStats.averageRating.toFixed(1)} ★ ({portalData.chef.reviewStats.count} review{portalData.chef.reviewStats.count !== 1 ? 's' : ''})
+              </p>
+            )}
+            <TrustBadges chefId={portalData.chef.id} title="Verified by Bornfidis" />
+            {/* Phase 2U: Review prompt (completed booking, one review per booking) */}
+            {portalData.can_review && !portalData.has_review && !reviewSubmitted && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-800 mb-2">How was your chef?</h3>
+                <ReviewForm
+                  token={token}
+                  chefName={portalData.chef.name}
+                  onSubmitted={() => setReviewSubmitted(true)}
+                />
+              </div>
+            )}
+            {(portalData.has_review || reviewSubmitted) && (
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-sm text-green-700 font-medium">✓ Thanks for your review!</p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Quote Summary Card */}
         {hasQuote ? (

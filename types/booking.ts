@@ -77,6 +77,10 @@ export interface BookingInquiry {
   // Phase 5B: Chef Assignment & Payout fields
   assigned_chef_id?: string
   chef_payout_amount_cents?: number
+  chef_payout_base_cents?: number
+  chef_payout_bonus_cents?: number
+  chef_payout_bonus_breakdown?: Array<{ badge: string; pct: number }>
+  chef_payout_bonus_override?: boolean
   chef_payout_status?: 'not_applicable' | 'pending' | 'paid' | 'blocked'
   chef_payout_blockers?: string[]
   chef_payout_paid_at?: string
@@ -87,4 +91,20 @@ export interface BookingInquiry {
   payout_hold?: boolean
   payout_hold_reason?: string
   payout_released_at?: string
+  // Phase 2S: Tier locked at assignment
+  chef_tier_snapshot?: string
+  chef_rate_multiplier?: number
+  // Phase 2AJ: SLA alerts
+  sla_status?: 'on_track' | 'at_risk' | 'breached'
+  sla_breaches?: Array<{ type: string; breachedAt: string; alertedAt?: string; escalatedAt?: string }>
+  sla_acknowledged_at?: string
+  // Phase 2AL: Region pricing (locked at quote time)
+  region_code?: string
+  region_multiplier_snapshot?: number
+  region_travel_fee_cents_snapshot?: number
+  region_minimum_cents_snapshot?: number
+  surge_multiplier_snapshot?: number
+  surge_applied_at?: string
+  surge_label?: string
+  sla_acknowledged_by?: string
 }

@@ -13,6 +13,41 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL
   : 'Bornfidis Provisions <onboarding@resend.dev>'
 
 /**
+ * Phase 2L: Generic transactional email (e.g. chef status notifications).
+ */
+export async function sendEmail({
+  to,
+  subject,
+  text,
+}: {
+  to: string
+  subject: string
+  text: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    console.error('Invalid email address:', to)
+    return { success: false, error: 'Invalid email address' }
+  }
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject,
+      html: `<div style="font-family: system-ui, sans-serif; max-width: 600px;">${text.replace(/\n/g, '<br>')}</div>`,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Error sending email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 1: Client booking confirmation email
  * Simple, clean template for booking submissions
  */
@@ -428,5 +463,231 @@ export async function sendChefOnboardingEmail(
   } catch (error: any) {
     console.error('❌ Error sending onboarding email:', error)
     return { success: false, error: error.message || 'Failed to send email' }
+  }
+}
+
+/**
+ * Phase 2B-Email: Partner invite email — single source
+ * Secure invite link, forest-green CTA, professional. Works in production.
+ */
+export async function sendInviteEmail({
+  email,
+  inviteUrl,
+}: {
+  email: string
+  inviteUrl: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — invite email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!email || !email.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: email,
+      subject: "You're invited to join the Bornfidis Platform",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h2 style="color: #14532d; margin-bottom: 16px;">Welcome to Bornfidis</h2>
+          <p>You've been invited to join the Bornfidis ecosystem as a partner.</p>
+          <p>Click the button below to accept your invitation:</p>
+          <p>
+            <a href="${inviteUrl}"
+               style="display:inline-block;padding:12px 20px;
+                      background:#14532d;color:#fff;
+                      text-decoration:none;border-radius:6px;">
+              Accept Invitation
+            </a>
+          </p>
+          <p style="font-size:12px;color:#666;">
+            This invite expires in 7 days.
+          </p>
+        </div>
+      `,
+    })
+    console.log('✅ Invite email sent to:', email)
+    return { success: true }
+  } catch (error: any) {
+    console.error('❌ Error sending invite email:', error)
+    return { success: false, error: error.message || 'Failed to send email' }
+  }
+}
+
+/**
+ * Phase 2T: Send monthly chef statement email with PDF attached.
+ */
+export async function sendChefMonthlyStatementEmail({
+  to,
+  chefName,
+  monthLabel,
+  pdfBuffer,
+  filename,
+}: {
+  to: string
+  chefName: string
+  monthLabel: string
+  pdfBuffer: Buffer
+  filename: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — statement email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Your Monthly Chef Statement – ${monthLabel}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px;">
+          <h2 style="color: #1a5f3f;">Monthly Chef Statement</h2>
+          <p>Hi ${chefName},</p>
+          <p>Your earnings statement for <strong>${monthLabel}</strong> is attached as a PDF.</p>
+          <p>This statement is for your records. Totals match payouts already made.</p>
+          <p style="margin-top: 24px; color: #666;">
+            Bornfidis Provisions · Chef Network
+          </p>
+        </div>
+      `,
+      attachments: [{ filename, content: pdfBuffer }],
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Error sending chef statement email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
+ * Phase 2AF: Send annual tax summary email with PDF attached.
+ */
+export async function sendChefTaxSummaryEmail({
+  to,
+  chefName,
+  year,
+  pdfBuffer,
+  filename,
+}: {
+  to: string
+  chefName: string
+  year: number
+  pdfBuffer: Buffer
+  filename: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — tax summary email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Your ${year} Tax Summary – Bornfidis Chef`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px;">
+          <h2 style="color: #1a5f3f;">Annual Tax Summary (Informational)</h2>
+          <p>Hi ${chefName},</p>
+          <p>Your earnings summary for <strong>${year}</strong> is attached as a PDF.</p>
+          <p>This is an informational summary for your records. It is not tax advice. Consult a tax professional for filing.</p>
+          <p style="margin-top: 24px; color: #666;">
+            Bornfidis Provisions · Chef Network
+          </p>
+        </div>
+      `,
+      attachments: [{ filename, content: pdfBuffer }],
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Error sending chef tax summary email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
+ * Phase 2AJ: SLA breach alert — notify admin/staff.
+ */
+export async function sendSlaAlertEmail({
+  to,
+  bookingName,
+  bookingId,
+  breachTypes,
+  eventDate,
+}: {
+  to: string
+  bookingName: string
+  bookingId: string
+  breachTypes: string[]
+  eventDate: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) return { success: false, error: 'Email not configured' }
+  try {
+    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://platform.bornfidis.com'
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `[SLA] ${breachTypes.join(', ')} — ${bookingName}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif;">
+          <h2 style="color: #b91c1c;">SLA breach alert</h2>
+          <p><strong>Booking:</strong> ${bookingName}</p>
+          <p><strong>Event date:</strong> ${eventDate}</p>
+          <p><strong>Breach type(s):</strong> ${breachTypes.join(', ')}</p>
+          <p><a href="${base}/admin/bookings/${bookingId}">View booking →</a></p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to send'
+    console.error('sendSlaAlertEmail:', e)
+    return { success: false, error: message }
+  }
+}
+
+/**
+ * Phase 2AJ: SLA escalation — notify ops lead / admin group.
+ */
+export async function sendSlaEscalationEmail({
+  to,
+  bookingName,
+  bookingId,
+  breachTypes,
+}: {
+  to: string
+  bookingName: string
+  bookingId: string
+  breachTypes: string[]
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) return { success: false, error: 'Email not configured' }
+  try {
+    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://platform.bornfidis.com'
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `[SLA Escalation] ${bookingName} — unresolved`,
+      html: `
+        <div style="font-family: system-ui, sans-serif;">
+          <h2 style="color: #92400e;">SLA escalation</h2>
+          <p>Booking <strong>${bookingName}</strong> has unresolved SLA breach(es): ${breachTypes.join(', ')}.</p>
+          <p><a href="${base}/admin/bookings/${bookingId}">View booking →</a></p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to send'
+    console.error('sendSlaEscalationEmail:', e)
+    return { success: false, error: message }
   }
 }

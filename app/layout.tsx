@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
 import './globals.css'
 import PublicNav from '@/components/layout/PublicNav'
 import PublicFooter from '@/components/layout/PublicFooter'
@@ -28,6 +29,7 @@ export default function RootLayout({
             <main className="flex-1 w-full">{children}</main>
             <PublicFooter />
             <ToastContainer />
+            <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
             <SyncButton />
           </OfflineSyncProvider>
         </div>

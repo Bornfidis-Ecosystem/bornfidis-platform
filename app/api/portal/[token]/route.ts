@@ -1,5 +1,9 @@
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getEffectiveTier } from '@/lib/chef-tier'
+import { canSubmitReview, hasReviewForBooking, getReviewStatsForChef } from '@/lib/reviews'
 
 /**
  * Phase 4B: Get portal data by token
@@ -34,6 +38,7 @@ export async function GET(
         location,
         guests,
         status,
+        assigned_chef_id,
         quote_subtotal_cents,
         quote_tax_cents,
         quote_service_fee_cents,
@@ -58,6 +63,37 @@ export async function GET(
         { status: 404 }
       )
     }
+
+    // Phase 2R/2S/2U: Assigned chef + tier label + review stats
+    let chef: { id: string; name: string; tierLabel?: string; reviewStats?: { averageRating: number; count: number } } | null = null
+    const assignedChefId = booking.assigned_chef_id
+    if (assignedChefId) {
+      const { data: chefRow } = await supabaseAdmin
+        .from('chefs')
+        .select('id, name')
+        .eq('id', assignedChefId)
+        .single()
+      if (chefRow) {
+        let tierLabel: string | undefined
+        try {
+          const tier = await getEffectiveTier(chefRow.id)
+          tierLabel = tier === 'PRO' ? 'Pro Chef' : tier === 'ELITE' ? 'Elite Chef' : undefined
+        } catch {
+          // ignore
+        }
+        const reviewStats = await getReviewStatsForChef(chefRow.id)
+        chef = {
+          id: chefRow.id,
+          name: chefRow.name ?? 'Your chef',
+          tierLabel,
+          reviewStats: reviewStats.count > 0 ? reviewStats : undefined,
+        }
+      }
+    }
+
+    // Phase 2U: Can client leave a review? (completed booking, no review yet)
+    const canReviewResult = await canSubmitReview(booking.id)
+    const hasReview = await hasReviewForBooking(booking.id)
 
     // Return safe fields only (no admin_notes or internal fields)
     const portalData = {
@@ -105,6 +141,9 @@ export async function GET(
       fully_paid: !!booking.fully_paid_at,
       fully_paid_at: booking.fully_paid_at,
       invoice_available: !!booking.fully_paid_at,
+      chef: chef,
+      can_review: canReviewResult.allowed,
+      has_review: hasReview,
     }
 
     return NextResponse.json({

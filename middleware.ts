@@ -2,8 +2,10 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 /**
- * Middleware for handling Supabase Auth session refresh
- * Phase 2B: Ensures auth sessions stay valid across requests
+ * Middleware — Bornfidis Auth + Roles (Phase 1)
+ * - Refreshes Supabase session
+ * - Locks /admin/* (except /admin/login): unauthenticated → redirect to /admin/login
+ * - / and /admin/login always allowed
  */
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -58,20 +60,36 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session if expired
-  // This also syncs the session from client-side localStorage to cookies
   const { data: { user } } = await supabase.auth.getUser()
-  
-  // If user exists, ensure session is properly synced to cookies
   if (user) {
-    // The getUser() call above already syncs the session
-    // But we need to make sure the response includes the updated cookies
     await supabase.auth.getSession()
   }
-  
-  // Add pathname to headers for layout to check
+
   const pathname = request.nextUrl.pathname
   response.headers.set('x-pathname', pathname)
+
+  // Lock admin area: require session for /admin/* except /admin/login
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isAdminLogin = pathname === '/admin/login'
+  if (isAdminRoute && !isAdminLogin && !user) {
+    const loginUrl = new URL('/admin/login', request.url)
+    loginUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Lock partner area: require session for /partner/*
+  if (pathname.startsWith('/partner') && !user) {
+    const loginUrl = new URL('/admin/login', request.url)
+    loginUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Phase 2F: Lock farmer and chef areas — require session
+  if ((pathname.startsWith('/farmer') || pathname.startsWith('/chef')) && !user) {
+    const loginUrl = new URL('/admin/login', request.url)
+    loginUrl.searchParams.set('next', pathname)
+    return NextResponse.redirect(loginUrl)
+  }
 
   return response
 }

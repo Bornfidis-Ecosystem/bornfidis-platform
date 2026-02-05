@@ -18,7 +18,15 @@ export default function ChefsPage() {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-lg max-w-none">
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Chef Partners</h2>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+              <h2 className="text-3xl font-bold text-[#1a5f3f]">Chef Partners</h2>
+              <Link
+                href="/chefs/leaderboard"
+                className="inline-block px-4 py-2 rounded-lg border border-[#1a5f3f] text-[#1a5f3f] font-medium hover:bg-[#1a5f3f] hover:text-white transition"
+              >
+                View Leaderboard
+              </Link>
+            </div>
             <p className="text-gray-700 leading-relaxed mb-4">
               Our chef network is made up of skilled culinary professionals who share our vision
               of regenerative food and faith-anchored service. Each chef is trained in regenerative

@@ -1,6 +1,11 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
+import { checkChefAvailableForDateTime } from '@/lib/chef-time-slots'
+import { notifyChefNewBooking } from '@/lib/web-push-helper'
+import { trySmsFallbackBookingAssigned } from '@/lib/sms-fallback'
 
 /**
  * Phase 5C: Assign chef to booking with payout percentage
@@ -24,7 +29,7 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { chef_id, payout_percentage, notes } = body
+    const { chef_id, payout_percentage, notes, admin_override } = body
 
     if (!chef_id) {
       return NextResponse.json(
@@ -42,10 +47,10 @@ export async function POST(
       )
     }
 
-    // Fetch booking
+    // Fetch booking (event_date + event_time for Phase 2V/2Y availability + time-slot check)
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
-      .select('id, quote_total_cents')
+      .select('id, quote_total_cents, event_date, event_time')
       .eq('id', bookingId)
       .single()
 
@@ -82,6 +87,21 @@ export async function POST(
         { success: false, error: 'Chef must be active or approved to receive assignments' },
         { status: 400 }
       )
+    }
+
+    // Phase 2V/2Y: Block if chef is unavailable, double-booked, or time-slot doesn't cover (admin can override)
+    if (booking.event_date) {
+      const eventDate = new Date(booking.event_date)
+      const eventTime = booking.event_time?.trim() || null
+      const availability = await checkChefAvailableForDateTime(chef_id, eventDate, eventTime, {
+        adminOverride: !!admin_override,
+      })
+      if (!availability.allowed) {
+        return NextResponse.json(
+          { success: false, error: availability.reason, unavailable: true },
+          { status: 400 }
+        )
+      }
     }
 
     // Check if booking already has a chef assigned
@@ -132,6 +152,11 @@ export async function POST(
         chef_payout_status: 'pending',
       })
       .eq('id', bookingId)
+
+    // Phase 2AK: notify chef via Web Push (fail-soft)
+    notifyChefNewBooking(chef_id, booking.name ?? 'New booking', bookingId).catch(() => {})
+    // Phase 2AM: SMS fallback for critical (one per event, rate limit, quiet hours)
+    trySmsFallbackBookingAssigned(chef_id, bookingId).catch(() => {})
 
     return NextResponse.json({
       success: true,

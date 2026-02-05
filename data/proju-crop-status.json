@@ -1,0 +1,13 @@
+{
+  "_comment": "Phase 2M-F: Internal Crop Validation & Tagging (Admin-Only). Status values: draft, validated, limited, paused, retired",
+  "scotch_bonnet": {
+    "status": "draft",
+    "note": "Seen in bookings, awaiting validation",
+    "lastValidated": null
+  },
+  "callaloo": {
+    "status": "draft",
+    "note": "Seen in bookings, awaiting validation",
+    "lastValidated": null
+  }
+}

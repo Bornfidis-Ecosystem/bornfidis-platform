@@ -7,7 +7,14 @@ import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { quoteLineItemSchema, updateQuoteSummarySchema } from '@/lib/validation'
 import { canManageBookings, canAssignFarmers } from '@/lib/authz'
 import { getCurrentUserRole } from '@/lib/get-user-role'
+import { getCurrentPrismaUser } from '@/lib/partner'
+import { acknowledgeSla } from '@/lib/sla'
 import { notifyClient } from '@/lib/notify'
+import { computeChefPayoutWithBonus } from '@/lib/chef-payout-bonus'
+import { getTierSnapshotForChef, getRateMultiplier } from '@/lib/chef-tier'
+import { getPricingForRegion, applyRegionToBaseCents } from '@/lib/region-pricing'
+import { getSurgeMultiplier, applySurgeToCents, SURGE_LABEL_CLIENT } from '@/lib/surge-pricing'
+import { checkMargin } from '@/lib/margin-guardrails'
 
 /**
  * Fetch all booking inquiries for admin dashboard
@@ -99,6 +106,10 @@ export async function getAllBookings(): Promise<{ success: boolean; bookings?: B
       customer_portal_token_revoked_at: booking.customerPortalTokenRevokedAt?.toISOString() || undefined,
       assigned_chef_id: booking.assignedChefId || undefined,
       chef_payout_amount_cents: booking.chefPayoutAmountCents || undefined,
+      chef_payout_base_cents: booking.chefPayoutBaseCents ?? undefined,
+      chef_payout_bonus_cents: booking.chefPayoutBonusCents ?? undefined,
+      chef_payout_bonus_breakdown: (booking.chefPayoutBonusBreakdown as Array<{ badge: string; pct: number }>) ?? undefined,
+      chef_payout_bonus_override: booking.chefPayoutBonusOverride ?? undefined,
       chef_payout_status: booking.chefPayoutStatus as any,
       chef_payout_blockers: booking.chefPayoutBlockers || undefined,
       chef_payout_paid_at: booking.chefPayoutPaidAt?.toISOString() || undefined,
@@ -202,6 +213,10 @@ export async function getBookingById(id: string): Promise<{ success: boolean; bo
       customer_portal_token_revoked_at: booking.customerPortalTokenRevokedAt?.toISOString() || undefined,
       assigned_chef_id: booking.assignedChefId || undefined,
       chef_payout_amount_cents: booking.chefPayoutAmountCents || undefined,
+      chef_payout_base_cents: booking.chefPayoutBaseCents ?? undefined,
+      chef_payout_bonus_cents: booking.chefPayoutBonusCents ?? undefined,
+      chef_payout_bonus_breakdown: (booking.chefPayoutBonusBreakdown as Array<{ badge: string; pct: number }>) ?? undefined,
+      chef_payout_bonus_override: booking.chefPayoutBonusOverride ?? undefined,
       chef_payout_status: booking.chefPayoutStatus as any,
       chef_payout_blockers: booking.chefPayoutBlockers || undefined,
       chef_payout_paid_at: booking.chefPayoutPaidAt?.toISOString() || undefined,
@@ -211,6 +226,19 @@ export async function getBookingById(id: string): Promise<{ success: boolean; bo
       payout_hold: booking.payoutHold || undefined,
       payout_hold_reason: booking.payoutHoldReason || undefined,
       payout_released_at: booking.payoutReleasedAt?.toISOString() || undefined,
+      chef_tier_snapshot: booking.chefTierSnapshot || undefined,
+      chef_rate_multiplier: booking.chefRateMultiplier ?? undefined,
+      sla_status: (booking as any).slaStatus || undefined,
+      sla_breaches: ((booking as any).slaBreaches as Array<{ type: string; breachedAt: string; alertedAt?: string; escalatedAt?: string }>) || undefined,
+      sla_acknowledged_at: (booking as any).slaAcknowledgedAt?.toISOString?.() || undefined,
+      sla_acknowledged_by: (booking as any).slaAcknowledgedBy || undefined,
+      region_code: (booking as any).regionCode ?? undefined,
+      region_multiplier_snapshot: (booking as any).regionMultiplierSnapshot ?? undefined,
+      region_travel_fee_cents_snapshot: (booking as any).regionTravelFeeCentsSnapshot ?? undefined,
+      region_minimum_cents_snapshot: (booking as any).regionMinimumCentsSnapshot ?? undefined,
+      surge_multiplier_snapshot: (booking as any).surgeMultiplierSnapshot ?? undefined,
+      surge_applied_at: (booking as any).surgeAppliedAt?.toISOString?.() ?? undefined,
+      surge_label: (booking as any).surgeLabel ?? undefined,
     }
 
     return { success: true, booking: formattedBooking }
@@ -275,6 +303,16 @@ export async function updateBooking(
 
     // Phase 1.5 & 2.5: Send status emails and SMS if status changed to BOOKED or DECLINED
     if (updates.status && updates.status !== currentBooking.status) {
+      // Phase 2AM: Same-day cancellation → SMS fallback to assigned chef
+      const cancelled = updates.status === 'Cancelled' || updates.status === 'Canceled'
+      const eventToday =
+        currentBooking.eventDate &&
+        new Date(currentBooking.eventDate).toDateString() === new Date().toDateString()
+      if (cancelled && eventToday && currentBooking.assignedChefId) {
+        const { trySmsFallbackSameDayCancellation } = await import('@/lib/sms-fallback')
+        trySmsFallbackSameDayCancellation(currentBooking.assignedChefId, id).catch(() => {})
+      }
+
       const { sendBookingApprovedEmail, sendBookingDeclinedEmail } = await import('@/lib/email')
       const { sendSMS } = await import('@/lib/twilio')
       const { bookingApprovedSMS, bookingDeclinedSMS } = await import('@/lib/sms-templates')
@@ -699,6 +737,68 @@ export async function getBookingWithQuote(
 }
 
 /**
+ * Phase 2Q: Set chef payout bonus override (disable/enable bonus for this job). No change if status is paid.
+ */
+export async function setChefPayoutBonusOverride(
+  bookingId: string,
+  override: boolean
+): Promise<{ success: boolean; error?: string }> {
+  await requireAuth()
+  try {
+    const booking = await db.bookingInquiry.findUnique({
+      where: { id: bookingId },
+      select: { chefPayoutStatus: true, chefPayoutBaseCents: true, chefPayoutAmountCents: true },
+    })
+    if (!booking) return { success: false, error: 'Booking not found' }
+    if ((booking.chefPayoutStatus ?? '').toLowerCase() === 'paid') {
+      return { success: false, error: 'Cannot change payout after paid' }
+    }
+    const baseCents = booking.chefPayoutBaseCents ?? booking.chefPayoutAmountCents ?? 0
+    if (override) {
+      await db.bookingInquiry.update({
+        where: { id: bookingId },
+        data: {
+          chefPayoutBonusOverride: true,
+          chefPayoutBonusCents: 0,
+          chefPayoutBonusBreakdown: null,
+          chefPayoutAmountCents: baseCents,
+        },
+      })
+    } else {
+      const assignment = await db.chefAssignment.findUnique({
+        where: { bookingId },
+        select: { chefId: true },
+      })
+      if (!assignment) {
+        await db.bookingInquiry.update({
+          where: { id: bookingId },
+          data: { chefPayoutBonusOverride: false },
+        })
+        return { success: true }
+      }
+      const withBonus = await computeChefPayoutWithBonus(assignment.chefId, baseCents, {
+        override: false,
+        status: booking.chefPayoutStatus,
+      })
+      await db.bookingInquiry.update({
+        where: { id: bookingId },
+        data: {
+          chefPayoutBonusOverride: false,
+          chefPayoutBaseCents: withBonus.baseCents,
+          chefPayoutBonusCents: withBonus.bonusCents,
+          chefPayoutAmountCents: withBonus.totalCents,
+          chefPayoutBonusBreakdown: withBonus.breakdown.length > 0 ? (withBonus.breakdown as any) : null,
+        },
+      })
+    }
+    return { success: true }
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to update'
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 3C: Update booking quote with line items and totals
  * Stores line items as JSONB and calculates deposit/balance amounts
  */
@@ -712,6 +812,7 @@ export async function updateBookingQuote(
     quote_subtotal_cents: number
     quote_total_cents: number
     deposit_percentage: number
+    region_code?: string | null
   }
 ): Promise<{ success: boolean; booking?: BookingInquiry; error?: string }> {
   await requireAuth()
@@ -722,7 +823,30 @@ export async function updateBookingQuote(
       return { success: false, error: 'At least one line item is required' }
     }
 
-    if (payload.quote_total_cents < 0) {
+    let quoteTotalCents = payload.quote_total_cents
+    let regionCode: string | null = null
+    let regionMultiplierSnapshot: number | null = null
+    let regionTravelFeeCentsSnapshot: number | null = null
+    let regionMinimumCentsSnapshot: number | null = null
+    let jobValueCents = payload.quote_subtotal_cents
+
+    if (payload.region_code?.trim()) {
+      const pricing = await getPricingForRegion(payload.region_code.trim())
+      const applied = applyRegionToBaseCents(payload.quote_subtotal_cents, pricing)
+      jobValueCents = applied.totalCents
+      quoteTotalCents = jobValueCents + payload.quote_tax_cents + payload.quote_service_fee_cents
+      regionCode = pricing.regionCode
+      regionMultiplierSnapshot = applied.multiplier
+      regionTravelFeeCentsSnapshot = applied.travelFeeCents
+      regionMinimumCentsSnapshot = pricing.minimumCents
+    } else {
+      regionCode = null
+      regionMultiplierSnapshot = null
+      regionTravelFeeCentsSnapshot = null
+      regionMinimumCentsSnapshot = null
+    }
+
+    if (quoteTotalCents < 0) {
       return { success: false, error: 'Total cannot be negative' }
     }
 
@@ -731,8 +855,8 @@ export async function updateBookingQuote(
     }
 
     // Calculate deposit and balance amounts
-    const depositAmountCents = Math.round((payload.quote_total_cents * payload.deposit_percentage) / 100)
-    const balanceAmountCents = Math.max(payload.quote_total_cents - depositAmountCents, 0)
+    const depositAmountCents = Math.round((quoteTotalCents * payload.deposit_percentage) / 100)
+    const balanceAmountCents = Math.max(quoteTotalCents - depositAmountCents, 0)
 
     // Prepare line items for JSONB storage (remove booking_id from each item for storage)
     const lineItemsForStorage = payload.quote_line_items.map((item, index) => ({
@@ -743,82 +867,145 @@ export async function updateBookingQuote(
       sort_order: index,
     }))
 
-    // Phase 5C: Check if chef is assigned and recalculate payout
-    const { data: bookingChef } = await supabaseAdmin
-      .from('booking_chefs')
-      .select('id, payout_percentage')
-      .eq('booking_id', id)
-      .single()
-
-    // Phase 6A: Check if farmers are assigned and recalculate payouts
-    const { data: bookingFarmers } = await supabaseAdmin
-      .from('booking_farmers')
-      .select('id, payout_percent')
-      .eq('booking_id', id)
-
-    // Update booking with quote data
-    const updateData: any = {
-      quote_line_items: JSON.stringify(lineItemsForStorage),
-      quote_notes: payload.quote_notes || null,
-      quote_tax_cents: payload.quote_tax_cents,
-      quote_service_fee_cents: payload.quote_service_fee_cents,
-      quote_subtotal_cents: payload.quote_subtotal_cents,
-      quote_total_cents: payload.quote_total_cents,
-      deposit_percentage: payload.deposit_percentage,
-      deposit_amount_cents: depositAmountCents,
-      balance_amount_cents: balanceAmountCents,
+    // Phase 5C/6A: Chef payout base uses final quote total (which may include region)
+    const chefPayoutTotalCents = quoteTotalCents
+    // Phase 5C/6A: Optionally fetch chef/farmer assignments from Supabase to recalculate payouts (non-blocking)
+    let bookingChef: { id: string; payout_percentage: number } | null = null
+    let bookingFarmers: { id: string; payout_percent: number }[] = []
+    try {
+      const [chefRes, farmersRes] = await Promise.all([
+        supabaseAdmin.from('booking_chefs').select('id, payout_percentage').eq('booking_id', id).single(),
+        supabaseAdmin.from('booking_farmers').select('id, payout_percent').eq('booking_id', id),
+      ])
+      if (chefRes.data) bookingChef = chefRes.data as any
+      if (farmersRes.data?.length) bookingFarmers = farmersRes.data as any[]
+    } catch (_) {
+      // Supabase may not have permission or tables; continue with Prisma update only
     }
 
-    // Phase 5C: Auto-calculate chef payout if assigned
-    if (bookingChef) {
-      const chefPayoutCents = Math.round(payload.quote_total_cents * (bookingChef.payout_percentage / 100))
-      updateData.chef_payout_amount_cents = chefPayoutCents
+    // Build Prisma update: booking_inquiries lives in Prisma DB (not Supabase). Using Prisma avoids "permission denied for schema public".
+    const chefPayoutBaseCents = bookingChef
+      ? Math.round(chefPayoutTotalCents * (bookingChef.payout_percentage / 100))
+      : undefined
 
-      // Update booking_chefs table
-      await supabaseAdmin
-        .from('booking_chefs')
-        .update({
-          payout_amount_cents: chefPayoutCents,
-        })
-        .eq('id', bookingChef.id)
+    const prismaUpdateData: any = {
+      quoteLineItems: lineItemsForStorage as any,
+      quoteNotes: payload.quote_notes || null,
+      quoteTaxCents: payload.quote_tax_cents,
+      quoteServiceFeeCents: payload.quote_service_fee_cents,
+      quoteSubtotalCents: payload.quote_subtotal_cents,
+      quoteTotalCents,
+      depositPercentage: payload.deposit_percentage,
+      depositAmountCents,
+      balanceAmountCents,
+      regionCode: regionCode ?? null,
+      regionMultiplierSnapshot: regionMultiplierSnapshot ?? null,
+      regionTravelFeeCentsSnapshot: regionTravelFeeCentsSnapshot ?? null,
+      regionMinimumCentsSnapshot: regionMinimumCentsSnapshot ?? null,
+      surgeMultiplierSnapshot: surgeMultiplierSnapshot ?? null,
+      surgeAppliedAt: surgeAppliedAt ?? null,
+      surgeLabel: surgeLabel ?? null,
     }
 
-    // Phase 6A: Auto-calculate farmer payouts if assigned
-    if (bookingFarmers && bookingFarmers.length > 0) {
-      for (const bf of bookingFarmers) {
-        const farmerPayoutCents = Math.round(payload.quote_total_cents * (bf.payout_percent / 100))
-        await supabaseAdmin
-          .from('booking_farmers')
-          .update({
-            payout_amount_cents: farmerPayoutCents,
+    // Phase 2S + 2Q: Tier multiplier (locked at assignment) then performance bonus on tiered base
+    if (chefPayoutBaseCents !== undefined) {
+      const assignment = await db.chefAssignment.findUnique({
+        where: { bookingId: id },
+        select: { chefId: true },
+      })
+      const currentBooking = await db.bookingInquiry.findUnique({
+        where: { id },
+        select: {
+          chefPayoutBonusOverride: true,
+          chefPayoutStatus: true,
+          chefTierSnapshot: true,
+          chefRateMultiplier: true,
+        },
+      })
+      if (assignment) {
+        const status = (currentBooking?.chefPayoutStatus ?? '').toLowerCase()
+        // No retroactive change after payout
+        if (status !== 'paid') {
+          let multiplier = currentBooking?.chefRateMultiplier ?? null
+          let tierSnapshot = currentBooking?.chefTierSnapshot ?? null
+          if (multiplier == null || tierSnapshot == null) {
+            const snapshot = await getTierSnapshotForChef(assignment.chefId)
+            tierSnapshot = snapshot.tier
+            multiplier = snapshot.multiplier
+            prismaUpdateData.chefTierSnapshot = tierSnapshot
+            prismaUpdateData.chefRateMultiplier = multiplier
+          }
+          const tieredBaseCents = Math.round(chefPayoutBaseCents * (multiplier ?? 1))
+          const withBonus = await computeChefPayoutWithBonus(assignment.chefId, tieredBaseCents, {
+            override: currentBooking?.chefPayoutBonusOverride ?? false,
+            status: currentBooking?.chefPayoutStatus,
           })
+          prismaUpdateData.chefPayoutBaseCents = withBonus.baseCents
+          prismaUpdateData.chefPayoutBonusCents = withBonus.bonusCents
+          prismaUpdateData.chefPayoutAmountCents = withBonus.totalCents
+          prismaUpdateData.chefPayoutBonusBreakdown = withBonus.breakdown.length > 0 ? (withBonus.breakdown as any) : null
+
+          // Phase 2AV: Margin guardrails — block or warn before saving
+          if (prismaUpdateData.chefPayoutAmountCents != null && quoteTotalCents > 0) {
+            const marginResult = await checkMargin({
+              quoteTotalCents,
+              chefPayoutAmountCents: prismaUpdateData.chefPayoutAmountCents,
+              chefPayoutBaseCents: prismaUpdateData.chefPayoutBaseCents ?? 0,
+              chefPayoutBonusCents: prismaUpdateData.chefPayoutBonusCents ?? 0,
+              chefRateMultiplier: prismaUpdateData.chefRateMultiplier ?? currentBooking?.chefRateMultiplier ?? null,
+              surgeMultiplier: null,
+              jobValueCents,
+              regionCode,
+            })
+            if (!marginResult.pass && marginResult.blockOrWarn) {
+              return {
+                success: false,
+                error: `Margin guardrail: ${marginResult.message ?? marginResult.failReasons.join('; ')}`,
+              }
+            }
+          }
+        }
+      } else {
+        prismaUpdateData.chefPayoutAmountCents = chefPayoutBaseCents
+        prismaUpdateData.chefPayoutBaseCents = chefPayoutBaseCents
+        prismaUpdateData.chefPayoutBonusCents = null
+        prismaUpdateData.chefPayoutBonusBreakdown = null
+      }
+    }
+
+    const updatedBooking = await db.bookingInquiry.update({
+      where: { id },
+      data: prismaUpdateData,
+    })
+
+    // Optionally update Supabase booking_chefs / booking_farmers payout amounts (non-blocking)
+    const totalChefCents = prismaUpdateData.chefPayoutAmountCents
+    if (bookingChef && totalChefCents !== undefined) {
+      supabaseAdmin
+        .from('booking_chefs')
+        .update({ payout_amount_cents: totalChefCents })
+        .eq('id', bookingChef.id)
+        .then(() => {})
+        .catch(() => {})
+    }
+    if (bookingFarmers.length > 0) {
+      for (const bf of bookingFarmers) {
+        const farmerPayoutCents = Math.round(chefPayoutTotalCents * (bf.payout_percent / 100))
+        supabaseAdmin
+          .from('booking_farmers')
+          .update({ payout_amount_cents: farmerPayoutCents })
           .eq('id', bf.id)
+          .then(() => {})
+        .catch(() => {})
       }
     }
 
-    const { data, error } = await supabaseAdmin
-      .from('booking_inquiries')
-      .update(updateData)
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Error updating booking quote:', error)
-      return { success: false, error: error.message || 'Failed to update booking quote' }
+    // Convert Prisma model to BookingInquiry type for response
+    const booking = await getBookingById(id)
+    if (!booking.success || !booking.booking) {
+      return { success: true, booking: undefined }
     }
-
-    // Parse quote_line_items from JSONB for response
-    const booking = data as any
-    if (booking.quote_line_items && typeof booking.quote_line_items === 'string') {
-      try {
-        booking.quote_line_items = JSON.parse(booking.quote_line_items)
-      } catch (e) {
-        booking.quote_line_items = []
-      }
-    }
-
-    return { success: true, booking: booking as BookingInquiry }
+    return { success: true, booking: booking.booking }
   } catch (error: any) {
     console.error('Error in updateBookingQuote:', error)
     return { success: false, error: error.message || 'Failed to update booking quote' }
@@ -1180,5 +1367,21 @@ export async function getAllFarmers(): Promise<{ success: boolean; farmers?: Arr
   } catch (error: any) {
     console.error('Error in getAllFarmers:', error)
     return { success: false, error: error.message || 'Failed to fetch farmers' }
+  }
+}
+
+/**
+ * Phase 2AJ: Mark SLA as acknowledged (manual resolve). Admin/staff only.
+ */
+export async function acknowledgeSlaAction(bookingId: string): Promise<{ success: boolean; error?: string }> {
+  await requireAuth()
+  const user = await getCurrentPrismaUser()
+  if (!user?.id) return { success: false, error: 'Unauthorized' }
+  try {
+    await acknowledgeSla(bookingId, user.id)
+    return { success: true }
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : 'Failed to acknowledge'
+    return { success: false, error: message }
   }
 }

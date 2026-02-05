@@ -14,7 +14,10 @@ interface FarmerApplication {
   notes: string | null
 }
 
-async function getFarmerApplications() {
+async function getFarmerApplications(): Promise<{
+  applications: FarmerApplication[]
+  error: string | null
+}> {
   await requireAuth()
 
   const { data: applications, error } = await supabaseAdmin
@@ -24,14 +27,17 @@ async function getFarmerApplications() {
 
   if (error) {
     console.error('Error fetching farmer applications:', error)
-    throw new Error('Failed to fetch applications')
+    return {
+      applications: [],
+      error: error.message || 'Failed to fetch applications. Ensure the farmers_applications table exists (see supabase/migration-phase11g-farmers.sql) and Supabase env (SUPABASE_SERVICE_ROLE_KEY) is set.',
+    }
   }
 
-  return (applications || []) as FarmerApplication[]
+  return { applications: (applications || []) as FarmerApplication[], error: null }
 }
 
 export default async function AdminFarmersPage() {
-  const applications = await getFarmerApplications()
+  const { applications, error: fetchError } = await getFarmerApplications()
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -67,6 +73,12 @@ export default async function AdminFarmersPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-7xl">
+        {fetchError && (
+          <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+            <p className="font-semibold">Could not load applications</p>
+            <p className="mt-1">{fetchError}</p>
+          </div>
+        )}
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">

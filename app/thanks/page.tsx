@@ -32,6 +32,10 @@ export default function ThanksPage() {
                 <span className="font-semibold mr-2">3.</span>
                 <span>Once you approve, we&apos;ll send a deposit invoice to secure your date</span>
               </li>
+              <li className="flex items-start">
+                <span className="font-semibold mr-2">4.</span>
+                <span>When your chef is assigned, you&apos;ll see their profile and verified credentials in your booking portal.</span>
+              </li>
             </ol>
           </div>
 

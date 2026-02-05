@@ -1,11 +1,18 @@
+export const dynamic = 'force-dynamic'
+
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/auth'
+import { getCurrentPrismaUser } from '@/lib/partner'
 import { tryPayoutForBooking } from '@/lib/payout-engine'
+import { lockPayoutFxForBooking } from '@/lib/currency'
+import { db } from '@/lib/db'
 
 /**
  * Phase 5B: Manually trigger payout for a booking
+ * Phase 2AI: Lock FX rate on payout creation (Prisma).
+ * Phase 2AV: Margin guardrails — body may include { "override": true, "reason": "..." } to allow payout and log override.
  * POST /api/admin/bookings/[id]/run-payout
- * 
+ *
  * Idempotent - safe to call multiple times
  */
 export async function POST(
@@ -23,7 +30,20 @@ export async function POST(
       )
     }
 
-    const result = await tryPayoutForBooking(bookingId)
+    let override: { userId: string; reason?: string } | null = null
+    try {
+      const body = await request.json().catch(() => ({}))
+      if (body?.override && typeof body.override === 'boolean' && body.override) {
+        const prismaUser = await getCurrentPrismaUser()
+        if (prismaUser?.id) {
+          override = { userId: prismaUser.id, reason: body.reason ?? undefined }
+        }
+      }
+    } catch (_) {
+      // no body or invalid JSON
+    }
+
+    const result = await tryPayoutForBooking(bookingId, override)
 
     if (!result.success) {
       return NextResponse.json(
@@ -42,6 +62,17 @@ export async function POST(
     }
 
     if (result.payoutCreated) {
+      const booking = await db.bookingInquiry.findUnique({
+        where: { id: bookingId },
+        select: { assignedChefId: true, chefPayoutAmountCents: true },
+      })
+      if (booking?.assignedChefId != null && booking.chefPayoutAmountCents != null) {
+        await lockPayoutFxForBooking(
+          bookingId,
+          booking.assignedChefId,
+          booking.chefPayoutAmountCents
+        )
+      }
       return NextResponse.json({
         success: true,
         payoutCreated: true,

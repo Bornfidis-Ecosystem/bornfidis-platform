@@ -160,7 +160,14 @@ function AdminLoginForm() {
       })
 
       if (error) {
-        setMessage({ type: 'error', text: error.message })
+        const isRateLimit =
+          error.message?.toLowerCase().includes('rate limit') ||
+          error.message?.toLowerCase().includes('too many requests') ||
+          error.code === 'over_email_send_limit'
+        const friendlyMessage = isRateLimit
+          ? 'Too many login attempts. Please wait a few minutes and try again, or check your email for an existing magic link.'
+          : error.message
+        setMessage({ type: 'error', text: friendlyMessage })
         setIsLoading(false)
         return
       }

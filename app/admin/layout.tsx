@@ -1,96 +1,80 @@
 import { redirect } from 'next/navigation'
 import { checkAdminAccess } from '@/lib/requireAdmin'
+import AdminHeaderBar from '@/components/admin/AdminHeaderBar'
+import { AppNav } from '@/components/AppNav'
 
 /**
  * Force dynamic rendering to prevent caching issues
- * This ensures the auth check runs on every request
  */
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 /**
- * Admin Layout - Protects all /admin/* routes
- * Checks authentication and admin role
+ * Admin Layout — Bornfidis Auth + Roles (Phase 1) + Phase 2A (role-aware nav)
+ * Protects all /admin/* routes. Allowed roles: ADMIN, STAFF, COORDINATOR.
+ * Shows role badge + email bar; nav filtered by role.
  */
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Check admin access
   const result = await checkAdminAccess()
 
-  // Debug logging in development
   if (process.env.NODE_ENV === 'development') {
     console.log('🔍 AdminLayout auth check:', {
       hasUser: !!result.user,
       isAdmin: result.isAdmin,
+      role: result.role,
       email: result.user?.email,
-      error: result.error,
     })
   }
 
-  // Not authenticated - redirect to login
   if (!result.user) {
     redirect('/admin/login')
   }
 
-  // Authenticated but not admin - show access denied with debug info
+  // Phase 2F: Redirect PARTNER/FARMER/CHEF to their dashboards (no "Access Denied")
+  if (!result.isAdmin && result.role) {
+    const role = String(result.role).toUpperCase()
+    if (role === 'FARMER') redirect('/farmer')
+    if (role === 'CHEF') redirect('/chef')
+    if (role === 'PARTNER') redirect('/partner')
+  }
+
   if (!result.isAdmin) {
-    const debugInfo = process.env.NODE_ENV === 'development' ? {
-      email: result.user?.email,
-      user_metadata_role: result.user?.user_metadata?.role,
-      app_metadata_role: result.user?.app_metadata?.role,
-      error: result.error,
-    } : null
+    const debugInfo = process.env.NODE_ENV === 'development'
+      ? { email: result.user?.email, role: result.role, error: result.error }
+      : null
 
     return (
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '100vh',
-        flexDirection: 'column',
-        gap: '1rem',
-        padding: '2rem'
-      }}>
-        <h1 style={{ fontSize: '2rem', color: '#dc2626' }}>Access Denied</h1>
-        <p style={{ fontSize: '1.125rem', color: '#666' }}>
-          You must have admin role to access this page.
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 p-8">
+        <h1 className="text-2xl font-bold text-red-600">Access Denied</h1>
+        <p className="text-gray-600">
+          You need an admin-area role (ADMIN, STAFF, or COORDINATOR) to access this page.
         </p>
         {debugInfo && (
-          <div style={{ 
-            marginTop: '1rem', 
-            padding: '1rem', 
-            backgroundColor: '#f3f4f6', 
-            borderRadius: '0.5rem',
-            fontSize: '0.875rem',
-            fontFamily: 'monospace',
-            maxWidth: '600px',
-            textAlign: 'left'
-          }}>
-            <strong>Debug Info (dev only):</strong>
-            <pre style={{ marginTop: '0.5rem', whiteSpace: 'pre-wrap' }}>
-              {JSON.stringify(debugInfo, null, 2)}
-            </pre>
-            <p style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666' }}>
-              Check: <a href="/api/admin/debug-auth" target="_blank" style={{ color: '#1a5f3f' }}>/api/admin/debug-auth</a>
+          <div className="mt-4 p-4 bg-gray-100 rounded text-sm font-mono max-w-lg text-left">
+            <strong>Debug (dev only):</strong>
+            <pre className="mt-2 whitespace-pre-wrap">{JSON.stringify(debugInfo, null, 2)}</pre>
+            <p className="mt-2 text-xs text-gray-500">
+              <a href="/api/admin/debug-auth" target="_blank" className="text-green-700 underline">/api/admin/debug-auth</a>
             </p>
           </div>
         )}
-        <a 
-          href="/admin/login" 
-          style={{ 
-            color: '#1a5f3f', 
-            textDecoration: 'underline',
-            marginTop: '1rem'
-          }}
-        >
-          Back to Login
-        </a>
+        <a href="/admin/login" className="text-green-800 underline mt-2">Back to Login</a>
       </div>
     )
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <AdminHeaderBar user={result.user} role={result.role} />
+      <div className="border-b border-gray-200 bg-white px-4 py-2">
+        <AppNav role={result.role} />
+      </div>
+      <AdminPushWrap />
+      {children}
+    </>
+  )
 }

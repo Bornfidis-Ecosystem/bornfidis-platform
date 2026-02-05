@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { checkAdminAccess } from '@/lib/requireAdmin'
 import { createServerSupabaseClient } from '@/lib/auth'

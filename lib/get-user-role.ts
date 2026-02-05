@@ -52,9 +52,9 @@ export async function getCurrentUserRole(): Promise<UserRole | null> {
       return prismaUser.role
     }
 
-    // If user exists in Prisma but no role, default to FARMER
+    // If user exists in Prisma but no role, default to USER (platform signups)
     if (prismaUser) {
-      const defaultRole = UserRole.FARMER
+      const defaultRole = UserRole.USER
       await db.user.update({
         where: { id: prismaUser.id },
         data: { role: defaultRole },
@@ -62,8 +62,8 @@ export async function getCurrentUserRole(): Promise<UserRole | null> {
       return defaultRole
     }
 
-    // User not in Prisma yet - create with default role
-    const defaultRole = UserRole.FARMER
+    // User not in Prisma yet - create with default role USER (Bornfidis Phase 1)
+    const defaultRole = UserRole.USER
     await db.user.create({
       data: {
         openId: user.id,
