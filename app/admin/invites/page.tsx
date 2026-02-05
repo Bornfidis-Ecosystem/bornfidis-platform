@@ -2,6 +2,8 @@ import { getInvites } from '@/lib/invites'
 import InviteForm from './InviteForm'
 import InviteTable from './InviteTable'
 
+export const dynamic = 'force-dynamic'
+
 /**
  * Phase 2B-UI — Admin Invite Interface
  * ADMIN / STAFF only (protected by /admin/* layout + checkAdminAccess).
