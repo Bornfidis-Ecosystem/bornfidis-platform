@@ -2,13 +2,23 @@ import { getInvites } from '@/lib/invites'
 import InviteForm from './InviteForm'
 import InviteTable from './InviteTable'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const runtime = 'nodejs'
+
 /**
  * Phase 2B-UI — Admin Invite Interface
  * ADMIN / STAFF only (protected by /admin/* layout + checkAdminAccess).
  * Invite partners, see Pending / Accepted / Expired, Resend, Revoke.
  */
 export default async function AdminInvitesPage() {
-  const invites = await getInvites()
+  let invites: Awaited<ReturnType<typeof getInvites>> = []
+  try {
+    invites = await getInvites()
+  } catch (e) {
+    console.error('AdminInvitesPage getInvites:', e)
+    // Still render the page so the route resolves; show error in table area
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

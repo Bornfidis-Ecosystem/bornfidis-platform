@@ -1,7 +1,7 @@
 'use server'
 
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAuth } from '@/lib/auth'
+import { requireAdminUser } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { quoteLineItemSchema, updateQuoteSummarySchema } from '@/lib/validation'
@@ -23,9 +23,9 @@ import { checkMargin } from '@/lib/margin-guardrails'
  * TODO: Phase 3 - Add role-based access control here
  */
 export async function getAllBookings(): Promise<{ success: boolean; bookings?: BookingInquiry[]; error?: string }> {
-  // Require authentication
-  await requireAuth()
-  
+  // Require admin (allowlist or Prisma role) — same as layout
+  await requireAdminUser()
+
   // Phase 4: Check if user can manage bookings
   const userRole = await getCurrentUserRole()
   if (!canManageBookings(userRole)) {

@@ -51,17 +51,24 @@ export async function GET() {
 
     const allEnvVarsPresent = Object.values(envCheck).every(v => v === true)
 
-    return NextResponse.json({
-      ...health,
-      services: {
-        database,
-        supabase,
+    return NextResponse.json(
+      {
+        ...health,
+        services: {
+          database,
+          supabase,
+        },
+        environment: {
+          ...envCheck,
+          allPresent: allEnvVarsPresent,
+        },
       },
-      environment: {
-        ...envCheck,
-        allPresent: allEnvVarsPresent,
-      },
-    })
+      {
+        headers: {
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      }
+    )
   } catch (error: any) {
     return NextResponse.json(
       {
