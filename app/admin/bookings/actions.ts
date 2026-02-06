@@ -23,15 +23,24 @@ import { checkMargin } from '@/lib/margin-guardrails'
  * TODO: Phase 3 - Add role-based access control here
  */
 export async function getAllBookings(): Promise<{ success: boolean; bookings?: BookingInquiry[]; error?: string }> {
-  // Require admin (allowlist or Prisma role) — same as layout
-  await requireAdminUser()
+  try {
+    // Require admin (allowlist or Prisma role) — same as layout
+    await requireAdminUser()
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Authentication required' }
+  }
 
   // Phase 4: Check if user can manage bookings
-  const userRole = await getCurrentUserRole()
+  let userRole: Awaited<ReturnType<typeof getCurrentUserRole>>
+  try {
+    userRole = await getCurrentUserRole()
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Could not verify permissions' }
+  }
   if (!canManageBookings(userRole)) {
     return { success: false, error: 'Access denied: Insufficient permissions' }
   }
-  
+
   try {
     const bookings = await db.bookingInquiry.findMany({
       orderBy: {
