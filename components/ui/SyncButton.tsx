@@ -84,7 +84,7 @@ export function SyncButton() {
         font-semibold text-sm
         transition-all
         ${online && pendingCount > 0
-          ? 'bg-[#1a5f3f] text-white hover:bg-opacity-90'
+          ? 'bg-forestDark text-white hover:bg-opacity-90'
           : 'bg-gray-400 text-white cursor-not-allowed'
         }
         ${isSyncing ? 'opacity-50 cursor-wait' : ''}

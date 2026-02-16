@@ -31,7 +31,7 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
       {/* Vision Story */}
       <div className="bg-gradient-to-r from-[#1a5f3f] to-[#154a32] rounded-lg shadow-lg p-8 text-white">
         <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
-        <div className="h-1 w-24 bg-[#FFBC00] mb-6"></div>
+        <div className="h-1 w-24 bg-gold mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed">
           <p>
             The Bornfidis Global Regenerative Cooperative is more than a network—it's a movement.
@@ -57,12 +57,12 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-white border-2 border-[#1a5f3f] rounded-lg shadow-sm p-6 text-center">
-          <div className="text-4xl font-bold text-[#1a5f3f] mb-2">{data.totalMembers}</div>
+          <div className="text-4xl font-bold text-forestDark mb-2">{data.totalMembers}</div>
           <div className="text-gray-700 font-semibold">Total Members</div>
         </div>
         {Object.entries(data.membersByRole).map(([role, count]) => (
           <div key={role} className="bg-white border-2 border-[#FFBC00] rounded-lg shadow-sm p-6 text-center">
-            <div className="text-4xl font-bold text-[#1a5f3f] mb-2">{count}</div>
+            <div className="text-4xl font-bold text-forestDark mb-2">{count}</div>
             <div className="text-gray-700 font-semibold capitalize">{role}s</div>
           </div>
         ))}
@@ -70,11 +70,11 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
 
       {/* Regions Map */}
       <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h2 className="text-2xl font-bold text-[#1a5f3f] mb-4">Global Reach</h2>
+        <h2 className="text-2xl font-bold text-forestDark mb-4">Global Reach</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {data.regions.map((region) => (
             <div key={region} className="border border-gray-200 rounded-lg p-4">
-              <div className="font-semibold text-[#1a5f3f] text-lg mb-1">{region}</div>
+              <div className="font-semibold text-forestDark text-lg mb-1">{region}</div>
               <div className="text-gray-600">{data.regionCounts[region] || 0} member{data.regionCounts[region] !== 1 ? 's' : ''}</div>
             </div>
           ))}
@@ -82,9 +82,9 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
       </div>
 
       {/* Join Section */}
-      <div className="bg-[#FFBC00] rounded-lg shadow-lg p-8 text-center">
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Join the Cooperative</h2>
-        <p className="text-[#1a5f3f] mb-6 max-w-2xl mx-auto">
+      <div className="bg-gold rounded-lg shadow-lg p-8 text-center">
+        <h2 className="text-3xl font-bold text-forestDark mb-4">Join the Cooperative</h2>
+        <p className="text-forestDark mb-6 max-w-2xl mx-auto">
           Are you a regenerative farmer, skilled chef, educator, builder, or partner?
           Join our global cooperative and be part of the regenerative movement.
         </p>
@@ -99,7 +99,7 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
       {/* Featured Members */}
       {data.members.length > 0 && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-4">Featured Members</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-4">Featured Members</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {data.members.slice(0, 6).map((member) => (
               <div key={member.id} className="border border-gray-200 rounded-lg p-4">
@@ -125,3 +125,4 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
     </div>
   )
 }
+

@@ -18,7 +18,7 @@ export default async function AdminCurrencyPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6">
-        <Link href="/admin" className="text-sm text-[#1a5f3f] hover:underline mb-4 inline-block">
+        <Link href="/admin" className="text-sm text-forestDark hover:underline mb-4 inline-block">
           ← Dashboard
         </Link>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Currency & FX rates</h1>
@@ -82,3 +82,4 @@ export default async function AdminCurrencyPage() {
     </div>
   )
 }
+

@@ -260,3 +260,4 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
     </div>
   )
 }
+

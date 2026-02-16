@@ -51,7 +51,7 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
           {impactStats.map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-4xl mb-3">{stat.icon}</div>
-              <div className="text-3xl md:text-4xl font-bold text-[#FFBC00] mb-2">{stat.value}</div>
+              <div className="text-3xl md:text-4xl font-bold text-gold mb-2">{stat.value}</div>
               <div className="text-sm text-green-100">{stat.label}</div>
             </div>
           ))}
@@ -59,7 +59,7 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
         <div className="text-center mt-12">
           <a
             href="/impact"
-            className="inline-block px-8 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="inline-block px-8 py-3 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             View Full Impact Report
           </a>
@@ -68,3 +68,4 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
     </section>
   )
 }
+

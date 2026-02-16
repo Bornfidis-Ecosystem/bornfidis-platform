@@ -223,7 +223,7 @@ export default function FarmerListClient({ farmers }: FarmerListClientProps) {
                               setMessage({ type: 'error', text: 'An error occurred' })
                             }
                           }}
-                          className="px-3 py-1.5 bg-[#FFBC00] text-[#1a5f3f] text-sm font-semibold rounded hover:bg-opacity-90 transition"
+                          className="px-3 py-1.5 bg-gold text-[#1a5f3f] text-sm font-semibold rounded hover:bg-opacity-90 transition"
                         >
                           Send Onboarding
                         </button>
@@ -239,3 +239,4 @@ export default function FarmerListClient({ farmers }: FarmerListClientProps) {
     </div>
   )
 }
+

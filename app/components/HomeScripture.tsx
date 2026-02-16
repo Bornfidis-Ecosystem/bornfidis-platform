@@ -3,7 +3,7 @@ export default function HomeScripture() {
     <section className="py-16 md:py-20 bg-[#fffbeb] border-y-2 border-[#FFBC00]">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="text-2xl md:text-3xl font-semibold text-[#1a5f3f] mb-4 italic">
+          <p className="text-2xl md:text-3xl font-semibold text-forestDark mb-4 italic">
             "Go therefore and make disciples of all nations, baptizing them in the name of the Father
             and of the Son and of the Holy Spirit, teaching them to observe all that I have commanded you."
           </p>
@@ -14,3 +14,4 @@ export default function HomeScripture() {
     </section>
   )
 }
+

@@ -24,24 +24,28 @@ import { checkMargin } from '@/lib/margin-guardrails'
  */
 export async function getAllBookings(): Promise<{ success: boolean; bookings?: BookingInquiry[]; error?: string }> {
   try {
-    // Require admin (allowlist or Prisma role) — same as layout
-    await requireAdminUser()
-  } catch (e: any) {
-    return { success: false, error: e?.message ?? 'Authentication required' }
-  }
+    try {
+      // Require admin (allowlist or Prisma role) — same as layout
+      await requireAdminUser()
+    } catch (e: any) {
+      return { success: false, error: e?.message ?? 'Authentication required' }
+    }
 
-  // Phase 4: Check if user can manage bookings
-  let userRole: Awaited<ReturnType<typeof getCurrentUserRole>>
-  try {
-    userRole = await getCurrentUserRole()
-  } catch (e: any) {
-    return { success: false, error: e?.message ?? 'Could not verify permissions' }
-  }
-  if (!canManageBookings(userRole)) {
-    return { success: false, error: 'Access denied: Insufficient permissions' }
-  }
+    // Phase 4: Check if user can manage bookings
+    let userRole: Awaited<ReturnType<typeof getCurrentUserRole>>
+    try {
+      userRole = await getCurrentUserRole()
+    } catch (e: any) {
+      return { success: false, error: e?.message ?? 'Could not verify permissions' }
+    }
+    try {
+      if (!canManageBookings(userRole)) {
+        return { success: false, error: 'Access denied: Insufficient permissions' }
+      }
+    } catch (e: any) {
+      return { success: false, error: e?.message ?? 'Permission check failed' }
+    }
 
-  try {
     const bookings = await db.bookingInquiry.findMany({
       orderBy: {
         createdAt: 'desc',

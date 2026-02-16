@@ -9,7 +9,12 @@ import SignOutButton from '@/components/admin/SignOutButton'
  * TODO: Phase 2B - Add authentication middleware here
  */
 export default async function AdminBookingsPage() {
-  const result = await getAllBookings()
+  let result: Awaited<ReturnType<typeof getAllBookings>>
+  try {
+    result = await getAllBookings()
+  } catch (e: any) {
+    result = { success: false, error: e?.message ?? 'Server error loading bookings' }
+  }
 
   if (!result.success) {
     return (
@@ -188,3 +193,4 @@ export default async function AdminBookingsPage() {
     </div>
   )
 }
+

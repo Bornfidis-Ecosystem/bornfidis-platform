@@ -62,10 +62,11 @@ export default function SlaSection({ booking }: Props) {
         )}
       </div>
       <p className="text-xs text-gray-500 mt-2">
-        <Link href="/admin/ops" className="text-[#1a5f3f] hover:underline">
+        <Link href="/admin/ops" className="text-forestDark hover:underline">
           View SLA At Risk list →
         </Link>
       </p>
     </div>
   )
 }
+

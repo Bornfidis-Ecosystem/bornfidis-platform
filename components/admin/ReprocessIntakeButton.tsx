@@ -56,7 +56,7 @@ export default function ReprocessIntakeButton({ intakeId, onSuccess }: Reprocess
           transition-colors
           ${isLoading
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-[#1a5f3f] text-white hover:bg-[#154a32]'
+            : 'bg-forestDark text-white hover:bg-forestDarker'
           }
         `}
         title="Reprocess this intake to re-parse the message and update farmer profile"

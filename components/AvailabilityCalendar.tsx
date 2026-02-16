@@ -124,7 +124,7 @@ export default function AvailabilityCalendar({
                 type="button"
                 onClick={handleSubmitNote}
                 disabled={!!saving}
-                className="px-3 py-1.5 bg-[#1a5f3f] text-white rounded disabled:opacity-50"
+                className="px-3 py-1.5 bg-forestDark text-white rounded disabled:opacity-50"
               >
                 {saving ? 'Saving…' : 'Save'}
               </button>

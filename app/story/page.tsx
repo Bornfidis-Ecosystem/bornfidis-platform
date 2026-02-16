@@ -18,7 +18,7 @@ export default function StoryPage() {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-lg max-w-none">
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">The Beginning</h2>
+            <h2 className="text-3xl font-bold text-forestDark mb-4">The Beginning</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               Bornfidis Provisions was born from a simple but profound vision: what if every meal
               could regenerate the land, empower communities, and build generational wealth?
@@ -30,7 +30,7 @@ export default function StoryPage() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">The Vision</h2>
+            <h2 className="text-3xl font-bold text-forestDark mb-4">The Vision</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               Our vision is to build a regenerative food system that:
             </p>
@@ -45,7 +45,7 @@ export default function StoryPage() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">The Movement</h2>
+            <h2 className="text-3xl font-bold text-forestDark mb-4">The Movement</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               Today, Bornfidis is more than a catering service—it's a movement. We're building a
               network of regenerative hubs, training leaders, and creating systems that will last
@@ -58,7 +58,7 @@ export default function StoryPage() {
           </section>
 
           <section className="bg-[#f0fdf4] p-8 rounded-lg border border-[#d1fae5] mb-12">
-            <h2 className="text-2xl font-bold text-[#1a5f3f] mb-4">Join Us</h2>
+            <h2 className="text-2xl font-bold text-forestDark mb-4">Join Us</h2>
             <p className="text-gray-700 leading-relaxed mb-6">
               Be part of the story. Whether you're hosting an event, joining as a chef or farmer,
               or investing in impact, there's a place for you in the Bornfidis movement.
@@ -66,7 +66,7 @@ export default function StoryPage() {
             <div className="flex flex-wrap gap-4">
               <Link
                 href="/book"
-                className="px-6 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+                className="px-6 py-3 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
               >
                 Book Your Event
               </Link>
@@ -83,3 +83,4 @@ export default function StoryPage() {
     </div>
   )
 }
+

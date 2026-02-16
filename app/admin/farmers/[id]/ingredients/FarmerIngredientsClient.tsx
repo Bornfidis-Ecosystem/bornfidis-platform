@@ -309,3 +309,4 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
     </div>
   )
 }
+

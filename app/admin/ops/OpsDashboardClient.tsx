@@ -118,7 +118,7 @@ export default function OpsDashboardClient({
               onClick={() => setRange(r)}
               className={`rounded px-3 py-1.5 text-sm font-medium ${
                 data.range === r
-                  ? 'bg-[#1a5f3f] text-white'
+                  ? 'bg-forestDark text-white'
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -178,7 +178,7 @@ export default function OpsDashboardClient({
               <li><span className="text-gray-600">90d confirmed:</span> <strong>{formatForecastUSD(forecastSnapshot.period90.confirmedCents)}</strong></li>
               <li><span className="text-gray-600">30d projected (est.):</span> <strong className="text-amber-700">{formatForecastUSD(forecastSnapshot.period30.projectedExpectedCents)}</strong></li>
             </ul>
-            <Link href="/admin/forecast" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">View forecast →</Link>
+            <Link href="/admin/forecast" className="text-xs text-forestDark hover:underline mt-2 inline-block">View forecast →</Link>
           </div>
         )}
         {scenarioSnapshot && (
@@ -188,7 +188,7 @@ export default function OpsDashboardClient({
               <li><span className="text-gray-600">30d revenue:</span> <strong>{formatForecastUSD(scenarioSnapshot.base30dRevenueCents)}</strong></li>
               <li><span className="text-gray-600">90d revenue:</span> <strong>{formatForecastUSD(scenarioSnapshot.base90dRevenueCents)}</strong></li>
             </ul>
-            <Link href="/admin/scenarios" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Scenario planning →</Link>
+            <Link href="/admin/scenarios" className="text-xs text-forestDark hover:underline mt-2 inline-block">Scenario planning →</Link>
           </div>
         )}
         {costSnapshot && (
@@ -200,7 +200,7 @@ export default function OpsDashboardClient({
                 <li className="text-amber-700 text-xs truncate" title={costSnapshot.topRecommendation}>{costSnapshot.topRecommendation}</li>
               )}
             </ul>
-            <Link href="/admin/costs" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Cost insights →</Link>
+            <Link href="/admin/costs" className="text-xs text-forestDark hover:underline mt-2 inline-block">Cost insights →</Link>
           </div>
         )}
         {okrSnapshot && okrSnapshot.length > 0 && (
@@ -220,7 +220,7 @@ export default function OpsDashboardClient({
                 </li>
               ))}
             </ul>
-            <Link href="/admin/okrs" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">View OKRs →</Link>
+            <Link href="/admin/okrs" className="text-xs text-forestDark hover:underline mt-2 inline-block">View OKRs →</Link>
           </div>
         )}
         {capacitySnapshot && (
@@ -230,7 +230,7 @@ export default function OpsDashboardClient({
             <p className={`text-xs mt-1 ${capacitySnapshot.nextMonth.risk === 'shortfall' ? 'text-red-600' : capacitySnapshot.nextMonth.risk === 'surplus' ? 'text-amber-600' : 'text-green-600'}`}>
               {capacitySnapshot.riskSummary}
             </p>
-            <Link href="/admin/capacity" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Capacity planning →</Link>
+            <Link href="/admin/capacity" className="text-xs text-forestDark hover:underline mt-2 inline-block">Capacity planning →</Link>
           </div>
         )}
         {successionSnapshot && (
@@ -242,7 +242,7 @@ export default function OpsDashboardClient({
             {successionSnapshot.gaps.length > 0 && (
               <p className="text-xs text-amber-700 mt-1">Gaps: {successionSnapshot.gaps.join(', ')}</p>
             )}
-            <Link href="/admin/succession" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Succession planning →</Link>
+            <Link href="/admin/succession" className="text-xs text-forestDark hover:underline mt-2 inline-block">Succession planning →</Link>
           </div>
         )}
         {aiDemandSnapshot && (
@@ -255,7 +255,7 @@ export default function OpsDashboardClient({
               <p className="text-xs text-amber-700 mt-1">Capacity shortfall — consider recruitment.</p>
             )}
             <p className="text-xs text-gray-500 mt-1">{aiDemandSnapshot.actionCount} suggested action(s)</p>
-            <Link href="/admin/forecast/ai" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">AI demand forecast →</Link>
+            <Link href="/admin/forecast/ai" className="text-xs text-forestDark hover:underline mt-2 inline-block">AI demand forecast →</Link>
           </div>
         )}
         {riskSnapshot && (
@@ -267,7 +267,7 @@ export default function OpsDashboardClient({
             {riskSnapshot.needsReview > 0 && (
               <p className="text-xs text-amber-700 mt-1">{riskSnapshot.needsReview} need review (monthly cadence)</p>
             )}
-            <Link href="/admin/risks" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Risk register →</Link>
+            <Link href="/admin/risks" className="text-xs text-forestDark hover:underline mt-2 inline-block">Risk register →</Link>
           </div>
         )}
         {growthExperimentsSnapshot && (
@@ -276,7 +276,7 @@ export default function OpsDashboardClient({
             <p className="text-sm text-gray-600">
               Running: <strong>{growthExperimentsSnapshot.runningCount}</strong> · Completed with winner: <strong>{growthExperimentsSnapshot.completedWithWinner}</strong>
             </p>
-            <Link href="/admin/experiments" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Experiments →</Link>
+            <Link href="/admin/experiments" className="text-xs text-forestDark hover:underline mt-2 inline-block">Experiments →</Link>
           </div>
         )}
       </section>
@@ -304,12 +304,12 @@ export default function OpsDashboardClient({
                   {data.atRisk.map((row) => (
                     <tr key={`${row.bookingId}-${row.reason}`} className="hover:bg-gray-50">
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-forestDark hover:underline">
                           {row.bookingName}
                         </Link>
                       </td>
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/chefs/${row.chefId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/chefs/${row.chefId}`} className="text-forestDark hover:underline">
                           {row.chefName ?? row.chefId}
                         </Link>
                       </td>
@@ -349,7 +349,7 @@ export default function OpsDashboardClient({
                   {data.todaysOps.map((row) => (
                     <tr key={row.bookingId} className="hover:bg-gray-50">
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-forestDark hover:underline">
                           {row.bookingName}
                         </Link>
                       </td>
@@ -361,7 +361,7 @@ export default function OpsDashboardClient({
                       </td>
                       <td className="px-4 py-2 text-sm">
                         {row.chefId ? (
-                          <Link href={`/admin/chefs/${row.chefId}`} className="text-[#1a5f3f] hover:underline">
+                          <Link href={`/admin/chefs/${row.chefId}`} className="text-forestDark hover:underline">
                             {row.chefName ?? row.chefId}
                           </Link>
                         ) : (
@@ -399,7 +399,7 @@ export default function OpsDashboardClient({
                 {data.slaAtRisk.map((row) => (
                   <tr key={row.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-sm">
-                      <Link href={`/admin/bookings/${row.id}`} className="text-[#1a5f3f] hover:underline">
+                      <Link href={`/admin/bookings/${row.id}`} className="text-forestDark hover:underline">
                         {row.name}
                       </Link>
                     </td>
@@ -440,7 +440,7 @@ export default function OpsDashboardClient({
                 router.refresh()
               }
             }}
-            className="rounded px-3 py-1.5 bg-[#1a5f3f] text-white text-sm hover:bg-[#144a30]"
+            className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-[#144a30]"
           >
             Generate insights
           </button>
@@ -459,7 +459,7 @@ export default function OpsDashboardClient({
                     await setAiCategoryEnabled(cat, next)
                     router.refresh()
                   }}
-                  className="rounded border-gray-300 text-[#1a5f3f]"
+                  className="rounded border-gray-300 text-forestDark"
                 />
                 {CATEGORY_LABELS[cat] ?? cat}
               </label>
@@ -476,13 +476,13 @@ export default function OpsDashboardClient({
                   <div>
                     <p className="font-medium text-gray-900">{i.title}</p>
                     <p className="text-sm text-gray-600 mt-1">{i.whyItMatters}</p>
-                    <p className="text-sm text-[#1a5f3f] mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
+                    <p className="text-sm text-forestDark mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
                   </div>
                   <span className="text-xs text-gray-500 shrink-0">{i.confidencePct}%</span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {i.entityId && (
-                    <Link href={`/admin/bookings/${i.entityId}`} className="text-xs text-[#1a5f3f] hover:underline">View booking →</Link>
+                    <Link href={`/admin/bookings/${i.entityId}`} className="text-xs text-forestDark hover:underline">View booking →</Link>
                   )}
                   <button
                     type="button"
@@ -510,7 +510,7 @@ export default function OpsDashboardClient({
                         const ok = await markAiInsightActionTaken(i.id, action)
                         if (ok.success) { setActionTakenFor((p) => ({ ...p, [i.id]: '' })); toast.success('Logged'); router.refresh() }
                       }}
-                      className="text-xs text-[#1a5f3f] hover:underline"
+                      className="text-xs text-forestDark hover:underline"
                     >
                       Log
                     </button>
@@ -524,3 +524,4 @@ export default function OpsDashboardClient({
     </div>
   )
 }
+

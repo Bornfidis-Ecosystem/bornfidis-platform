@@ -194,15 +194,15 @@ export default function VoiceField({
             placeholder={placeholder}
             required={required}
             disabled={disabled}
-            className={`w-full border-2 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f] ${
+            className={`w-full border-2 rounded-lg px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark ${
               isListening 
-                ? 'border-[#1a5f3f] bg-green-50' 
+                ? 'border-forestDark bg-green-50'
                 : 'border-gray-300'
             } ${className}`}
           />
           {/* Live transcript indicator */}
           {isListening && liveTranscript && (
-            <div className="absolute top-1 right-2 text-xs text-[#1a5f3f] font-medium">
+            <div className="absolute top-1 right-2 text-xs text-forestDark font-medium">
               Listening...
             </div>
           )}
@@ -216,7 +216,7 @@ export default function VoiceField({
               className={`px-4 py-3 rounded-lg font-semibold transition active:scale-95 min-w-[48px] min-h-[48px] flex items-center justify-center relative ${
                 isListening
                   ? 'bg-red-600 text-white shadow-lg'
-                  : 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-opacity-90'
+                  : 'bg-gold text-forestDark hover:bg-opacity-90'
               } disabled:opacity-50`}
               title={isListening ? 'Stop listening' : 'Start voice input'}
               aria-label={isListening ? 'Stop listening' : 'Start voice input'}
@@ -248,7 +248,7 @@ export default function VoiceField({
       </div>
       {/* Visual listening indicator */}
       {isListening && (
-        <div className="mt-2 flex items-center gap-2 text-sm text-[#1a5f3f]">
+        <div className="mt-2 flex items-center gap-2 text-sm text-forestDark">
           <div className="flex gap-1">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>

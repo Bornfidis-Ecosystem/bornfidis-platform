@@ -305,7 +305,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
             <label className="block text-sm font-medium text-gray-500 mb-1">
               🎙️ Voice Intake
             </label>
-            <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-[#FFBC00] text-[#1a5f3f]">
+            <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-gold text-[#1a5f3f]">
               Voice Ready
             </span>
           </div>
@@ -502,7 +502,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   </div>
                   <button
                     onClick={() => handleOpenCallSummary(log)}
-                    className="px-3 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-lg text-sm font-semibold hover:bg-gold-dark"
+                    className="px-3 py-1 bg-gold text-[#1a5f3f] rounded-lg text-sm font-semibold hover:bg-gold-dark"
                   >
                     {log.interest_level ? 'Edit Summary' : 'Add Summary'}
                   </button>
@@ -531,7 +531,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                     setShowCallSummary(false)
                     setActiveCallLogId(null)
                   }}
-                  className="text-white hover:text-[#FFBC00] text-2xl font-bold"
+                  className="text-white hover:text-gold text-2xl font-bold"
                 >
                   ×
                 </button>
@@ -703,3 +703,4 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
     </div>
   )
 }
+

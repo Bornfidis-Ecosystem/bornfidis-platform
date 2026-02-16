@@ -123,3 +123,4 @@ export default async function ChefPortalPage({ params }: { params: { token: stri
 
   return <ChefPortalClient portalData={portalData} token={params.token} />
 }
+

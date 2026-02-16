@@ -34,7 +34,7 @@ export default function ChefBottomNav() {
               aria-current={isActive ? 'page' : undefined}
             >
               <span className="text-lg leading-none" aria-hidden>{icon}</span>
-              <span className={isActive ? 'text-[#1a5f3f]' : 'text-gray-500'}>{label}</span>
+              <span className={isActive ? 'text-forestDark' : 'text-gray-500'}>{label}</span>
             </Link>
           )
         })}

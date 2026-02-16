@@ -1031,7 +1031,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                         type="button"
                         onClick={() => handleChefAssignment(rec.id)}
                         disabled={teamSaving}
-                        className="px-3 py-1.5 text-sm bg-[#1a5f3f] text-white rounded hover:bg-[#144a30] disabled:opacity-50"
+                        className="px-3 py-1.5 text-sm bg-forestDark text-white rounded hover:bg-[#144a30] disabled:opacity-50"
                       >
                         Assign
                       </button>
@@ -1163,4 +1163,5 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
     </div>
   )
 }
+
 

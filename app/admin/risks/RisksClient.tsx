@@ -154,7 +154,7 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="rounded bg-[#1a5f3f] text-white text-sm px-3 py-1.5 hover:bg-[#144a30]"
+          className="rounded bg-forestDark text-white text-sm px-3 py-1.5 hover:bg-[#144a30]"
         >
           + Log risk
         </button>
@@ -205,7 +205,7 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
               <textarea name="mitigation" required rows={2} className="w-full rounded border border-gray-300 py-1.5 px-2" placeholder="How we mitigate this risk" />
             </label>
             <div className="flex gap-2">
-              <button type="submit" className="rounded bg-[#1a5f3f] text-white px-3 py-1.5 text-sm">Save</button>
+              <button type="submit" className="rounded bg-forestDark text-white px-3 py-1.5 text-sm">Save</button>
               <button type="button" onClick={() => setShowForm(false)} className="text-gray-600 hover:underline text-sm">Cancel</button>
             </div>
           </form>
@@ -252,7 +252,7 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
                       />
                     ) : (
                       <>
-                        <button type="button" onClick={() => setEditing(r)} className="text-[#1a5f3f] hover:underline mr-2">Edit</button>
+                        <button type="button" onClick={() => setEditing(r)} className="text-forestDark hover:underline mr-2">Edit</button>
                         {r.status !== 'CLOSED' && (
                           <button type="button" onClick={() => handleMarkReviewed(r.id)} className="text-gray-600 hover:underline mr-2">Mark reviewed</button>
                         )}
@@ -340,7 +340,7 @@ function EditForm({
           </select>
         </label>
         <div className="flex flex-wrap gap-2 pt-1">
-          <button type="submit" className="rounded bg-[#1a5f3f] text-white px-2 py-1">Save</button>
+          <button type="submit" className="rounded bg-forestDark text-white px-2 py-1">Save</button>
           <button type="button" onClick={onCancel} className="text-gray-600 hover:underline">Cancel</button>
           <button type="button" onClick={onMarkReviewed} className="text-gray-600 hover:underline">Mark reviewed</button>
           <button type="button" onClick={onDelete} className="text-red-600 hover:underline">Delete</button>
@@ -349,3 +349,4 @@ function EditForm({
     </div>
   )
 }
+

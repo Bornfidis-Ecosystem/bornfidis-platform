@@ -235,3 +235,4 @@ export default function IncidentDetailClient({ incident: initial }: { incident: 
     </div>
   )
 }
+

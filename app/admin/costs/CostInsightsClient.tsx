@@ -27,10 +27,10 @@ export default function CostInsightsClient({ data }: { data: CostInsightsData })
             ))}
           </ul>
           <div className="mt-2 flex flex-wrap gap-2">
-            <Link href="/admin/region-pricing" className="text-xs text-[#1a5f3f] hover:underline">Region pricing →</Link>
-            <Link href="/admin/surge-pricing" className="text-xs text-[#1a5f3f] hover:underline">Surge thresholds →</Link>
-            <Link href="/admin/schedule" className="text-xs text-[#1a5f3f] hover:underline">Schedule / availability →</Link>
-            <Link href="/admin/coaching" className="text-xs text-[#1a5f3f] hover:underline">Coaching →</Link>
+            <Link href="/admin/region-pricing" className="text-xs text-forestDark hover:underline">Region pricing →</Link>
+            <Link href="/admin/surge-pricing" className="text-xs text-forestDark hover:underline">Surge thresholds →</Link>
+            <Link href="/admin/schedule" className="text-xs text-forestDark hover:underline">Schedule / availability →</Link>
+            <Link href="/admin/coaching" className="text-xs text-forestDark hover:underline">Coaching →</Link>
           </div>
         </div>
       )}
@@ -115,9 +115,10 @@ export default function CostInsightsClient({ data }: { data: CostInsightsData })
           </table>
         )}
         <div className="mt-2">
-          <Link href="/admin/region-pricing" className="text-xs text-[#1a5f3f] hover:underline">Adjust region pricing →</Link>
+          <Link href="/admin/region-pricing" className="text-xs text-forestDark hover:underline">Adjust region pricing →</Link>
         </div>
       </section>
     </div>
   )
 }
+

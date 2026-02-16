@@ -82,13 +82,16 @@ export async function checkAdminAccess(): Promise<AdminGuardResult> {
       isAdmin: false,
       error: 'Access denied: Admin role required',
     }
-  } catch (error: any) {
-    console.error('Error checking admin access:', error)
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error)
+    if (!/session|auth|missing|jwt/i.test(msg)) {
+      console.error('Error checking admin access:', error)
+    }
     return {
       user: null,
       role: null,
       isAdmin: false,
-      error: error.message || 'Authentication error',
+      error: msg || 'Authentication error',
     }
   }
 }

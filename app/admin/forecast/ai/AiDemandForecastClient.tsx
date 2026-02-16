@@ -86,7 +86,7 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
               </li>
             ))}
           </ul>
-          <Link href="/admin/capacity" className="text-sm text-[#1a5f3f] hover:underline mt-2 inline-block">Capacity planning →</Link>
+          <Link href="/admin/capacity" className="text-sm text-forestDark hover:underline mt-2 inline-block">Capacity planning →</Link>
         </div>
       )}
 
@@ -135,7 +135,7 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
         <ul className="space-y-2 text-sm">
           {data.actionSuggestions.map((a, i) => (
             <li key={i} className="flex flex-wrap items-center gap-2">
-              <Link href={a.href} className="text-[#1a5f3f] font-medium hover:underline">
+              <Link href={a.href} className="text-forestDark font-medium hover:underline">
                 {a.action}
               </Link>
               <span className="text-gray-600">— {a.reason}</span>
@@ -158,3 +158,4 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
     </div>
   )
 }
+

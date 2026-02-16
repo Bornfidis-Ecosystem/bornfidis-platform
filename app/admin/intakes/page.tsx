@@ -82,7 +82,7 @@ export default async function IntakesPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -90,7 +90,7 @@ export default async function IntakesPage() {
                 ← Back to Farmers
               </Link>
               <h1 className="text-2xl font-bold">Farmer Intakes</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">
+              <p className="text-gold text-sm mt-1">
                 {fetchError ? 'Connection error' : `${intakes.length} intake${intakes.length !== 1 ? 's' : ''} (last 50)`}
               </p>
             </div>
@@ -122,7 +122,7 @@ export default async function IntakesPage() {
               </div>
               <Link
                 href="/admin/intakes"
-                className="inline-block mt-6 px-6 py-2 bg-[#1a5f3f] text-white rounded-lg hover:bg-[#154a32] transition-colors"
+                className="inline-block mt-6 px-6 py-2 bg-forestDark text-white rounded-lg hover:bg-[#154a32] transition-colors"
               >
                 Try Again
               </Link>
@@ -186,7 +186,7 @@ export default async function IntakesPage() {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {intake.mediaContentType ? (
-                              <span className="text-[#FFBC00]">🎙️ Voice</span>
+                              <span className="text-gold">🎙️ Voice</span>
                             ) : (
                               <span>💬 Text</span>
                             )}
@@ -216,7 +216,7 @@ export default async function IntakesPage() {
                                   {crops.map((crop, idx) => (
                                     <span
                                       key={idx}
-                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#1a5f3f]/10 text-[#1a5f3f] border border-[#1a5f3f]/20"
+                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-forestDark/10 text-forestDark border border-forestDark/20"
                                     >
                                       {crop}
                                     </span>
@@ -230,7 +230,7 @@ export default async function IntakesPage() {
                               <div>
                                 <Link
                                   href={`/admin/farmers/${intake.farmer.id}`}
-                                  className="font-medium text-[#1a5f3f] hover:text-[#154a32]"
+                                  className="font-medium text-forestDark hover:text-[#154a32]"
                                 >
                                   {intake.farmer.name}
                                 </Link>
@@ -260,3 +260,4 @@ export default async function IntakesPage() {
     </div>
   )
 }
+

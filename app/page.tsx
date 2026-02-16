@@ -1,20 +1,61 @@
-import Link from 'next/link';
-import { FeaturedChefsSection } from '@/components/FeaturedChefsSection';
+import Link from 'next/link'
+import { FeaturedChefsSection } from '@/components/FeaturedChefsSection'
+import { FeaturedAcademySection } from '@/components/academy/FeaturedAcademySection'
+import { Button } from '@/components/ui/Button'
 
 export default async function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center p-10 bg-gradient-to-b from-green-50 to-white">
-      <h1 className="text-3xl font-bold text-green-900 mb-2">Bornfidis Platform</h1>
-      <p className="text-gray-700 mb-8 text-center max-w-md">
-        Regenerating land, people, and enterprise.
-      </p>
-      <FeaturedChefsSection />
-      <Link
-        href="/admin/login"
-        className="px-6 py-3 bg-green-800 text-white font-semibold rounded-lg hover:bg-green-900 transition mt-8"
-      >
-        Enter Platform
-      </Link>
-    </main>
-  );
+    <>
+      {/* Hero — full-width, brand-forward */}
+      <section className="w-full bg-forest text-white">
+        <div className="max-w-4xl mx-auto px-6 py-20 md:py-28 text-center">
+          <div className="h-1 w-16 bg-gold rounded-full mx-auto mb-6" aria-hidden />
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+            Bornfidis Platform
+          </h1>
+          <p className="text-xl text-white max-w-xl mx-auto mb-8">
+            Regenerating land, people, and enterprise.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button
+              href="/academy"
+              variant="primary"
+              className="px-8 py-3 text-base bg-gold text-forest hover:opacity-90"
+            >
+              Explore Academy
+            </Button>
+            <Link
+              href="/admin/login"
+              className="inline-flex items-center justify-center font-semibold rounded-xl px-8 py-3 text-base border-2 border-gold text-gold hover:bg-gold hover:text-forest transition duration-200 ease-out"
+            >
+              Enter Platform
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div
+        className="h-1 w-full bg-gradient-to-r from-transparent via-gold/50 to-transparent"
+        aria-hidden
+      />
+
+      {/* Main content — light background, clear sections */}
+      <section className="w-full bg-card min-h-[40vh]">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
+          <FeaturedChefsSection />
+          <FeaturedAcademySection />
+          <p className="text-center mt-12 text-gray-600 text-sm">
+            <Link href="/story" className="font-medium text-forest hover:underline">
+              Our Story
+            </Link>
+            {' · '}
+            <Link href="/book" className="font-medium text-forest hover:underline">
+              Book provisions
+            </Link>
+          </p>
+        </div>
+      </section>
+    </>
+  )
 }

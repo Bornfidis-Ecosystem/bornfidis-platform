@@ -97,7 +97,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
       <header className="bg-[#1a5f3f] text-white py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <h1 className="text-3xl font-bold mb-2">Chef Dashboard</h1>
-          <div className="h-1 w-24 bg-[#FFBC00] mb-4"></div>
+          <div className="h-1 w-24 bg-gold mb-4"></div>
           <p className="text-green-100 text-sm">Welcome, {dashboardData.chef.name}</p>
         </div>
       </header>
@@ -106,7 +106,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Stripe Connect Status */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Stripe Account Status
           </h2>
           <div className="flex items-center justify-between">
@@ -125,13 +125,13 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Earnings Summary */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Earnings Summary
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-green-50 rounded-lg p-4 border border-green-200">
               <p className="text-sm text-gray-600 mb-1">Total Paid Out</p>
-              <p className="text-2xl font-bold text-[#1a5f3f]">
+              <p className="text-2xl font-bold text-forestDark">
                 {formatUSD(dashboardData.earnings.total_paid_cents)}
               </p>
             </div>
@@ -152,7 +152,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Upcoming Bookings */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Upcoming Bookings
           </h2>
           {dashboardData.bookings.upcoming.length === 0 ? (
@@ -190,7 +190,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
                         {formatUSD(booking.quote_total_cents)}
                       </td>
                       <td className="py-3 text-right">
-                        <span className="font-semibold text-[#1a5f3f]">
+                        <span className="font-semibold text-forestDark">
                           {formatUSD(booking.payout_amount_cents)}
                         </span>
                       </td>
@@ -207,7 +207,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Completed Bookings */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Completed Bookings
           </h2>
           {dashboardData.bookings.completed.length === 0 ? (
@@ -242,7 +242,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
                         {formatUSD(booking.quote_total_cents)}
                       </td>
                       <td className="py-3 text-right">
-                        <span className={`font-semibold ${booking.status === 'paid' ? 'text-green-600' : 'text-[#1a5f3f]'}`}>
+                        <span className={`font-semibold ${booking.status === 'paid' ? 'text-green-600' : 'text-forestDark'}`}>
                           {formatUSD(booking.payout_amount_cents)}
                         </span>
                         {booking.paid_at && (
@@ -273,3 +273,4 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
     </div>
   )
 }
+

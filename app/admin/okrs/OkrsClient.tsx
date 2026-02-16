@@ -167,7 +167,7 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
         <button
           type="button"
           onClick={handleRefresh}
-          className="rounded px-3 py-1.5 bg-[#1a5f3f] text-white text-sm hover:bg-[#144a30]"
+          className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-[#144a30]"
         >
           Refresh from live data
         </button>
@@ -225,7 +225,7 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
                     defaultValue={okr.objective}
                     className="border rounded px-2 py-1 flex-1"
                   />
-                  <button type="submit" className="text-sm text-[#1a5f3f]">Save</button>
+                  <button type="submit" className="text-sm text-forestDark">Save</button>
                   <button type="button" onClick={() => setEditingOkrId(null)} className="text-sm text-gray-500">Cancel</button>
                 </form>
               ) : (
@@ -233,7 +233,7 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
               )}
               {editingOkrId !== okr.id && (
                 <div className="flex gap-1">
-                  <button type="button" onClick={() => setEditingOkrId(okr.id)} className="text-sm text-[#1a5f3f] hover:underline">Edit</button>
+                  <button type="button" onClick={() => setEditingOkrId(okr.id)} className="text-sm text-forestDark hover:underline">Edit</button>
                   <button type="button" onClick={() => handleDeleteOKR(okr.id)} className="text-sm text-red-600 hover:underline">Delete</button>
                 </div>
               )}
@@ -267,7 +267,7 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
                             rows={1}
                             className="border rounded px-2 py-1 text-sm flex-1"
                           />
-                          <button type="submit" className="text-sm text-[#1a5f3f]">Save</button>
+                          <button type="submit" className="text-sm text-forestDark">Save</button>
                           <button type="button" onClick={() => setEditingKrId(null)} className="text-sm text-gray-500">Cancel</button>
                         </form>
                       ) : (
@@ -305,14 +305,14 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
                   ))}
                 </select>
                 <input name="kr_target" type="number" step="any" placeholder="Target" className="border rounded px-2 py-1 w-24" required />
-                <button type="submit" className="text-sm text-[#1a5f3f]">Add</button>
+                <button type="submit" className="text-sm text-forestDark">Add</button>
                 <button type="button" onClick={() => setAddingKrOkrId(null)} className="text-sm text-gray-500">Cancel</button>
               </form>
             ) : (
               <button
                 type="button"
                 onClick={() => setAddingKrOkrId(okr.id)}
-                className="mt-3 text-sm text-[#1a5f3f] hover:underline"
+                className="mt-3 text-sm text-forestDark hover:underline"
               >
                 + Add key result
               </button>
@@ -323,3 +323,4 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
     </div>
   )
 }
+

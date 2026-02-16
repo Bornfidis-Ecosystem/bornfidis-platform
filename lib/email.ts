@@ -48,6 +48,66 @@ export async function sendEmail({
 }
 
 /**
+ * TASK 5 — Academy purchase confirmation email
+ * Sent on webhook after successful purchase. Includes productTitle, library link, and optional related product suggestion.
+ */
+export async function sendAcademyPurchaseConfirmationEmail(
+  to: string,
+  params: {
+    productTitle: string
+    amountPaidCents: number
+    libraryUrl: string
+    suggestedProduct?: { title: string; slug: string; priceDisplay: string; academyUrl: string }
+  }
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — academy confirmation skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const amountDisplay =
+    params.amountPaidCents === 0 ? 'FREE' : `$${(params.amountPaidCents / 100).toFixed(2)}`
+  const suggestedBlock =
+    params.suggestedProduct &&
+    `
+          <p style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #e5e5e5; color: #666; font-size: 14px;">
+            <strong>You might also like:</strong><br/>
+            <a href="${params.suggestedProduct.academyUrl}" style="color: #2D5016; font-weight: 600;">${params.suggestedProduct.title}</a> — ${params.suggestedProduct.priceDisplay}
+          </p>
+        `
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: 'Your Bornfidis Academy Access Is Ready',
+      html: `
+        <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
+          <h2 style="color: #2D5016; margin-bottom: 16px;">Your Bornfidis Academy Access Is Ready</h2>
+          <p>Thank you for your purchase.</p>
+          <p><strong>Product:</strong> ${params.productTitle}</p>
+          <p><strong>Amount paid:</strong> ${amountDisplay}</p>
+          <p style="margin-top: 24px;">
+            <a href="${params.libraryUrl}" style="display: inline-block; background: #2D5016; color: #C9A24D; font-weight: 600; padding: 12px 24px; text-decoration: none; border-radius: 12px;">Open My Library →</a>
+          </p>
+          ${suggestedBlock || ''}
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">
+            With gratitude,<br/>
+            <strong>Bornfidis Academy</strong>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Academy confirmation email error:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 1: Client booking confirmation email
  * Simple, clean template for booking submissions
  */
@@ -470,11 +530,20 @@ export async function sendChefOnboardingEmail(
  * Phase 2B-Email: Partner invite email — single source
  * Secure invite link, forest-green CTA, professional. Works in production.
  */
+const INVITE_ROLE_LINES: Record<string, string> = {
+  FARMER: "You're invited because you grow food and care about quality.",
+  CHEF: "You're invited because you cook and value reliable local sourcing.",
+  EDUCATOR: "You're invited because you teach, mentor, or guide others.",
+  PARTNER: "You're invited because you support or invest in food systems.",
+}
+
 export async function sendInviteEmail({
   email,
+  role,
   inviteUrl,
 }: {
   email: string
+  role: string
   inviteUrl: string
 }): Promise<{ success: boolean; error?: string }> {
   if (!resend) {
@@ -484,22 +553,25 @@ export async function sendInviteEmail({
   if (!email || !email.includes('@')) {
     return { success: false, error: 'Invalid email address' }
   }
+  const roleLabel = role.charAt(0) + role.slice(1).toLowerCase()
+  const whyLine = INVITE_ROLE_LINES[role] ?? `You've been invited to join as ${roleLabel}.`
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
-      subject: "You're invited to join the Bornfidis Platform",
+      subject: "You're invited to Bornfidis",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2 style="color: #14532d; margin-bottom: 16px;">Welcome to Bornfidis</h2>
-          <p>You've been invited to join the Bornfidis ecosystem as a partner.</p>
-          <p>Click the button below to accept your invitation:</p>
+          <h2 style="color: #14532d; margin-bottom: 16px;">You're invited to Bornfidis</h2>
+          <p>A community building fair, local food systems in Jamaica.</p>
+          <p>${whyLine}</p>
+          <p>Click below to continue as ${roleLabel}:</p>
           <p>
             <a href="${inviteUrl}"
                style="display:inline-block;padding:12px 20px;
                       background:#14532d;color:#fff;
                       text-decoration:none;border-radius:6px;">
-              Accept Invitation
+              Continue as ${roleLabel}
             </a>
           </p>
           <p style="font-size:12px;color:#666;">

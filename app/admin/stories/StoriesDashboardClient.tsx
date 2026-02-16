@@ -141,7 +141,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
                         {story.category}
                       </span>
                       {story.is_featured && (
-                        <span className="px-2 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-full text-xs font-semibold">
+                        <span className="px-2 py-1 bg-gold text-[#1a5f3f] rounded-full text-xs font-semibold">
                           Featured
                         </span>
                       )}
@@ -174,7 +174,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
                         className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
                           story.is_featured
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            : 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-gold-dark'
+                            : 'bg-gold text-[#1a5f3f] hover:bg-gold-dark'
                         }`}
                       >
                         {story.is_featured ? 'Unfeature' : 'Feature'}
@@ -200,3 +200,4 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
     </div>
   )
 }
+

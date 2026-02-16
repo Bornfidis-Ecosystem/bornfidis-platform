@@ -134,3 +134,4 @@ export default async function AdminEducationAnalyticsPage() {
     </div>
   )
 }
+

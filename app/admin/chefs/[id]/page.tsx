@@ -35,7 +35,7 @@ export default async function AdminChefDetailPage({ params }: { params: { id: st
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Link href="/admin/chefs" className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block">
+              <Link href="/admin/chefs" className="text-gold hover:underline text-sm mb-2 inline-block">
                 ← Chef Network
               </Link>
               <h1 className="text-2xl font-bold">{chef.name}</h1>
@@ -71,16 +71,16 @@ export default async function AdminChefDetailPage({ params }: { params: { id: st
           />
           <ChefReviewsSection chefId={params.id} stats={reviewStats} reviews={reviewList} />
           <p className="text-sm text-gray-500 space-x-4">
-            <Link href={`/admin/chefs/${params.id}/availability`} className="text-[#1a5f3f] hover:underline">
+            <Link href={`/admin/chefs/${params.id}/availability`} className="text-forestDark hover:underline">
               Availability →
             </Link>
-            <Link href={`/admin/chefs/${params.id}/performance`} className="text-[#1a5f3f] hover:underline">
+            <Link href={`/admin/chefs/${params.id}/performance`} className="text-forestDark hover:underline">
               View performance →
             </Link>
-            <Link href={`/admin/chefs/${params.id}/earnings`} className="text-[#1a5f3f] hover:underline">
+            <Link href={`/admin/chefs/${params.id}/earnings`} className="text-forestDark hover:underline">
               Earnings projections →
             </Link>
-            <Link href={`/admin/incidents?chefId=${params.id}`} className="text-[#1a5f3f] hover:underline">
+            <Link href={`/admin/incidents?chefId=${params.id}`} className="text-forestDark hover:underline">
               Incidents →
             </Link>
           </p>
@@ -89,3 +89,4 @@ export default async function AdminChefDetailPage({ params }: { params: { id: st
     </div>
   )
 }
+

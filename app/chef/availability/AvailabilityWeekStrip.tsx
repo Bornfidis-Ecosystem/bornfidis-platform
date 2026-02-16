@@ -80,3 +80,4 @@ export function AvailabilityWeekStrip({ chefId, days }: Props) {
     </div>
   )
 }
+

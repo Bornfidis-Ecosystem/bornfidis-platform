@@ -6,7 +6,7 @@ const paths = [
     description: 'Host a faith-anchored meal for your community.',
     href: '/book',
     buttonText: 'Book Now',
-    color: 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-gold-dark',
+    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
   },
   {
     title: 'Join as Chef',
@@ -27,7 +27,7 @@ const paths = [
     description: 'Bring Bornfidis to your community.',
     href: '/replicate/apply-leader',
     buttonText: 'Learn More',
-    color: 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-gold-dark',
+    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
   },
   {
     title: 'Invest in Impact',
@@ -41,7 +41,7 @@ const paths = [
     description: 'Join our community-owned housing program.',
     href: '/housing',
     buttonText: 'Apply',
-    color: 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-gold-dark',
+    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
   },
 ]
 
@@ -50,7 +50,7 @@ export default function HomePaths() {
     <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a5f3f] mb-4">Choose Your Path</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-forestDark mb-4">Choose Your Path</h2>
           <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
             Whether you're hosting an event, joining our network, or investing in impact,
@@ -63,7 +63,7 @@ export default function HomePaths() {
               key={path.title}
               className="bg-white border-2 border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition"
             >
-              <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">{path.title}</h3>
+              <h3 className="text-xl font-semibold text-forestDark mb-3">{path.title}</h3>
               <p className="text-gray-600 mb-4">{path.description}</p>
               <Link
                 href={path.href}
@@ -78,3 +78,4 @@ export default function HomePaths() {
     </section>
   )
 }
+

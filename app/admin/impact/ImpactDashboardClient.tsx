@@ -43,7 +43,7 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
         {/* Soil Health Score */}
         <div className="bg-white rounded-lg shadow-sm p-6 border-2 border-[#1a5f3f]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[#1a5f3f]">Regenerative Score</h3>
+            <h3 className="text-lg font-semibold text-forestDark">Regenerative Score</h3>
             <div className={`text-3xl font-bold ${getRegenerativeScoreColor(impactData.avgRegenerativeScore)}`}>
               {impactData.avgRegenerativeScore}
             </div>
@@ -62,8 +62,8 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
         {/* Farmer Income */}
         <div className="bg-white rounded-lg shadow-sm p-6 border-2 border-[#FFBC00]">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[#1a5f3f]">Farmer Income</h3>
-            <div className="text-3xl font-bold text-[#1a5f3f]">
+            <h3 className="text-lg font-semibold text-forestDark">Farmer Income</h3>
+            <div className="text-3xl font-bold text-forestDark">
               {formatUSD(impactData.totalFarmerIncome)}
             </div>
           </div>
@@ -81,7 +81,7 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
         {/* Community Meals */}
         <div className="bg-white rounded-lg shadow-sm p-6 border-2 border-green-500">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-[#1a5f3f]">Community Meals</h3>
+            <h3 className="text-lg font-semibold text-forestDark">Community Meals</h3>
             <div className="text-3xl font-bold text-green-600">
               {impactData.communityMealsFunded.toLocaleString()}
             </div>
@@ -102,11 +102,11 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Revenue & Impact */}
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-[#1a5f3f] mb-4">Revenue & Impact</h3>
+          <h3 className="text-lg font-semibold text-forestDark mb-4">Revenue & Impact</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Total Revenue</span>
-              <span className="font-semibold text-[#1a5f3f]">{formatUSD(impactData.totalRevenue)}</span>
+              <span className="font-semibold text-forestDark">{formatUSD(impactData.totalRevenue)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Completed Bookings</span>
@@ -125,7 +125,7 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
 
         {/* Network Stats */}
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h3 className="text-lg font-semibold text-[#1a5f3f] mb-4">Network Statistics</h3>
+          <h3 className="text-lg font-semibold text-forestDark mb-4">Network Statistics</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Active Farmers</span>
@@ -141,7 +141,7 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
             </div>
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Avg Farmer Income</span>
-              <span className="font-semibold text-[#1a5f3f]">
+              <span className="font-semibold text-forestDark">
                 {impactData.totalFarmers > 0
                   ? formatUSD(Math.round(impactData.totalFarmerIncome / impactData.totalFarmers))
                   : '$0.00'}
@@ -162,15 +162,15 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
             <div>
-              <div className="text-3xl font-bold text-[#FFBC00] mb-1">{formatUSD(impactData.totalFarmerIncome)}</div>
+              <div className="text-3xl font-bold text-gold mb-1">{formatUSD(impactData.totalFarmerIncome)}</div>
               <div className="text-sm text-green-100">Paid to Farmers</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-[#FFBC00] mb-1">{impactData.communityMealsFunded.toLocaleString()}</div>
+              <div className="text-3xl font-bold text-gold mb-1">{impactData.communityMealsFunded.toLocaleString()}</div>
               <div className="text-sm text-green-100">Community Meals</div>
             </div>
             <div>
-              <div className="text-3xl font-bold text-[#FFBC00] mb-1">{impactData.avgRegenerativeScore}%</div>
+              <div className="text-3xl font-bold text-gold mb-1">{impactData.avgRegenerativeScore}%</div>
               <div className="text-sm text-green-100">Regenerative Score</div>
             </div>
           </div>
@@ -185,3 +185,4 @@ export default function ImpactDashboardClient({ impactData }: ImpactDashboardCli
     </div>
   )
 }
+

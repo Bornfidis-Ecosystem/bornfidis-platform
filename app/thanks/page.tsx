@@ -1,21 +1,16 @@
 import Link from 'next/link'
+import { SuccessAlert } from '@/components/ui/SuccessAlert'
 
 export default function ThanksPage() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="container mx-auto px-4 max-w-2xl text-center">
         <div className="bg-white p-12 rounded-lg shadow-sm">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="text-4xl font-bold text-navy mb-4">Thank You!</h1>
-            <p className="text-xl text-gray-700 mb-6">
-              We&apos;ve received your booking request.
-            </p>
-          </div>
+          <SuccessAlert
+            title="Thank you"
+            message="We've received your booking request. We'll be in touch within 48 hours."
+            className="mb-6"
+          />
 
           <div className="prose text-left max-w-none mb-8">
             <h2 className="text-2xl font-semibold text-navy mb-4">What Happens Next?</h2>
@@ -58,3 +53,4 @@ export default function ThanksPage() {
     </div>
   )
 }
+

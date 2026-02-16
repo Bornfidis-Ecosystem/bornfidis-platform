@@ -183,7 +183,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
       <header className="bg-[#1a5f3f] text-white py-8">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-3xl font-bold mb-2">Bornfidis Provisions</h1>
-          <div className="h-1 w-24 bg-[#FFBC00]"></div>
+          <div className="h-1 w-24 bg-gold"></div>
           <p className="text-green-100 mt-4 text-sm">Your Booking Portal</p>
         </div>
       </header>
@@ -206,7 +206,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
 
         {/* Event Details Card */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Event Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -242,13 +242,13 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
         {/* Phase 2R: Your chef card (with trust badges) */}
         {portalData.chef && (
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Your Chef
             </h2>
             <p className="font-medium text-gray-900">
               {portalData.chef.name}
               {portalData.chef.tierLabel && (
-                <span className="ml-2 text-sm font-normal text-[#1a5f3f]">— {portalData.chef.tierLabel}</span>
+                <span className="ml-2 text-sm font-normal text-forestDark">— {portalData.chef.tierLabel}</span>
               )}
             </p>
             {portalData.chef.reviewStats && portalData.chef.reviewStats.count > 0 && (
@@ -279,7 +279,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
         {/* Quote Summary Card */}
         {hasQuote ? (
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Quote Summary
             </h2>
             
@@ -334,7 +334,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
                   <span className="font-medium">{formatUSD(portalData.quote.service_fee_cents)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-bold text-[#1a5f3f] border-t border-gray-300 pt-2 mt-2">
+              <div className="flex justify-between text-lg font-bold text-forestDark border-t border-gray-300 pt-2 mt-2">
                 <span>Total</span>
                 <span>{formatUSD(portalData.quote.total_cents)}</span>
               </div>
@@ -348,7 +348,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
           </div>
         ) : (
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Quote Summary
             </h2>
             <p className="text-gray-600">Quote is in progress. We'll update this section soon.</p>
@@ -357,7 +357,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
 
         {/* Payment Status Card */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Payment Status
           </h2>
           <div className="space-y-4">
@@ -388,7 +388,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
             {portalData.fully_paid && (
               <div className="pt-4 border-t border-gray-200">
                 <div className="flex justify-between items-center">
-                  <span className="font-semibold text-[#1a5f3f]">Status</span>
+                  <span className="font-semibold text-forestDark">Status</span>
                   <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-semibold">
                     Fully Paid ✓
                   </span>
@@ -400,7 +400,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
 
         {/* Payment Actions */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Payment Actions
           </h2>
           <div className="flex flex-wrap gap-3">
@@ -446,7 +446,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
               <PDFDownloadLink
                 document={<InvoicePdfDocument booking={portalData as any} lineItems={lineItems} />}
                 fileName={`invoice-${portalData.customer_name.replace(/\s+/g, '-')}-${portalData.booking_id.slice(0, 8)}.pdf`}
-                className="px-6 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-[#e6a600] transition flex items-center gap-2"
+                className="px-6 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-[#e6a600] transition flex items-center gap-2"
               >
                 <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -462,7 +462,7 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
 
         {/* Send Message Section */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Send a Message
           </h2>
           <form onSubmit={handleSendMessage} className="space-y-4">
@@ -537,3 +537,4 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
     </div>
   )
 }
+

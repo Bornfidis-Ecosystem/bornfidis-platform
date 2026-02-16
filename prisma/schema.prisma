@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -39,6 +40,7 @@ enum UserRole {
   CHEF
   FARMER
   VOLUNTEER
+  EDUCATOR
 
   @@schema("public")
 }
@@ -1376,6 +1378,26 @@ model ChefNeed {
   updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("chef_needs")
+  @@schema("public")
+}
+
+// ============================================================================
+// Academy (Phase A — Digital products, courses, downloads)
+// ============================================================================
+
+model AcademyPurchase {
+  id               String   @id @default(cuid())
+  authUserId       String   @map("auth_user_id")   // Supabase auth user id
+  productSlug      String   @map("product_slug")  // slug from academy product catalog
+  productTitle     String   @map("product_title")  // snapshot at purchase (catalog can change)
+  productPrice     Int      @map("product_price")  // cents at purchase; 0 for free
+  stripeSessionId  String   @unique @map("stripe_session_id")  // Stripe session id or free-{cuid()}
+  purchasedAt      DateTime @default(now()) @map("purchased_at")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  @@index([authUserId])
+  @@index([productSlug])
+  @@map("academy_purchases")
   @@schema("public")
 }
 

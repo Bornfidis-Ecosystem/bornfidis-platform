@@ -175,7 +175,7 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
           <button
             onClick={handleDistributePayouts}
             disabled={isDistributing}
-            className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
+            className="px-4 py-2 bg-gold text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
           >
             {isDistributing ? 'Distributing...' : 'Distribute Payouts'}
           </button>
@@ -235,7 +235,7 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
                     </td>
                     <td className="py-3 px-6 text-gray-700">{member.region}</td>
                     <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">{member.impact_score}</td>
-                    <td className="py-3 px-6 text-right font-semibold text-[#FFBC00]">
+                    <td className="py-3 px-6 text-right font-semibold text-gold">
                       {member.payout_share_percent.toFixed(2)}%
                     </td>
                     <td className="py-3 px-6 text-center">
@@ -297,3 +297,4 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
     </div>
   )
 }
+

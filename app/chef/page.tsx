@@ -103,19 +103,19 @@ export default async function ChefDashboard() {
         </div>
       )}
       {leaderboardRank && (
-        <div className="rounded-lg border border-[#1a5f3f]/30 bg-green-50 p-3">
+        <div className="rounded-lg border border-forestDark/30 bg-green-50 p-3">
           <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">Leaderboard</p>
           <p className="text-sm text-gray-900">
             Rank #{leaderboardRank.rank} of {leaderboardRank.totalOnBoard}
             {leaderboardRank.topPerformer && (
-              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-[#1a5f3f]">
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-forestDark">
                 Top Performer
               </span>
             )}
           </p>
           <Link
             href="/chefs/leaderboard"
-            className="text-xs text-[#1a5f3f] font-medium hover:underline mt-1 inline-block"
+            className="text-xs text-forestDark font-medium hover:underline mt-1 inline-block"
           >
             View leaderboard →
           </Link>
@@ -199,3 +199,4 @@ function Card({
     </Link>
   )
 }
+

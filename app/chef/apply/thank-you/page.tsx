@@ -4,11 +4,11 @@ export default function ChefApplicationThankYouPage() {
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-            <svg className="w-8 h-8 text-[#1a5f3f]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 text-forestDark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-[#1a5f3f] mb-4">Application Received!</h1>
+          <h1 className="text-3xl font-bold text-forestDark mb-4">Application Received!</h1>
           <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
         </div>
 
@@ -49,3 +49,4 @@ export default function ChefApplicationThankYouPage() {
     </div>
   )
 }
+

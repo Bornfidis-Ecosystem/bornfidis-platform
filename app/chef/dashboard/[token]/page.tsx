@@ -165,3 +165,4 @@ export default async function ChefDashboardPage({ params }: { params: { token: s
 
   return <ChefDashboardClient dashboardData={dashboardData} chefId={dashboardData.chef.id} />
 }
+

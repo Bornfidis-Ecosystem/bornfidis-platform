@@ -81,7 +81,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
                   <td className="px-4 py-2">
                     <Link
                       href={`/admin/chefs/${r.chefId}`}
-                      className="text-[#1a5f3f] hover:underline"
+                      className="text-forestDark hover:underline"
                     >
                       {r.name ?? r.chefId}
                     </Link>
@@ -128,7 +128,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
                 <div>
                   <Link
                     href={`/admin/chefs/${r.chefId}`}
-                    className="text-[#1a5f3f] hover:underline font-medium"
+                    className="text-forestDark hover:underline font-medium"
                   >
                     {r.name ?? r.chefId}
                   </Link>
@@ -150,3 +150,4 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
     </div>
   )
 }
+

@@ -61,6 +61,24 @@ export async function createServerSupabaseClient() {
 }
 
 /**
+ * Get current Supabase auth user (no admin allowlist).
+ * Use for Academy, library, and any flow where any logged-in user is allowed.
+ */
+export async function getCurrentSupabaseUser() {
+  try {
+    const supabase = await createServerSupabaseClient()
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error || !user) return null
+    return user
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : ''
+    if (msg && /session|auth|missing|jwt/i.test(msg)) return null
+    console.error('Error getting Supabase user:', error)
+    return null
+  }
+}
+
+/**
  * Get current authenticated user on server
  * Returns null if not authenticated or email not in allowed list
  */
@@ -79,7 +97,9 @@ export async function getServerAuthUser() {
     }
 
     return user
-  } catch (error) {
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : ''
+    if (msg && /session|auth|missing|jwt/i.test(msg)) return null
     console.error('Error getting auth user:', error)
     return null
   }

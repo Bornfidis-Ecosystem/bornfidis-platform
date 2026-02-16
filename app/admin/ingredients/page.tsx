@@ -46,12 +46,12 @@ export default async function AdminIngredientsPage() {
             <div>
               <Link
                 href="/admin/bookings"
-                className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block"
+                className="text-gold hover:underline text-sm mb-2 inline-block"
               >
                 ← Back to Bookings
               </Link>
               <h1 className="text-2xl font-bold">Ingredient Catalog</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">{stats.total} ingredient{stats.total !== 1 ? 's' : ''}</p>
+              <p className="text-gold text-sm mt-1">{stats.total} ingredient{stats.total !== 1 ? 's' : ''}</p>
             </div>
             <SignOutButton />
           </div>
@@ -92,3 +92,4 @@ export default async function AdminIngredientsPage() {
     </div>
   )
 }
+

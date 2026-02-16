@@ -35,9 +35,9 @@ export default async function AdminInvitesPage() {
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="bg-white rounded-lg shadow-sm p-6 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-1">Invite Partner</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-1">Invite</h2>
             <p className="text-sm text-gray-500 mb-4">
-              Enter email and send. Role is PARTNER for now.
+              Enter email, choose role, and send. They get a link that explains why they’re invited.
             </p>
             <InviteForm />
           </div>

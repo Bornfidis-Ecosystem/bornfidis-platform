@@ -7,15 +7,20 @@ import { db } from '@/lib/db'
 import { sendInviteEmail } from '@/lib/email'
 import { UserRole } from '@prisma/client'
 
-const INVITE_ROLES: UserRole[] = [UserRole.PARTNER]
+const INVITE_ROLES: UserRole[] = [
+  UserRole.FARMER,
+  UserRole.CHEF,
+  UserRole.EDUCATOR,
+  UserRole.PARTNER,
+]
 const EXPIRY_DAYS = 7
 
-function inviteUrl(token: string): string {
+function inviteUrl(role: UserRole, token: string): string {
   const base =
     process.env.NEXT_PUBLIC_SITE_URL ||
     process.env.NEXT_PUBLIC_APP_URL ||
     'https://platform.bornfidis.com'
-  return `${base.replace(/\/$/, '')}/invite?token=${encodeURIComponent(token)}`
+  return `${base.replace(/\/$/, '')}/invite?role=${encodeURIComponent(role)}&token=${encodeURIComponent(token)}`
 }
 
 /**
@@ -74,10 +79,10 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const link = inviteUrl(token)
+    const link = inviteUrl(role, token)
     let emailSent = true
     try {
-      const sendResult = await sendInviteEmail({ email, inviteUrl: link })
+      const sendResult = await sendInviteEmail({ email, role, inviteUrl: link })
       if (!sendResult.success) {
         console.error('Invite email failed:', sendResult.error)
         emailSent = false

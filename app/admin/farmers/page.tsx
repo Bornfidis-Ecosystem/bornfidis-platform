@@ -57,12 +57,12 @@ export default async function AdminFarmersPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Farmer Applications</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">
+              <p className="text-gold text-sm mt-1">
                 {applications.length} total application{applications.length !== 1 ? 's' : ''}
               </p>
             </div>
@@ -124,7 +124,7 @@ export default async function AdminFarmersPage() {
                         <div className="flex items-center gap-2">
                           {app.name}
                           {(app as any).voice_ready && (
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-[#FFBC00] text-[#1a5f3f]">
+                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gold text-forestDark">
                               🎙️ Voice
                             </span>
                           )}
@@ -153,7 +153,7 @@ export default async function AdminFarmersPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <Link
                           href={`/admin/farmers/${app.id}`}
-                          className="text-[#1a5f3f] hover:text-[#154a32]"
+                          className="text-forestDark hover:text-[#154a32]"
                         >
                           View
                         </Link>
@@ -169,3 +169,4 @@ export default async function AdminFarmersPage() {
     </div>
   )
 }
+

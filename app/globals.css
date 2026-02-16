@@ -3,15 +3,43 @@
 @tailwind utilities;
 
 :root {
-  --navy: #002747;
-  --gold: #FFBC00;
-  --white: #FFFFFF;
-  /* Bornfidis Colors */
-  --bornfidis-green: #1a5f3f;
-  --bornfidis-gold: #FFBC00;
-  --bornfidis-dark-green: #154a32;
+  /* Design system — single source of truth */
+  --color-forest: #2D5016;
+  --color-gold: #FFBC00;
+  --color-gold-accent: #C9A24D;
+  --color-navy: #002747;
+  --color-card: #F8F6F1;
+  --color-white: #FFFFFF;
+  --color-forest-dark: #1a5f3f;
+  --color-forest-darker: #154a32;
+  --color-gold-dark: #e6a500;
+
+  /* Legacy aliases (used by utilities and Button/Card) */
+  --navy: var(--color-navy);
+  --gold: var(--color-gold);
+  --white: var(--color-white);
+  --bornfidis-green: var(--color-forest-dark);
+  --bornfidis-gold: var(--color-gold);
+  --bornfidis-dark-green: var(--color-forest-darker);
+  --bornfidis-forest: var(--color-forest);
+  --bornfidis-gold-accent: var(--color-gold-accent);
   --bornfidis-light-green: #f0fdf4;
-  --gold-dark: #e6a500;
+  --gold-dark: var(--color-gold-dark);
+
+  /* Spacing scale (8px base): 4, 8, 16, 24, 32, 48, 64px */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Motion */
+  --transition-refined: 200ms ease-out;
 }
 
 * {
@@ -60,5 +88,39 @@ body {
 
   .bg-gold-dark {
     background-color: var(--gold-dark);
+  }
+
+  /* Button hierarchy — Primary: gold fill. Secondary: green outline. Tertiary: text link. */
+  .btn-primary {
+    display: inline-block;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    transition: opacity 0.2s;
+    background-color: var(--bornfidis-gold);
+    color: var(--bornfidis-forest);
+  }
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+  .btn-secondary {
+    display: inline-block;
+    font-weight: 600;
+    padding: 0.5rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 2px solid var(--bornfidis-forest);
+    color: var(--bornfidis-forest);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover {
+    background-color: var(--bornfidis-forest);
+    color: var(--bornfidis-gold-accent);
+  }
+  .btn-tertiary {
+    font-weight: 500;
+    color: var(--bornfidis-forest);
+  }
+  .btn-tertiary:hover {
+    text-decoration: underline;
   }
 }

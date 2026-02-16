@@ -89,11 +89,12 @@ function AdminLoginForm() {
             if (data.user) {
               // Clean up URL hash
               window.history.replaceState({}, document.title, window.location.pathname)
-              
-              // CRITICAL FIX: Use full page reload instead of router.push
-              // This ensures middleware runs and syncs localStorage session to cookies
-              // before the server-side auth check happens
-              window.location.href = '/admin/bookings'
+              const next = searchParams.get('next')
+              const redirectTo =
+                next && next.startsWith('/') && !next.startsWith('//')
+                  ? next
+                  : '/admin'
+              window.location.href = redirectTo
               return
             }
           } catch (clientError: any) {
@@ -114,8 +115,12 @@ function AdminLoginForm() {
           if (!isMounted) return
           
           if (user) {
-            // Force full page reload to ensure server gets the cookies
-            window.location.href = '/admin/bookings'
+            const next = searchParams.get('next')
+            const redirectTo =
+              next && next.startsWith('/') && !next.startsWith('//')
+                ? next
+                : '/admin'
+            window.location.href = redirectTo
           } else {
             setIsCheckingAuth(false)
           }
@@ -152,10 +157,17 @@ function AdminLoginForm() {
       const supabase = createClientSupabaseClient()
       
       // Send magic link email
+      const next = searchParams.get('next')
+      const redirectTo =
+        next && next.startsWith('/') ? encodeURIComponent(next) : ''
+      const emailRedirectTo =
+        redirectTo
+          ? `${window.location.origin}/admin/login?next=${redirectTo}`
+          : `${window.location.origin}/admin/login`
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/login`,
+          emailRedirectTo,
         },
       })
 
@@ -270,3 +282,5 @@ export default function AdminLoginPage() {
     </Suspense>
   )
 }
+
+

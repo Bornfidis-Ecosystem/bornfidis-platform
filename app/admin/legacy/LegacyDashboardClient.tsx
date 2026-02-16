@@ -59,7 +59,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-[#1a5f3f]'
+                  ? 'border-[#FFBC00] text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -76,29 +76,29 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Leaders</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.total_leaders}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.total_leaders}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.active_leaders} active</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Succession Ready</h3>
-              <p className="text-3xl font-bold text-[#FFBC00]">{summary.succession_ready_count}</p>
+              <p className="text-3xl font-bold text-gold">{summary.succession_ready_count}</p>
               <p className="text-xs text-gray-500 mt-1">Leaders prepared</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Legacy Documents</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.total_documents}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.total_documents}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.public_documents} public</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Prayer Requests</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.total_prayer_requests}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.total_prayer_requests}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.answered_prayers} answered</p>
             </div>
           </div>
 
           {/* Succession Ready Leaders */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Succession Ready Leaders
             </h2>
             {successionReadyLeaders.length === 0 ? (
@@ -107,7 +107,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {successionReadyLeaders.map((leader) => (
                   <div key={leader.id} className="border border-gray-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-[#1a5f3f]">{leader.name}</h3>
+                    <h3 className="font-semibold text-forestDark">{leader.name}</h3>
                     <p className="text-sm text-gray-600 capitalize">{leader.role}</p>
                     {leader.region && <p className="text-xs text-gray-500 mt-1">{leader.region}</p>}
                     {leader.succession_notes && (
@@ -121,7 +121,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
 
           {/* Recent Prayer Requests */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Recent Prayer Requests
             </h2>
             {unansweredPrayers.length === 0 ? (
@@ -153,10 +153,10 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
       {activeTab === 'succession' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Succession Planner</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Succession Planner</h2>
             <button
               onClick={() => alert('Add Leader - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Leader
             </button>
@@ -193,7 +193,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-center">
                         {leader.succession_ready ? (
-                          <span className="px-2 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-full text-xs font-semibold">
+                          <span className="px-2 py-1 bg-gold text-forestDark rounded-full text-xs font-semibold">
                             Ready
                           </span>
                         ) : (
@@ -213,10 +213,10 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
       {activeTab === 'documents' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Vision Archive</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Vision Archive</h2>
             <button
               onClick={() => alert('Add Document - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Document
             </button>
@@ -229,7 +229,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
                 <div key={doc.id} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="font-semibold text-[#1a5f3f]">{doc.title}</h3>
+                      <h3 className="font-semibold text-forestDark">{doc.title}</h3>
                       <p className="text-sm text-gray-600 capitalize">{doc.category}</p>
                     </div>
                     <div className="flex gap-2">
@@ -257,7 +257,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
       {/* Prayers Tab */}
       {activeTab === 'prayers' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Prayer Dashboard
           </h2>
           {prayers.length === 0 ? (
@@ -301,3 +301,4 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
     </div>
   )
 }
+

@@ -96,3 +96,4 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
     </div>
   )
 }
+

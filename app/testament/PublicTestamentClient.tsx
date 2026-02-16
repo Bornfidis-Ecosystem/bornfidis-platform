@@ -18,7 +18,7 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
     <div className="space-y-12">
       {/* The Bornfidis Story */}
       <section>
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6 text-center">The Bornfidis Story</h2>
+        <h2 className="text-3xl font-bold text-forestDark mb-6 text-center">The Bornfidis Story</h2>
         <div className="bg-[#f0fdf4] p-8 rounded-lg shadow-md border border-[#d1fae5]">
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
             Bornfidis Provisions was born from a vision of regeneration—regenerating the land, regenerating communities,
@@ -39,13 +39,13 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
       {/* Featured Testimonies */}
       {featuredTestimonies.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-6 text-center">Scripture Anchors</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-6 text-center">Scripture Anchors</h2>
           <div className="space-y-6">
             {featuredTestimonies.map((testimony) => (
               <div key={testimony.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <div className="mb-4">
-                  <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{testimony.title}</h3>
-                  <p className="text-[#FFBC00] font-semibold italic mb-2">"{testimony.scripture}"</p>
+                  <h3 className="text-xl font-semibold text-forestDark mb-2">{testimony.title}</h3>
+                  <p className="text-gold font-semibold italic mb-2">"{testimony.scripture}"</p>
                   {testimony.scripture_text && (
                     <p className="text-gray-700 italic mb-4">{testimony.scripture_text}</p>
                   )}
@@ -90,7 +90,7 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
       {/* The Commissioning Wall */}
       {leaders.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-6 text-center">The Commissioning Wall</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-6 text-center">The Commissioning Wall</h2>
           <p className="text-gray-600 text-center mb-6">
             Leaders who have been commissioned and signed the Bornfidis covenant.
           </p>
@@ -104,14 +104,14 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
                     className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
                   />
                 )}
-                <h3 className="text-lg font-semibold text-[#1a5f3f] mb-1">{leader.name}</h3>
+                <h3 className="text-lg font-semibold text-forestDark mb-1">{leader.name}</h3>
                 <p className="text-sm text-gray-600 capitalize mb-1">{leader.role}</p>
                 <p className="text-xs text-gray-500 mb-3">{leader.region}</p>
                 {leader.bio && (
                   <p className="text-sm text-gray-700 mb-3 line-clamp-3">{leader.bio}</p>
                 )}
                 {leader.commissioning_scripture && (
-                  <p className="text-xs text-[#FFBC00] italic mb-2">"{leader.commissioning_scripture}"</p>
+                  <p className="text-xs text-gold italic mb-2">"{leader.commissioning_scripture}"</p>
                 )}
                 <p className="text-xs text-gray-500">
                   Commissioned: {new Date(leader.commissioned_at).toLocaleDateString()}
@@ -127,8 +127,8 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
 
       {/* Join the Movement */}
       <section className="bg-[#FFBC00] p-8 rounded-lg shadow-md text-center">
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Join the Movement</h2>
-        <p className="text-[#1a5f3f] mb-6 max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold text-forestDark mb-4">Join the Movement</h2>
+        <p className="text-forestDark mb-6 max-w-2xl mx-auto">
           Be part of a movement that's regenerating the land, empowering communities, and building
           generational wealth through faith-anchored practices.
         </p>
@@ -141,19 +141,19 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
           </Link>
           <Link
             href="/replicate/apply-leader"
-            className="px-6 py-3 bg-white text-[#1a5f3f] rounded-lg font-semibold hover:bg-gray-100 transition"
+            className="px-6 py-3 bg-white text-forestDark rounded-lg font-semibold hover:bg-gray-100 transition"
           >
             Launch a Region
           </Link>
           <Link
             href="/replicate/invest"
-            className="px-6 py-3 bg-white text-[#1a5f3f] rounded-lg font-semibold hover:bg-gray-100 transition"
+            className="px-6 py-3 bg-white text-forestDark rounded-lg font-semibold hover:bg-gray-100 transition"
           >
             Invest in Impact
           </Link>
           <Link
             href="/housing"
-            className="px-6 py-3 bg-white text-[#1a5f3f] rounded-lg font-semibold hover:bg-gray-100 transition"
+            className="px-6 py-3 bg-white text-forestDark rounded-lg font-semibold hover:bg-gray-100 transition"
           >
             Apply for Housing
           </Link>
@@ -163,14 +163,14 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
       {/* All Testimonies */}
       {allTestimonies.length > featuredTestimonies.length && (
         <section>
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-6 text-center">More Testimonies</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-6 text-center">More Testimonies</h2>
           <div className="space-y-4">
             {allTestimonies
               .filter(t => !t.is_featured)
               .map((testimony) => (
                 <div key={testimony.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                  <h3 className="font-semibold text-[#1a5f3f] mb-1">{testimony.title}</h3>
-                  <p className="text-sm text-[#FFBC00] italic mb-2">"{testimony.scripture}"</p>
+                  <h3 className="font-semibold text-forestDark mb-1">{testimony.title}</h3>
+                  <p className="text-sm text-gold italic mb-2">"{testimony.scripture}"</p>
                   <p className="text-sm text-gray-700 line-clamp-2">{testimony.testimony}</p>
                   {testimony.author_name && (
                     <p className="text-xs text-gray-500 mt-2">— {testimony.author_name}</p>
@@ -183,3 +183,4 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
     </div>
   )
 }
+

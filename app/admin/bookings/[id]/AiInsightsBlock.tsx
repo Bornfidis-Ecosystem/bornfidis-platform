@@ -15,7 +15,7 @@ export default function AiInsightsBlock({ insights }: { insights: AiOpsInsightRo
           <li key={i.id} className="text-sm">
             <p className="font-medium text-gray-900">{i.title}</p>
             <p className="text-gray-600 mt-0.5">{i.whyItMatters}</p>
-            <p className="text-[#1a5f3f] mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
+            <p className="text-forestDark mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
             <p className="text-xs text-gray-500 mt-0.5">{i.confidencePct}% confidence</p>
           </li>
         ))}
@@ -23,3 +23,4 @@ export default function AiInsightsBlock({ insights }: { insights: AiOpsInsightRo
     </div>
   )
 }
+

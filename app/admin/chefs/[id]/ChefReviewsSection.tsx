@@ -110,3 +110,4 @@ export default function ChefReviewsSection({ chefId, stats, reviews }: Props) {
     </section>
   )
 }
+

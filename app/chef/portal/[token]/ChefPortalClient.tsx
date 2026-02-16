@@ -174,7 +174,7 @@ export default function ChefPortalClient({ portalData, token }: ChefPortalClient
 
         {/* Stripe Connect Status Card */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Stripe Connect Status
           </h2>
           <div className="space-y-4">
@@ -225,13 +225,13 @@ export default function ChefPortalClient({ portalData, token }: ChefPortalClient
 
         {/* Earnings Snapshot */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Earnings Summary
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-green-50 rounded-lg p-4">
               <p className="text-sm text-gray-600 mb-1">Total Paid Out</p>
-              <p className="text-2xl font-bold text-[#1a5f3f]">
+              <p className="text-2xl font-bold text-forestDark">
                 {formatUSD(portalData.earnings.total_paid_cents)}
               </p>
             </div>
@@ -252,7 +252,7 @@ export default function ChefPortalClient({ portalData, token }: ChefPortalClient
 
         {/* Bookings List */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
             Assigned Bookings
           </h2>
           {portalData.bookings.length === 0 ? (
@@ -340,3 +340,4 @@ export default function ChefPortalClient({ portalData, token }: ChefPortalClient
     </div>
   )
 }
+

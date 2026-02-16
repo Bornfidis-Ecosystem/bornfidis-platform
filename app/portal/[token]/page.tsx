@@ -79,3 +79,4 @@ export default async function PortalPage({ params }: { params: { token: string }
 
   return <PortalClient portalData={portalData} token={params.token} />
 }
+

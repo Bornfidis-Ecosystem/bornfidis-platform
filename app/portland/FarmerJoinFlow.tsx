@@ -139,7 +139,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
             <h2 className="text-3xl font-bold">{t('joinAsFarmer')}</h2>
             <button
               onClick={onClose}
-              className="text-white hover:text-[#FFBC00] text-2xl font-bold w-10 h-10 flex items-center justify-center"
+              className="text-white hover:text-gold text-2xl font-bold w-10 h-10 flex items-center justify-center"
               aria-label="Close"
             >
               ×
@@ -168,7 +168,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
           )}
 
           <div>
-            <label htmlFor="name" className="block text-xl font-semibold text-[#1a5f3f] mb-2">
+            <label htmlFor="name" className="block text-xl font-semibold text-forestDark mb-2">
               {t('fullName')} *
             </label>
             <div className="flex gap-2">
@@ -189,7 +189,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
           </div>
 
           <div>
-            <label htmlFor="phone" className="block text-xl font-semibold text-[#1a5f3f] mb-2">
+            <label htmlFor="phone" className="block text-xl font-semibold text-forestDark mb-2">
               {t('phoneNumber')} *
             </label>
             <div className="flex gap-2">
@@ -210,7 +210,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
           </div>
 
           <div>
-            <label htmlFor="acres" className="block text-xl font-semibold text-[#1a5f3f] mb-2">
+            <label htmlFor="acres" className="block text-xl font-semibold text-forestDark mb-2">
               {t('approxAcres')}
             </label>
             <div className="flex gap-2">
@@ -230,7 +230,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
           </div>
 
           <div>
-            <label htmlFor="crops" className="block text-xl font-semibold text-[#1a5f3f] mb-2">
+            <label htmlFor="crops" className="block text-xl font-semibold text-forestDark mb-2">
               {t('whatDoYouGrow')}
             </label>
             <div className="flex gap-2">
@@ -270,3 +270,4 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
     </div>
   )
 }
+

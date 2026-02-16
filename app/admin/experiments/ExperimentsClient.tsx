@@ -219,7 +219,7 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
                     <button
                       type="button"
                       onClick={() => loadResults(exp.id)}
-                      className="text-xs text-[#1a5f3f] hover:underline"
+                      className="text-xs text-forestDark hover:underline"
                     >
                       Results
                     </button>
@@ -293,3 +293,4 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
     </div>
   )
 }
+

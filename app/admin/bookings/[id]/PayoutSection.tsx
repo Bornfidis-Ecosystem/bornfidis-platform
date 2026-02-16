@@ -300,3 +300,4 @@ export default function PayoutSection({ bookingId }: PayoutSectionProps) {
     </div>
   )
 }
+

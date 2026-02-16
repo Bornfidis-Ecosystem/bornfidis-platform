@@ -62,7 +62,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-[#1a5f3f]'
+                  ? 'border-[#FFBC00] text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -79,29 +79,29 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Projects</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.total_projects}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.total_projects}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.active_projects} active</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Units</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.total_units}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.total_units}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.occupied_units} occupied</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Active Residents</h3>
-              <p className="text-3xl font-bold text-[#1a5f3f]">{summary.active_residents}</p>
+              <p className="text-3xl font-bold text-forestDark">{summary.active_residents}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.owners} owners</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-2">Legacy Funds</h3>
-              <p className="text-3xl font-bold text-[#FFBC00]">{formatUSD(summary.total_legacy_balance_cents)}</p>
+              <p className="text-3xl font-bold text-gold">{formatUSD(summary.total_legacy_balance_cents)}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.total_legacy_funds} funds</p>
             </div>
           </div>
 
           {/* Active Projects */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Active Projects
             </h2>
             {activeProjects.length === 0 ? (
@@ -110,7 +110,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {activeProjects.map((project) => (
                   <div key={project.id} className="border border-gray-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-[#1a5f3f]">{project.name}</h3>
+                    <h3 className="font-semibold text-forestDark">{project.name}</h3>
                     <p className="text-sm text-gray-600">{project.region}</p>
                     <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                       <div>
@@ -133,7 +133,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
 
           {/* Recent Residents */}
           <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
               Recent Residents
             </h2>
             {activeResidents.length === 0 ? (
@@ -161,7 +161,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            resident.status === 'owner' ? 'bg-[#FFBC00] text-[#1a5f3f]' :
+                            resident.status === 'owner' ? 'bg-gold text-forestDark' :
                             resident.status === 'active' ? 'bg-green-100 text-green-800' :
                             'bg-gray-100 text-gray-800'
                           }`}>
@@ -182,10 +182,10 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
       {activeTab === 'projects' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Project Builder</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Project Builder</h2>
             <button
               onClick={() => alert('Add Project - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Project
             </button>
@@ -241,10 +241,10 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
       {activeTab === 'residents' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Resident Equity Tracker</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Resident Equity Tracker</h2>
             <button
               onClick={() => alert('Add Resident - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Resident
             </button>
@@ -282,7 +282,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          resident.status === 'owner' ? 'bg-[#FFBC00] text-[#1a5f3f]' :
+                          resident.status === 'owner' ? 'bg-gold text-forestDark' :
                           resident.status === 'active' ? 'bg-green-100 text-green-800' :
                           resident.status === 'approved' ? 'bg-blue-100 text-blue-800' :
                           'bg-gray-100 text-gray-800'
@@ -303,10 +303,10 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
       {activeTab === 'funds' && (
         <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Trust Dashboard</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Trust Dashboard</h2>
             <button
               onClick={() => alert('Create Fund - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Create Fund
             </button>
@@ -319,7 +319,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                 <div key={fund.id} className="border border-gray-200 rounded-lg p-6">
                   <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="text-lg font-semibold text-[#1a5f3f]">{fund.family_name}</h3>
+                      <h3 className="text-lg font-semibold text-forestDark">{fund.family_name}</h3>
                       <p className="text-sm text-gray-600 capitalize">{fund.purpose}</p>
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -330,7 +330,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                   </div>
                   <div className="mt-4">
                     <p className="text-sm text-gray-500">Balance</p>
-                    <p className="text-2xl font-bold text-[#FFBC00]">{formatUSD(fund.balance_cents)}</p>
+                    <p className="text-2xl font-bold text-gold">{formatUSD(fund.balance_cents)}</p>
                     {fund.target_balance_cents && (
                       <p className="text-sm text-gray-500 mt-1">
                         Target: {formatUSD(fund.target_balance_cents)} ({Math.round((fund.balance_cents / fund.target_balance_cents) * 100)}%)
@@ -350,3 +350,4 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
     </div>
   )
 }
+

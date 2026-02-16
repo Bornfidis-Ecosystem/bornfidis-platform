@@ -267,7 +267,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{farmer.name}</div>
                       {farmer.voice_ready && (
-                        <span className="text-xs text-[#FFBC00]">🎙️ Voice Ready</span>
+                        <span className="text-xs text-gold">🎙️ Voice Ready</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -320,3 +320,4 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
     </div>
   )
 }
+

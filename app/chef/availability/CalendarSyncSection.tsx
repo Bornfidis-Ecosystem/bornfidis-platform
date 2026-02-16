@@ -52,7 +52,7 @@ export default function CalendarSyncSection({ initialCalendarUrl, chefId }: Prop
         <button
           type="button"
           onClick={handleCopy}
-          className="px-3 py-2 border border-[#1a5f3f] text-[#1a5f3f] rounded font-medium text-sm hover:bg-[#1a5f3f] hover:text-white transition"
+          className="px-3 py-2 border border-[#1a5f3f] text-forestDark rounded font-medium text-sm hover:bg-[#1a5f3f] hover:text-white transition"
         >
           {copied ? 'Copied!' : 'Copy link'}
         </button>
@@ -82,3 +82,4 @@ export default function CalendarSyncSection({ initialCalendarUrl, chefId }: Prop
     </section>
   )
 }
+

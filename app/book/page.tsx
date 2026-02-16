@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { submitBooking } from '@/app/actions'
 import { submitWithOfflineFallback } from '@/lib/offline-sync'
 import { toast } from '@/components/ui/Toast'
+import { Spinner } from '@/components/ui/Spinner'
 
 export default function BookPage() {
   const router = useRouter()
@@ -284,8 +285,9 @@ export default function BookPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition-all duration-200 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed"
               >
+                {isSubmitting && <Spinner size="sm" className="flex-shrink-0 text-white" />}
                 {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
               </button>
             </div>
@@ -295,3 +297,4 @@ export default function BookPage() {
     </div>
   )
 }
+

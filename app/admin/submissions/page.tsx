@@ -280,7 +280,7 @@ export default function AdminSubmissionsPage() {
                   setEndDate('')
                   handleFilterChange()
                 }}
-                className="text-sm text-[#1a5f3f] hover:underline"
+                className="text-sm text-forestDark hover:underline"
               >
                 Clear all filters
               </button>
@@ -485,3 +485,4 @@ export default function AdminSubmissionsPage() {
     </div>
   )
 }
+

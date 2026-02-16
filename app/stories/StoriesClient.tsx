@@ -57,7 +57,7 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
       {/* Featured Stories */}
       {featuredStories.length > 0 && (
         <section>
-          <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6">Featured Stories</h2>
+          <h2 className="text-3xl font-bold text-forestDark mb-6">Featured Stories</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredStories.map((story) => {
               const videoEmbedUrl = getVideoEmbedUrl(story.video_url)
@@ -81,14 +81,14 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
                       />
                     </div>
                   )}
-                  <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{story.title}</h3>
+                  <h3 className="text-xl font-semibold text-forestDark mb-2">{story.title}</h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-3">{story.story_text}</p>
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-gray-500">
                       {story.author_name}
                       {story.author_region && ` • ${story.author_region}`}
                     </p>
-                    <span className="px-2 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-full text-xs font-semibold capitalize">
+                    <span className="px-2 py-1 bg-[#FFBC00] text-forestDark rounded-full text-xs font-semibold capitalize">
                       {story.category}
                     </span>
                   </div>
@@ -102,10 +102,10 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
       {/* All Stories */}
       <section>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-[#1a5f3f]">All Stories</h2>
+          <h2 className="text-3xl font-bold text-forestDark">All Stories</h2>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-6 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="px-6 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             {showForm ? 'Cancel' : 'Share Your Story'}
           </button>
@@ -172,7 +172,7 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
                       />
                     </div>
                   )}
-                  <h3 className="text-lg font-semibold text-[#1a5f3f] mb-2">{story.title}</h3>
+                  <h3 className="text-lg font-semibold text-forestDark mb-2">{story.title}</h3>
                   <p className="text-gray-600 text-sm mb-3 line-clamp-2">{story.story_text}</p>
                   <div className="flex items-center justify-between">
                     <p className="text-xs text-gray-500">
@@ -192,3 +192,4 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
     </div>
   )
 }
+

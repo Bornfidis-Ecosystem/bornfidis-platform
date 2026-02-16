@@ -18,7 +18,7 @@ export default async function AdminReviewAnalyticsPage() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Link href="/admin" className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block">
+              <Link href="/admin" className="text-gold hover:underline text-sm mb-2 inline-block">
                 ← Admin
               </Link>
               <h1 className="text-2xl font-bold">Review Analytics</h1>
@@ -77,7 +77,7 @@ export default async function AdminReviewAnalyticsPage() {
                     <td className="px-4 py-2">
                       <Link
                         href={`/admin/chefs/${row.chefId}`}
-                        className="font-medium text-[#1a5f3f] hover:underline"
+                        className="font-medium text-forestDark hover:underline"
                       >
                         {row.chefName}
                       </Link>
@@ -105,3 +105,4 @@ export default async function AdminReviewAnalyticsPage() {
     </div>
   )
 }
+

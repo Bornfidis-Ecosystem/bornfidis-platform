@@ -202,11 +202,11 @@ export default function FarmerJoinFormVoiceFirst({
     <div className="space-y-6">
       {/* Language Toggle */}
       <div className="flex items-center justify-between pb-4 border-b border-gray-200">
-        <h2 className="text-2xl font-bold text-[#1a5f3f]">{t.headline}</h2>
+        <h2 className="text-2xl font-bold text-forestDark">{t.headline}</h2>
         <button
           type="button"
           onClick={handleLanguageToggle}
-          className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition active:scale-95 min-h-[44px]"
+          className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition active:scale-95 min-h-[44px]"
         >
           {language === 'en' ? '🇺🇸 EN' : '🇯🇲 PAT'}
         </button>
@@ -237,7 +237,7 @@ export default function FarmerJoinFormVoiceFirst({
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-lg font-semibold text-[#1a5f3f] mb-2">
+          <label htmlFor="name" className="block text-lg font-semibold text-forestDark mb-2">
             {t.name} *
           </label>
           <VoiceField
@@ -252,7 +252,7 @@ export default function FarmerJoinFormVoiceFirst({
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-lg font-semibold text-[#1a5f3f] mb-2">
+          <label htmlFor="phone" className="block text-lg font-semibold text-forestDark mb-2">
             {t.phone} *
           </label>
           <VoiceField
@@ -271,7 +271,7 @@ export default function FarmerJoinFormVoiceFirst({
 
         {/* Parish */}
         <div>
-          <label htmlFor="parish" className="block text-lg font-semibold text-[#1a5f3f] mb-2">
+          <label htmlFor="parish" className="block text-lg font-semibold text-forestDark mb-2">
             {t.parish}
           </label>
           <VoiceField
@@ -285,7 +285,7 @@ export default function FarmerJoinFormVoiceFirst({
 
         {/* Acres */}
         <div>
-          <label htmlFor="acres" className="block text-lg font-semibold text-[#1a5f3f] mb-2">
+          <label htmlFor="acres" className="block text-lg font-semibold text-forestDark mb-2">
             {t.acres}
           </label>
           <VoiceField
@@ -300,7 +300,7 @@ export default function FarmerJoinFormVoiceFirst({
 
         {/* Crops */}
         <div>
-          <label htmlFor="crops" className="block text-lg font-semibold text-[#1a5f3f] mb-2">
+          <label htmlFor="crops" className="block text-lg font-semibold text-forestDark mb-2">
             {t.crops} *
           </label>
           <VoiceField
@@ -317,7 +317,7 @@ export default function FarmerJoinFormVoiceFirst({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full px-6 py-4 bg-[#1a5f3f] text-white rounded-lg font-bold text-xl hover:bg-[#154a32] transition active:scale-95 disabled:opacity-50 min-h-[48px]"
+          className="w-full px-6 py-4 bg-forestDark text-white rounded-lg font-bold text-xl hover:bg-forestDarker transition active:scale-95 disabled:opacity-50 min-h-[48px]"
         >
           {isSubmitting ? t.submitting : t.submit}
         </button>

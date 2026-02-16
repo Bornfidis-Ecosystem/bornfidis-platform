@@ -289,3 +289,4 @@ export default function ChefListClient({ chefs }: ChefListClientProps) {
         </div>
     )
 }
+

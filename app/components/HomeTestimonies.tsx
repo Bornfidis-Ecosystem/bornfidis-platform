@@ -29,12 +29,12 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
     <section className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a5f3f] mb-4">Living Testimonies</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-forestDark mb-4">Living Testimonies</h2>
           <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-[#f0fdf4] border-2 border-[#d1fae5] rounded-lg p-8 md:p-12 shadow-lg">
-            <p className="text-[#FFBC00] font-semibold italic mb-4 text-lg">
+            <p className="text-gold font-semibold italic mb-4 text-lg">
               "{currentTestimony.scripture}"
             </p>
             {currentTestimony.scripture_text && (
@@ -68,7 +68,7 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
           <div className="text-center mt-8">
             <Link
               href="/testament"
-              className="inline-block px-6 py-2 text-[#1a5f3f] font-semibold hover:text-[#154a32] transition"
+              className="inline-block px-6 py-2 text-forestDark font-semibold hover:text-[#154a32] transition"
             >
               Read More Testimonies →
             </Link>
@@ -78,3 +78,4 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
     </section>
   )
 }
+

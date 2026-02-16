@@ -20,11 +20,11 @@ export default function PressClient({ initialData }: PressClientProps) {
     <div className="space-y-8">
       {/* Press Information */}
       <section className="bg-[#f0fdf4] p-8 rounded-lg border border-[#d1fae5]">
-        <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-4">Press Contact</h2>
+        <h2 className="text-2xl font-semibold text-forestDark mb-4">Press Contact</h2>
         <div className="space-y-2 text-gray-700">
           <p>
             <strong>Email:</strong>{' '}
-            <a href="mailto:press@bornfidis.com" className="text-[#1a5f3f] hover:underline">
+            <a href="mailto:press@bornfidis.com" className="text-forestDark hover:underline">
               press@bornfidis.com
             </a>
           </p>
@@ -36,7 +36,7 @@ export default function PressClient({ initialData }: PressClientProps) {
 
       {/* Press Kits */}
       <section>
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6">Download Press Kit</h2>
+        <h2 className="text-3xl font-bold text-forestDark mb-6">Download Press Kit</h2>
         {initialData.pressKits.length === 0 ? (
           <div className="bg-gray-50 p-8 rounded-lg border border-gray-200 text-center">
             <p className="text-gray-500 mb-2">Press kit coming soon!</p>
@@ -50,7 +50,7 @@ export default function PressClient({ initialData }: PressClientProps) {
               <div key={kit.id} className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-[#1a5f3f] transition">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{kit.title}</h3>
+                    <h3 className="text-xl font-semibold text-forestDark mb-2">{kit.title}</h3>
                     {kit.description && (
                       <p className="text-gray-600 mb-2">{kit.description}</p>
                     )}
@@ -64,7 +64,7 @@ export default function PressClient({ initialData }: PressClientProps) {
                   </div>
                   <button
                     onClick={() => handleDownload(kit)}
-                    className="px-6 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition whitespace-nowrap"
+                    className="px-6 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition whitespace-nowrap"
                   >
                     Download
                   </button>
@@ -77,7 +77,7 @@ export default function PressClient({ initialData }: PressClientProps) {
 
       {/* Media Guidelines */}
       <section className="bg-white border border-gray-200 rounded-lg p-6">
-        <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-4">Media Guidelines</h2>
+        <h2 className="text-2xl font-semibold text-forestDark mb-4">Media Guidelines</h2>
         <div className="space-y-3 text-gray-700">
           <p>
             When covering Bornfidis Provisions, please:
@@ -94,3 +94,4 @@ export default function PressClient({ initialData }: PressClientProps) {
     </div>
   )
 }
+

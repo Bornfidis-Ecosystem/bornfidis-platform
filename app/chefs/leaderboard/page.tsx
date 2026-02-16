@@ -34,7 +34,7 @@ export default async function ChefsLeaderboardPage() {
         {entries.length === 0 ? (
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center text-gray-600">
             <p>No leaderboard yet. Rankings are updated regularly.</p>
-            <Link href="/chefs" className="text-[#1a5f3f] font-medium mt-2 inline-block hover:underline">
+            <Link href="/chefs" className="text-forestDark font-medium mt-2 inline-block hover:underline">
               ← Our Chef Network
             </Link>
           </div>
@@ -54,7 +54,7 @@ export default async function ChefsLeaderboardPage() {
                       {e.name ?? 'Chef'}
                     </span>
                     {e.topPerformer && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-[#1a5f3f]">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-forestDark">
                         Top Performer
                       </span>
                     )}
@@ -74,11 +74,11 @@ export default async function ChefsLeaderboardPage() {
         )}
 
         <p className="mt-8 text-center">
-          <Link href="/chefs" className="text-[#1a5f3f] font-medium hover:underline">
+          <Link href="/chefs" className="text-forestDark font-medium hover:underline">
             ← Our Chef Network
           </Link>
           {' · '}
-          <Link href="/book" className="text-[#1a5f3f] font-medium hover:underline">
+          <Link href="/book" className="text-forestDark font-medium hover:underline">
             Book a chef
           </Link>
         </p>
@@ -86,3 +86,4 @@ export default async function ChefsLeaderboardPage() {
     </div>
   )
 }
+

@@ -22,13 +22,13 @@ export default function HomeHero() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/book"
-              className="px-8 py-4 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold text-lg hover:bg-gold-dark transition shadow-lg"
+              className="px-8 py-4 bg-[#FFBC00] text-forestDark rounded-lg font-semibold text-lg hover:bg-gold-dark transition shadow-lg"
             >
               Book Your Event
             </Link>
             <Link
               href="/story"
-              className="px-8 py-4 bg-white text-[#1a5f3f] rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg"
+              className="px-8 py-4 bg-white text-forestDark rounded-lg font-semibold text-lg hover:bg-gray-100 transition shadow-lg"
             >
               Our Story
             </Link>
@@ -38,3 +38,4 @@ export default function HomeHero() {
     </section>
   )
 }
+

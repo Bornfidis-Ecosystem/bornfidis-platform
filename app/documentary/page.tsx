@@ -64,7 +64,7 @@ export default async function DocumentaryPage() {
 
               return (
                 <div key={story.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-4">{story.title}</h2>
+                  <h2 className="text-2xl font-semibold text-forestDark mb-4">{story.title}</h2>
                   <div className="w-full mb-4 rounded-lg overflow-hidden" style={{ paddingBottom: '56.25%', position: 'relative', height: 0 }}>
                     <iframe
                       src={embedUrl}
@@ -88,3 +88,4 @@ export default async function DocumentaryPage() {
     </div>
   )
 }
+

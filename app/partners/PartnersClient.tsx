@@ -71,28 +71,28 @@ export default function PartnersClient() {
 
       {/* Partnership Types */}
       <section>
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6">Partnership Opportunities</h2>
+        <h2 className="text-3xl font-bold text-forestDark mb-6">Partnership Opportunities</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-[#f0fdf4] p-6 rounded-lg border border-[#d1fae5]">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">Media Partners</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-3">Media Partners</h3>
             <p className="text-gray-700 mb-4">
               Help us share the Bornfidis story through coverage, documentaries, and storytelling.
             </p>
           </div>
           <div className="bg-[#f0fdf4] p-6 rounded-lg border border-[#d1fae5]">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">Nonprofit Partners</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-3">Nonprofit Partners</h3>
             <p className="text-gray-700 mb-4">
               Collaborate on community development, food security, and regenerative agriculture initiatives.
             </p>
           </div>
           <div className="bg-[#f0fdf4] p-6 rounded-lg border border-[#d1fae5]">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">Business Partners</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-3">Business Partners</h3>
             <p className="text-gray-700 mb-4">
               Partner on distribution, supply chain, or complementary services.
             </p>
           </div>
           <div className="bg-[#f0fdf4] p-6 rounded-lg border border-[#d1fae5]">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">Church Partners</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-3">Church Partners</h3>
             <p className="text-gray-700 mb-4">
               Connect faith communities with regenerative food and community development.
             </p>
@@ -102,7 +102,7 @@ export default function PartnersClient() {
 
       {/* Inquiry Form */}
       <section className="bg-white border-2 border-[#1a5f3f] rounded-lg p-8">
-        <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-6">Partner Interest Form</h2>
+        <h2 className="text-2xl font-semibold text-forestDark mb-6">Partner Interest Form</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -242,3 +242,4 @@ export default function PartnersClient() {
     </div>
   )
 }
+

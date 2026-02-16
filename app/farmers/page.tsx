@@ -18,7 +18,7 @@ export default function FarmersPage() {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="prose prose-lg max-w-none">
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Regenerative Farmers</h2>
+            <h2 className="text-3xl font-bold text-forestDark mb-4">Regenerative Farmers</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               The Island Harvest Hub connects Bornfidis with farmers who practice regenerative
               agriculture—methods that heal the land, build soil health, and produce nutrient-dense
@@ -31,14 +31,14 @@ export default function FarmersPage() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Join the Hub</h2>
+            <h2 className="text-3xl font-bold text-forestDark mb-4">Join the Hub</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
               Are you a farmer practicing or interested in regenerative agriculture? Join the
               Island Harvest Hub and become part of a network that values your work and supports
               your success.
             </p>
             <div className="bg-[#f0fdf4] p-6 rounded-lg border border-[#d1fae5] mb-6">
-              <h3 className="text-xl font-semibold text-[#1a5f3f] mb-3">What You Get:</h3>
+              <h3 className="text-xl font-semibold text-forestDark mb-3">What You Get:</h3>
               <ul className="list-disc list-inside text-gray-700 space-y-2 ml-4">
                 <li>Fair prices for your produce</li>
                 <li>Direct connection to chefs and communities</li>
@@ -49,7 +49,7 @@ export default function FarmersPage() {
             </div>
             <Link
               href="/farm/apply"
-              className="inline-block px-8 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="inline-block px-8 py-3 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Apply to Join the Hub
             </Link>
@@ -59,3 +59,4 @@ export default function FarmersPage() {
     </div>
   )
 }
+
