@@ -1,12 +1,20 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function PublicFooter() {
   return (
-    <footer className="bg-forestDark text-white w-full">
+    <footer className="bg-navy text-white w-full">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* About */}
           <div>
+            <Image
+              src="/brand/icons/icon-anchor-gold.png"
+              alt="Bornfidis"
+              width={40}
+              height={40}
+              className="h-10 w-10 object-contain mb-3"
+            />
             <h3 className="text-lg font-semibold mb-4 text-gold">About Bornfidis</h3>
             <p className="text-green-100 text-sm mb-4">
               Regenerating land, people, and enterprise through faith-anchored food and fellowship.
@@ -39,8 +47,40 @@ export default function PublicFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/dashboard/library" className="text-green-100 hover:text-gold transition">
+                  My Library
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Academy — all four products */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-gold">Academy</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
                 <Link href="/academy" className="text-green-100 hover:text-gold transition">
-                  Academy
+                  All Academy
+                </Link>
+              </li>
+              <li>
+                <Link href="/academy/regenerative-enterprise-foundations" className="text-green-100 hover:text-gold transition">
+                  Regenerative Enterprise Foundations
+                </Link>
+              </li>
+              <li>
+                <Link href="/academy/regenerative-farmer-blueprint" className="text-green-100 hover:text-gold transition">
+                  Regenerative Farmer Blueprint
+                </Link>
+              </li>
+              <li>
+                <Link href="/academy/vermont-contractor-foundations" className="text-green-100 hover:text-gold transition">
+                  Vermont Contractor Foundations
+                </Link>
+              </li>
+              <li>
+                <Link href="/academy/jamaican-chef-enterprise-system" className="text-green-100 hover:text-gold transition">
+                  Jamaican Chef Enterprise System
                 </Link>
               </li>
             </ul>
@@ -136,7 +176,7 @@ export default function PublicFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-forestDarker mt-8 pt-8 text-center text-sm text-green-100">
+        <div className="border-t border-navyLight mt-8 pt-8 text-center text-sm text-green-100">
           <p>&copy; {new Date().getFullYear()} Bornfidis Provisions. All rights reserved.</p>
           <p className="mt-2">Regenerating land, people, and enterprise through faith.</p>
         </div>

@@ -13,6 +13,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Bornfidis Provisions | Regenerating Land, People & Enterprise',
   description: 'Faith-anchored food and fellowship regenerating communities through regenerative agriculture, fair trade, and generational wealth building.',
+  icons: {
+    icon: [{ url: '/brand/icons/icon-anchor-navy.png', type: 'image/png' }],
+    apple: '/brand/icons/icon-anchor-navy.png',
+  },
 }
 
 export default function RootLayout({

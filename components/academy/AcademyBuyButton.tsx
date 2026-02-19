@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import type { AcademyProduct } from '@/lib/academy-products'
 import { Spinner } from '@/components/ui/Spinner'
+import { trackAcademyBuyClick } from '@/lib/academy-analytics'
 
 interface AcademyBuyButtonProps {
   product: AcademyProduct
@@ -51,6 +52,7 @@ export default function AcademyBuyButton({
       setError('Product not available for purchase')
       return
     }
+    trackAcademyBuyClick(product.slug, product.title, product.priceDisplay)
     setLoading(true)
     setError(null)
     try {
@@ -61,6 +63,11 @@ export default function AcademyBuyButton({
       })
       const data = await res.json()
       if (!res.ok) {
+        if (res.status === 401) {
+          const next = encodeURIComponent(window.location.pathname)
+          window.location.href = `/admin/login?next=${next}`
+          return
+        }
         setError(data.error ?? 'Checkout failed')
         return
       }

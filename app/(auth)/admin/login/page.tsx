@@ -17,7 +17,17 @@ function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
-  
+  const [logoError, setLogoError] = useState(false)
+  const [logoSrc, setLogoSrc] = useState('/brand/logos/logo-lockup-navy-on-white.png')
+
+  const handleLogoError = () => {
+    if (logoSrc === '/brand/logos/logo-lockup-navy-on-white.png') {
+      setLogoSrc('/logo.png')
+    } else {
+      setLogoError(true)
+    }
+  }
+
   // Safety: Force show login form after 3 seconds no matter what
   useEffect(() => {
     const safetyTimeout = setTimeout(() => {
@@ -210,6 +220,20 @@ function AdminLoginForm() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-sm p-8 max-w-md w-full">
         <div className="mb-6 text-center">
+          {/* Brand logo: public/brand/logos/logo-lockup-navy-on-white.png or public/logo.png (see docs/BRANDING_GUIDE.md) */}
+          <div className="flex justify-center mb-4 min-h-[3.5rem] items-center">
+            {logoError ? (
+              <span className="text-xl font-bold text-navy">Bornfidis</span>
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logoSrc}
+                alt="Bornfidis"
+                className="h-14 w-auto object-contain"
+                onError={handleLogoError}
+              />
+            )}
+          </div>
           <h1 className="text-3xl font-bold text-navy mb-2">Admin Login</h1>
           <p className="text-gray-600 text-sm">
             Enter your email to receive a magic link
@@ -239,7 +263,7 @@ function AdminLoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="admin@bornfidis.com"
+              placeholder="bornfidisprovisions@gmail.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
               disabled={isLoading}
             />

@@ -48,8 +48,8 @@ export async function sendEmail({
 }
 
 /**
- * TASK 5 — Academy purchase confirmation email
- * Sent on webhook after successful purchase. Includes productTitle, library link, and optional related product suggestion.
+ * Academy purchase confirmation email.
+ * Subject: "Your [Product Title] is Ready". Includes library link, download link, lifetime updates, support contact.
  */
 export async function sendAcademyPurchaseConfirmationEmail(
   to: string,
@@ -57,6 +57,8 @@ export async function sendAcademyPurchaseConfirmationEmail(
     productTitle: string
     amountPaidCents: number
     libraryUrl: string
+    /** Direct download URL (requires user to be logged in) */
+    downloadUrl?: string
     suggestedProduct?: { title: string; slug: string; priceDisplay: string; academyUrl: string }
   }
 ): Promise<{ success: boolean; error?: string }> {
@@ -69,6 +71,9 @@ export async function sendAcademyPurchaseConfirmationEmail(
   }
   const amountDisplay =
     params.amountPaidCents === 0 ? 'FREE' : `$${(params.amountPaidCents / 100).toFixed(2)}`
+  const downloadBlock = params.downloadUrl
+    ? `<p style="margin-top: 16px;"><a href="${params.downloadUrl}" style="color: #2D5016; font-weight: 600;">Download your manual</a> (you must be logged in)</p>`
+    : ''
   const suggestedBlock =
     params.suggestedProduct &&
     `
@@ -81,18 +86,21 @@ export async function sendAcademyPurchaseConfirmationEmail(
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: 'Your Bornfidis Academy Access Is Ready',
+      subject: `Your ${params.productTitle} is Ready`,
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #2D5016; margin-bottom: 16px;">Your Bornfidis Academy Access Is Ready</h2>
-          <p>Thank you for your purchase.</p>
-          <p><strong>Product:</strong> ${params.productTitle}</p>
-          <p><strong>Amount paid:</strong> ${amountDisplay}</p>
+          <h2 style="color: #2D5016; margin-bottom: 16px;">Your ${params.productTitle} is Ready</h2>
+          <p>Thank you for purchasing ${params.productTitle}.</p>
+          <p>You can download your manual anytime from your <a href="${params.libraryUrl}" style="color: #2D5016; font-weight: 600;">My Library page</a>. You also have lifetime access to any updates.</p>
           <p style="margin-top: 24px;">
             <a href="${params.libraryUrl}" style="display: inline-block; background: #2D5016; color: #C9A24D; font-weight: 600; padding: 12px 24px; text-decoration: none; border-radius: 12px;">Open My Library →</a>
           </p>
+          ${downloadBlock}
           ${suggestedBlock || ''}
           <p style="margin-top: 24px; color: #666; font-size: 14px;">
+            Questions? Email <a href="mailto:support@bornfidis.com" style="color: #2D5016;">support@bornfidis.com</a>
+          </p>
+          <p style="margin-top: 8px; color: #666; font-size: 14px;">
             With gratitude,<br/>
             <strong>Bornfidis Academy</strong>
           </p>

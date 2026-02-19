@@ -3,10 +3,12 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { TrustStrip } from '@/components/ui/TrustStrip'
 
+/** All four main manuals for homepage showcase. */
 const FEATURED_SLUGS = [
-  'llc-starter-kit',
-  'cleaning-business-launch-pack',
-  'farmer-intake-kit',
+  'regenerative-enterprise-foundations',
+  'regenerative-farmer-blueprint',
+  'vermont-contractor-foundations',
+  'jamaican-chef-enterprise-system',
 ]
 
 export function FeaturedAcademySection() {
@@ -31,7 +33,7 @@ export function FeaturedAcademySection() {
 
       <TrustStrip className="mb-10" />
 
-      <div className="grid sm:grid-cols-3 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((p) => (
           <Card key={p.slug} href={`/academy/${p.slug}`}>
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-forest text-goldAccent uppercase tracking-wide">

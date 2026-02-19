@@ -9,14 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        navy: 'var(--color-navy, #002747)',
-        gold: 'var(--color-gold, #FFBC00)',
-        forest: 'var(--color-forest, #2D5016)',
-        goldAccent: 'var(--color-gold-accent, #C9A24D)',
-        card: 'var(--color-card, #F8F6F1)',
-        forestDark: 'var(--color-forest-dark, #1a5f3f)',
-        forestDarker: 'var(--color-forest-darker, #154a32)',
-        goldDark: 'var(--color-gold-dark, #e6a500)',
+        // Brand Style Guide (docs/BRAND_STYLE_GUIDE.md)
+        navy: 'var(--color-navy)',
+        navyLight: 'var(--color-navy-light)',
+        gold: 'var(--color-gold)',
+        goldAccent: 'var(--color-gold-accent)',
+        goldDark: 'var(--color-gold-dark)',
+        forest: 'var(--color-forest)',
+        forestDark: 'var(--color-forest-dark)',
+        forestDarker: 'var(--color-forest-darker)',
+        cream: 'var(--color-cream)',
+        card: 'var(--color-card)',
+        charcoal: 'var(--color-charcoal)',
+        grayMedium: 'var(--color-gray-medium)',
+        grayLight: 'var(--color-gray-light)',
       },
       transitionDuration: {
         refined: '200ms',

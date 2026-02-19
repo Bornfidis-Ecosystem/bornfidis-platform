@@ -3,18 +3,27 @@
 @tailwind utilities;
 
 :root {
-  /* Design system — single source of truth */
-  --color-forest: #2D5016;
-  --color-gold: #FFBC00;
-  --color-gold-accent: #C9A24D;
-  --color-navy: #002747;
-  --color-card: #F8F6F1;
+  /* Brand Style Guide (docs/BRAND_STYLE_GUIDE.md) — single source of truth */
+  /* Primary */
+  --color-navy: #0B2540;           /* Bornfidis Navy: buttons, headings, nav */
+  --color-gold: #F5A623;           /* Bornfidis Gold: accent, CTAs */
+  /* Secondary */
+  --color-navy-light: #1A3A5C;    /* Hover states, backgrounds */
+  --color-forest: #2D5016;       /* Forest Green: Jamaica, farmer content */
+  --color-cream: #FFF8E7;        /* Warm Cream: light sections */
+  /* Neutrals */
+  --color-charcoal: #2C2C2C;
+  --color-gray-medium: #6B7280;
+  --color-gray-light: #F3F4F6;
   --color-white: #FFFFFF;
+  /* UI (derived) */
+  --color-card: var(--color-cream);
   --color-forest-dark: #1a5f3f;
   --color-forest-darker: #154a32;
-  --color-gold-dark: #e6a500;
+  --color-gold-dark: #dd9520;    /* Gold hover ~10% darker */
+  --color-gold-accent: var(--color-gold);
 
-  /* Legacy aliases (used by utilities and Button/Card) */
+  /* Legacy aliases */
   --navy: var(--color-navy);
   --gold: var(--color-gold);
   --white: var(--color-white);
@@ -52,7 +61,7 @@ html {
 }
 
 body {
-  color: var(--navy);
+  color: var(--color-charcoal);
   background: var(--white);
   font-family: system-ui, -apple-system, sans-serif;
   overflow-x: hidden;

@@ -68,6 +68,11 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   response.headers.set('x-pathname', pathname)
 
+  // My Library lives at /dashboard/library; /academy/library redirects there
+  if (pathname === '/academy/library') {
+    return NextResponse.redirect(new URL('/dashboard/library', request.url))
+  }
+
   // Lock admin area: require session for /admin/* except /admin/login
   const isAdminRoute = pathname.startsWith('/admin')
   const isAdminLogin = pathname === '/admin/login'

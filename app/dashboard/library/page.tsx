@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import { getCurrentSupabaseUser } from '@/lib/auth'
 import { Button } from '@/components/ui/Button'
@@ -8,6 +9,7 @@ import {
   getAcademyProductBySlug,
   ACADEMY_UPSELL_SUGGESTION,
 } from '@/lib/academy-products'
+import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
 
 export const dynamic = 'force-dynamic'
 
@@ -46,44 +48,67 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       </header>
 
       {purchases.length === 0 ? (
-        <div className="rounded-2xl border border-gray-200 bg-card p-6 text-center">
-          <p className="text-gray-600 mb-4">You haven’t purchased any Academy products yet.</p>
+        <div className="rounded-2xl border border-gray-200 bg-card p-10 text-center">
+          <p className="text-gray-600 mb-6">No purchases yet. Your purchased manuals and courses will appear here.</p>
           <Button href="/academy" variant="primary">
             Browse Academy
           </Button>
         </div>
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-6">
           {purchases.map((p) => {
             const product = getAcademyProductBySlug(p.productSlug)
             const isCourse = product?.type === 'COURSE'
             const href = isCourse
               ? `/academy/course/${product!.slug}`
-              : (product?.downloadUrl ?? product?.courseUrl ?? '#')
+              : `/api/academy/download/${p.productSlug}`
             const label = isCourse ? 'Open course' : 'Download'
             const priceDisplay =
               p.productPrice === 0 ? 'FREE' : `$${(p.productPrice / 100).toFixed(2)}`
             return (
               <li
                 key={p.id}
-                className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                className="flex flex-col sm:flex-row gap-4 rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm"
               >
-                <div>
-                  <h2 className="font-bold text-forest">{p.productTitle}</h2>
-                  <p className="text-sm text-gray-500">
-                    Purchased {new Date(p.purchasedAt).toLocaleDateString()}
-                    {priceDisplay !== 'FREE' && ` · ${priceDisplay}`}
-                  </p>
-                </div>
-                <div className="flex gap-3">
-                  {href !== '#' && (
-                    <Link
-                      href={href}
-                      className="inline-block bg-forest text-goldAccent font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition text-sm"
-                    >
-                      {label} →
-                    </Link>
-                  )}
+                {product?.image && (
+                  <div className="sm:w-40 flex-shrink-0 relative aspect-video sm:aspect-square bg-card">
+                    <Image
+                      src={product.image}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      sizes="160px"
+                    />
+                  </div>
+                )}
+                <div className="flex-1 p-4 flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <h2 className="font-bold text-forest">{p.productTitle}</h2>
+                    <p className="text-sm text-gray-500">
+                      Purchased {new Date(p.purchasedAt).toLocaleDateString()}
+                      {priceDisplay !== 'FREE' && ` · ${priceDisplay}`}
+                    </p>
+                  </div>
+                  <div className="flex gap-3">
+                    {isCourse ? (
+                      <Link
+                        href={href}
+                        className="inline-block bg-forest text-goldAccent font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition text-sm"
+                      >
+                        {label} →
+                      </Link>
+                    ) : (
+                      <TrackedDownloadLink
+                        href={href}
+                        productSlug={p.productSlug}
+                        productTitle={p.productTitle}
+                        source="library"
+                        className="inline-block bg-forest text-goldAccent font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition text-sm"
+                      >
+                        {label} →
+                      </TrackedDownloadLink>
+                    )}
+                  </div>
                 </div>
               </li>
             )

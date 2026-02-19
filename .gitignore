@@ -42,5 +42,11 @@ next-env.d.ts
 # exports
 /exports
 
+# academy cover source images (optional; optimized outputs in public/academy/covers/*.png are committed)
+/public/academy/covers/_source/*.png
+
+# private Academy PDFs (add manually; optional: commit for deployment)
+/storage/academy-products/*.pdf
+
 # data (keep status file, but ignore other data files if added)
 # /data/proju-crop-status.json is committed (admin-managed)

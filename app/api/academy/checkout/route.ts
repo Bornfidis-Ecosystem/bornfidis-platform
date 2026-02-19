@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getCurrentSupabaseUser } from '@/lib/auth'
 import { getAcademyProductBySlug } from '@/lib/academy-products'
+import { getAcademyStorageFilename } from '@/lib/academy-storage'
 
-function getBaseUrl(): string {
+function getBaseUrl(req: NextRequest): string {
+  try {
+    const u = new URL(req.url)
+    return `${u.protocol}//${u.host}`
+  } catch {
+    // fallback to env
+  }
   if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
@@ -14,6 +21,8 @@ function getBaseUrl(): string {
  * POST /api/academy/checkout
  * Body: { productId: string } (product slug)
  * Creates Stripe Checkout session for Academy product. User must be logged in.
+ * Success: /academy/success?session_id={CHECKOUT_SESSION_ID}
+ * Cancel: back to product detail /academy/[slug]
  */
 export async function POST(req: NextRequest) {
   const user = await getCurrentSupabaseUser()
@@ -51,7 +60,8 @@ export async function POST(req: NextRequest) {
   }
 
   const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-04-10' })
-  const baseUrl = getBaseUrl()
+  const baseUrl = getBaseUrl(req)
+  const storageFile = getAcademyStorageFilename(product.slug)
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -63,11 +73,13 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/dashboard/library`,
-      cancel_url: `${baseUrl}/academy`,
+      success_url: `${baseUrl}/academy/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/academy/${product.slug}`,
       client_reference_id: user.id,
       metadata: {
         productSlug: product.slug,
+        productTitle: product.title,
+        ...(storageFile && { productFile: storageFile }),
         source: 'academy',
       },
     })

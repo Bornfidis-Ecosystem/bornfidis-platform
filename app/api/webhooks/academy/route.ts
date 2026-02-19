@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to record purchase' }, { status: 500 })
   }
 
-  // TASK 5 — Purchase confirmation email (with suggested related product)
+  // Purchase confirmation email (library link, download link, suggested product, support contact)
   const customerEmail = session.customer_email ?? session.customer_details?.email
   if (customerEmail && typeof customerEmail === 'string') {
     const baseUrl =
@@ -99,12 +99,14 @@ export async function POST(req: NextRequest) {
       process.env.NEXT_PUBLIC_SITE_URL ||
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
     const libraryUrl = `${baseUrl}/dashboard/library`
+    const downloadUrl = `${baseUrl}/api/academy/download/${productSlug}`
     const suggestedSlug = ACADEMY_UPSELL_SUGGESTION[productSlug]
     const suggestedProduct = suggestedSlug ? getAcademyProductBySlug(suggestedSlug) : null
     await sendAcademyPurchaseConfirmationEmail(customerEmail, {
       productTitle: product.title,
       amountPaidCents: product.priceCents,
       libraryUrl,
+      downloadUrl,
       suggestedProduct: suggestedProduct
         ? {
             title: suggestedProduct.title,
