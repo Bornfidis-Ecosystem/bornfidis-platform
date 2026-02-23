@@ -13,25 +13,72 @@ import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
 
 export const dynamic = 'force-dynamic'
 
+const LIBRARY_LOAD_ERROR = 'LIBRARY_LOAD_ERROR'
+
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export default async function LibraryPage({ searchParams }: PageProps) {
-  const user = await getCurrentSupabaseUser()
-  if (!user) {
-    redirect(`/admin/login?next=${encodeURIComponent('/dashboard/library')}`)
-  }
-
-  const sp = await searchParams
-  const claimed = sp?.claimed === '1' || sp?.claimed === 'true'
-
-  const purchases = await db.academyPurchase.findMany({
-    where: { authUserId: user.id },
-    orderBy: { purchasedAt: 'desc' },
-  })
-
+function LibraryErrorUI({ message }: { message: string }) {
   return (
+    <main className="max-w-4xl mx-auto px-6 py-16">
+      <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-center">
+        <h1 className="text-xl font-bold text-red-800 mb-2">Something went wrong</h1>
+        <p className="text-red-700 mb-6">{message}</p>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button href="/admin/login?next=%2Fdashboard%2Flibrary" variant="primary">
+            Log in again
+          </Button>
+          <Link
+            href="/academy"
+            className="inline-flex items-center justify-center font-semibold rounded-xl px-6 py-2.5 border-2 border-forest text-forest hover:bg-forest/10 transition"
+          >
+            Back to Academy
+          </Link>
+        </div>
+      </div>
+    </main>
+  )
+}
+
+export default async function LibraryPage({ searchParams }: PageProps) {
+  try {
+    let user: Awaited<ReturnType<typeof getCurrentSupabaseUser>>
+    try {
+      user = await getCurrentSupabaseUser()
+    } catch (err) {
+      console.error(LIBRARY_LOAD_ERROR, err)
+      return <LibraryErrorUI message="We couldn’t verify your session. Please log in again." />
+    }
+
+    if (!user) {
+      redirect(`/admin/login?next=${encodeURIComponent('/dashboard/library')}`)
+    }
+
+    let sp: { [key: string]: string | string[] | undefined }
+    try {
+      sp = await searchParams
+    } catch (err) {
+      console.error(LIBRARY_LOAD_ERROR, err)
+      return <LibraryErrorUI message="We couldn’t load this page. Please try again." />
+    }
+
+    const claimed = sp?.claimed === '1' || sp?.claimed === 'true'
+
+    let purchases: Awaited<ReturnType<typeof db.academyPurchase.findMany>>
+    try {
+      purchases = await db.academyPurchase.findMany({
+        where: { authUserId: user.id },
+        orderBy: { purchasedAt: 'desc' },
+      })
+    } catch (err) {
+      console.error(LIBRARY_LOAD_ERROR, err)
+      return (
+        <LibraryErrorUI message="We couldn’t load your library. Please try again or log in again." />
+      )
+    }
+
+    return (
     <main className="max-w-4xl mx-auto px-6 py-16">
       {claimed && (
         <SuccessAlert
@@ -59,10 +106,11 @@ export default async function LibraryPage({ searchParams }: PageProps) {
           {purchases.map((p) => {
             const product = getAcademyProductBySlug(p.productSlug)
             const isCourse = product?.type === 'COURSE'
-            const href = isCourse
-              ? `/academy/course/${product!.slug}`
+            const href = isCourse && product
+              ? `/academy/course/${product.slug}`
               : `/api/academy/download/${p.productSlug}`
-            const label = isCourse ? 'Open course' : 'Download'
+            const label = isCourse && product ? 'Open course' : 'Download'
+            const fileAvailable = !isCourse || !!product
             const priceDisplay =
               p.productPrice === 0 ? 'FREE' : `$${(p.productPrice / 100).toFixed(2)}`
             return (
@@ -90,7 +138,9 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                     </p>
                   </div>
                   <div className="flex gap-3">
-                    {isCourse ? (
+                    {!fileAvailable ? (
+                      <span className="text-sm text-gray-500 italic">File not available</span>
+                    ) : isCourse ? (
                       <Link
                         href={href}
                         className="inline-block bg-forest text-goldAccent font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition text-sm"
@@ -148,6 +198,10 @@ export default async function LibraryPage({ searchParams }: PageProps) {
         </Link>
       </p>
     </main>
-  )
+    )
+  } catch (err) {
+    console.error(LIBRARY_LOAD_ERROR, err)
+    return <LibraryErrorUI message="Something went wrong loading your library. Please try again or log in." />
+  }
 }
 
