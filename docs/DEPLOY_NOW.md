@@ -43,7 +43,7 @@ In **Vercel → Project → Settings → Environment Variables**, set these for 
 - `NEXT_PUBLIC_STRIPE_ACADEMY_REGENERATIVE_ENTERPRISE`, `_FARMER`, `_VERMONT_CONTRACTOR`, `_JAMAICAN_CHEF` (Stripe Price IDs)
 - `NEXT_PUBLIC_BASE_URL` = `https://platform.bornfidis.com`
 
-See `.env.example` for the full list. Add any optional vars (cron, SMS, etc.) if you use them.
+See `.env.example` for the full list. For Academy Stripe details, see [STRIPE_ENV_CHECKLIST.md](STRIPE_ENV_CHECKLIST.md). Add any optional vars (cron, SMS, etc.) if you use them.
 
 ---
 

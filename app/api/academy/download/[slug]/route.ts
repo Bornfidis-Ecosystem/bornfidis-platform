@@ -11,29 +11,50 @@ export const dynamic = 'force-dynamic'
  * Secure download: only if the user has an AcademyPurchase for this product.
  * Reads from private storage (storage/academy-products/), not public.
  */
+const LOG_LABEL = 'ACADEMY_DOWNLOAD'
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params
-  const user = await getCurrentSupabaseUser()
+
+  let user: Awaited<ReturnType<typeof getCurrentSupabaseUser>>
+  try {
+    user = await getCurrentSupabaseUser()
+  } catch (err) {
+    console.error(LOG_LABEL, 'getCurrentSupabaseUser threw', err)
+    return NextResponse.json({ error: 'Authentication error' }, { status: 500 })
+  }
+
   if (!user) {
-    // Redirect to login; after login user can open My Library to download
     const loginUrl = new URL('/admin/login', _request.url)
     loginUrl.searchParams.set('next', '/dashboard/library')
     return NextResponse.redirect(loginUrl, 302)
   }
 
-  const purchase = await db.academyPurchase.findFirst({
-    where: { authUserId: user.id, productSlug: slug },
-  })
+  let purchase: Awaited<ReturnType<typeof db.academyPurchase.findFirst>>
+  try {
+    purchase = await db.academyPurchase.findFirst({
+      where: { authUserId: user.id, productSlug: slug },
+    })
+  } catch (err) {
+    console.error(LOG_LABEL, 'db.academyPurchase.findFirst failed', {
+      slug,
+      userId: user.id,
+      error: err instanceof Error ? err.message : String(err),
+    })
+    return NextResponse.json({ error: 'Unable to verify purchase' }, { status: 500 })
+  }
+
   if (!purchase) {
     return NextResponse.json({ error: 'Forbidden: purchase required' }, { status: 403 })
   }
 
   const filename = getAcademyStorageFilename(slug)
   if (!filename) {
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    console.warn(LOG_LABEL, 'no storage filename for slug', { slug })
+    return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
   }
 
   const storageDir = path.join(process.cwd(), 'storage', 'academy-products')
@@ -43,15 +64,22 @@ export async function GET(
   }
 
   if (!fs.existsSync(filePath)) {
-    return NextResponse.json({ error: 'File not found' }, { status: 404 })
+    console.warn(LOG_LABEL, 'file not found on disk', { slug, filename })
+    return NextResponse.json({ error: 'File not available' }, { status: 404 })
   }
 
-  // Optional: log download for analytics (productSlug, authUserId, timestamp)
   if (process.env.NODE_ENV === 'development') {
-    console.info('[Academy download]', { slug, userId: user.id })
+    console.info(LOG_LABEL, 'serving file', { slug, userId: user.id })
   }
 
-  const buffer = fs.readFileSync(filePath)
+  let buffer: Buffer
+  try {
+    buffer = fs.readFileSync(filePath)
+  } catch (err) {
+    console.error(LOG_LABEL, 'readFileSync failed', { slug, filePath, error: err instanceof Error ? err.message : String(err) })
+    return NextResponse.json({ error: 'File not available' }, { status: 404 })
+  }
+
   const safeName = filename.replace(/^.*[\\/]/, '')
   return new NextResponse(buffer, {
     status: 200,

@@ -165,7 +165,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     title: 'Regenerative Enterprise Foundations™',
     subtitle: 'A Structured Operating System for Jamaican Entrepreneurs',
     description:
-      'Not just for farmers. Not just for chefs. For anyone building something serious. This 60-page discipline manual provides the systems, frameworks, and rhythms needed to transform chaotic hustle into sustainable enterprise. Includes: Pricing With Dignity framework, 4-layer revenue structure, weekly operating rhythm, parish authority model, reputation covenant, and 90-day builder covenant.',
+      '60-page discipline manual providing systems, frameworks, and rhythms to transform chaotic hustle into sustainable enterprise. Includes: Pricing With Dignity framework (Cost + Margin + Buffer), 4-layer revenue structure, weekly operating rhythm (Monday/Wednesday/Friday checkpoints), parish authority model, reputation covenant, 90-Day Builder Covenant, and 7 ready-to-use templates. Digital PDF delivery. Lifetime access and updates.',
     type: 'DOWNLOAD',
     priceDisplay: '$39',
     priceCents: 3900,
@@ -203,7 +203,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     title: 'Regenerative Farmer Blueprint',
     subtitle: 'A Structured Operating System for Jamaican Farmers',
     description:
-      'Stop guessing. Start operating. This 60-page discipline manual provides Jamaican farmers with the systems, frameworks, and templates needed to move from subsistence farming to profitable enterprise. Includes: Crop planning for Jamaica climate, parish market access guide, direct chef outreach scripts, pricing & margin protection, weekly farm operations planner, and marketplace readiness checklist.',
+      '60-page discipline manual covering soil regeneration, crop planning, market access, and financial sustainability. Includes: Soil health assessment framework, crop rotation planner (12-month calendar), regenerative certification roadmap, pricing calculator (cost + margin + dignity), market access strategy, and 10 ready-to-use templates for farm operations. Digital PDF delivery. Lifetime access and updates.',
     type: 'DOWNLOAD',
     priceDisplay: '$49',
     priceCents: 4900,
@@ -243,7 +243,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     title: 'Vermont Contractor Foundations™',
     subtitle: 'A Structured Operating System for Vermont Contractors',
     description:
-      'Build sustainable contracting business in Vermont. This 60-page discipline manual provides contractors with the systems, frameworks, and templates needed to move from job-to-job chaos to profitable enterprise. Includes: Bidding with integrity framework, revenue structure with winter income, weekly operating rhythm, territory authority model, reputation covenant, and 90-day contractor covenant.',
+      '60-page discipline manual providing systems, frameworks, and rhythms for sustainable contracting business. Includes: Project estimation framework (materials + labor + buffer), weekly operating rhythm (Monday/Wednesday/Friday checkpoints), client communication templates, seasonal planning guide, reputation covenant, and 8 ready-to-use templates for contracts, invoices, and project management. Digital PDF delivery. Lifetime access and updates.',
     type: 'DOWNLOAD',
     priceDisplay: '$49',
     priceCents: 4900,
@@ -281,7 +281,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     title: 'Jamaican Chef Enterprise System™',
     subtitle: 'A Structured Operating System for Jamaican Chefs',
     description:
-      'Move from kitchen worker to enterprise operator. This 70-page discipline manual provides Jamaican chefs with the systems, frameworks, and templates needed to transform culinary skill into profitable business. Includes: Direct farmer sourcing framework, catering profit calculator, menu costing templates, supplier agreement templates, brand positioning worksheet, event pricing structure guide, and 90-day kitchen covenant.',
+      '70-page comprehensive manual covering menu design, kitchen operations, cost management, and business scaling. Includes: Menu engineering framework (cost + creativity + culture), kitchen efficiency systems, staff management templates, catering business model, farm-to-table sourcing guide, and 12 ready-to-use templates for recipes, costing, inventory, and marketing. Digital PDF delivery. Lifetime access and updates.',
     type: 'DOWNLOAD',
     priceDisplay: '$79',
     priceCents: 7900,

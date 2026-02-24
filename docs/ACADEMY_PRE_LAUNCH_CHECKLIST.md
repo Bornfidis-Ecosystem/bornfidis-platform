@@ -38,6 +38,10 @@ Use this checklist before switching Stripe to live mode and announcing the launc
   - /academy, /academy/[slug], /academy/success, /dashboard/library
   - Nav dropdown and footer links on small viewports
 
+- [ ] **Sportswear page and nav work**
+  - /sportswear loads; product grid and “Notify Me” toast work
+  - Nav and footer include Sportswear link; homepage links to Academy and Sportswear
+
 - [ ] **Page load times are acceptable (< 3 seconds)**
   - Test on production (or staging) with throttling if needed
 
@@ -121,8 +125,11 @@ Use this checklist before switching Stripe to live mode and announcing the launc
 | Cover images | `public/academy/covers/` — add sources to `_source/`, run `npm run copy-academy-covers` |
 | PDF storage | `storage/academy-products/` — see README for filenames |
 | Stripe setup | `docs/STRIPE_ACADEMY_SETUP.md` |
+| Stripe env checklist | `docs/STRIPE_ENV_CHECKLIST.md` |
 | Purchase flow test | `docs/ACADEMY_PURCHASE_FLOW_TEST.md` |
-| Env vars (Academy) | `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_ACADEMY_*` (4), `STRIPE_ACADEMY_WEBHOOK_SECRET`, `RESEND_API_KEY` (optional) |
+| Manual fulfillment fallback | `docs/MANUAL_ACADEMY_FULFILLMENT.md` |
+| Env vars (Academy) | `STRIPE_SECRET_KEY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_STRIPE_ACADEMY_*` (4), `STRIPE_ACADEMY_WEBHOOK_SECRET`, `NEXT_PUBLIC_BASE_URL`; optional: `RESEND_API_KEY` |
+| Sportswear (coming soon) | `lib/sportswear-products.ts`, `app/sportswear/page.tsx` |
 
 ---
 

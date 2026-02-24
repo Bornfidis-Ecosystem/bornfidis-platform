@@ -53,6 +53,14 @@ export default async function Home() {
             <Link href="/book" className="font-medium text-forest hover:underline">
               Book provisions
             </Link>
+            {' · '}
+            <Link href="/academy" className="font-medium text-forest hover:underline">
+              Academy
+            </Link>
+            {' · '}
+            <Link href="/sportswear" className="font-medium text-forest hover:underline">
+              Sportswear
+            </Link>
           </p>
         </div>
       </section>

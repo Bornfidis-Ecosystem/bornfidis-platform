@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 import type { AcademyProduct } from '@/lib/academy-products'
 import { Spinner } from '@/components/ui/Spinner'
 import { trackAcademyBuyClick } from '@/lib/academy-analytics'
@@ -68,7 +69,9 @@ export default function AcademyBuyButton({
           window.location.href = `/admin/login?next=${next}`
           return
         }
-        setError(data.error ?? 'Checkout failed')
+        const msg = data.error ?? 'Checkout failed'
+        setError(msg)
+        toast.error('Failed to start checkout. Please try again.')
         return
       }
       if (data.url) {
@@ -76,8 +79,10 @@ export default function AcademyBuyButton({
         return
       }
       setError('No checkout URL returned')
+      toast.error('Failed to start checkout. Please try again.')
     } catch {
       setError('Unable to start checkout')
+      toast.error('Failed to start checkout. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -99,7 +104,7 @@ export default function AcademyBuyButton({
         className={`inline-flex items-center justify-center gap-2 bg-forest text-goldAccent font-semibold rounded-xl hover:opacity-90 transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed ${sizeClass}`}
       >
         {loading && <Spinner size="sm" className="flex-shrink-0" />}
-        {loading ? 'Redirecting…' : isFree ? 'Get for free' : 'Buy now'}
+        {loading ? 'Processing...' : isFree ? 'Get for free' : `Buy Now for ${product.priceDisplay}`}
       </button>
       {error && (
         <p className="mt-2 text-sm text-red-600" role="alert">

@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 
 /**
- * Prisma Client Singleton
- * Prevents multiple instances in development
- * 
+ * Prisma Client Singleton — single instance for the entire app.
+ * Prevents multiple instances in development (hot reload) and production.
+ *
  * Note: Prisma automatically loads DATABASE_URL from environment variables.
  * Next.js automatically loads .env.local in development and production.
  */
@@ -92,7 +92,6 @@ function createPrismaClient() {
   })
 }
 
-export const db =
-  globalForPrisma.prisma ?? createPrismaClient()
-
+// Singleton: reuse existing client or create once
+export const db = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db

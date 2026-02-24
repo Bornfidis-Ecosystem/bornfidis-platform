@@ -47,6 +47,11 @@ export default function PublicFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/sportswear" className="text-green-100 hover:text-gold transition">
+                  Sportswear
+                </Link>
+              </li>
+              <li>
                 <Link href="/dashboard/library" className="text-green-100 hover:text-gold transition">
                   My Library
                 </Link>

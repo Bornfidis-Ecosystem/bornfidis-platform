@@ -120,6 +120,12 @@ export default function PublicNav() {
               )}
             </div>
             <Link
+              href="/sportswear"
+              className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap text-white hover:bg-navyLight hover:text-white"
+            >
+              Sportswear
+            </Link>
+            <Link
               href="/dashboard/library"
               className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap text-white hover:bg-navyLight hover:text-white"
             >
@@ -187,6 +193,13 @@ export default function PublicNav() {
                   </Link>
                 ))}
               </div>
+              <Link
+                href="/sportswear"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out text-white hover:bg-navyLight"
+              >
+                Sportswear
+              </Link>
               <Link
                 href="/dashboard/library"
                 onClick={() => setMobileMenuOpen(false)}
