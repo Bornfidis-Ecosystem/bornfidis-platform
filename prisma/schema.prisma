@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -16,79 +10,34 @@ datasource db {
   schemas   = ["public"]
 }
 
-enum FarmerIntakeStatus {
-  received
-  parsed
-  profile_created
-  needs_review
-  needs_followup
-
-  @@schema("public")
-}
-
-// ============================================================================
-// User Roles Enum — Bornfidis Auth + Roles (Phase 1)
-// Core: ADMIN, STAFF, PARTNER, USER. Legacy: COORDINATOR, CHEF, FARMER, VOLUNTEER.
-// ============================================================================
-
-enum UserRole {
-  ADMIN
-  STAFF
-  PARTNER
-  USER
-  COORDINATOR
-  CHEF
-  FARMER
-  VOLUNTEER
-  EDUCATOR
-
-  @@schema("public")
-}
-
-// ============================================================================
-// Payout Status Enum (Phase 4.5)
-// ============================================================================
-
-enum PayoutStatus {
-  PENDING
-  APPROVED
-  PAID
-
-  @@schema("public")
-}
-
-// ============================================================================
-// Chef Tiers (Phase 2S — Tiered Chef Rates)
-// ============================================================================
-
-enum ChefTier {
-  STANDARD
-  PRO
-  ELITE
-
-  @@schema("public")
-}
-
 model Farmer {
-  id        String   @id @default(uuid())
-  name      String
-  phone     String   @unique
-  parish    String?
-  acres     Float?
-  language  String   @default("en")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id                        String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  createdAt                 DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                 DateTime?     @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  name                      String
+  phone                     String        @unique
+  whatsapp_number           String?
+  location                  String?
+  parish                    String?       @default("Portland")
+  farm_name                 String?
+  crops_available           String[]
+  farm_size_acres           Decimal?      @db.Decimal
+  preferred_collection_day  String?
+  typical_weekly_volume_lbs Decimal?      @db.Decimal
+  quality_rating            Int?
+  reliability_rating        Int?
+  price_list                Json?
+  payment_terms             String?
+  farmer_status             String?       @default("inquiry")
+  onboarding_completed      Boolean?      @default(false)
+  last_delivery_date        DateTime?     @db.Date
+  notes                     String?
+  source                    String?       @default("whatsapp")
+  tags                      String[]
+  farmListings              FarmListing[]
 
-  intakes FarmerIntake[]
-  crops   FarmerCrop[]
-
-  // Phase 4: Booking assignments
-  bookingAssignments BookingFarmer[]
-  prepAssignments    PrepFarmerAssignment[]
-
-  // Phase 4.5: Payouts
-  payouts FarmerPayout[]
-
+  @@index([phone], map: "idx_farmers_phone")
+  @@index([farmer_status], map: "idx_farmers_status")
   @@map("farmers")
   @@schema("public")
 }
@@ -99,22 +48,17 @@ model FarmerCrop {
   crop      String
   createdAt DateTime @default(now()) @map("created_at")
 
-  farmer Farmer @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
   @@unique([farmerId, crop])
   @@map("farmer_crops")
   @@schema("public")
 }
 
-// Intake table (matches Supabase table structure)
-// Note: Column names in PostgreSQL may be stored as lowercase or camelCase
-// Adjust @map directives based on actual database column names
 model Intake {
   id         String   @id @default(uuid())
-  createdAt  DateTime @default(now()) @map("createdAt") @db.Timestamptz
+  createdAt  DateTime @default(now()) @map("createdAt") @db.Timestamptz(6)
   channel    String
   from       String   @map("from")
-  message    String   @db.Text
+  message    String
   farmerName String?  @map("farmerName")
   status     String   @default("new")
   type       String   @default("inquiry")
@@ -128,18 +72,16 @@ model FarmerIntake {
   createdAt        DateTime           @default(now()) @map("created_at")
   channel          String             @default("whatsapp")
   fromPhone        String             @map("from_phone")
-  messageText      String?            @map("message_text") @db.Text
+  messageText      String?            @map("message_text")
   mediaUrl         String?            @map("media_url")
   mediaContentType String?            @map("media_content_type")
-  transcript       String?            @db.Text
+  transcript       String?
   extractedJson    Json?              @map("extracted_json")
   farmerId         String?            @map("farmer_id")
   parsedJson       Json?              @map("parsed_json")
   parsedData       Json?              @map("parsed_data")
   status           FarmerIntakeStatus @default(received)
-  error            String?            @db.Text
-
-  farmer Farmer? @relation(fields: [farmerId], references: [id], onDelete: SetNull)
+  error            String?
 
   @@map("farmer_intakes")
   @@schema("public")
@@ -149,119 +91,60 @@ model WhatsAppMessage {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now()) @map("created_at")
   phoneNumber String   @map("phone_number")
-  messageText String   @map("message_text") @db.Text
+  messageText String   @map("message_text")
   farmerName  String?  @map("farmer_name")
 
   @@map("whatsapp_messages")
   @@schema("public")
 }
 
-// ============================================================================
-// Drizzle Migration Models
-// ============================================================================
-
 model User {
-  id           String    @id @default(uuid())
-  openId       String?   @map("open_id")
-  name         String?
-  email        String?
-  loginMethod  String?   @map("login_method")
-  role         UserRole? @default(USER)
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  lastSignedIn DateTime? @map("last_signed_in")
-  // Phase 2AM: SMS fallback for critical alerts
-  smsEnabled Boolean @default(true) @map("sms_enabled")
-  phone     String?  // optional; chefs use PartnerProfile.phone, admins can set here
-
-  partnerProfile PartnerProfile?
-
-  // Phase 2I: Chef assignments (workflow status per booking)
-  chefAssignments ChefAssignment[]
-
-  // Phase 2K: Chef prep checklists (per-booking)
-  chefPrepChecklists ChefPrepChecklist[]
-
-  // Phase 2M: Education progress (chef modules)
-  educationProgress EducationProgress[]
-
-  // Phase 2P: Badges & certifications
-  userBadges UserBadge[]
-
-  // Phase 2S: Chef tier (for rate multiplier)
-  chefProfile ChefProfile?
-
-  // Phase 2U: Client reviews (as chef)
-  reviews Review[]
-
-  // Phase 2V: Chef availability (day-based calendar)
-  chefAvailabilities ChefAvailability[]
-
-  // Phase 2Y: Time-slot availability (within a day)
-  chefTimeSlots ChefTimeSlot[]
-
-  // Phase 2X: Featured chef (max 5, eligibility + admin override)
-  chefFeature ChefFeature?
-
-  // Phase 2Z: Coaching (as chef)
-  coachingCasesAsChef CoachingCase[] @relation("CoachingCaseChef")
-  // Phase 2Z: Assigned as coach (Staff/Admin)
-  coachingCasesAsCoach CoachingCase[] @relation("CoachingCaseCoach")
-
-  // Phase 2AA: Leaderboard (exclude from public ranking; snapshot row per chef)
-  leaderboardExclusion ChefLeaderboardExclusion?
-  leaderboardSnapshot  LeaderboardSnapshot?
-
-  // Phase 2AB: Calendar sync (iCal feed; long-lived revocable token)
-  chefCalendarToken ChefCalendarToken?
-
-  // Phase 2AK: Web Push (PWA) subscriptions per device
-  pushSubscriptions PushSubscription[]
-
-  // Phase 2AM: SMS fallback delivery log (rate limit + dedup)
-  smsDeliveryLogs SmsDeliveryLog[]
-
-  // Phase 2AO: Incident postmortems (linked when chef involved)
-  incidentsAsChef Incident[]
-
-  // Phase 2AV: Margin guardrail overrides (audit log)
-  marginOverrideLogs MarginOverrideLog[]
-
-  // Phase 2BA: Succession planning (primary/backup for critical roles)
+  id                    String                    @id @default(uuid())
+  openId                String?                   @map("open_id")
+  name                  String?
+  email                 String?
+  loginMethod           String?                   @map("login_method")
+  createdAt             DateTime                  @default(now()) @map("created_at")
+  updatedAt             DateTime                  @updatedAt @map("updated_at")
+  lastSignedIn          DateTime?                 @map("last_signed_in")
+  role                  UserRole?                 @default(FARMER)
+  chefAssignments       ChefAssignment[]
+  chefAvailabilities    ChefAvailability[]
+  chefCalendarToken     ChefCalendarToken?
+  chefFeature           ChefFeature?
+  leaderboardExclusion  ChefLeaderboardExclusion?
+  chefPrepChecklists    ChefPrepChecklist[]
+  chefProfile           ChefProfile?
+  chefTimeSlots         ChefTimeSlot[]
+  coachingCasesAsCoach  CoachingCase[]            @relation("CoachingCaseCoach")
+  coachingCasesAsChef   CoachingCase[]            @relation("CoachingCaseChef")
+  educationProgress     EducationProgress[]
+  incidentsAsChef       Incident[]
+  leaderboardSnapshot   LeaderboardSnapshot?
+  marginOverrideLogs    MarginOverrideLog[]
+  partnerProfile        PartnerProfile?
+  pushSubscriptions     PushSubscription[]
   successionAssignments SuccessionAssignment[]
+  userBadges            UserBadge[]
 
   @@map("users")
   @@schema("public")
 }
 
-// ============================================================================
-// Partner Invites (Phase 2B — Invite-Only Onboarding)
-// ============================================================================
-
 model Invite {
-  id        String    @id @default(cuid())
-  email     String    @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   role      UserRole
-  token     String    @unique
-  invitedBy String    @map("invited_by")
-  accepted  Boolean   @default(false)
-  expiresAt DateTime @map("expires_at")
-  createdAt DateTime  @default(now()) @map("created_at")
+  token     String   @unique
+  invitedBy String   @map("invited_by")
+  accepted  Boolean  @default(false)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(6)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  @@index([email], map: "idx_invites_email")
+  @@index([expiresAt], map: "idx_invites_expires_at")
+  @@index([token], map: "idx_invites_token")
   @@map("invites")
-  @@schema("public")
-}
-
-// ============================================================================
-// Partner Profile (Phase 2C — Setup Wizard)
-// ============================================================================
-
-enum PartnerType {
-  FARMER
-  CHEF
-  COOPERATIVE
-  OTHER
-
   @@schema("public")
 }
 
@@ -272,13 +155,13 @@ model PartnerProfile {
   partnerType PartnerType @map("partner_type")
   parish      String?
   phone       String?
-  bio         String?     @db.Text
+  bio         String?
   completed   Boolean     @default(false)
-  createdAt   DateTime    @default(now()) @map("created_at")
-  updatedAt   DateTime    @updatedAt @map("updated_at")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  @@index([userId], map: "idx_partner_profiles_user_id")
   @@map("partner_profiles")
   @@schema("public")
 }
@@ -305,28 +188,26 @@ model Phase {
   id          String  @id @default(uuid())
   number      Int?
   title       String?
-  description String? @db.Text
+  description String?
   startMonth  String? @map("start_month")
   endMonth    String? @map("end_month")
   status      String?
-
-  months Month[]
+  months      Month[]
 
   @@map("phases")
   @@schema("public")
 }
 
 model Month {
-  id         String  @id @default(uuid())
-  phaseId    String? @map("phase_id")
-  number     Int?
-  title      String?
-  objectives String? @db.Text
-  status     String?
-
-  phase        Phase?        @relation(fields: [phaseId], references: [id], onDelete: Cascade)
+  id           String        @id @default(uuid())
+  phaseId      String?       @map("phase_id")
+  number       Int?
+  title        String?
+  objectives   String?
+  status       String?
   deliverables Deliverable[]
   metrics      Metric[]
+  phase        Phase?        @relation(fields: [phaseId], references: [id], onDelete: Cascade)
 
   @@map("months")
   @@schema("public")
@@ -336,10 +217,9 @@ model Deliverable {
   id          String   @id @default(uuid())
   monthId     String?  @map("month_id")
   title       String?
-  description String?  @db.Text
+  description String?
   completed   Boolean? @default(false)
-
-  month Month? @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  month       Month?   @relation(fields: [monthId], references: [id], onDelete: Cascade)
 
   @@map("deliverables")
   @@schema("public")
@@ -352,339 +232,201 @@ model Metric {
   target  Float?
   actual  Float?
   unit    String?
-
-  month Month? @relation(fields: [monthId], references: [id], onDelete: Cascade)
+  month   Month?  @relation(fields: [monthId], references: [id], onDelete: Cascade)
 
   @@map("metrics")
   @@schema("public")
 }
 
-// ============================================================================
-// Booking System Models
-// ============================================================================
-
 model BookingInquiry {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
-
-  // Customer Info
-  name             String
-  email            String?
-  phone            String?
-  whatsapp         String?
-  preferredContact String? @map("preferred_contact")
-
-  // Event Details
-  eventType     String?  @map("event_type")
-  eventDate     DateTime @map("event_date") @db.Date
-  eventTime     String?  @map("event_time")
-  location      String
-  locationCity  String?  @map("location_city")
-  locationState String?  @map("location_state")
-
-  // Service Specs
-  guests              Int?    @db.Integer
-  budgetRange         String? @map("budget_range")
-  dietary             String? @db.Text
-  dietaryRestrictions String? @map("dietary_restrictions") @db.Text
-  menuPreferences     String? @map("menu_preferences") @db.Text
-  specialRequests     String? @map("special_requests") @db.Text
-  notes               String? @db.Text
-
-  // Admin Fields
-  status          String    @default("New")
-  statusUpdatedAt DateTime? @map("status_updated_at")
-  followUpDate    DateTime? @map("follow_up_date") @db.Date
-  adminNotes      String?   @map("admin_notes") @db.Text
-  internalNotes   String?   @map("internal_notes") @db.Text
-
-  // Phase 3A: Quote + Deposit
-  quoteCurrency        String?   @map("quote_currency")
-  quoteSubtotalCents   Int?      @default(0) @map("quote_subtotal_cents")
-  quoteTaxCents        Int?      @default(0) @map("quote_tax_cents")
-  quoteTotalCents      Int?      @default(0) @map("quote_total_cents")
-  quoteDepositCents    Int?      @default(0) @map("quote_deposit_cents")
-  quoteSentAt          DateTime? @map("quote_sent_at")
-  stripePaymentLinkUrl String?   @map("stripe_payment_link_url")
-  stripeInvoiceId      String?   @map("stripe_invoice_id")
-  stripePaymentStatus  String?   @map("stripe_payment_status")
-  quotePdfUrl          String?   @map("quote_pdf_url")
-
-  // Phase 3A: Deposit Payment
-  stripeSessionId       String?   @map("stripe_session_id")
-  stripePaymentIntentId String?   @map("stripe_payment_intent_id")
-  depositAmountCents    Int?      @map("deposit_amount_cents")
-  paidAt                DateTime? @map("paid_at")
-
-  // Phase 3B: Quote Builder
-  quoteStatus            String?   @map("quote_status")
-  quoteNotes             String?   @map("quote_notes") @db.Text
-  depositPercent         Int?      @default(30) @map("deposit_percent")
-  subtotalCents          Int?      @default(0) @map("subtotal_cents")
-  taxCents               Int?      @default(0) @map("tax_cents")
-  serviceFeeCents        Int?      @default(0) @map("service_fee_cents")
-  totalCents             Int?      @default(0) @map("total_cents")
-  balanceSessionId       String?   @map("balance_session_id")
-  balancePaymentIntentId String?   @map("balance_payment_intent_id")
-  balancePaidAt          DateTime? @map("balance_paid_at")
-  balanceAmountCents     Int?      @default(0) @map("balance_amount_cents")
-  fullyPaidAt            DateTime? @map("fully_paid_at")
-  quoteUpdatedAt         DateTime? @map("quote_updated_at")
-
-  // Phase 3C: Final Balance
-  quoteServiceFeeCents Int?  @default(0) @map("quote_service_fee_cents")
-  depositPercentage    Int?  @default(30) @map("deposit_percentage")
-  quoteLineItems       Json? @default("[]") @map("quote_line_items")
-
-  // Phase 4B: Customer Portal
-  customerPortalToken          String?   @map("customer_portal_token")
-  customerPortalTokenCreatedAt DateTime? @map("customer_portal_token_created_at")
-  customerPortalTokenRevokedAt DateTime? @map("customer_portal_token_revoked_at")
-
-  // Phase 5B: Chef Assignment & Payout
-  assignedChefId        String?   @map("assigned_chef_id")
-  chefPayoutAmountCents Int?      @map("chef_payout_amount_cents") // total (base + bonus)
-  chefPayoutBaseCents    Int?      @map("chef_payout_base_cents")
-  chefPayoutBonusCents   Int?      @map("chef_payout_bonus_cents")
-  chefPayoutBonusBreakdown Json?   @map("chef_payout_bonus_breakdown") // [{ badge, pct }]
-  chefPayoutBonusOverride Boolean? @default(false) @map("chef_payout_bonus_override") // admin disable bonus for this job
-  chefPayoutStatus      String?   @default("not_applicable") @map("chef_payout_status")
-  chefPayoutBlockers    String[]  @map("chef_payout_blockers")
-  chefPayoutPaidAt      DateTime? @map("chef_payout_paid_at")
-  stripeTransferId      String?   @map("stripe_transfer_id")
-  // Phase 2AI: Multi-currency — base always USD; rate locked at payout time
-  chefPayoutCurrency    String?   @default("USD") @map("chef_payout_currency")
-  chefPayoutFxRate      Float?    @map("chef_payout_fx_rate")
-
-  // Phase 2S: Tier locked at assignment (no retroactive change after payout)
-  chefTierSnapshot    String?   @map("chef_tier_snapshot")   // STANDARD | PRO | ELITE
-  chefRateMultiplier  Float?    @map("chef_rate_multiplier") // 1.0 | 1.10 | 1.20
-
-  // Phase 5D: Completion + Payout Release
-  jobCompletedAt   DateTime? @map("job_completed_at")
-  jobCompletedBy   String?   @map("job_completed_by")
-  payoutHold       Boolean?  @default(false) @map("payout_hold")
-  payoutHoldReason String?   @map("payout_hold_reason") @db.Text
-  payoutReleasedAt DateTime? @map("payout_released_at")
-
-  // Phase 2AJ: SLA alerts & escalations
-  slaStatus          String?   @default("on_track") @map("sla_status")   // on_track | at_risk | breached
-  slaBreaches        Json?     @map("sla_breaches")  // [{ type, breachedAt, alertedAt?, escalatedAt? }]
-  slaAlertedAt       DateTime? @map("sla_alerted_at")
-  slaEscalatedAt     DateTime? @map("sla_escalated_at")
-  slaAcknowledgedAt  DateTime? @map("sla_acknowledged_at")
-  slaAcknowledgedBy   String?   @map("sla_acknowledged_by")
-
-  // Phase 2AL: Region pricing (locked at quote/booking time; no retroactive change)
-  regionCode               String?  @map("region_code")
-  regionMultiplierSnapshot Float?   @map("region_multiplier_snapshot")
-  regionTravelFeeCentsSnapshot Int? @map("region_travel_fee_cents_snapshot")
-  regionMinimumCentsSnapshot   Int? @map("region_minimum_cents_snapshot")
-
-  // Phase 2AN: Surge pricing (locked at quote time; no retroactive)
-  surgeMultiplierSnapshot Float?   @map("surge_multiplier_snapshot")
-  surgeAppliedAt          DateTime? @map("surge_applied_at")
-  surgeLabel               String?   @map("surge_label")  // e.g. "High-Demand Pricing"
-
-  // Tracking
-  referralSource String? @map("referral_source")
-  utmSource      String? @map("utm_source")
-  utmCampaign    String? @map("utm_campaign")
-
-  // Phase 2A: Booking Timeline
-  timeline BookingTimeline[]
-
-  // Phase 3.5: Event Prep Checklist
-  prepItems BookingPrepItem[]
-
-  // Phase 4: Assigned Farmers
-  assignedFarmers BookingFarmer[]
-
-  // Phase 4.5: Farmer Payouts
-  farmerPayouts FarmerPayout[]
-
-  // Phase 2I: Chef assignment (workflow: ASSIGNED → CONFIRMED → IN_PREP → COMPLETED)
-  chefAssignment ChefAssignment?
-
-  // Phase 2K: Chef prep checklist (per-booking progress)
-  chefPrepChecklist ChefPrepChecklist?
-
-  // Phase 2U: Client review (one per booking, after COMPLETED)
-  review Review?
-
-  // Phase 2AO: Incident postmortems (linked from booking)
-  incidents Incident[]
-
-  // Phase 2AV: Margin guardrail overrides (audit log)
-  marginOverrideLogs MarginOverrideLog[]
+  id                           String              @id @default(uuid())
+  createdAt                    DateTime            @default(now()) @map("created_at")
+  updatedAt                    DateTime?           @updatedAt @map("updated_at")
+  name                         String
+  email                        String?
+  phone                        String?
+  whatsapp                     String?
+  preferredContact             String?             @map("preferred_contact")
+  eventType                    String?             @map("event_type")
+  eventDate                    DateTime            @map("event_date") @db.Date
+  eventTime                    String?             @map("event_time")
+  location                     String
+  locationCity                 String?             @map("location_city")
+  locationState                String?             @map("location_state")
+  guests                       Int?
+  budgetRange                  String?             @map("budget_range")
+  dietary                      String?
+  dietaryRestrictions          String?             @map("dietary_restrictions")
+  menuPreferences              String?             @map("menu_preferences")
+  specialRequests              String?             @map("special_requests")
+  notes                        String?
+  status                       String              @default("New")
+  statusUpdatedAt              DateTime?           @map("status_updated_at")
+  followUpDate                 DateTime?           @map("follow_up_date") @db.Date
+  adminNotes                   String?             @map("admin_notes")
+  internalNotes                String?             @map("internal_notes")
+  quoteCurrency                String?             @map("quote_currency")
+  quoteSubtotalCents           Int?                @default(0) @map("quote_subtotal_cents")
+  quoteTaxCents                Int?                @default(0) @map("quote_tax_cents")
+  quoteTotalCents              Int?                @default(0) @map("quote_total_cents")
+  quoteDepositCents            Int?                @default(0) @map("quote_deposit_cents")
+  quoteSentAt                  DateTime?           @map("quote_sent_at")
+  stripePaymentLinkUrl         String?             @map("stripe_payment_link_url")
+  stripeInvoiceId              String?             @map("stripe_invoice_id")
+  stripePaymentStatus          String?             @map("stripe_payment_status")
+  quotePdfUrl                  String?             @map("quote_pdf_url")
+  stripeSessionId              String?             @map("stripe_session_id")
+  stripePaymentIntentId        String?             @map("stripe_payment_intent_id")
+  depositAmountCents           Int?                @map("deposit_amount_cents")
+  paidAt                       DateTime?           @map("paid_at")
+  quoteStatus                  String?             @map("quote_status")
+  quoteNotes                   String?             @map("quote_notes")
+  depositPercent               Int?                @default(30) @map("deposit_percent")
+  subtotalCents                Int?                @default(0) @map("subtotal_cents")
+  taxCents                     Int?                @default(0) @map("tax_cents")
+  serviceFeeCents              Int?                @default(0) @map("service_fee_cents")
+  totalCents                   Int?                @default(0) @map("total_cents")
+  balanceSessionId             String?             @map("balance_session_id")
+  balancePaymentIntentId       String?             @map("balance_payment_intent_id")
+  balancePaidAt                DateTime?           @map("balance_paid_at")
+  balanceAmountCents           Int?                @default(0) @map("balance_amount_cents")
+  fullyPaidAt                  DateTime?           @map("fully_paid_at")
+  quoteUpdatedAt               DateTime?           @map("quote_updated_at")
+  quoteServiceFeeCents         Int?                @default(0) @map("quote_service_fee_cents")
+  depositPercentage            Int?                @default(30) @map("deposit_percentage")
+  quoteLineItems               Json?               @default("[]") @map("quote_line_items")
+  customerPortalToken          String?             @map("customer_portal_token")
+  customerPortalTokenCreatedAt DateTime?           @map("customer_portal_token_created_at")
+  customerPortalTokenRevokedAt DateTime?           @map("customer_portal_token_revoked_at")
+  assignedChefId               String?             @map("assigned_chef_id")
+  chefPayoutAmountCents        Int?                @map("chef_payout_amount_cents")
+  chefPayoutStatus             String?             @default("not_applicable") @map("chef_payout_status")
+  chefPayoutBlockers           String[]            @map("chef_payout_blockers")
+  chefPayoutPaidAt             DateTime?           @map("chef_payout_paid_at")
+  stripeTransferId             String?             @map("stripe_transfer_id")
+  jobCompletedAt               DateTime?           @map("job_completed_at")
+  jobCompletedBy               String?             @map("job_completed_by")
+  payoutHold                   Boolean?            @default(false) @map("payout_hold")
+  payoutHoldReason             String?             @map("payout_hold_reason")
+  payoutReleasedAt             DateTime?           @map("payout_released_at")
+  referralSource               String?             @map("referral_source")
+  utmSource                    String?             @map("utm_source")
+  utmCampaign                  String?             @map("utm_campaign")
+  chefPayoutBaseCents          Int?                @map("chef_payout_base_cents")
+  chefPayoutBonusCents         Int?                @map("chef_payout_bonus_cents")
+  chefPayoutBonusBreakdown     Json?               @map("chef_payout_bonus_breakdown")
+  chefPayoutBonusOverride      Boolean?            @default(false) @map("chef_payout_bonus_override")
+  chefTierSnapshot             String?             @map("chef_tier_snapshot")
+  chefRateMultiplier           Decimal?            @map("chef_rate_multiplier") @db.Decimal(4, 2)
+  regionCode                   String?             @map("region_code")
+  regionMultiplierSnapshot     Float?              @map("region_multiplier_snapshot")
+  regionTravelFeeCentsSnapshot Int?                @map("region_travel_fee_cents_snapshot")
+  regionMinimumCentsSnapshot   Int?                @map("region_minimum_cents_snapshot")
+  assignedFarmers              BookingFarmer[]
+  prepItems                    BookingPrepItem[]
+  timeline                     BookingTimeline[]
+  chefAssignment               ChefAssignment?
+  chefPrepChecklist            ChefPrepChecklist?
+  farmerPayouts                FarmerPayout[]
+  incidents                    Incident[]
+  marginOverrideLogs           MarginOverrideLog[]
 
   @@map("booking_inquiries")
   @@schema("public")
 }
 
-// ============================================================================
-// Client Reviews (Phase 2U — Verified, one per completed booking)
-// ============================================================================
-
-model Review {
-  id        String   @id @default(cuid())
-  bookingId String  @unique @map("booking_id")
-  chefId    String  @map("chef_id")
-  rating    Int     // 1–5
-  comment   String? @db.Text
-  hidden    Boolean  @default(false) // admin hide abusive content
-  createdAt DateTime @default(now()) @map("created_at")
-
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  chef    User           @relation(fields: [chefId], references: [id], onDelete: Cascade)
-
-  @@map("reviews")
-  @@schema("public")
-}
-
-// ============================================================================
-// Chef Availability (Phase 2V — Day-based; time slots later)
-// ============================================================================
-
 model ChefAvailability {
-  id        String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
   chefId    String   @map("chef_id")
   date      DateTime @db.Date
   available Boolean  @default(true)
-  note      String?  @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
-
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  chef      User     @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([chefId, date])
-  @@index([chefId])
-  @@index([date])
+  @@index([chefId], map: "idx_chef_availabilities_chef_id")
+  @@index([date], map: "idx_chef_availabilities_date")
   @@map("chef_availabilities")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Time Slots (Phase 2Y — Within-day availability)
-// ============================================================================
-
 model ChefTimeSlot {
-  id        String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
   chefId    String   @map("chef_id")
   date      DateTime @db.Date
-  startTime String   @map("start_time") // "09:00"
-  endTime   String   @map("end_time")   // "13:00"
+  startTime String   @map("start_time")
+  endTime   String   @map("end_time")
   available Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  chef      User     @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
-
-  @@index([chefId, date])
+  @@index([chefId, date], map: "idx_chef_time_slots_chef_date")
   @@map("chef_time_slots")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Profile — Tier + Admin Override (Phase 2S)
-// ============================================================================
-
 model ChefProfile {
-  id           String    @id @default(cuid())
+  id           String    @id @default(dbgenerated("(gen_random_uuid())::text"))
   userId       String    @unique @map("user_id")
   tier         ChefTier  @default(STANDARD)
-  tierOverride ChefTier? @map("tier_override") // admin override; null = use computed
-  // Phase 2AI: Preferred payout currency (USD, JMD, EUR, GBP); admin can override
-  preferredPayoutCurrency   String?  @default("USD") @map("preferred_payout_currency")
-  payoutCurrencyOverride   String?  @map("payout_currency_override") // admin override; null = use preferred
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
+  tierOverride ChefTier? @map("tier_override")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  @@index([userId], map: "idx_chef_profiles_user_id")
   @@map("chef_profiles")
   @@schema("public")
 }
 
-// ============================================================================
-// Currency Rates (Phase 2AI — FX snapshots; base USD)
-// ============================================================================
-
-model CurrencyRate {
-  id        String   @id @default(cuid())
-  fromCode  String   @map("from_code")   // USD
-  toCode    String   @map("to_code")    // JMD, EUR, GBP
-  rate      Float
-  fetchedAt DateTime @default(now()) @map("fetched_at")
-
-  @@unique([fromCode, toCode])
-  @@index([fromCode, toCode])
-  @@map("currency_rates")
-  @@schema("public")
-}
-
-// ============================================================================
-// Chef Feature (Phase 2X — Featured chefs; max 5, eligibility + admin override)
-// ============================================================================
-
 model ChefFeature {
-  chefId       String   @id @map("chef_id")
-  featured     Boolean  @default(false)
-  adminOverride Boolean @default(false) @map("admin_override")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
+  chefId        String   @id @map("chef_id")
+  featured      Boolean  @default(false)
+  adminOverride Boolean  @default(false) @map("admin_override")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  chef          User     @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("chef_features")
   @@schema("public")
 }
 
-// ============================================================================
-// Coaching Cases (Phase 2Z — Private; no booking block by default)
-// ============================================================================
-
 model CoachingCase {
-  id              String    @id @default(cuid())
+  id              String    @id @default(dbgenerated("(gen_random_uuid())::text"))
   chefId          String    @map("chef_id")
-  reason          String    @db.Text // LOW_RATING | ON_TIME | PREP_MISSED
-  status          String    @db.Text // OPEN | IN_PROGRESS | CLEARED
-  dueAt           DateTime? @map("due_at")
+  reason          String
+  status          String
+  dueAt           DateTime? @map("due_at") @db.Timestamptz(6)
   assignedCoachId String?   @map("assigned_coach_id")
-  actionPlanNote  String?   @map("action_plan_note") @db.Text
-  resolvedAt      DateTime? @map("resolved_at")
-  createdAt       DateTime  @default(now()) @map("created_at")
+  actionPlanNote  String?   @map("action_plan_note")
+  resolvedAt      DateTime? @map("resolved_at") @db.Timestamptz(6)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  coach           User?     @relation("CoachingCaseCoach", fields: [assignedCoachId], references: [id], onUpdate: NoAction)
+  chef            User      @relation("CoachingCaseChef", fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  chef   User  @relation("CoachingCaseChef", fields: [chefId], references: [id], onDelete: Cascade)
-  coach  User? @relation("CoachingCaseCoach", fields: [assignedCoachId], references: [id], onDelete: SetNull)
-
-  @@index([chefId])
-  @@index([status])
+  @@index([chefId], map: "idx_coaching_cases_chef_id")
+  @@index([status], map: "idx_coaching_cases_status")
   @@map("coaching_cases")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Leaderboard (Phase 2AA — Score: rating 40%, on-time 25%, prep 20%, jobs 15%)
-// ============================================================================
-
 model LeaderboardSnapshot {
-  id             String   @id @default(cuid())
-  chefId         String   @map("chef_id")
-  rank           Int      // 1-based
-  score          Float    // 0–100 composite
-  ratingPct      Float    @map("rating_pct")   // 0–100 component
-  onTimePct      Float    @map("on_time_pct")  // 0–100
-  prepPct        Float    @map("prep_pct")     // 0–100
-  jobsPct        Float    @map("jobs_pct")     // 0–100
-  jobsCompleted  Int      @map("jobs_completed")
-  periodStart    DateTime @map("period_start") @db.Date
-  periodEnd      DateTime @map("period_end")   @db.Date
-  calculatedAt   DateTime @map("calculated_at")
+  id            String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  chefId        String   @unique(map: "idx_leaderboard_snapshots_chef_id") @map("chef_id")
+  rank          Int
+  score         Float
+  ratingPct     Float    @map("rating_pct")
+  onTimePct     Float    @map("on_time_pct")
+  prepPct       Float    @map("prep_pct")
+  jobsPct       Float    @map("jobs_pct")
+  jobsCompleted Int      @map("jobs_completed")
+  periodStart   DateTime @map("period_start") @db.Date
+  periodEnd     DateTime @map("period_end") @db.Date
+  calculatedAt  DateTime @default(now()) @map("calculated_at") @db.Timestamptz(6)
+  chef          User     @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
-
-  @@unique([chefId])
-  @@index([rank])
-  @@index([calculatedAt])
+  @@index([calculatedAt], map: "idx_leaderboard_snapshots_calculated_at")
+  @@index([rank], map: "idx_leaderboard_snapshots_rank")
   @@map("leaderboard_snapshots")
   @@schema("public")
 }
@@ -692,383 +434,275 @@ model LeaderboardSnapshot {
 model ChefLeaderboardExclusion {
   chefId     String    @id @map("chef_id")
   excluded   Boolean   @default(false)
-  excludedAt DateTime? @map("excluded_at")
+  excludedAt DateTime? @map("excluded_at") @db.Timestamptz(6)
   excludedBy String?   @map("excluded_by")
-
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
+  chef       User      @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("chef_leaderboard_exclusions")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Calendar Token (Phase 2AB — iCal feed; revocable)
-// ============================================================================
-
 model ChefCalendarToken {
   chefId    String   @id @map("chef_id")
-  token     String   @unique // long-lived; regenerate invalidates old
-  createdAt DateTime @default(now()) @map("created_at")
-
-  chef User @relation(fields: [chefId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  chef      User     @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@map("chef_calendar_tokens")
   @@schema("public")
 }
 
-// ============================================================================
-// Web Push Subscriptions (Phase 2AK — PWA notifications)
-// ============================================================================
-
 model PushSubscription {
-  id        String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
   userId    String   @map("user_id")
-  endpoint  String   @unique // browser push endpoint (unique per device)
-  p256dh    String   @map("p256dh") @db.Text
-  auth      String   @db.Text
-  userAgent String?  @map("user_agent") @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
+  endpoint  String   @unique
+  p256dh    String   @map("p256dh")
+  auth      String
+  userAgent String?  @map("user_agent")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  @@index([userId], map: "idx_push_subscriptions_user_id")
   @@map("push_subscriptions")
   @@schema("public")
 }
 
-// ============================================================================
-// Region-Based Pricing (Phase 2AL)
-// ============================================================================
-
 model RegionPricing {
-  id          String   @id @default(cuid())
-  regionCode  String   @unique @map("region_code")   // e.g. KINGSTON, PORTLAND
-  name        String?  // display name, e.g. "Kingston (Urban)"
-  zone        String?  // Urban | Rural
-  multiplier  Float    @default(1.0)              // base rate multiplier
-  travelFeeCents Int   @default(0) @map("travel_fee_cents")  // flat travel surcharge
-  minimumCents   Int   @default(0) @map("minimum_cents")    // minimum job value
-  enabled     Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt @map("updated_at")
+  id             String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  regionCode     String   @unique @map("region_code")
+  name           String?
+  zone           String?
+  multiplier     Float    @default(1.0)
+  travelFeeCents Int      @default(0) @map("travel_fee_cents")
+  minimumCents   Int      @default(0) @map("minimum_cents")
+  enabled        Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  @@index([enabled], map: "idx_region_pricing_enabled")
+  @@index([regionCode], map: "idx_region_pricing_region_code")
   @@map("region_pricing")
   @@schema("public")
 }
 
-// ============================================================================
-// Surge Pricing (Phase 2AN — demand-based; high demand / low supply / short notice)
-// ============================================================================
-
-model SurgeConfig {
-  id                    String   @id @default(cuid())
-  regionCode            String   @unique @map("region_code")  // e.g. KINGSTON; use DEFAULT for global
-  enabled               Boolean  @default(true)
-  demandBookingsThreshold Int    @default(5) @map("demand_bookings_threshold")   // X bookings/day in region
-  supplyChefsThreshold  Int      @default(2) @map("supply_chefs_threshold")     // Y min available chefs
-  shortNoticeHours      Int      @default(48) @map("short_notice_hours")       // booking within 48h
-  surgeMultiplier       Float    @default(1.15) @map("surge_multiplier")        // e.g. 1.15
-  minMultiplier         Float    @default(1.05) @map("min_multiplier")         // cap
-  maxMultiplier         Float    @default(1.30) @map("max_multiplier")         // cap
-  expiresAt             DateTime? @map("expires_at")  // optional time-bound
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @updatedAt @map("updated_at")
-
-  @@map("surge_config")
-  @@schema("public")
-}
-
-// ============================================================================
-// SMS Fallback (Phase 2AM — critical alerts when push/email fail)
-// ============================================================================
-
-model SmsDeliveryLog {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  eventKey  String   @map("event_key")   // e.g. booking-123-assigned (one per event per user)
-  sentAt    DateTime @default(now()) @map("sent_at")
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, eventKey])
-  @@map("sms_delivery_log")
-  @@schema("public")
-}
-
-// ============================================================================
-// Incident Postmortems (Phase 2AO — blameless learning, action items)
-// ============================================================================
-
 model Incident {
-  id        String    @id @default(cuid())
-  type      String    // e.g. missed_booking, chef_no_show, payment_failure, client_escalation, system_outage
-  severity  String    // LOW | MED | HIGH
-  summary   String    @db.Text   // What happened
-  impact    String?   @db.Text   // Who/what/when
-  rootCause String?   @db.Text
-  whatWentWell  String? @map("what_went_well") @db.Text
-  whatToImprove String? @map("what_to_improve") @db.Text
-  actions   Json?     // [{ description, owner, dueDate, done? }]
-  closedAt  DateTime? @map("closed_at")  // when closed → read-only
-  bookingId String?   @map("booking_id")
-  chefId    String?   @map("chef_id")
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  id            String          @id @default(cuid())
+  type          String
+  severity      String
+  summary       String
+  impact        String?
+  root_cause    String?
+  whatWentWell  String?         @map("what_went_well")
+  whatToImprove String?         @map("what_to_improve")
+  actions       Json?
+  closedAt      DateTime?       @map("closed_at") @db.Timestamptz(6)
+  bookingId     String?         @map("booking_id")
+  chefId        String?         @map("chef_id")
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  booking       BookingInquiry? @relation(fields: [bookingId], references: [id], onUpdate: NoAction)
+  chef          User?           @relation(fields: [chefId], references: [id], onUpdate: NoAction)
 
-  booking BookingInquiry? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
-  chef    User?           @relation(fields: [chefId], references: [id], onDelete: SetNull)
-
+  @@index([bookingId], map: "idx_incidents_booking_id")
+  @@index([chefId], map: "idx_incidents_chef_id")
+  @@index([createdAt(sort: Desc)], map: "idx_incidents_created_at")
+  @@index([severity], map: "idx_incidents_severity")
   @@map("incidents")
   @@schema("public")
 }
 
-// ============================================================================
-// Continuous Improvement Backlog (Phase 2AQ — insights → shipped)
-// ============================================================================
-
 model ImprovementItem {
   id          String    @id @default(cuid())
-  source      String    // Incident, Review, SLA, Ops, Suggestion
-  title       String    @db.Text
-  impact      String    // Low | Medium | High
-  effort      String    // Low | Medium | High
-  urgency     String    @default("Medium") // Low | Medium | High (for score)
-  owner       String?   @db.Text
-  status      String    @default("Backlog") // Backlog | In Progress | Done | Blocked
-  outcomeNote String?   @map("outcome_note") @db.Text // when Done
-  completedAt DateTime? @map("completed_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
+  source      String
+  title       String
+  impact      String
+  effort      String
+  urgency     String    @default("Medium")
+  owner       String?
+  status      String    @default("Backlog")
+  outcomeNote String?   @map("outcome_note")
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(6)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
+  @@index([createdAt(sort: Desc)], map: "idx_improvement_items_created_at")
+  @@index([status], map: "idx_improvement_items_status")
   @@map("improvement_items")
   @@schema("public")
 }
 
-// ============================================================================
-// Margin Guardrails (Phase 2AV — prevent underpriced bookings & bonus overruns)
-// ============================================================================
-
 model MarginGuardrailConfig {
-  id                   String   @id @default(cuid())
-  regionCode           String?  @map("region_code")   // null = global
-  minGrossMarginPct    Float    @map("min_gross_margin_pct")   // e.g. 25
-  maxBonusPlusTierPct  Float    @map("max_bonus_plus_tier_pct") // e.g. 20
-  maxSurgeMultiplier   Float?   @map("max_surge_multiplier")   // optional cap per region
-  minJobValueCents     Int?     @map("min_job_value_cents")     // optional override per region
-  blockOrWarn          Boolean  @default(true) @map("block_or_warn") // true = block, false = warn
-  createdAt            DateTime @default(now()) @map("created_at")
-  updatedAt            DateTime @updatedAt @map("updated_at")
+  id                  String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  regionCode          String?  @unique @map("region_code")
+  minGrossMarginPct   Decimal  @default(25) @map("min_gross_margin_pct") @db.Decimal
+  maxBonusPlusTierPct Decimal  @default(20) @map("max_bonus_plus_tier_pct") @db.Decimal
+  maxSurgeMultiplier  Decimal? @map("max_surge_multiplier") @db.Decimal
+  minJobValueCents    Int?     @map("min_job_value_cents")
+  blockOrWarn         Boolean  @default(true) @map("block_or_warn")
+  createdAt           DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  @@unique([regionCode])
+  @@index([regionCode], map: "idx_margin_guardrail_config_region")
   @@map("margin_guardrail_config")
   @@schema("public")
 }
 
 model MarginOverrideLog {
-  id        String   @id @default(cuid())
-  bookingId String   @map("booking_id")
-  userId    String   @map("user_id")
-  action    String   // e.g. override_block, override_warn
-  reason    String?  @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
+  id        String         @id @default(dbgenerated("(gen_random_uuid())::text"))
+  bookingId String         @map("booking_id")
+  userId    String         @map("user_id")
+  action    String
+  reason    String?
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+  booking   BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([bookingId])
-  @@index([userId])
+  @@index([bookingId], map: "idx_margin_override_log_booking")
+  @@index([userId], map: "idx_margin_override_log_user")
   @@map("margin_override_log")
   @@schema("public")
 }
 
-// ============================================================================
-// OKR Tracking (Phase 2AW — objectives and key results from live data)
-// ============================================================================
-
 model Okr {
-  id        String   @id @default(cuid())
-  period    String   // e.g. Q1-2026, 2026-01
-  objective String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  id         String      @id @default(dbgenerated("(gen_random_uuid())::text"))
+  period     String
+  objective  String
+  createdAt  DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime    @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   keyResults KeyResult[]
 
-  @@index([period])
+  @@index([period], map: "idx_okrs_period")
   @@map("okrs")
   @@schema("public")
 }
 
 model KeyResult {
-  id       String  @id @default(cuid())
-  okrId    String  @map("okr_id")
-  metric   String  // bookings_mtd, avg_rating, margin_pct, etc.
-  target   Float
-  current  Float   @default(0)
-  notes    String? @db.Text
-  sortOrder Int    @default(0) @map("sort_order")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  okrId     String   @map("okr_id")
+  metric    String
+  target    Decimal  @db.Decimal
+  current   Decimal  @default(0) @db.Decimal
+  notes     String?
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  okr       Okr      @relation(fields: [okrId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  okr Okr @relation(fields: [okrId], references: [id], onDelete: Cascade)
-
-  @@index([okrId])
+  @@index([okrId], map: "idx_key_results_okr_id")
   @@map("key_results")
   @@schema("public")
 }
 
-// ============================================================================
-// Experimentation Framework (Phase 2AX — test safely, learn quickly)
-// ============================================================================
-
-enum ExperimentStatus {
-  RUNNING
-  STOPPED
-  COMPLETE
-
-  @@schema("public")
-}
-
 model Experiment {
-  id            String          @id @default(cuid())
-  name          String          @db.Text
-  hypothesis    String?         @db.Text  // Phase 2BD: e.g. "Surge 1.2x increases revenue without hurting conversion"
-  category      String?         // pricing | messaging | incentives | booking_flow (one RUNNING per category)
-  variantA      Json            @map("variant_a")
-  variantB      Json            @map("variant_b")
-  metric        String          // conversion_rate | revenue_per_booking | margin | sla_quality (primary)
-  secondaryMetric String?       @map("secondary_metric")
-  startAt       DateTime        @map("start_at")
-  endAt         DateTime        @map("end_at")
-  status        ExperimentStatus @default(STOPPED)
-  harmThreshold Json?           @map("harm_threshold")  // auto-stop if metric below threshold
-  winnerVariant String?         @map("winner_variant")   // Phase 2BD: A | B when declared
-  promotedAt    DateTime?       @map("promoted_at")     // Phase 2BD: when winner auto-promoted
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
+  id              String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name            String
+  category        String?
+  variantA        Json                   @map("variant_a")
+  variantB        Json                   @map("variant_b")
+  metric          String
+  secondaryMetric String?                @map("secondary_metric")
+  startAt         DateTime               @map("start_at") @db.Timestamptz(6)
+  endAt           DateTime               @map("end_at") @db.Timestamptz(6)
+  status          experiment_status      @default(STOPPED)
+  harmThreshold   Json?                  @map("harm_threshold")
+  createdAt       DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  hypothesis      String?
+  winnerVariant   String?                @map("winner_variant")
+  promotedAt      DateTime?              @map("promoted_at") @db.Timestamptz(6)
+  assignments     ExperimentAssignment[]
+  outcomes        ExperimentOutcome[]
 
-  assignments ExperimentAssignment[]
-  outcomes    ExperimentOutcome[]
-
-  @@index([status])
-  @@index([category])
+  @@index([category], map: "idx_experiments_category")
+  @@index([status], map: "idx_experiments_status")
   @@map("experiments")
   @@schema("public")
 }
 
 model ExperimentAssignment {
-  id          String   @id @default(cuid())
-  experimentId String  @map("experiment_id")
-  entityId    String   @map("entity_id")   // booking or user id
-  variant     String   // A | B
-  assignedAt  DateTime @default(now()) @map("assigned_at")
-
-  experiment Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  id           String     @id @default(dbgenerated("(gen_random_uuid())::text"))
+  experimentId String     @map("experiment_id")
+  entityId     String     @map("entity_id")
+  variant      String
+  assignedAt   DateTime   @default(now()) @map("assigned_at") @db.Timestamptz(6)
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([experimentId, entityId])
-  @@index([experimentId])
+  @@index([experimentId], map: "idx_experiment_assignments_experiment")
   @@map("experiment_assignments")
   @@schema("public")
 }
 
 model ExperimentOutcome {
-  id           String   @id @default(cuid())
-  experimentId String   @map("experiment_id")
-  entityId     String   @map("entity_id")
-  variant      String   // A | B
-  metric       String   // primary or secondary
-  value        Float
-  recordedAt   DateTime @default(now()) @map("recorded_at")
+  id           String     @id @default(dbgenerated("(gen_random_uuid())::text"))
+  experimentId String     @map("experiment_id")
+  entityId     String     @map("entity_id")
+  variant      String
+  metric       String
+  value        Decimal    @db.Decimal
+  recordedAt   DateTime   @default(now()) @map("recorded_at") @db.Timestamptz(6)
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  experiment Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
-
-  @@index([experimentId])
-  @@index([experimentId, variant, metric])
+  @@index([experimentId], map: "idx_experiment_outcomes_experiment")
+  @@index([experimentId, variant, metric], map: "idx_experiment_outcomes_variant_metric")
   @@map("experiment_outcomes")
   @@schema("public")
 }
 
-// ============================================================================
-// Long-Term Capacity Planning (Phase 2AY — right chefs before demand)
-// ============================================================================
-
 model CapacityConfig {
-  id                    String   @id @default(cuid())
-  label                 String   @default("default")
-  growthRatePctPerMonth Float    @default(0) @map("growth_rate_pct_per_month")
-  avgJobsPerChefPerDay  Float?   @map("avg_jobs_per_chef_per_day")  // null = compute from data
-  attritionRatePctPerMonth Float  @default(0) @map("attrition_rate_pct_per_month")
-  seasonalityMultipliers Json?   @map("seasonality_multipliers")   // [1..12] optional
-  createdAt             DateTime @default(now()) @map("created_at")
-  updatedAt             DateTime @updatedAt @map("updated_at")
+  id                       String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  label                    String   @default("default")
+  growthRatePctPerMonth    Decimal  @default(0) @map("growth_rate_pct_per_month") @db.Decimal
+  avgJobsPerChefPerDay     Decimal? @map("avg_jobs_per_chef_per_day") @db.Decimal
+  attritionRatePctPerMonth Decimal  @default(0) @map("attrition_rate_pct_per_month") @db.Decimal
+  seasonalityMultipliers   Json?    @map("seasonality_multipliers")
+  createdAt                DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt                DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("capacity_config")
   @@schema("public")
 }
 
-// ============================================================================
-// AI-Assisted Ops Insights (Phase 2AZ — actionable insights, rules + scoring)
-// ============================================================================
-
 model AiOpsInsight {
-  id              String    @id @default(cuid())
-  category        String    // at_risk_booking | quality_risk | cost_leak | capacity_gap
-  title           String    @db.Text
-  whyItMatters    String    @map("why_it_matters") @db.Text
-  suggestedAction String    @map("suggested_action") @db.Text
-  confidencePct   Int       @map("confidence_pct")   // 0-100
-  entityType      String    @map("entity_type")      // booking | system
-  entityId        String?   @map("entity_id")        // booking id or null
-  metadata        Json?     // extra context
-  createdAt       DateTime  @default(now()) @map("created_at")
-  snoozedUntil    DateTime? @map("snoozed_until")
-  actionTaken     String?   @map("action_taken") @db.Text
-  actionTakenAt   DateTime? @map("action_taken_at")
-  actionTakenBy   String?   @map("action_taken_by")  // user id
+  id              String    @id @default(dbgenerated("(gen_random_uuid())::text"))
+  category        String
+  title           String
+  whyItMatters    String    @map("why_it_matters")
+  suggestedAction String    @map("suggested_action")
+  confidencePct   Int       @map("confidence_pct")
+  entityType      String    @map("entity_type")
+  entityId        String?   @map("entity_id")
+  metadata        Json?
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  snoozedUntil    DateTime? @map("snoozed_until") @db.Timestamptz(6)
+  actionTaken     String?   @map("action_taken")
+  actionTakenAt   DateTime? @map("action_taken_at") @db.Timestamptz(6)
+  actionTakenBy   String?   @map("action_taken_by")
 
-  @@index([category])
-  @@index([entityId])
-  @@index([createdAt])
+  @@index([category], map: "idx_ai_ops_insights_category")
+  @@index([createdAt(sort: Desc)], map: "idx_ai_ops_insights_created_at")
+  @@index([entityId], map: "idx_ai_ops_insights_entity_id")
   @@map("ai_ops_insights")
   @@schema("public")
 }
 
 model AiOpsCategoryToggle {
-  id       String  @id @default(cuid())
-  category String  @unique  // at_risk_booking | quality_risk | cost_leak | capacity_gap
-  enabled  Boolean @default(true)
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  category  String   @unique
+  enabled   Boolean  @default(true)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@map("ai_ops_category_toggles")
   @@schema("public")
 }
 
-// ============================================================================
-// Workforce Succession Planning (Phase 2BA — key roles always covered)
-// ============================================================================
-
-enum SuccessionAssignmentType {
-  PRIMARY
-  BACKUP
-
-  @@schema("public")
-}
-
-enum SuccessionReadiness {
-  READY       // Can step in immediately
-  NEAR_READY  // Short ramp
-  DEVELOPING  // Training path in progress
-
-  @@schema("public")
-}
-
 model SuccessionRole {
-  id        String   @id @default(cuid())
-  name      String   // e.g. "Lead Chef (Elite)", "Regional Coordinator", "Ops Lead"
-  code      String   @unique  // slug: lead_chef_elite | regional_coordinator | ops_lead
-  sortOrder Int      @default(0) @map("sort_order")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
+  id          String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name        String
+  code        String                 @unique
+  sortOrder   Int                    @default(0) @map("sort_order")
+  createdAt   DateTime               @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
   assignments SuccessionAssignment[]
 
   @@map("succession_roles")
@@ -1076,76 +710,588 @@ model SuccessionRole {
 }
 
 model SuccessionAssignment {
-  id                String                 @id @default(cuid())
-  successionRoleId  String                 @map("succession_role_id")
-  userId            String                 @map("user_id")
-  assignmentType    SuccessionAssignmentType @map("assignment_type")  // PRIMARY | BACKUP
-  readiness         SuccessionReadiness    @default(DEVELOPING)       // Ready | Near-Ready | Developing
-  trainingPathNotes String?               @map("training_path_notes") @db.Text  // education modules + shadowing
-  lastReviewAt      DateTime?             @map("last_review_at")
-  createdAt         DateTime              @default(now()) @map("created_at")
-  updatedAt         DateTime              @updatedAt @map("updated_at")
-
-  successionRole SuccessionRole @relation(fields: [successionRoleId], references: [id], onDelete: Cascade)
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String                     @id @default(dbgenerated("(gen_random_uuid())::text"))
+  successionRoleId  String                     @map("succession_role_id")
+  userId            String                     @map("user_id")
+  assignmentType    succession_assignment_type @map("assignment_type")
+  readiness         succession_readiness       @default(DEVELOPING)
+  trainingPathNotes String?                    @map("training_path_notes")
+  lastReviewAt      DateTime?                  @map("last_review_at") @db.Timestamptz(6)
+  createdAt         DateTime                   @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime                   @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  successionRole    SuccessionRole             @relation(fields: [successionRoleId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user              User                       @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@unique([successionRoleId, userId])
-  @@index([successionRoleId])
-  @@index([userId])
+  @@index([successionRoleId], map: "idx_succession_assignments_role")
+  @@index([userId], map: "idx_succession_assignments_user")
   @@map("succession_assignments")
   @@schema("public")
 }
 
-// ============================================================================
-// Risk Register & Mitigation (Phase 2BC — single source of truth for risks)
-// ============================================================================
-
-enum RiskImpact {
-  LOW
-  MEDIUM
-  HIGH
-
-  @@schema("public")
-}
-
-enum RiskLikelihood {
-  LOW
-  MEDIUM
-  HIGH
-
-  @@schema("public")
-}
-
-enum RiskStatus {
-  OPEN
-  MONITORING
-  CLOSED
-
-  @@schema("public")
-}
-
 model Risk {
-  id          String        @id @default(cuid())
-  category    String        // Operational | Financial | Quality | Capacity | Tech | Compliance
-  risk        String        @db.Text  // e.g. "Chef no-shows", "SLA breaches"
-  impact      RiskImpact    // Low | Medium | High
-  likelihood  RiskLikelihood @map("likelihood")  // Low | Medium | High
-  mitigation  String        @db.Text
-  owner       String?       @db.Text  // name or email
-  status      RiskStatus    @default(OPEN)
-  reviewedAt  DateTime?     @map("reviewed_at")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  id         String          @id @default(dbgenerated("(gen_random_uuid())::text"))
+  category   String
+  risk       String
+  impact     risk_impact
+  likelihood risk_likelihood @map("likelihood")
+  mitigation String
+  owner      String?
+  status     risk_status     @default(OPEN)
+  reviewedAt DateTime?       @map("reviewed_at") @db.Timestamptz(6)
+  createdAt  DateTime        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime        @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
 
-  @@index([category])
-  @@index([status])
+  @@index([category], map: "idx_risks_category")
+  @@index([status], map: "idx_risks_status")
   @@map("risks")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Assignment (Phase 2I — Chef Bookings & Prep Flow)
-// ============================================================================
+model ChefAssignment {
+  id        String            @id @default(dbgenerated("(gen_random_uuid())::text"))
+  bookingId String            @unique @map("booking_id")
+  chefId    String            @map("chef_id")
+  status    ChefBookingStatus @default(ASSIGNED)
+  notes     String?
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime          @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  booking   BookingInquiry    @relation(fields: [bookingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chef      User              @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([bookingId], map: "idx_chef_assignments_booking_id")
+  @@index([chefId], map: "idx_chef_assignments_chef_id")
+  @@map("chef_assignments")
+  @@schema("public")
+}
+
+model PrepChecklistTemplate {
+  id                 String              @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name               String
+  items              Json                @default("[]")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  chefPrepChecklists ChefPrepChecklist[]
+
+  @@map("prep_checklist_templates")
+  @@schema("public")
+}
+
+model ChefPrepChecklist {
+  id         String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
+  bookingId  String                 @unique @map("booking_id")
+  chefId     String                 @map("chef_id")
+  templateId String?                @map("template_id")
+  completed  Json                   @default("{}")
+  updatedAt  DateTime               @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(6)
+  booking    BookingInquiry         @relation(fields: [bookingId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  chef       User                   @relation(fields: [chefId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  template   PrepChecklistTemplate? @relation(fields: [templateId], references: [id], onUpdate: NoAction)
+
+  @@index([bookingId], map: "idx_chef_prep_checklists_booking_id")
+  @@index([chefId], map: "idx_chef_prep_checklists_chef_id")
+  @@map("chef_prep_checklists")
+  @@schema("public")
+}
+
+model EducationModule {
+  id        String              @id @default(dbgenerated("(gen_random_uuid())::text"))
+  title     String
+  role      String
+  content   String              @default("")
+  required  Boolean             @default(false)
+  createdAt DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  progress  EducationProgress[]
+
+  @@map("education_modules")
+  @@schema("public")
+}
+
+model EducationProgress {
+  id          String          @id @default(dbgenerated("(gen_random_uuid())::text"))
+  userId      String          @map("user_id")
+  moduleId    String          @map("module_id")
+  completed   Boolean         @default(false)
+  completedAt DateTime?       @map("completed_at") @db.Timestamptz(6)
+  module      EducationModule @relation(fields: [moduleId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([userId, moduleId])
+  @@index([moduleId], map: "idx_education_progress_module_id")
+  @@index([userId], map: "idx_education_progress_user_id")
+  @@map("education_progress")
+  @@schema("public")
+}
+
+model Badge {
+  id         String      @id @default(dbgenerated("(gen_random_uuid())::text"))
+  name       String
+  criteria   String      @default("")
+  role       String
+  userBadges UserBadge[]
+
+  @@map("badges")
+  @@schema("public")
+}
+
+model UserBadge {
+  id        String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  userId    String   @map("user_id")
+  badgeId   String   @map("badge_id")
+  awardedAt DateTime @default(now()) @map("awarded_at") @db.Timestamptz(6)
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([userId, badgeId])
+  @@index([badgeId], map: "idx_user_badges_badge_id")
+  @@index([userId], map: "idx_user_badges_user_id")
+  @@map("user_badges")
+  @@schema("public")
+}
+
+model BookingTimeline {
+  id          String         @id @default(uuid())
+  bookingId   String         @map("booking_id")
+  title       String
+  order       Int
+  completed   Boolean        @default(false)
+  completedAt DateTime?      @map("completed_at")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  booking     BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("booking_timeline")
+  @@schema("public")
+}
+
+model BookingPrepItem {
+  id                String                 @id @default(uuid())
+  bookingId         String                 @map("booking_id")
+  title             String
+  order             Int
+  completed         Boolean                @default(false)
+  completedAt       DateTime?              @map("completed_at")
+  notes             String?
+  createdAt         DateTime               @default(now()) @map("created_at")
+  booking           BookingInquiry         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  farmerAssignments PrepFarmerAssignment[]
+
+  @@map("booking_prep_items")
+  @@schema("public")
+}
+
+model BookingFarmer {
+  id        String         @id @default(uuid())
+  bookingId String         @map("booking_id")
+  farmerId  String         @map("farmer_id")
+  role      String?
+  notes     String?
+  createdAt DateTime       @default(now()) @map("created_at")
+  booking   BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@unique([bookingId, farmerId])
+  @@map("booking_farmers")
+  @@schema("public")
+}
+
+model PrepFarmerAssignment {
+  id         String          @id @default(uuid())
+  prepItemId String          @map("prep_item_id")
+  farmerId   String          @map("farmer_id")
+  quantity   String?
+  dueDate    DateTime?       @map("due_date") @db.Date
+  confirmed  Boolean         @default(false)
+  createdAt  DateTime        @default(now()) @map("created_at")
+  prepItem   BookingPrepItem @relation(fields: [prepItemId], references: [id], onDelete: Cascade)
+
+  @@map("prep_farmer_assignments")
+  @@schema("public")
+}
+
+model FailedSMS {
+  id            String    @id @default(uuid())
+  phone         String
+  message       String
+  error         String?
+  attempts      Int       @default(1)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  lastAttemptAt DateTime? @map("last_attempt_at")
+
+  @@map("failed_sms")
+  @@schema("public")
+}
+
+model ChefNeed {
+  id        String    @id @default(uuid())
+  chefId    String    @map("chef_id")
+  crop      String
+  quantity  Float
+  frequency String
+  startDate DateTime  @map("start_date") @db.Date
+  endDate   DateTime? @map("end_date") @db.Date
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("chef_needs")
+  @@schema("public")
+}
+
+model AcademyPurchase {
+  id              String   @id @default(cuid())
+  authUserId      String   @map("auth_user_id")
+  productSlug     String   @map("product_slug")
+  stripeSessionId String   @unique @map("stripe_session_id")
+  purchasedAt     DateTime @default(now()) @map("purchased_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  productTitle    String   @default("") @map("product_title")
+  productPrice    Int      @default(0) @map("product_price")
+
+  @@index([authUserId])
+  @@index([productSlug])
+  @@map("academy_purchases")
+  @@schema("public")
+}
+
+model FarmerPayout {
+  id          String         @id @default(uuid())
+  bookingId   String         @map("booking_id")
+  farmerId    String         @map("farmer_id")
+  description String
+  amount      Int
+  status      PayoutStatus   @default(PENDING)
+  approvedAt  DateTime?      @map("approved_at")
+  paidAt      DateTime?      @map("paid_at")
+  notes       String?
+  createdAt   DateTime       @default(now()) @map("created_at")
+  booking     BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("farmer_payouts")
+  @@schema("public")
+}
+
+model AcademyProduct {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  description   String
+  type          String
+  priceCents    Int      @map("price_cents")
+  stripePriceId String?  @map("stripe_price_id")
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("academy_products")
+  @@schema("public")
+}
+
+model AcademyEnrollment {
+  id          String    @id @default(cuid())
+  userId      String    @map("user_id")
+  productSlug String    @map("product_slug")
+  enrolledAt  DateTime  @default(now()) @map("enrolled_at")
+  progress    Json?
+  completedAt DateTime? @map("completed_at")
+
+  @@unique([userId, productSlug])
+  @@index([userId])
+  @@map("academy_enrollments")
+  @@schema("public")
+}
+
+model ProvisionsProduct {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  status      String
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("provisions_products")
+  @@schema("public")
+}
+
+model SportswearProduct {
+  id          String                @id @default(cuid())
+  slug        String                @unique
+  name        String
+  description String?
+  priceCents  Int?                  @map("price_cents")
+  active      Boolean               @default(true)
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
+  orderLines  SportswearOrderLine[]
+
+  @@map("sportswear_products")
+  @@schema("public")
+}
+
+model SportswearOrder {
+  id              String                @id @default(cuid())
+  userId          String?               @map("user_id")
+  email           String?
+  totalCents      Int                   @map("total_cents")
+  status          String                @default("pending")
+  stripeSessionId String?               @map("stripe_session_id")
+  paidAt          DateTime?             @map("paid_at")
+  createdAt       DateTime              @default(now()) @map("created_at")
+  lines           SportswearOrderLine[]
+
+  @@map("sportswear_orders")
+  @@schema("public")
+}
+
+model SportswearOrderLine {
+  id         String            @id @default(cuid())
+  orderId    String            @map("order_id")
+  productId  String            @map("product_id")
+  quantity   Int               @default(1)
+  priceCents Int               @map("price_cents")
+  order      SportswearOrder   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product    SportswearProduct @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("sportswear_order_lines")
+  @@schema("public")
+}
+
+model FarmListing {
+  id        String   @id @default(cuid())
+  farmerId  String   @map("farmer_id") @db.Uuid
+  crop      String
+  quantity  Float?
+  unit      String?
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  farmer    Farmer   @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+
+  @@index([farmerId])
+  @@index([status])
+  @@map("farm_listings")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model booking_items {
+  id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+  booking_id      String?   @db.Uuid
+  quote_id        String?   @db.Uuid
+  item_type       String
+  item_name       String
+  description     String?
+  quantity        Int?      @default(1)
+  unit_price_usd  Decimal   @db.Decimal(10, 2)
+  total_price_usd Decimal   @db.Decimal(10, 2)
+  category        String?
+  notes           String?
+  bookings        bookings? @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  quotes          quotes?   @relation(fields: [quote_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([booking_id], map: "idx_booking_items_booking_id")
+  @@index([quote_id], map: "idx_booking_items_quote_id")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model bookings {
+  id                   String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at           DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?       @default(now()) @db.Timestamptz(6)
+  customer_id          String?         @db.Uuid
+  customer_name        String
+  customer_phone       String
+  customer_email       String?
+  service_type         String
+  event_date           DateTime        @db.Date
+  event_time           DateTime?       @db.Time(6)
+  location             String
+  villa_name           String?
+  guest_count          Int?
+  special_requests     String?
+  dietary_restrictions String[]
+  booking_status       String?         @default("inquiry")
+  quoted_amount_usd    Decimal?        @db.Decimal(10, 2)
+  deposit_amount_usd   Decimal?        @db.Decimal(10, 2)
+  deposit_paid         Boolean?        @default(false)
+  deposit_paid_date    DateTime?       @db.Date
+  final_amount_usd     Decimal?        @db.Decimal(10, 2)
+  final_paid           Boolean?        @default(false)
+  final_paid_date      DateTime?       @db.Date
+  quote_sent_date      DateTime?       @db.Date
+  quote_accepted_date  DateTime?       @db.Date
+  reminder_sent        Boolean?        @default(false)
+  thank_you_sent       Boolean?        @default(false)
+  review_requested     Boolean?        @default(false)
+  source               String?         @default("direct")
+  assigned_to          String?
+  internal_notes       String?
+  booking_items        booking_items[]
+  customers            customers?      @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  payments             payments[]
+  quotes               quotes[]
+
+  @@index([customer_id], map: "idx_bookings_customer_id")
+  @@index([event_date], map: "idx_bookings_event_date")
+  @@index([service_type], map: "idx_bookings_service_type")
+  @@index([booking_status], map: "idx_bookings_status")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model customers {
+  id                       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at               DateTime?  @default(now()) @db.Timestamptz(6)
+  updated_at               DateTime?  @default(now()) @db.Timestamptz(6)
+  name                     String
+  email                    String?
+  phone                    String
+  whatsapp_number          String?
+  location                 String?
+  villa_name               String?
+  dietary_restrictions     String[]
+  preferred_contact_method String?    @default("whatsapp")
+  notes                    String?
+  total_bookings           Int?       @default(0)
+  lifetime_value_usd       Decimal?   @default(0) @db.Decimal(10, 2)
+  last_booking_date        DateTime?  @db.Date
+  customer_status          String?    @default("active")
+  referral_source          String?
+  tags                     String[]
+  bookings                 bookings[]
+  payments                 payments[]
+
+  @@schema("public")
+}
+
+model farmers_applications {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  name        String
+  phone       String
+  acres       Decimal?  @db.Decimal
+  crops       String?
+  status      String    @default("new")
+  notes       String?
+  parish      String?
+  voice_ready Boolean   @default(false)
+
+  @@index([created_at(sort: Desc)], map: "idx_farmers_applications_created_at")
+  @@index([parish], map: "idx_farmers_applications_parish")
+  @@index([status], map: "idx_farmers_applications_status")
+  @@index([voice_ready], map: "idx_farmers_applications_voice_ready")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model payments {
+  id               String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at       DateTime?  @default(now()) @db.Timestamptz(6)
+  booking_id       String?    @db.Uuid
+  customer_id      String?    @db.Uuid
+  amount_usd       Decimal    @db.Decimal(10, 2)
+  payment_type     String
+  payment_method   String
+  payment_status   String?    @default("pending")
+  payment_date     DateTime   @db.Date
+  reference_number String?
+  receipt_url      String?
+  notes            String?
+  processed_by     String?
+  bookings         bookings?  @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  customers        customers? @relation(fields: [customer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([booking_id], map: "idx_payments_booking_id")
+  @@index([customer_id], map: "idx_payments_customer_id")
+  @@schema("public")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model quotes {
+  id                 String          @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  created_at         DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at         DateTime?       @default(now()) @db.Timestamptz(6)
+  booking_id         String?         @db.Uuid
+  version            Int?            @default(1)
+  service_type       String
+  subtotal_usd       Decimal         @db.Decimal(10, 2)
+  tax_usd            Decimal?        @default(0) @db.Decimal(10, 2)
+  discount_usd       Decimal?        @default(0) @db.Decimal(10, 2)
+  total_usd          Decimal         @db.Decimal(10, 2)
+  quote_status       String?         @default("draft")
+  sent_date          DateTime?       @db.Date
+  accepted_date      DateTime?       @db.Date
+  expires_date       DateTime?       @db.Date
+  deposit_percentage Int?            @default(50)
+  deposit_amount_usd Decimal?        @db.Decimal(10, 2)
+  payment_terms      String?
+  notes              String?
+  customer_notes     String?
+  booking_items      booking_items[]
+  bookings           bookings?       @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([booking_id], map: "idx_quotes_booking_id")
+  @@index([quote_status], map: "idx_quotes_status")
+  @@schema("public")
+}
+
+enum FarmerIntakeStatus {
+  received
+  parsed
+  profile_created
+  needs_review
+  needs_followup
+
+  @@schema("public")
+}
+
+enum UserRole {
+  ADMIN
+  COORDINATOR
+  CHEF
+  FARMER
+  VOLUNTEER
+  STAFF
+  PARTNER
+  USER
+  EDUCATOR
+
+  @@schema("public")
+}
+
+enum PayoutStatus {
+  PENDING
+  APPROVED
+  PAID
+
+  @@schema("public")
+}
+
+enum ChefTier {
+  STANDARD
+  PRO
+  ELITE
+
+  @@schema("public")
+}
+
+enum Division {
+  ACADEMY
+  PROVISIONS
+  SPORTSWEAR
+  PROJU
+
+  @@schema("public")
+}
+
+enum PartnerType {
+  FARMER
+  CHEF
+  COOPERATIVE
+  OTHER
+
+  @@schema("public")
+}
 
 enum ChefBookingStatus {
   ASSIGNED
@@ -1156,270 +1302,49 @@ enum ChefBookingStatus {
   @@schema("public")
 }
 
-model ChefAssignment {
-  id        String            @id @default(cuid())
-  bookingId String           @unique @map("booking_id")
-  chefId    String           @map("chef_id")
-  status    ChefBookingStatus @default(ASSIGNED)
-  notes     String?           @db.Text
-  createdAt DateTime         @default(now()) @map("created_at")
-  updatedAt DateTime         @updatedAt @map("updated_at")
+enum experiment_status {
+  RUNNING
+  STOPPED
+  COMPLETE
 
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  chef    User           @relation(fields: [chefId], references: [id], onDelete: Cascade)
-
-  @@map("chef_assignments")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Prep Checklist Templates (Phase 2K)
-// ============================================================================
+enum risk_impact {
+  LOW
+  MEDIUM
+  HIGH
 
-model PrepChecklistTemplate {
-  id        String   @id @default(cuid())
-  name      String
-  items     Json     // [{ label: string, required: boolean }]
-  createdAt DateTime @default(now()) @map("created_at")
-
-  chefPrepChecklists ChefPrepChecklist[]
-
-  @@map("prep_checklist_templates")
   @@schema("public")
 }
 
-model ChefPrepChecklist {
-  id        String   @id @default(cuid())
-  bookingId String  @unique @map("booking_id")
-  chefId    String  @map("chef_id")
-  templateId String? @map("template_id")
-  completed Json    @default("{}") // { "0": true, "1": false } by item index
-  updatedAt DateTime @updatedAt @map("updated_at")
+enum risk_likelihood {
+  LOW
+  MEDIUM
+  HIGH
 
-  booking  BookingInquiry       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  chef     User                 @relation(fields: [chefId], references: [id], onDelete: Cascade)
-  template PrepChecklistTemplate? @relation(fields: [templateId], references: [id], onDelete: SetNull)
-
-  @@map("chef_prep_checklists")
   @@schema("public")
 }
 
-// ============================================================================
-// Chef Education Modules (Phase 2M)
-// ============================================================================
+enum risk_status {
+  OPEN
+  MONITORING
+  CLOSED
 
-model EducationModule {
-  id        String   @id @default(cuid())
-  title     String
-  role      String   @db.Text // CHEF etc.; DB uses TEXT to match CHECK constraint
-  content   String   @db.Text // markdown or HTML
-  required  Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  progress EducationProgress[]
-
-  @@map("education_modules")
   @@schema("public")
 }
 
-model EducationProgress {
-  id          String    @id @default(cuid())
-  userId      String    @map("user_id")
-  moduleId    String    @map("module_id")
-  completed   Boolean   @default(false)
-  completedAt DateTime? @map("completed_at")
+enum succession_assignment_type {
+  PRIMARY
+  BACKUP
 
-  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  module EducationModule  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, moduleId])
-  @@map("education_progress")
   @@schema("public")
 }
 
-// ============================================================================
-// Badges & Certifications (Phase 2P)
-// ============================================================================
+enum succession_readiness {
+  READY
+  NEAR_READY
+  DEVELOPING
 
-model Badge {
-  id       String   @id @default(cuid())
-  name     String
-  criteria String   @db.Text // human-readable rule
-  role     String   @db.Text // CHEF etc.; DB uses TEXT
-
-  userBadges UserBadge[]
-
-  @@map("badges")
-  @@schema("public")
-}
-
-model UserBadge {
-  id        String   @id @default(cuid())
-  userId    String   @map("user_id")
-  badgeId   String   @map("badge_id")
-  awardedAt DateTime @default(now()) @map("awarded_at")
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge  Badge  @relation(fields: [badgeId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, badgeId])
-  @@map("user_badges")
-  @@schema("public")
-}
-
-// ============================================================================
-// Booking Timeline Model (Phase 2A)
-// ============================================================================
-
-model BookingTimeline {
-  id          String    @id @default(uuid())
-  bookingId   String    @map("booking_id")
-  title       String
-  order       Int
-  completed   Boolean   @default(false)
-  completedAt DateTime? @map("completed_at")
-  createdAt   DateTime  @default(now()) @map("created_at")
-
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  @@map("booking_timeline")
-  @@schema("public")
-}
-
-// ============================================================================
-// Event Prep Checklist Model (Phase 3.5)
-// ============================================================================
-
-model BookingPrepItem {
-  id          String    @id @default(uuid())
-  bookingId   String    @map("booking_id")
-  title       String
-  order       Int
-  completed   Boolean   @default(false)
-  completedAt DateTime? @map("completed_at")
-  notes       String?   @db.Text
-  createdAt   DateTime  @default(now()) @map("created_at")
-
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-
-  // Phase 4: Farmer assignments to prep items (optional)
-  farmerAssignments PrepFarmerAssignment[]
-
-  @@map("booking_prep_items")
-  @@schema("public")
-}
-
-// ============================================================================
-// Farmer-Booking Integration Models (Phase 4)
-// ============================================================================
-
-model BookingFarmer {
-  id        String   @id @default(uuid())
-  bookingId String   @map("booking_id")
-  farmerId  String   @map("farmer_id")
-  role      String?  @db.Text // e.g. "Vegetables", "Poultry", "Herbs"
-  notes     String?  @db.Text
-  createdAt DateTime @default(now()) @map("created_at")
-
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  farmer  Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
-  @@unique([bookingId, farmerId])
-  @@map("booking_farmers")
-  @@schema("public")
-}
-
-model PrepFarmerAssignment {
-  id         String    @id @default(uuid())
-  prepItemId String    @map("prep_item_id")
-  farmerId   String    @map("farmer_id")
-  quantity   String?   @db.Text
-  dueDate    DateTime? @map("due_date") @db.Date
-  confirmed  Boolean   @default(false)
-  createdAt  DateTime  @default(now()) @map("created_at")
-
-  prepItem BookingPrepItem @relation(fields: [prepItemId], references: [id], onDelete: Cascade)
-  farmer   Farmer          @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
-  @@map("prep_farmer_assignments")
-  @@schema("public")
-}
-
-// ============================================================================
-// SMS Reliability Models
-// ============================================================================
-
-model FailedSMS {
-  id            String    @id @default(uuid())
-  phone         String
-  message       String    @db.Text
-  error         String?   @db.Text
-  attempts      Int       @default(1)
-  createdAt     DateTime  @default(now()) @map("created_at")
-  lastAttemptAt DateTime? @map("last_attempt_at")
-
-  @@map("failed_sms")
-  @@schema("public")
-}
-
-// ============================================================================
-// Chef-Farmer Matching Models
-// ============================================================================
-
-model ChefNeed {
-  id        String    @id @default(uuid())
-  chefId    String    @map("chef_id")
-  crop      String
-  quantity  Float
-  frequency String // e.g., "weekly", "biweekly", "monthly"
-  startDate DateTime  @map("start_date") @db.Date
-  endDate   DateTime? @map("end_date") @db.Date
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-
-  @@map("chef_needs")
-  @@schema("public")
-}
-
-// ============================================================================
-// Academy (Phase A — Digital products, courses, downloads)
-// ============================================================================
-
-model AcademyPurchase {
-  id               String   @id @default(cuid())
-  authUserId       String   @map("auth_user_id")   // Supabase auth user id
-  productSlug      String   @map("product_slug")  // slug from academy product catalog
-  productTitle     String   @map("product_title")  // snapshot at purchase (catalog can change)
-  productPrice     Int      @map("product_price")  // cents at purchase; 0 for free
-  stripeSessionId  String   @unique @map("stripe_session_id")  // Stripe session id or free-{cuid()}
-  purchasedAt      DateTime @default(now()) @map("purchased_at")
-  createdAt        DateTime @default(now()) @map("created_at")
-
-  @@index([authUserId])
-  @@index([productSlug])
-  @@map("academy_purchases")
-  @@schema("public")
-}
-
-// ============================================================================
-// Farmer Payout Model (Phase 4.5)
-// ============================================================================
-
-model FarmerPayout {
-  id          String       @id @default(uuid())
-  bookingId   String       @map("booking_id")
-  farmerId    String       @map("farmer_id")
-  description String
-  amount      Int // stored in cents
-  status      PayoutStatus @default(PENDING)
-  approvedAt  DateTime?    @map("approved_at")
-  paidAt      DateTime?    @map("paid_at")
-  notes       String?      @db.Text
-  createdAt   DateTime     @default(now()) @map("created_at")
-
-  booking BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  farmer  Farmer         @relation(fields: [farmerId], references: [id], onDelete: Cascade)
-
-  @@map("farmer_payouts")
   @@schema("public")
 }
