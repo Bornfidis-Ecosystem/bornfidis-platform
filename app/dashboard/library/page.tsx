@@ -90,13 +90,13 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-forest mb-4">My Library</h1>
         <p className="text-gray-600">
-          Your purchased Academy products. Download or open course links below.
+          Your purchased Academy products. Download your PDFs or open course links below.
         </p>
       </header>
 
       {purchases.length === 0 ? (
         <div className="rounded-2xl border border-gray-200 bg-card p-10 text-center">
-          <p className="text-gray-600 mb-6">No purchases yet. Your purchased manuals and courses will appear here.</p>
+          <p className="text-gray-600 mb-6">No purchases yet. Your purchased manuals and courses will appear here after you buy.</p>
           <Button href="/academy" variant="primary">
             Browse Academy
           </Button>
@@ -109,7 +109,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
             const href = isCourse && product
               ? `/academy/course/${product.slug}`
               : `/api/academy/download/${p.productSlug}`
-            const label = isCourse && product ? 'Open course' : 'Download'
+            const label = isCourse && product ? 'Open course' : 'Download guide'
             const fileAvailable = !isCourse || !!product
             const priceDisplay =
               p.productPrice === 0 ? 'FREE' : `$${(p.productPrice / 100).toFixed(2)}`
@@ -139,7 +139,9 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                   </div>
                   <div className="flex gap-3">
                     {!fileAvailable ? (
-                      <span className="text-sm text-gray-500 italic">File not available</span>
+                      <span className="text-sm text-gray-500" title="Download not available for this product. Contact support if you need help.">
+                        Download not available
+                      </span>
                     ) : isCourse ? (
                       <Link
                         href={href}

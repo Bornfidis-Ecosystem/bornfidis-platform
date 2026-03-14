@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useRef, useEffect } from 'react'
 
 const ACADEMY_DROPDOWN_LINKS = [
+  { href: '/guide/5-caribbean-sauces', label: 'Free Guide: 5 Sauces' },
   { href: '/academy', label: 'All Academy' },
   { href: '/academy?category=Foundations', label: 'Foundations' },
   { href: '/academy?category=Farming', label: 'For Farmers' },
@@ -30,12 +31,14 @@ export default function PublicNav() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Target order: Home, Academy, Provisions, Marketplace, Sportswear, Farmers, Story (Impact in footer only)
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/book', label: 'Provisions' },
     { href: '/marketplace', label: 'Marketplace' },
-    { href: '/impact', label: 'Impact' },
-    { href: '/story', label: 'Our Story' },
+    { href: '/sportswear', label: 'Sportswear' },
+    { href: '/farmers', label: 'Farmers' },
+    { href: '/story', label: 'Story' },
   ]
   const isAcademyActive = pathname === '/academy' || pathname.startsWith('/academy/')
 
@@ -68,22 +71,17 @@ export default function PublicNav() {
             )}
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation: Home, Academy, Provisions, Marketplace, Sportswear, Farmers, Story, My Library, Login */}
           <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
-                  pathname === link.href
-                    ? 'bg-gold text-navy'
-                    : 'text-white hover:bg-navyLight hover:text-white'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {/* Academy with dropdown — prominent */}
+            <Link
+              href="/"
+              className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
+                pathname === '/' ? 'bg-gold text-navy' : 'text-white hover:bg-navyLight hover:text-white'
+              }`}
+            >
+              Home
+            </Link>
+            {/* Academy with dropdown */}
             <div
               ref={academyRef}
               className="relative"
@@ -119,12 +117,19 @@ export default function PublicNav() {
                 </div>
               )}
             </div>
-            <Link
-              href="/sportswear"
-              className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap text-white hover:bg-navyLight hover:text-white"
-            >
-              Sportswear
-            </Link>
+            {navLinks.slice(1).map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
+                  pathname === link.href
+                    ? 'bg-gold text-navy'
+                    : 'text-white hover:bg-navyLight hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
             <Link
               href="/dashboard/library"
               className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap text-white hover:bg-navyLight hover:text-white"
@@ -157,25 +162,19 @@ export default function PublicNav() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu — same order as desktop */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-navyLight py-4">
             <div className="flex flex-col space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out ${
-                    pathname === link.href
-                      ? 'bg-gold text-navy'
-                      : 'text-white hover:bg-navyLight hover:text-white'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {/* Academy + dropdown links on mobile */}
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out ${
+                  pathname === '/' ? 'bg-gold text-navy' : 'text-white hover:bg-navyLight hover:text-white'
+                }`}
+              >
+                Home
+              </Link>
               <div className="pt-2">
                 <p className="px-4 py-1 text-xs font-semibold text-gold uppercase tracking-wider">Academy</p>
                 {ACADEMY_DROPDOWN_LINKS.map((item) => (
@@ -193,13 +192,20 @@ export default function PublicNav() {
                   </Link>
                 ))}
               </div>
-              <Link
-                href="/sportswear"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out text-white hover:bg-navyLight"
-              >
-                Sportswear
-              </Link>
+              {navLinks.slice(1).map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out ${
+                    pathname === link.href
+                      ? 'bg-gold text-navy'
+                      : 'text-white hover:bg-navyLight hover:text-white'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
                 href="/dashboard/library"
                 onClick={() => setMobileMenuOpen(false)}

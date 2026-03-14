@@ -28,7 +28,7 @@ export default function PublicFooter() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/story" className="text-green-100 hover:text-gold transition">
-                  Our Story
+                  Story
                 </Link>
               </li>
               <li>

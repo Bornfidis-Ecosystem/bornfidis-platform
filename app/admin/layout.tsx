@@ -1,3 +1,6 @@
+/**
+ * Operations layer — Admin control center (users, bookings, system).
+ */
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { checkAdminAccess } from '@/lib/requireAdmin'

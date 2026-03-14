@@ -1,3 +1,6 @@
+/**
+ * Commerce layer — Academy (digital products).
+ */
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
@@ -5,6 +8,7 @@ import {
   type AcademyProduct,
 } from '@/lib/academy-products'
 import { AcademyFeaturedGrid } from '@/components/academy/AcademyFeaturedGrid'
+import { AcademyEmailCapture } from '@/components/academy/AcademyEmailCapture'
 import { AcademyViewTracker } from '@/components/academy/AcademyViewTracker'
 import { TrustStrip } from '@/components/ui/TrustStrip'
 import { getAcademyStats } from '@/lib/academy-stats'
@@ -90,13 +94,13 @@ export default async function AcademyPage({ searchParams }: PageProps) {
       {/* Hero */}
       <header className="mb-14 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-forest mb-4">
-          Build Regenerative Enterprise in Jamaica — Start Here
+          Structured Operating Systems for Entrepreneurs, Farmers & Chefs
         </h1>
         <p className="text-gray-600 mb-1">
-          Templates, courses, and tools to grow your business. Clean. Premium.
+          Get access to discipline-based manuals and templates. One-time purchase, lifetime access.
         </p>
         <p className="text-gray-600">
-          Operational systems for regenerative entrepreneurs.
+          Build sustainable enterprise with clear systems and rhythms.
         </p>
         <TrustStrip className="mt-6 mb-2" />
       </header>
@@ -109,6 +113,18 @@ export default async function AcademyPage({ searchParams }: PageProps) {
           totalPurchaseCount={totalPurchaseCount}
           initialCategory={initialCategory}
         />
+      </section>
+
+      {/* Free guide CTA */}
+      <p className="text-center text-sm text-forest mb-4">
+        <Link href="/guide/5-caribbean-sauces" className="hover:underline font-medium">
+          New: Get our free guide — 5 Caribbean Sauces
+        </Link>
+      </p>
+
+      {/* Email capture */}
+      <section className="max-w-2xl mx-auto mt-14 mb-12">
+        <AcademyEmailCapture />
       </section>
 
       <p className="text-center text-sm text-gray-500 mt-12">

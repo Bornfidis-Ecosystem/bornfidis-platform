@@ -187,6 +187,11 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [UserRole.ADMIN],
   },
   {
+    label: 'System',
+    href: '/admin/system',
+    roles: [UserRole.ADMIN],
+  },
+  {
     label: 'Settings',
     href: '/admin/users',
     roles: [UserRole.ADMIN],

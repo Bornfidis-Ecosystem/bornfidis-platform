@@ -98,7 +98,7 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialCateg
                   {product.priceDisplay}
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-forest group-hover:underline">
-                  Learn More
+                  Get Access
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
@@ -117,20 +117,20 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialCateg
       {/* CTA */}
       <div className="text-center rounded-2xl border-2 border-forest/20 bg-forest/5 p-8">
         <p className="text-gray-700 mb-4">
-          Start with the Foundations manual ($39) or choose the manual for your industry.
+          Start with the Foundations manual or choose the guide for your industry.
         </p>
         <Link
           href="/academy/regenerative-enterprise-foundations"
           className="inline-flex items-center justify-center bg-forest text-goldAccent font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition-all duration-200 ease-in-out"
         >
-          View Foundations ($39)
+          Get Access — Foundations ($39)
         </Link>
         <span className="mx-3 text-gray-400">·</span>
         <Link
           href="/academy#featured"
           className="inline-flex items-center justify-center border-2 border-forest text-forest font-semibold px-8 py-3 rounded-xl hover:bg-forest/10 transition-all duration-200 ease-in-out"
         >
-          Browse all manuals
+          Browse all guides
         </Link>
       </div>
     </>

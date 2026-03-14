@@ -3,6 +3,9 @@
  * Used for the coming-soon / pre-order Sportswear page.
  */
 
+/** Fallback image when product mockups are missing (exists in public/). */
+export const SPORTSWEAR_PLACEHOLDER_IMAGE = '/logo.png'
+
 export interface SportswearProduct {
   id: string
   title: string
@@ -26,7 +29,7 @@ export const sportswearProducts: SportswearProduct[] = [
     description: 'Premium cotton tee featuring the Bornfidis anchor and compass logo',
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
     colors: ['Navy', 'Gold', 'White'],
-    mockupImage: '/sportswear/tshirt-mockup.jpg',
+    mockupImage: SPORTSWEAR_PLACEHOLDER_IMAGE,
     printfulProductId: 'PLACEHOLDER',
   },
   {
@@ -38,7 +41,7 @@ export const sportswearProducts: SportswearProduct[] = [
     description: 'Embroidered trucker cap with Bornfidis logo',
     sizes: ['One Size'],
     colors: ['Navy/Gold', 'Black/Gold'],
-    mockupImage: '/sportswear/hat-mockup.jpg',
+    mockupImage: SPORTSWEAR_PLACEHOLDER_IMAGE,
     printfulProductId: 'PLACEHOLDER',
   },
   {
@@ -50,7 +53,7 @@ export const sportswearProducts: SportswearProduct[] = [
     description: 'Heavy blend hoodie with anchor logo and tagline',
     sizes: ['S', 'M', 'L', 'XL', '2XL'],
     colors: ['Navy', 'Black'],
-    mockupImage: '/sportswear/hoodie-mockup.jpg',
+    mockupImage: SPORTSWEAR_PLACEHOLDER_IMAGE,
     printfulProductId: 'PLACEHOLDER',
   },
   {
@@ -62,7 +65,7 @@ export const sportswearProducts: SportswearProduct[] = [
     description: 'Lightweight tank for Jamaica heat',
     sizes: ['S', 'M', 'L', 'XL'],
     colors: ['Navy', 'Gold', 'White'],
-    mockupImage: '/sportswear/tank-mockup.jpg',
+    mockupImage: SPORTSWEAR_PLACEHOLDER_IMAGE,
     printfulProductId: 'PLACEHOLDER',
   },
   {
@@ -74,7 +77,7 @@ export const sportswearProducts: SportswearProduct[] = [
     description: 'Canvas tote for market shopping',
     sizes: ['One Size'],
     colors: ['Natural/Navy'],
-    mockupImage: '/sportswear/tote-mockup.jpg',
+    mockupImage: SPORTSWEAR_PLACEHOLDER_IMAGE,
     printfulProductId: 'PLACEHOLDER',
   },
 ]

@@ -9,7 +9,9 @@
         "lint": "next lint",
         "postinstall": "prisma generate",
         "db:seed": "tsx prisma/seed.ts",
-        "copy-academy-covers": "node scripts/copy-academy-covers.mjs"
+        "db:studio": "prisma generate && prisma studio",
+        "copy-academy-covers": "node scripts/copy-academy-covers.mjs",
+        "upload-lead-magnet": "tsx scripts/upload-lead-magnet.ts"
     },
     "prisma": {
         "seed": "tsx prisma/seed.ts"

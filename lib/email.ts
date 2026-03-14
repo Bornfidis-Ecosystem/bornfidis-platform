@@ -695,6 +695,54 @@ export async function sendChefTaxSummaryEmail({
 }
 
 /**
+ * Lead magnet: send free guide PDF to subscriber. Attaches PDF and includes soft CTA to Academy.
+ */
+export async function sendLeadMagnetDeliveryEmail({
+  to,
+  guideTitle,
+  pdfBuffer,
+  filename,
+}: {
+  to: string
+  guideTitle: string
+  pdfBuffer: Buffer
+  filename: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — lead magnet email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bornfidis.com'
+  const academyUrl = `${baseUrl.replace(/\/$/, '')}/academy`
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `Your free guide: ${guideTitle}`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; max-width: 600px;">
+          <h2 style="color: #1a5f3f;">Your guide is attached</h2>
+          <p>Thanks for signing up. Your free guide <strong>${guideTitle}</strong> is attached to this email.</p>
+          <p>Save it, print it, and start cooking. If you want to go deeper — full techniques, 28 lessons, and 42 professional recipes — check out <a href="${academyUrl}" style="color: #1a5f3f;">Caribbean Culinary Foundations</a> in the Academy.</p>
+          <p style="margin-top: 24px; color: #666;">
+            Bornfidis Academy
+          </p>
+        </div>
+      `,
+      attachments: [{ filename, content: pdfBuffer }],
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Error sending lead magnet email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 2AJ: SLA breach alert — notify admin/staff.
  */
 export async function sendSlaAlertEmail({

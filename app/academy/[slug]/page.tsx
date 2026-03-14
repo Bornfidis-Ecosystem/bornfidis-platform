@@ -145,7 +145,7 @@ export default async function AcademyProductPage({ params }: PageProps) {
               <AcademyBuyButton product={product} size="lg" />
             </div>
             <p className="mt-4 text-sm text-gray-500">
-              One-time purchase. No subscription. Access in your library after purchase.
+              One-time purchase. Download guide from your library after purchase.
             </p>
           </div>
         </div>
@@ -210,7 +210,7 @@ export default async function AcademyProductPage({ params }: PageProps) {
               <AcademyBuyButton product={product} size="lg" />
             </div>
             <p className="mt-4 text-sm text-gray-500">
-              One-time purchase. No subscription. Access in your library after purchase.
+              One-time purchase. Download from your library after purchase.
             </p>
           </div>
         </section>
@@ -302,7 +302,7 @@ export default async function AcademyProductPage({ params }: PageProps) {
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               </svg>
-              Secure checkout via Stripe
+              Secure checkout · Instant access
             </span>
           </p>
         </section>

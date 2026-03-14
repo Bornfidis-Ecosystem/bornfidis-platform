@@ -1071,6 +1071,26 @@ model FarmListing {
   @@schema("public")
 }
 
+model EmailSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("email_subscribers")
+  @@schema("public")
+}
+
+model ActivityLog {
+  id          String   @id @default(cuid())
+  eventType   String   @map("event_type")
+  description String
+  division    String
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("activity_log")
+  @@schema("public")
+}
+
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model booking_items {
   id              String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid

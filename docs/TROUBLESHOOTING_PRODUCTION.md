@@ -4,6 +4,33 @@ Quick fixes for common errors on platform.bornfidis.com.
 
 ---
 
+## 0. Prisma Studio – "Unable to run script" (local)
+
+**Symptom:** Prisma Studio at `localhost:5555` shows "Prisma Client Error – Unable to run script" when opening a table (e.g. User, BookingInquiry), with "Fetching rows in this table..." in the background.
+
+**Causes:** (1) Prisma Studio using an outdated or wrong client; (2) env not loaded so `DATABASE_URL` is missing; (3) DB connection or schema mismatch.
+
+**Fix:**
+
+1. **Use the project script (recommended)**  
+   From the project root, run:
+   ```bash
+   npm run db:studio
+   ```
+   This runs `prisma generate` then `prisma studio`, so Studio uses the client from `generated/prisma` (same as the app via `tsconfig` path alias).
+
+2. **Ensure env is loaded**  
+   If you start Studio with `npx prisma studio`, run it from the repo root so `.env` is found, or use:
+   ```bash
+   npx dotenv -e .env -- npx prisma studio
+   ```
+   Confirm `.env` has `DATABASE_URL` (and `DIRECT_URL` if your schema uses it).
+
+3. **See the real error**  
+   In the error modal, click **"Show details"** and check the message (e.g. connection refused, relation does not exist, permission denied). That will point to DB vs client vs env.
+
+---
+
 ## 1. "Access Denied" on `/admin` (admin-area role required)
 
 **Symptom:** You log in at `/admin/login` with magic link, then see "Access Denied – You need an admin-area role (ADMIN, STAFF, or COORDINATOR)."

@@ -7,6 +7,9 @@ import { submitBooking } from '@/app/actions'
 import { submitWithOfflineFallback } from '@/lib/offline-sync'
 import { toast } from '@/components/ui/Toast'
 import { Spinner } from '@/components/ui/Spinner'
+import { PROVISIONS_FLAGSHIP_PRODUCTS } from '@/lib/provisions-products'
+import { ProvisionsProductGrid } from '@/components/provisions/ProvisionsProductGrid'
+import { ProvisionsEmailCapture } from '@/components/provisions/ProvisionsEmailCapture'
 
 export default function BookPage() {
   const router = useRouter()
@@ -84,9 +87,50 @@ export default function BookPage() {
         </div>
       </header>
 
-      <section className="container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full">
+      {/* Provisions landing: headline, story, products, CTAs */}
+      <section className="container mx-auto px-4 py-10 md:py-14 max-w-7xl w-full">
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4">
+            Bornfidis Provisions
+          </h1>
+          <p className="text-gray-700 mb-4">
+            Chef services and Caribbean-inspired products built on regenerative food philosophy.
+          </p>
+          <p className="text-gray-600 text-sm">
+            We connect land, kitchen, and community—through custom catering and small-batch sauces and rubs.
+          </p>
+        </div>
+
+        <div className="max-w-3xl mx-auto text-center mb-14">
+          <h2 className="text-xl font-semibold text-navy mb-6">Featured products</h2>
+          <ProvisionsProductGrid products={PROVISIONS_FLAGSHIP_PRODUCTS} />
+        </div>
+
+        <div className="max-w-2xl mx-auto text-center mb-14">
+          <div className="rounded-2xl border-2 border-forest/20 bg-forest/5 p-8">
+            <h2 className="text-xl font-bold text-navy mb-2">Request a chef for your event</h2>
+            <p className="text-gray-700 mb-6 text-sm">
+              Custom catering, private chef, and event dining. We&apos;ll get back within 24 hours with availability and a quote.
+            </p>
+            <a
+              href="#booking-form"
+              className="inline-flex items-center justify-center bg-forest text-goldAccent font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition"
+            >
+              Request a Booking
+            </a>
+            <p className="mt-4 text-sm text-gray-500">
+              <Link href="/story" className="text-forest hover:underline">Our Story</Link>
+              {' · '}
+              <Link href="/academy" className="text-forest hover:underline">Academy</Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Booking form */}
+      <section id="booking-form" className="container mx-auto px-4 py-8 md:py-12 max-w-7xl w-full scroll-mt-8">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-2xl md:text-4xl font-bold text-navy mb-2">Request a Booking</h1>
+          <h2 className="text-2xl md:text-3xl font-bold text-navy mb-2">Request a Booking</h2>
           <p className="text-gray-700 mb-6 md:mb-8 text-sm md:text-base">
             Fill out the form below and we&apos;ll get back to you within 24 hours with availability and a custom quote.
           </p>
@@ -293,6 +337,11 @@ export default function BookPage() {
             </div>
           </form>
         </div>
+      </section>
+
+      {/* Provisions email capture */}
+      <section className="container mx-auto px-4 py-10 max-w-2xl w-full">
+        <ProvisionsEmailCapture />
       </section>
     </div>
   )
