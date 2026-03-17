@@ -1,12 +1,10 @@
 /**
  * Commerce layer — Academy (digital products).
+ * Products are loaded from the database (active only, ordered by featured then updatedAt).
  */
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import {
-  getAcademyProductBySlug,
-  type AcademyProduct,
-} from '@/lib/academy-products'
+import { getAcademyProductsFromDb } from '@/lib/academy-products-public'
 import { AcademyFeaturedGrid } from '@/components/academy/AcademyFeaturedGrid'
 import { AcademyEmailCapture } from '@/components/academy/AcademyEmailCapture'
 import { AcademyViewTracker } from '@/components/academy/AcademyViewTracker'
@@ -50,21 +48,13 @@ export const metadata: Metadata = {
   },
 }
 
-/** Featured manuals in display order (homepage 2x2 grid). */
-const FEATURED_SLUGS = [
-  'regenerative-enterprise-foundations',
-  'regenerative-farmer-blueprint',
-  'jamaican-chef-enterprise-system',
-  'vermont-contractor-foundations',
-]
-
-/** Valid category from URL for initial filter. */
-const VALID_CATEGORIES = ['Foundations', 'Farming', 'Culinary', 'Contracting'] as const
-type UrlCategory = (typeof VALID_CATEGORIES)[number]
-function parseCategory(category: string | undefined): UrlCategory | undefined {
-  if (!category) return undefined
-  const c = category.trim()
-  return VALID_CATEGORIES.includes(c as UrlCategory) ? (c as UrlCategory) : undefined
+/** Valid pillar slugs from URL for initial filter (docs/ACADEMY_KNOWLEDGE_MAP.md). */
+const VALID_PILLARS = ['food-systems', 'clothing-craft', 'housing-infrastructure', 'education-enterprise'] as const
+type UrlPillar = (typeof VALID_PILLARS)[number]
+function parsePillar(pillar: string | undefined): UrlPillar | undefined {
+  if (!pillar) return undefined
+  const p = pillar.trim().toLowerCase()
+  return VALID_PILLARS.includes(p as UrlPillar) ? (p as UrlPillar) : undefined
 }
 
 interface PageProps {
@@ -73,12 +63,10 @@ interface PageProps {
 
 export default async function AcademyPage({ searchParams }: PageProps) {
   const params = await searchParams
-  const categoryParam = typeof params?.category === 'string' ? params.category : undefined
-  const initialCategory = parseCategory(categoryParam)
+  const pillarParam = typeof params?.pillar === 'string' ? params.pillar : undefined
+  const initialPillar = parsePillar(pillarParam)
 
-  const products: AcademyProduct[] = FEATURED_SLUGS.map((slug) =>
-    getAcademyProductBySlug(slug)
-  ).filter((p): p is AcademyProduct => p != null)
+  let products = await getAcademyProductsFromDb()
 
   let totalPurchaseCount = 0
   try {
@@ -105,14 +93,29 @@ export default async function AcademyPage({ searchParams }: PageProps) {
         <TrustStrip className="mt-6 mb-2" />
       </header>
 
-      {/* Featured products: category filter + 2x2 grid + social proof + CTA */}
+      {/* Products: category filter + grid + social proof + CTA (or empty state) */}
       <section id="featured" className="mb-16">
-        <h2 className="sr-only">Featured manuals</h2>
-        <AcademyFeaturedGrid
-          products={products}
-          totalPurchaseCount={totalPurchaseCount}
-          initialCategory={initialCategory}
-        />
+        <h2 className="sr-only">Academy products</h2>
+        {products.length === 0 ? (
+          <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center">
+            <p className="text-lg font-medium text-forest mb-2">No products available yet</p>
+            <p className="text-gray-600 text-sm">
+              New guides and courses will appear here. Check back soon or browse the free guide below.
+            </p>
+            <Link
+              href="/guide/5-caribbean-sauces"
+              className="inline-block mt-4 text-forest font-semibold hover:underline"
+            >
+              Get the free guide — 5 Caribbean Sauces →
+            </Link>
+          </div>
+        ) : (
+          <AcademyFeaturedGrid
+            products={products}
+            totalPurchaseCount={totalPurchaseCount}
+            initialPillar={initialPillar}
+          />
+        )}
       </section>
 
       {/* Free guide CTA */}

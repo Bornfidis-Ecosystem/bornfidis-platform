@@ -1,6 +1,7 @@
 /**
  * Phase A — Academy product catalog
  * Products are referenced by slug. Stripe Price IDs are set in env or here.
+ * Pillar taxonomy aligns with docs/ACADEMY_KNOWLEDGE_MAP.md.
  */
 
 export type AcademyCategory =
@@ -11,6 +12,20 @@ export type AcademyCategory =
   | 'Farming'
   | 'Contracting'
   | 'Culinary'
+
+/** Pillar slugs for Knowledge Map (Food • Clothing • Housing • Education). */
+export type AcademyPillarSlug =
+  | 'food-systems'
+  | 'clothing-craft'
+  | 'housing-infrastructure'
+  | 'education-enterprise'
+
+export const ACADEMY_PILLARS: { slug: AcademyPillarSlug; label: string }[] = [
+  { slug: 'food-systems', label: 'Food Systems' },
+  { slug: 'clothing-craft', label: 'Clothing & Product Craft' },
+  { slug: 'housing-infrastructure', label: 'Housing & Infrastructure' },
+  { slug: 'education-enterprise', label: 'Education & Enterprise' },
+]
 
 export type AcademyProductType = 'DOWNLOAD' | 'COURSE' | 'BUNDLE'
 
@@ -26,6 +41,8 @@ export interface AcademyProduct {
   /** Price in cents for snapshot storage; 0 for free */
   priceCents: number
   category: AcademyCategory
+  /** Knowledge Map pillar for filtering (docs/ACADEMY_KNOWLEDGE_MAP.md). */
+  pillar: AcademyPillarSlug
   /** Stripe Price ID (e.g. price_xxx). Set via env NEXT_PUBLIC_STRIPE_ACADEMY_* or here. */
   stripePriceId: string
   /** Optional image URL (relative or absolute) */
@@ -65,6 +82,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$29',
     priceCents: 2900,
     category: 'Business Foundations',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_LLC_STARTER ?? '',
     image: '/academy/llc-kit.png',
     downloadUrl: '/api/academy/download/llc-starter-kit',
@@ -77,6 +95,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$49',
     priceCents: 4900,
     category: 'Business Foundations',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_PRICING_BLUEPRINT ?? '',
     downloadUrl: '/api/academy/download/pricing-strategy-blueprint',
   },
@@ -88,6 +107,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$49',
     priceCents: 4900,
     category: 'Business Foundations',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_SOP_PACK ?? '',
     downloadUrl: '/api/academy/download/service-business-sop-pack',
   },
@@ -100,6 +120,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: 'FREE',
     priceCents: 0,
     category: 'Agri & Marketplace',
+    pillar: 'food-systems',
     stripePriceId: '', // FREE — use /api/academy/claim
     image: '/academy/farmer-intake.png',
     downloadUrl: '/resources/templates/farmer-intake-profile',
@@ -112,6 +133,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$19',
     priceCents: 1900,
     category: 'Agri & Marketplace',
+    pillar: 'food-systems',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_AGRI_CHECKLIST ?? '',
     downloadUrl: '/api/academy/download/agri-processing-checklist',
   },
@@ -123,6 +145,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$39',
     priceCents: 3900,
     category: 'Agri & Marketplace',
+    pillar: 'food-systems',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_PROJU_VENDOR ?? '',
     downloadUrl: '/api/academy/download/proju-marketplace-vendor-kit',
   },
@@ -135,6 +158,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$39',
     priceCents: 3900,
     category: 'Service Systems',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_CLEANING_LAUNCH ?? '',
     downloadUrl: '/api/academy/download/cleaning-business-launch-pack',
   },
@@ -146,6 +170,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$29',
     priceCents: 2900,
     category: 'Service Systems',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_OPERATOR_GUIDE ?? '',
   },
   {
@@ -156,6 +181,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$49',
     priceCents: 4900,
     category: 'Service Systems',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_NJ_VT ?? '',
     downloadUrl: '/api/academy/download/nj-vt-starter-framework',
   },
@@ -170,6 +196,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$39',
     priceCents: 3900,
     category: 'Foundations',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_REGENERATIVE_ENTERPRISE ?? '',
     image: '/academy/covers/regenerative-enterprise-foundations.png',
     downloadUrl: '/api/academy/download/regenerative-enterprise-foundations',
@@ -208,6 +235,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$49',
     priceCents: 4900,
     category: 'Farming',
+    pillar: 'food-systems',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_REGENERATIVE_FARMER ?? '',
     image: '/academy/covers/regenerative-farmer-blueprint.png',
     downloadUrl: '/api/academy/download/regenerative-farmer-blueprint',
@@ -248,6 +276,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$49',
     priceCents: 4900,
     category: 'Contracting',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_VERMONT_CONTRACTOR ?? '',
     image: '/academy/covers/vermont-contractor-foundations.png',
     downloadUrl: '/api/academy/download/vermont-contractor-foundations',
@@ -286,6 +315,7 @@ export const ACADEMY_PRODUCTS: AcademyProduct[] = [
     priceDisplay: '$79',
     priceCents: 7900,
     category: 'Culinary',
+    pillar: 'education-enterprise',
     stripePriceId: process.env.NEXT_PUBLIC_STRIPE_ACADEMY_JAMAICAN_CHEF ?? '',
     image: '/academy/covers/jamaican-chef-enterprise-system.png',
     downloadUrl: '/api/academy/download/jamaican-chef-enterprise-system',
@@ -319,10 +349,23 @@ export function getAcademyProductBySlug(slug: string): AcademyProduct | undefine
   return ACADEMY_PRODUCTS.find((p) => p.slug === slug)
 }
 
+/** Pillar for a product by slug (from static config). Used when enriching DB-sourced products. */
+export function getPillarBySlug(slug: string): AcademyPillarSlug | undefined {
+  return getAcademyProductBySlug(slug)?.pillar
+}
+
 export function getAcademyProductsByCategory(): Map<AcademyCategory, AcademyProduct[]> {
   const map = new Map<AcademyCategory, AcademyProduct[]>()
   for (const cat of CATEGORIES) {
     map.set(cat, ACADEMY_PRODUCTS.filter((p) => p.category === cat))
+  }
+  return map
+}
+
+export function getAcademyProductsByPillar(): Map<AcademyPillarSlug, AcademyProduct[]> {
+  const map = new Map<AcademyPillarSlug, AcademyProduct[]>()
+  for (const { slug } of ACADEMY_PILLARS) {
+    map.set(slug, ACADEMY_PRODUCTS.filter((p) => p.pillar === slug))
   }
   return map
 }
