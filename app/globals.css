@@ -4,6 +4,7 @@
 
 :root {
   /* Brand Style Guide (docs/BRAND_STYLE_GUIDE.md) — single source of truth */
+  color-scheme: light;
   /* Primary */
   --color-navy: #0B2540;           /* Bornfidis Navy: buttons, headings, nav */
   --color-gold: #F5A623;           /* Bornfidis Gold: accent, CTAs */
@@ -58,16 +59,26 @@
 html {
   overflow-x: hidden;
   width: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   color: var(--color-charcoal);
   background: var(--white);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   width: 100%;
   margin: 0;
   padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-playfair), serif;
 }
 
 /* Prevent horizontal scrolling */

@@ -41,12 +41,27 @@ export default function ThanksPage() {
                 brian@bornfidis.com
               </a>
             </p>
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition"
-            >
-              Return to Home
-            </Link>
+
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+              <Link
+                href="/book"
+                className="inline-flex items-center justify-center px-6 py-3 bg-gold text-navy rounded-lg font-semibold hover:opacity-90 transition"
+              >
+                View Provisions
+              </Link>
+              <Link
+                href="/story"
+                className="inline-flex items-center justify-center px-6 py-3 border border-navy/20 text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition"
+              >
+                Read Our Story
+              </Link>
+              <Link
+                href="/academy"
+                className="inline-flex items-center justify-center px-6 py-3 border border-navy/20 text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition"
+              >
+                Explore Academy
+              </Link>
+            </div>
           </div>
         </div>
       </div>

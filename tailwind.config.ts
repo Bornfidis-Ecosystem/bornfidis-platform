@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-playfair)', 'ui-serif', 'Georgia', 'serif'],
+      },
       colors: {
         // Brand Style Guide (docs/BRAND_STYLE_GUIDE.md)
         navy: 'var(--color-navy)',

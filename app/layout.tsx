@@ -1,18 +1,27 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Playfair_Display } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import './globals.css'
 import PublicNav from '@/components/layout/PublicNav'
-import PublicFooter from '@/components/layout/PublicFooter'
+import ConditionalPublicFooter from '@/components/layout/ConditionalPublicFooter'
 import { ToastContainer } from '@/components/ui/Toast'
 import { SyncButton } from '@/components/ui/SyncButton'
 import { OfflineSyncProvider } from '@/components/ui/OfflineSyncProvider'
 
-const inter = Inter({ subsets: ['latin'] })
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair',
+})
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
 
 export const metadata: Metadata = {
-  title: 'Bornfidis Provisions | Regenerating Land, People & Enterprise',
-  description: 'Faith-anchored food and fellowship regenerating communities through regenerative agriculture, fair trade, and generational wealth building.',
+  title: 'Bornfidis',
+  description:
+    'A regenerative ecosystem delivering food, clothing, and education designed to restore people, land, and purpose.',
   icons: {
     icon: [{ url: '/brand/icons/icon-anchor-navy.png', type: 'image/png' }],
     apple: '/brand/icons/icon-anchor-navy.png',
@@ -21,17 +30,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="overflow-x-hidden">
-      <body className={`${inter.className} overflow-x-hidden`}>
+      <body className={`${playfair.variable} ${inter.variable} font-sans overflow-x-hidden`}>
         <div className="min-h-screen flex flex-col">
           <OfflineSyncProvider>
             <PublicNav />
             <main className="flex-1 w-full">{children}</main>
-            <PublicFooter />
+            <ConditionalPublicFooter />
             <ToastContainer />
             <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
             <SyncButton />
