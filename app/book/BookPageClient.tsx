@@ -13,10 +13,19 @@ import { PROVISIONS_FLAGSHIP_PRODUCTS } from '@/lib/provisions-products'
 import { HomepageBrandImage } from '@/components/home/HomepageBrandImage'
 import { homepageImages } from '@/lib/homepage-images'
 import { bookImages } from '@/lib/book-images'
+import { cdnImages } from '@/lib/bornfidis-cdn-images'
+import BrutalistBookingNav from '@/components/layout/BrutalistBookingNav'
+
+const BG = '#080808'
+const SURFACE = '#141414'
+const GOLD_DIM = 'rgba(201,168,76,0.22)'
 
 function SectionEyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9D7C2F]">{children}</p>
+    <p className="mb-4 flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-[#C9A84C]">
+      <span className="inline-block h-px w-6 flex-shrink-0 bg-[#C9A84C]" />
+      {children}
+    </p>
   )
 }
 
@@ -31,13 +40,15 @@ function PlaceholderVisual({
 }) {
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl border border-white/30 bg-[linear-gradient(135deg,#EDE5D6_0%,#DCCFB6_100%)] ${className}`}
+      className={`relative min-h-[220px] overflow-hidden border border-[rgba(201,168,76,0.25)] bg-gradient-to-br from-[#141414] to-[#0f0f0f] ${className}`}
     >
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_top_left,rgba(201,168,76,0.35)_0,transparent_35%),radial-gradient(circle_at_bottom_right,rgba(15,61,46,0.18)_0,transparent_30%)]" />
-      <div className="relative flex h-full min-h-[220px] flex-col justify-end p-6">
-        <p className="text-lg font-semibold text-[#0F3D2E]">{title}</p>
+      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_30%_20%,rgba(201,168,76,0.15)_0%,transparent_45%)]" />
+      <div className="relative flex h-full min-h-[inherit] flex-col justify-end p-6">
+        <p className="font-display text-lg text-[#F2EDE4]">{title}</p>
         {subtitle ? (
-          <p className="mt-2 max-w-md text-sm leading-6 text-[#25483C]">{subtitle}</p>
+          <p className="mt-2 max-w-md text-sm leading-6 text-[rgba(242,237,228,0.55)]">
+            {subtitle}
+          </p>
         ) : null}
       </div>
     </div>
@@ -109,7 +120,6 @@ const budgetRanges = [
   { value: 'flexible', label: 'Flexible / not sure' },
 ]
 
-/** Island Fire | Maple Jerk (center, hero product shot) | Tamarind */
 const provisionsAddOns = [
   PROVISIONS_FLAGSHIP_PRODUCTS[1],
   PROVISIONS_FLAGSHIP_PRODUCTS[0],
@@ -146,13 +156,18 @@ export default function BookPageClient() {
     }
 
     try {
-      const offlineResult = await submitWithOfflineFallback(payload, '/api/submit-booking')
+      const offlineResult = await submitWithOfflineFallback(
+        payload,
+        '/api/submit-booking',
+      )
 
       if (offlineResult.success) {
         toast.success('Booking submitted successfully!')
         router.push('/thanks')
       } else if (offlineResult.offline) {
-        toast.info("Your booking has been saved offline and will be submitted when you're back online.")
+        toast.info(
+          "Your booking has been saved offline and will be submitted when you're back online.",
+        )
         router.push('/thanks')
       } else {
         setError(offlineResult.error || 'Something went wrong. Please try again.')
@@ -178,132 +193,151 @@ export default function BookPageClient() {
     }
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const inputClass =
-    'w-full px-4 py-2.5 border border-[#E8E1D2] rounded-xl bg-white text-[#0F3D2E] placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#0F3D2E]/25 focus:border-[#0F3D2E]/40'
+    'w-full rounded-sm border border-[rgba(201,168,76,0.28)] bg-[rgba(255,255,255,0.04)] px-4 py-2.5 text-[0.9rem] font-light text-[#F2EDE4] placeholder:text-[rgba(242,237,228,0.35)] focus:border-[#C9A84C]/60 focus:outline-none focus:ring-1 focus:ring-[#C9A84C]/30'
 
   const minDate = new Date().toISOString().split('T')[0]
 
   return (
-    <div className="min-h-screen bg-[#F7F3EA] text-[#0F3D2E]">
-      {/* 1. Hero — text left, image right (desktop) */}
-      <section className="relative isolate overflow-hidden bg-[#0F3D2E] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(201,168,76,0.22)_0,transparent_28%),radial-gradient(circle_at_bottom_right,rgba(201,168,76,0.10)_0,transparent_22%)]" />
-        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.08)_45%,transparent_100%)]" />
+    <div className="relative min-h-screen text-[#F2EDE4]" style={{ backgroundColor: BG }}>
+      <BrutalistBookingNav />
 
-        <div className="relative flex justify-end px-6 pt-4 md:px-10">
-          <Link href="/" className="text-sm text-white/80 transition hover:text-[#E8D9B5]">
-            ← Home
-          </Link>
+      {/* Hero */}
+      <section className="relative isolate min-h-[min(100vh,920px)] overflow-hidden pt-24">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={bookImages.hero}
+            alt=""
+            fill
+            priority
+            className="object-cover object-[center_30%]"
+            sizes="100vw"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to bottom, rgba(8,8,8,0.75) 0%, rgba(8,8,8,0.35) 45%, rgba(8,8,8,0.92) 100%)',
+            }}
+          />
         </div>
 
-        <div className="relative mx-auto grid max-w-7xl gap-12 px-6 pb-20 md:px-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16 lg:pb-24">
-          <div className="order-2 max-w-3xl lg:order-1">
-            <p className="mb-4 inline-block rounded-full border border-[#C9A84C]/40 bg-white/5 px-4 py-1 text-sm tracking-wide text-[#E8D9B5]">
-              Book a Bornfidis Experience
-            </p>
-            <h1 className="text-4xl font-semibold leading-tight md:text-5xl lg:text-6xl">
-              Plan a Table Experience That Feels{' '}
-              <span className="text-[#C9A84C]">Worth the Moment</span>
-            </h1>
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/85">
-              Calm execution, Caribbean depth, and premium hospitality — from inquiry to the last plate.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="#booking-form"
-                className="rounded-full bg-[#C9A84C] px-6 py-3 text-center font-medium text-[#0F3D2E] transition hover:opacity-90"
-              >
-                Start Your Booking
-              </a>
-              <a
-                href="https://wa.me/18027335348?text=Hi%20Brian,%20I%E2%80%99m%20interested%20in%20booking%20a%20Bornfidis%20chef%20experience."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-white/30 px-6 py-3 text-center font-medium text-white transition hover:bg-white/10"
-              >
-                Chat on WhatsApp
-              </a>
-            </div>
-          </div>
-
-          <div className="order-1 w-full max-w-xl justify-self-center lg:order-2 lg:justify-self-end">
-            <HomepageBrandImage
-              src={bookImages.hero}
-              alt="Bornfidis private chef and dining experience"
-              priority
-              variant="hero"
-              fallback={
-                <PlaceholderVisual
-                  title="Book hero visual"
-                  subtitle="Optional: add public/images/book/hero.png and set lib/book-images.ts"
-                  className="min-h-[320px] lg:min-h-[380px]"
-                />
-              }
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* 2. How it works */}
-      <section className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-        <div className="max-w-3xl">
-          <SectionEyebrow>How It Works</SectionEyebrow>
-          <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Three calm steps from inquiry to table</h2>
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {howItWorks.map((item) => (
-            <div
-              key={item.step}
-              className="rounded-3xl border border-[#E8E1D2] bg-white p-8 shadow-sm"
+        <div className="relative z-[1] mx-auto max-w-7xl px-6 pb-24 pt-12 md:px-10 md:pb-28 md:pt-16">
+          <p className="mb-4 flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.25em] text-[#C9A84C]">
+            <span className="inline-block h-px w-8 bg-[#C9A84C]" />
+            Book a Bornfidis experience
+          </p>
+          <h1 className="font-display text-[clamp(2.75rem,9vw,5.75rem)] leading-[0.92] tracking-tight text-[#F2EDE4]">
+            PLAN A TABLE
+            <br />
+            <span className="text-[#C9A84C]">WORTH THE MOMENT</span>
+          </h1>
+          <p className="mt-8 max-w-xl text-base leading-relaxed text-[rgba(242,237,228,0.78)] md:text-lg">
+            Calm execution, Caribbean depth, and premium hospitality — from
+            inquiry to the last plate.
+          </p>
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <a href="#booking-form" className="btn-gold-solid no-underline">
+              Start your booking
+            </a>
+            <a
+              href="https://wa.me/18027335348?text=Hi%20Brian,%20I%E2%80%99m%20interested%20in%20booking%20a%20Bornfidis%20chef%20experience."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold-outline text-center no-underline"
             >
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#9D7C2F]">{item.step}</p>
-              <h3 className="mt-4 text-xl font-semibold text-[#0F3D2E]">{item.title}</h3>
-              <p className="mt-4 leading-7 text-[#25483C]">{item.body}</p>
-            </div>
-          ))}
+              WhatsApp
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* 3. Service selector */}
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <div className="max-w-3xl">
-            <SectionEyebrow>Choose Your Experience</SectionEyebrow>
-            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Service packages</h2>
-            <p className="mt-6 text-lg leading-8 text-[#25483C]">
-              Pick the lane that fits your occasion — you can refine details in the booking form.
-            </p>
+      {/* How it works */}
+      <section className="border-t px-6 py-20 md:px-10 md:py-28" style={{ borderColor: GOLD_DIM }}>
+        <div className="mx-auto max-w-7xl">
+          <SectionEyebrow>How it works</SectionEyebrow>
+          <h2 className="font-display text-[clamp(2rem,5vw,3.25rem)] leading-tight text-[#F2EDE4]">
+            THREE CALM STEPS
+          </h2>
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {howItWorks.map((item) => (
+              <div
+                key={item.step}
+                className="border p-8"
+                style={{
+                  borderColor: GOLD_DIM,
+                  backgroundColor: SURFACE,
+                }}
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
+                  {item.step}
+                </p>
+                <h3 className="mt-4 font-display text-xl text-[#F2EDE4]">
+                  {item.title}
+                </h3>
+                <p className="mt-4 text-sm leading-relaxed text-[rgba(242,237,228,0.7)]">
+                  {item.body}
+                </p>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <div className="mt-12 grid gap-6 lg:grid-cols-3">
+      {/* Service packages */}
+      <section
+        className="border-t px-6 py-20 md:px-10 md:py-28"
+        style={{ borderColor: GOLD_DIM, backgroundColor: SURFACE }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <SectionEyebrow>Choose your experience</SectionEyebrow>
+          <h2 className="font-display text-[clamp(2rem,5vw,3.25rem)] text-[#F2EDE4]">
+            SERVICE PACKAGES
+          </h2>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[rgba(242,237,228,0.65)]">
+            Pick the lane that fits your occasion — refine details in the booking
+            form.
+          </p>
+
+          <div className="mt-14 grid gap-8 lg:grid-cols-3">
             {servicePackages.map((item) => (
               <div
                 key={item.title}
-                className="overflow-hidden rounded-3xl border border-[#E8E1D2] bg-[#F7F3EA] shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                className="flex flex-col overflow-hidden border transition-transform hover:-translate-y-0.5"
+                style={{ borderColor: GOLD_DIM, backgroundColor: BG }}
               >
                 <HomepageBrandImage
                   src={homepageImages[item.imageKey]}
                   alt={`Bornfidis — ${item.title}`}
                   variant="section"
+                  className="!border-0 rounded-none"
                   fallback={
                     <PlaceholderVisual
                       title={item.title}
-                      subtitle="Premium service photography"
+                      subtitle="Photography via CDN"
                       className="h-56"
                     />
                   }
                 />
-                <div className="p-6 md:p-8">
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="mt-3 leading-7 text-[#25483C]">{item.description}</p>
+                <div className="flex flex-1 flex-col p-6 md:p-8">
+                  <h3 className="font-display text-xl text-[#F2EDE4]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[rgba(242,237,228,0.68)]">
+                    {item.description}
+                  </p>
                   <a
                     href="#booking-form"
-                    className="mt-6 inline-flex rounded-full bg-[#0F3D2E] px-5 py-3 text-sm font-medium text-white transition hover:opacity-95"
+                    className="btn-gold-outline mt-6 inline-flex w-fit no-underline"
                   >
                     Start here
                   </a>
@@ -314,63 +348,90 @@ export default function BookPageClient() {
         </div>
       </section>
 
-      {/* 4. Provisions add-on */}
-      <section id="provisions" className="scroll-mt-8 bg-[#EDE5D6]">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <div className="max-w-3xl">
-            <SectionEyebrow>Provisions add-on</SectionEyebrow>
-            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Bring Bornfidis flavor home</h2>
-            <p className="mt-6 text-lg leading-8 text-[#25483C]">
-              Pair your booking with small-batch provisions — perfect for gifts, pantries, and future
-              gatherings.
-            </p>
-          </div>
+      {/* Provisions add-on */}
+      <section
+        id="provisions"
+        className="scroll-mt-24 border-t px-6 py-20 md:px-10 md:py-28"
+        style={{ borderColor: GOLD_DIM }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <SectionEyebrow>Provisions add-on</SectionEyebrow>
+          <h2 className="font-display text-[clamp(2rem,5vw,3.25rem)] text-[#F2EDE4]">
+            BRING FLAVOR HOME
+          </h2>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[rgba(242,237,228,0.65)]">
+            Pair your booking with small-batch provisions — gifts, pantries, and
+            future gatherings.
+          </p>
 
-          <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {provisionsAddOns.map((p) => (
-              <div
-                key={p.id}
-                className="flex flex-col overflow-hidden rounded-3xl border border-[#E8E1D2] bg-white shadow-sm"
-              >
-                {p.image ? (
-                  <div className="relative aspect-[4/5] w-full bg-[#1a2332]">
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+            {provisionsAddOns.map((p, i) => {
+              const provisionShots = [
+                cdnImages.sauceProduct,
+                cdnImages.heroPlating,
+                cdnImages.tableAtmosphere,
+              ] as const
+              const imgSrc =
+                p.image?.startsWith('http://') || p.image?.startsWith('https://')
+                  ? p.image
+                  : provisionShots[i % provisionShots.length]
+              return (
+                <div
+                  key={p.id}
+                  className="flex flex-col overflow-hidden border"
+                  style={{ borderColor: GOLD_DIM, backgroundColor: SURFACE }}
+                >
+                  <div className="relative aspect-[4/5] w-full bg-[#0a0a0a]">
                     <Image
-                      src={p.image}
+                      src={imgSrc}
                       alt={p.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-contain p-5 sm:p-6"
+                      className="object-cover"
                     />
                   </div>
-                ) : null}
-                <div className="flex flex-1 flex-col p-6">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-[#9D7C2F]">{p.status}</p>
-                  <h3 className="mt-2 text-lg font-semibold text-[#0F3D2E]">{p.name}</h3>
-                  <p className="mt-3 flex-1 text-sm leading-6 text-[#25483C]">{p.description}</p>
+                  <div className="flex flex-1 flex-col p-6">
+                    <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
+                      {p.status}
+                    </p>
+                    <h3 className="mt-2 font-display text-lg text-[#F2EDE4]">
+                      {p.name}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[rgba(242,237,228,0.65)]">
+                      {p.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
 
-      {/* 5. Booking form + 6. Trust strip */}
-      <section id="booking-form" className="scroll-mt-8 bg-[#F7F3EA]">
-        <div className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <div className="max-w-3xl">
-            <SectionEyebrow>Booking</SectionEyebrow>
-            <h2 className="mt-4 text-3xl font-semibold md:text-4xl">Tell us about your event</h2>
-            <p className="mt-4 text-lg leading-8 text-[#25483C]">
-              We respond within 24 hours with next steps — no spam, no pressure.
-            </p>
-          </div>
+      {/* Booking form */}
+      <section
+        id="booking-form"
+        className="scroll-mt-24 border-t px-6 py-20 md:px-10 md:py-28"
+        style={{ borderColor: GOLD_DIM, backgroundColor: SURFACE }}
+      >
+        <div className="mx-auto max-w-7xl">
+          <SectionEyebrow>Booking</SectionEyebrow>
+          <h2 className="font-display text-[clamp(2rem,5vw,3.25rem)] text-[#F2EDE4]">
+            TELL US ABOUT YOUR EVENT
+          </h2>
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[rgba(242,237,228,0.65)]">
+            We respond within 24 hours with next steps — no spam, no pressure.
+          </p>
 
-          <div className="mt-10 rounded-3xl border border-[#E8E1D2] bg-white p-6 shadow-sm md:p-10">
-            {error && (
-              <div className="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+          <div
+            className="mt-12 border p-6 md:p-10"
+            style={{ borderColor: GOLD_DIM, backgroundColor: BG }}
+          >
+            {error ? (
+              <div className="mb-6 border border-red-500/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
                 {error}
               </div>
-            )}
+            ) : null}
 
             <form onSubmit={handleSubmit} className="relative space-y-8">
               <div className="absolute left-[-9999px] top-0" aria-hidden="true">
@@ -388,8 +449,11 @@ export default function BookPageClient() {
 
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="sm:col-span-2">
-                  <label htmlFor="name" className="mb-1 block text-sm font-medium text-[#25483C]">
-                    Full name <span className="text-red-600">*</span>
+                  <label
+                    htmlFor="name"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
+                    Full name <span className="text-red-400">*</span>
                   </label>
                   <input
                     id="name"
@@ -403,7 +467,10 @@ export default function BookPageClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="email"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Email
                   </label>
                   <input
@@ -417,8 +484,11 @@ export default function BookPageClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="phone" className="mb-1 block text-sm font-medium text-[#25483C]">
-                    Phone / WhatsApp <span className="text-red-600">*</span>
+                  <label
+                    htmlFor="phone"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
+                    Phone / WhatsApp <span className="text-red-400">*</span>
                   </label>
                   <input
                     id="phone"
@@ -432,8 +502,11 @@ export default function BookPageClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="eventDate" className="mb-1 block text-sm font-medium text-[#25483C]">
-                    Event date <span className="text-red-600">*</span>
+                  <label
+                    htmlFor="eventDate"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
+                    Event date <span className="text-red-400">*</span>
                   </label>
                   <input
                     id="eventDate"
@@ -447,7 +520,10 @@ export default function BookPageClient() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="guests" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="guests"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Guests
                   </label>
                   <input
@@ -462,8 +538,11 @@ export default function BookPageClient() {
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label htmlFor="location" className="mb-1 block text-sm font-medium text-[#25483C]">
-                    Location / venue <span className="text-red-600">*</span>
+                  <label
+                    htmlFor="location"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
+                    Location / venue <span className="text-red-400">*</span>
                   </label>
                   <textarea
                     id="location"
@@ -478,7 +557,10 @@ export default function BookPageClient() {
                 </div>
 
                 <div>
-                  <label htmlFor="experienceType" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="experienceType"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Experience type
                   </label>
                   <select
@@ -489,14 +571,22 @@ export default function BookPageClient() {
                     className={inputClass}
                   >
                     {experienceTypes.map((o) => (
-                      <option key={o.label} value={o.value} disabled={o.value === ''}>
+                      <option
+                        key={o.label}
+                        value={o.value}
+                        disabled={o.value === ''}
+                        className="bg-[#141414] text-[#F2EDE4]"
+                      >
                         {o.label}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label htmlFor="menuPreference" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="menuPreference"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Menu preference
                   </label>
                   <select
@@ -507,14 +597,22 @@ export default function BookPageClient() {
                     className={inputClass}
                   >
                     {menuPreferences.map((o) => (
-                      <option key={o.label} value={o.value} disabled={o.value === ''}>
+                      <option
+                        key={o.label}
+                        value={o.value}
+                        disabled={o.value === ''}
+                        className="bg-[#141414] text-[#F2EDE4]"
+                      >
                         {o.label}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
-                  <label htmlFor="budgetRange" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="budgetRange"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Budget range
                   </label>
                   <select
@@ -525,14 +623,22 @@ export default function BookPageClient() {
                     className={inputClass}
                   >
                     {budgetRanges.map((o) => (
-                      <option key={o.label} value={o.value} disabled={o.value === ''}>
+                      <option
+                        key={o.label}
+                        value={o.value}
+                        disabled={o.value === ''}
+                        className="bg-[#141414] text-[#F2EDE4]"
+                      >
                         {o.label}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="sm:col-span-2">
-                  <label htmlFor="notes" className="mb-1 block text-sm font-medium text-[#25483C]">
+                  <label
+                    htmlFor="notes"
+                    className="mb-1 block text-sm font-medium text-[rgba(242,237,228,0.75)]"
+                  >
                     Notes
                   </label>
                   <textarea
@@ -550,19 +656,23 @@ export default function BookPageClient() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0F3D2E] px-6 py-3.5 font-semibold text-white transition hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-50 sm:max-w-md"
+                className="btn-gold-solid inline-flex w-full items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50 sm:max-w-md"
               >
-                {isSubmitting && <Spinner size="sm" className="flex-shrink-0 text-white" />}
+                {isSubmitting ? (
+                  <Spinner size="sm" className="flex-shrink-0 text-[#080808]" />
+                ) : null}
                 {isSubmitting ? 'Submitting…' : 'Submit inquiry'}
               </button>
             </form>
 
-            {/* Trust strip */}
-            <div className="mt-10 border-t border-[#E8E1D2] pt-8">
-              <p className="text-center text-sm font-semibold uppercase tracking-[0.15em] text-[#9D7C2F]">
+            <div
+              className="mt-12 border-t pt-10"
+              style={{ borderColor: GOLD_DIM }}
+            >
+              <p className="text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#C9A84C]">
                 Why hosts trust Bornfidis
               </p>
-              <div className="mt-6 grid gap-4 text-center text-sm leading-6 text-[#25483C] sm:grid-cols-3">
+              <div className="mt-8 grid gap-6 text-center text-sm text-[rgba(242,237,228,0.65)] sm:grid-cols-3">
                 <div className="flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
                   <span className="text-[#C9A84C]">✦</span>
                   <span>Calm, professional execution</span>
@@ -581,29 +691,48 @@ export default function BookPageClient() {
         </div>
       </section>
 
-      {/* 7. WhatsApp CTA */}
-      <section className="bg-[#0F3D2E] px-6 py-16 text-white md:px-10 md:py-20">
-        <div className="mx-auto max-w-4xl text-center">
+      {/* WhatsApp CTA */}
+      <section
+        className="border-t px-6 py-20 text-center md:px-10 md:py-24"
+        style={{ borderColor: GOLD_DIM, backgroundColor: BG }}
+      >
+        <div className="mx-auto max-w-3xl">
           <SectionEyebrow>Prefer WhatsApp?</SectionEyebrow>
-          <h2 className="mt-4 text-2xl font-semibold md:text-3xl">Get a fast, personal reply</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-white/85">
-            Share your date, guest count, and location — we&apos;ll help you choose the right experience.
+          <h2 className="font-display text-2xl text-[#F2EDE4] md:text-3xl">
+            GET A FAST, PERSONAL REPLY
+          </h2>
+          <p className="mx-auto mt-6 text-base leading-relaxed text-[rgba(242,237,228,0.7)]">
+            Share your date, guest count, and location — we&apos;ll help you
+            choose the right experience.
           </p>
           <a
             href="https://wa.me/18027335348?text=Hi%20Brian,%20I%E2%80%99m%20interested%20in%20booking%20a%20Bornfidis%20chef%20experience.%20Here%20are%20my%20details:"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex rounded-full bg-[#C9A84C] px-8 py-3.5 font-semibold text-[#0F3D2E] transition hover:opacity-90"
+            className="btn-gold-solid mt-10 inline-flex no-underline"
           >
             Chat on WhatsApp
           </a>
-          <p className="mt-8 text-sm text-white/65">
-            <Link href="/story" className="underline decoration-white/30 underline-offset-4 hover:decoration-white">
-              Read our story
+          <p className="mt-10 text-sm text-[rgba(242,237,228,0.45)]">
+            <Link
+              href="/story"
+              className="underline decoration-[rgba(201,168,76,0.4)] underline-offset-4 hover:decoration-[#C9A84C]"
+            >
+              Our story
             </Link>
             {' · '}
-            <Link href="/contact" className="underline decoration-white/30 underline-offset-4 hover:decoration-white">
+            <Link
+              href="/contact"
+              className="underline decoration-[rgba(201,168,76,0.4)] underline-offset-4 hover:decoration-[#C9A84C]"
+            >
               Contact
+            </Link>
+            {' · '}
+            <Link
+              href="/"
+              className="underline decoration-[rgba(201,168,76,0.4)] underline-offset-4 hover:decoration-[#C9A84C]"
+            >
+              Home
             </Link>
           </p>
         </div>

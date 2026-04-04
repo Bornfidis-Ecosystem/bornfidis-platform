@@ -9,6 +9,7 @@
         "lint": "next lint",
         "postinstall": "prisma generate",
         "db:seed": "tsx prisma/seed.ts",
+        "db:seed-academy": "tsx scripts/seed-academy-products.ts",
         "db:studio": "prisma generate && prisma studio",
         "copy-academy-covers": "node scripts/copy-academy-covers.mjs",
         "upload-lead-magnet": "tsx scripts/upload-lead-magnet.ts"
@@ -21,6 +22,7 @@
         "@react-pdf/renderer": "^3.4.5",
         "@supabase/ssr": "^0.1.0",
         "@supabase/supabase-js": "^2.39.0",
+        "framer-motion": "^11.18.2",
         "next": "^15.0.3",
         "prisma": "^6.19.2",
         "react": "^18.3.0",
@@ -41,9 +43,9 @@
         "eslint": "^8.56.0",
         "eslint-config-next": "^15.0.3",
         "postcss": "^8.4.0",
+        "sharp": "^0.33.5",
         "tailwindcss": "^3.4.0",
         "tsx": "^4.21.0",
-        "typescript": "^5.3.0",
-        "sharp": "^0.33.5"
+        "typescript": "^5.3.0"
     }
 }

@@ -42,6 +42,9 @@ export default function PublicNav() {
   ]
   const isAcademyActive = pathname === '/academy' || pathname.startsWith('/academy/')
 
+  /* Marketing pages ship their own editorial nav */
+  if (pathname === '/' || pathname === '/book') return null
+
   return (
     <nav className="bg-navy text-white shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 max-w-7xl">

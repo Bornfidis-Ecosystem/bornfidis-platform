@@ -144,3 +144,114 @@ h6 {
     text-decoration: underline;
   }
 }
+
+/* Homepage — editorial brutalist (scoped) */
+.home-brutalist-root {
+  font-family: var(--font-home-dm), system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+}
+
+.home-brutalist-root .font-display {
+  font-family: var(--font-home-bebas), Impact, system-ui, sans-serif;
+}
+
+.home-brutalist-root .font-accent-italic {
+  font-family: var(--font-home-playfair), Georgia, serif;
+  font-style: italic;
+}
+
+.home-brutalist-root .text-stroke-gold {
+  color: transparent;
+  -webkit-text-stroke: 1.5px #c9a84c;
+}
+
+.home-brutalist-root .btn-gold-outline {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  border: 1px solid rgba(201, 168, 76, 0.45);
+  background: transparent;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.home-brutalist-root .btn-gold-outline:hover {
+  background: rgba(201, 168, 76, 0.12);
+  color: #f2ede4;
+}
+
+.home-brutalist-root .btn-gold-solid {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.85rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #080808;
+  background: #c9a84c;
+  border: 1px solid #c9a84c;
+  transition: opacity 0.2s ease;
+}
+
+.home-brutalist-root .btn-gold-solid:hover {
+  opacity: 0.92;
+}
+
+.home-brutalist-root .nav-muted:hover {
+  color: #c9a84c !important;
+}
+
+.home-brutalist-grain {
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+.home-brutalist-root .marquee-inner,
+.home-brutalist-root .marquee-inner-reverse {
+  display: flex;
+  width: max-content;
+}
+
+.home-brutalist-root .marquee-inner {
+  animation: home-marquee-l 45s linear infinite;
+}
+
+.home-brutalist-root .marquee-inner-reverse {
+  animation: home-marquee-r 45s linear infinite;
+}
+
+@keyframes home-marquee-l {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes home-marquee-r {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-brutalist-root .marquee-inner,
+  .home-brutalist-root .marquee-inner-reverse {
+    animation: none;
+    transform: none;
+  }
+}
