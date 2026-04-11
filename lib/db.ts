@@ -85,7 +85,13 @@ function createPrismaClient() {
         url: dbUrl,
       },
     },
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // Query logs are noisy in dev; set PRISMA_LOG_QUERIES=1 when you need SQL tracing.
+    log:
+      process.env.NODE_ENV === 'development'
+        ? process.env.PRISMA_LOG_QUERIES === '1'
+          ? (['query', 'error', 'warn'] as const)
+          : (['error', 'warn'] as const)
+        : ['error'],
     // Disable prepared statements when using PGBouncer (pooled connections)
     // This prevents "prepared statement already exists" errors (PostgresError 42P05)
     // Prisma will automatically detect pgbouncer=true in the connection string

@@ -1,21 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { sendInvoiceEmail } from '@/lib/email'
+import { sendDepositReceivedEmail, sendInvoiceEmail } from '@/lib/email'
+import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
+import { sendEmail } from '@/lib/email'
 import { formatUSD } from '@/lib/money'
 import { tryPayoutForBooking } from '@/lib/payout-engine'
 import { tryPayoutsForBooking } from '@/lib/farmer-payout-engine'
 import { tryPayoutsForBookingIngredients } from '@/lib/ingredient-payout-engine'
 import { recordBookingImpact } from '@/lib/impact-tracker'
 import { getAccountStatus } from '@/lib/stripe-connect'
+import { db } from '@/lib/db'
 import Stripe from 'stripe'
+
+function sessionPaymentIntentId(session: Stripe.Checkout.Session): string | null {
+    const pi = session.payment_intent
+    if (!pi) return null
+    return typeof pi === 'string' ? pi : pi.id
+}
+
+/** Per-event activity row; unique stripeEventId prevents duplicate rows on Stripe retries. */
+async function createBookingActivityDeduped(input: {
+    bookingId: string
+    type: string
+    title: string
+    description: string | null
+    stripeEventId: string
+}) {
+    try {
+        await db.bookingActivity.create({
+            data: {
+                bookingId: input.bookingId,
+                type: input.type,
+                title: input.title,
+                description: input.description,
+                actorName: 'System',
+                stripeEventId: input.stripeEventId,
+            },
+        })
+    } catch (e: unknown) {
+        const code = (e as { code?: string })?.code
+        if (code === 'P2002') return
+        throw e
+    }
+}
+
+async function markStripeEventProcessed(eventId: string) {
+    try {
+        await db.stripeWebhookEvent.create({ data: { id: eventId } })
+    } catch (e: unknown) {
+        const code = (e as { code?: string })?.code
+        if (code === 'P2002') return
+        throw e
+    }
+}
 
 /**
  * Phase 3A + 3B: Stripe Webhook Handler
  * POST /api/stripe/webhook
- * 
+ *
  * Handles checkout.session.completed event
- * - Phase 3A: Deposit payments (metadata.kind === 'deposit')
- * - Phase 3B: Balance payments (metadata.kind === 'balance')
+ * - Deposit: metadata.payment_type === 'deposit' (also kind/type for legacy)
+ * - Full / balance: metadata.payment_type === 'full' | 'balance'
+ * Idempotency: stripe_webhook_events (evt id) + unique stripe_event_id on booking_activities
  */
 export async function POST(request: NextRequest) {
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY
@@ -56,51 +102,144 @@ export async function POST(request: NextRequest) {
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object as Stripe.Checkout.Session
 
-        // Check metadata for payment type (Phase 3C uses payment_type)
-        const paymentType = session.metadata?.payment_type || session.metadata?.kind || session.metadata?.type
-        const bookingId = session.metadata?.booking_id
-
-        if (!bookingId) {
-            console.log('Skipping session without booking_id')
+        const alreadyProcessed = await db.stripeWebhookEvent.findUnique({
+            where: { id: event.id },
+        })
+        if (alreadyProcessed) {
             return NextResponse.json({ received: true })
         }
 
-        const paymentIntentId = session.payment_intent as string
+        const checkoutMode = (
+            session.metadata?.checkout_mode ||
+            session.metadata?.payment_type ||
+            session.metadata?.kind ||
+            session.metadata?.type ||
+            ''
+        ).toLowerCase()
+
+        /** Consulting: no booking row — notify admin and exit */
+        if (checkoutMode === 'consulting') {
+            try {
+                const adminRaw =
+                    process.env.ADMIN_EMAIL?.split(',')[0]?.trim() ||
+                    process.env.ADMIN_EMAILS?.split(',')[0]?.trim()
+                const customer = session.customer_email || session.metadata?.customer_email || ''
+                const guest = session.metadata?.guest_name || ''
+                const amountTotal = session.amount_total != null ? formatUSD(session.amount_total) : '—'
+                if (adminRaw?.includes('@')) {
+                    await sendEmail({
+                        to: adminRaw,
+                        subject: 'Bornfidis — consulting checkout completed',
+                        text: [
+                            'A consulting / menu session was paid via Stripe Checkout.',
+                            '',
+                            `Customer email: ${customer || '—'}`,
+                            `Guest name (metadata): ${guest || '—'}`,
+                            `Amount: ${amountTotal}`,
+                            `Session: ${session.id}`,
+                        ].join('\n'),
+                    })
+                }
+                console.log('✅ Consulting checkout completed (admin notified)')
+                await markStripeEventProcessed(event.id)
+            } catch (consultErr: unknown) {
+                console.error('Consulting webhook handling error:', consultErr)
+            }
+            return NextResponse.json({ received: true })
+        }
+
+        const bookingId = session.metadata?.bookingId ?? session.metadata?.booking_id
+        if (!bookingId) {
+            console.log('Skipping session without bookingId / booking_id')
+            return NextResponse.json({ received: true })
+        }
+
+        const rawMeta = checkoutMode
+        const isDeposit = rawMeta === 'deposit'
+        const isFullOrBalance = rawMeta === 'full' || rawMeta === 'balance'
+
+        if (!isDeposit && !isFullOrBalance) {
+            console.log(`Skipping session with unknown payment type: ${rawMeta || '(empty)'}`)
+            return NextResponse.json({ received: true })
+        }
+
+        const paymentIntentId = sessionPaymentIntentId(session)
 
         try {
-            if (paymentType === 'deposit' || paymentType === 'Deposit') {
-                // Phase 3A: Deposit payment
-                const { error: updateError } = await supabaseAdmin
+            if (isDeposit) {
+                const { data: currentBooking, error: depositFetchError } = await supabaseAdmin
                     .from('booking_inquiries')
-                    .update({
-                        stripe_payment_intent_id: paymentIntentId,
-                        status: 'booked',
-                        paid_at: new Date().toISOString(),
-                        // deposit_amount_cents should already be set from create-deposit-session
-                    })
-                    .eq('id', bookingId)
-
-                if (updateError) {
-                    console.error('Error updating booking after deposit payment:', updateError)
-                    return NextResponse.json(
-                        { error: 'Failed to update booking' },
-                        { status: 500 }
-                    )
-                }
-
-                console.log(`✅ Deposit payment completed for booking ${bookingId}`)
-            } else if (paymentType === 'balance') {
-                // Phase 4A: Balance payment - mark as paid and send invoice
-                const now = new Date().toISOString()
-
-                // Fetch booking data for invoice email
-                const { data: booking, error: fetchError } = await supabaseAdmin
-                    .from('booking_inquiries')
-                    .select('id, name, email, quote_total_cents, deposit_amount_cents, balance_amount_cents, paid_at, invoice_pdf_url')
+                    .select('id, paid_at, email, name')
                     .eq('id', bookingId)
                     .single()
 
-                if (fetchError) {
+                if (depositFetchError || !currentBooking) {
+                    console.error('Error loading booking for deposit payment:', depositFetchError)
+                    return NextResponse.json({ error: 'Failed to load booking' }, { status: 500 })
+                }
+
+                const previousDepositPaid = !!currentBooking.paid_at
+
+                if (!previousDepositPaid) {
+                    const { error: updateError } = await supabaseAdmin
+                        .from('booking_inquiries')
+                        .update({
+                            stripe_payment_intent_id: paymentIntentId ?? undefined,
+                            status: 'booked',
+                            paid_at: new Date().toISOString(),
+                        })
+                        .eq('id', bookingId)
+
+                    if (updateError) {
+                        console.error('Error updating booking after deposit payment:', updateError)
+                        return NextResponse.json(
+                            { error: 'Failed to update booking' },
+                            { status: 500 }
+                        )
+                    }
+
+                    await createBookingActivityDeduped({
+                        bookingId,
+                        type: 'deposit_paid',
+                        title: 'Deposit received',
+                        description: 'Client secured booking with deposit',
+                        stripeEventId: event.id,
+                    })
+
+                    if (currentBooking.email && currentBooking.name) {
+                        try {
+                            const testimonialSnippet = await getQuoteDepositTestimonialSnippet(bookingId)
+                            const depResult = await sendDepositReceivedEmail(
+                                currentBooking.email,
+                                currentBooking.name,
+                                {
+                                    quoteEmailTestimonial: testimonialSnippet,
+                                }
+                            )
+                            if (depResult.success) {
+                                console.log(`✅ Deposit received email sent to ${currentBooking.email}`)
+                            } else {
+                                console.warn(`⚠️  Deposit received email failed: ${depResult.error}`)
+                            }
+                        } catch (depEmailErr: unknown) {
+                            console.error('Error sending deposit received email:', depEmailErr)
+                        }
+                    }
+                }
+
+                console.log(`✅ Deposit payment completed for booking ${bookingId}`)
+                await markStripeEventProcessed(event.id)
+            } else if (isFullOrBalance) {
+                // Full / balance payment — mark balance + fully paid timestamps
+                const now = new Date().toISOString()
+
+                const { data: booking, error: fetchError } = await supabaseAdmin
+                    .from('booking_inquiries')
+                    .select('id, name, email, quote_total_cents, deposit_amount_cents, balance_amount_cents, paid_at, balance_paid_at, invoice_pdf_url')
+                    .eq('id', bookingId)
+                    .single()
+
+                if (fetchError || !booking) {
                     console.error('Error fetching booking for balance payment:', fetchError)
                     return NextResponse.json(
                         { error: 'Failed to fetch booking' },
@@ -108,25 +247,36 @@ export async function POST(request: NextRequest) {
                     )
                 }
 
-                // Update booking with balance payment details (Phase 4A)
-                const updateData: any = {
-                    stripe_balance_payment_intent_id: paymentIntentId,
-                    balance_paid_at: now,
-                    fully_paid_at: now,
-                    paid_at: now, // Phase 4A: Mark paid_at when balance is paid
-                }
+                const previousBalancePaid = !!booking.balance_paid_at
 
-                const { error: updateError } = await supabaseAdmin
-                    .from('booking_inquiries')
-                    .update(updateData)
-                    .eq('id', bookingId)
+                if (!previousBalancePaid) {
+                    const updateData: Record<string, unknown> = {
+                        stripe_balance_payment_intent_id: paymentIntentId ?? undefined,
+                        balance_paid_at: now,
+                        fully_paid_at: now,
+                        paid_at: now,
+                    }
 
-                if (updateError) {
-                    console.error('Error updating booking after balance payment:', updateError)
-                    return NextResponse.json(
-                        { error: 'Failed to update booking' },
-                        { status: 500 }
-                    )
+                    const { error: updateError } = await supabaseAdmin
+                        .from('booking_inquiries')
+                        .update(updateData)
+                        .eq('id', bookingId)
+
+                    if (updateError) {
+                        console.error('Error updating booking after balance payment:', updateError)
+                        return NextResponse.json(
+                            { error: 'Failed to update booking' },
+                            { status: 500 }
+                        )
+                    }
+
+                    await createBookingActivityDeduped({
+                        bookingId,
+                        type: 'balance_paid',
+                        title: 'Full payment received',
+                        description: null,
+                        stripeEventId: event.id,
+                    })
                 }
 
                 console.log(`✅ Balance payment completed for booking ${bookingId}`)
@@ -206,6 +356,8 @@ export async function POST(request: NextRequest) {
                             day: 'numeric',
                         })
 
+                        const testimonialSnippet = await getQuoteDepositTestimonialSnippet(bookingId)
+
                         const emailResult = await sendInvoiceEmail(booking.email, booking.name, {
                             bookingId: bookingId,
                             invoiceNumber,
@@ -214,6 +366,7 @@ export async function POST(request: NextRequest) {
                             depositPaid: formatUSD(booking.deposit_amount_cents || 0),
                             balancePaid: formatUSD(booking.balance_amount_cents || 0),
                             invoicePdfUrl: booking.invoice_pdf_url || undefined,
+                            quoteEmailTestimonial: testimonialSnippet,
                         })
 
                         if (emailResult.success) {
@@ -227,9 +380,8 @@ export async function POST(request: NextRequest) {
                         // Don't fail the webhook if email fails
                     }
                 }
-            } else {
-                console.log(`Skipping session with unknown payment type: ${paymentType}`)
-                return NextResponse.json({ received: true })
+
+                await markStripeEventProcessed(event.id)
             }
         } catch (error: any) {
             console.error('Error processing payment webhook:', error)

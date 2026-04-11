@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { getCurrentSupabaseUser } from '@/lib/auth'
-import { getAcademyProductBySlug } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { getAcademyStorageFilename } from '@/lib/academy-storage'
 
 function getBaseUrl(req: NextRequest): string {
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'productId is required' }, { status: 400 })
   }
 
-  const product = getAcademyProductBySlug(productId)
+  const product = await getAcademyProductBySlugPublic(productId)
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
   }

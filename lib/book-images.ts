@@ -1,10 +1,8 @@
-import { cdnImages } from '@/lib/bornfidis-cdn-images'
-
 /**
- * /book hero — CloudFront URL so images work on Vercel without `public/images/book/*`.
+ * /book hero — same kitchen line photography as homepage + Story ChefBio (`public/images/story/chef-bio-kitchen.png`).
  */
 export const bookImages: { hero: string } = {
-  hero: cdnImages.heroPlating,
+  hero: '/images/story/chef-bio-kitchen.png',
 }
 
-export const BOOK_HERO_PATH = cdnImages.heroPlating
+export const BOOK_HERO_PATH = bookImages.hero

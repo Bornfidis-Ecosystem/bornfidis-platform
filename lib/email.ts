@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -11,6 +12,284 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL
   ? `Bornfidis Provisions <${process.env.RESEND_FROM_EMAIL}>`
   : 'Bornfidis Provisions <onboarding@resend.dev>'
+
+function escapeHtmlForEmail(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/** Same shape as admin / DB snippet — optional on outbound templates */
+export type QuoteEmailTestimonial = QuoteDepositTestimonialSnippet
+
+/**
+ * Plain-text testimonial block for multipart emails (`text` part) or clipboard previews.
+ */
+export function renderTestimonialSnippet(snippet?: QuoteDepositTestimonialSnippet | null): string {
+  if (!snippet?.quote?.trim()) return ''
+  const q = snippet.quote.trim().replace(/\s+/g, ' ').replace(/"/g, "'")
+  const n = (snippet.name || 'Guest').trim().replace(/\s+/g, ' ')
+  return `
+
+What guests have said:
+"${q}" — ${n}`
+}
+
+/**
+ * HTML testimonial block for Resend — content is escaped.
+ */
+export function renderTestimonialSnippetHtml(snippet?: QuoteDepositTestimonialSnippet | null): string {
+  if (!snippet?.quote?.trim()) return ''
+  const q = escapeHtmlForEmail(snippet.quote.trim().replace(/\s+/g, ' '))
+  const n = escapeHtmlForEmail((snippet.name || 'Guest').trim())
+  return `
+    <div style="margin-top:24px;padding:16px;border:1px solid #e5e7eb;border-radius:12px;background:#f9fafb;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#0F3D2E;">
+        What guests have said
+      </p>
+      <p style="margin:0;font-size:14px;line-height:1.7;color:#374151;">
+        &ldquo;${q}&rdquo; &mdash; ${n}
+      </p>
+    </div>
+  `
+}
+
+/** @see {@link renderTestimonialSnippetHtml} — kept for existing invoice/deposit calls */
+export function emailTestimonialBlockHtml(
+  snippet: QuoteDepositTestimonialSnippet | null | undefined,
+): string {
+  return renderTestimonialSnippetHtml(snippet)
+}
+
+export type DepositRequestEmailInput = {
+  to: string
+  clientName: string
+  eventType?: string
+  eventDate: string
+  location: string
+  guestCount: string
+  packageName: string
+  total: string
+  depositPercent: number
+  depositAmount: string
+  paymentInstructions: string
+  quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
+}
+
+export type QuoteOfferEmailInput = {
+  to: string
+  clientName: string
+  eventDate: string
+  location: string
+  guests: string
+  /** Short description of the proposed experience / menu scope */
+  experienceSummary: string
+  estimatedTotal: string
+  depositPercent: number
+  depositAmount: string
+  paymentInstructions?: string
+  quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
+}
+
+/**
+ * Automated Resend: deposit **request** (asks client to pay). Call from workflows that notify the client.
+ * Fetches testimonial at the call site: `quoteEmailTestimonial: await getQuoteDepositTestimonialSnippet(bookingId)`.
+ */
+export async function sendDepositRequestEmail(
+  input: DepositRequestEmailInput,
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — deposit request email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!input.to?.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+
+  const testimonialText = renderTestimonialSnippet(input.quoteEmailTestimonial)
+  const testimonialHtml = renderTestimonialSnippetHtml(input.quoteEmailTestimonial)
+
+  const safe = {
+    clientName: escapeHtmlForEmail(input.clientName.trim()),
+    eventType: escapeHtmlForEmail((input.eventType || 'Private chef experience').trim()),
+    eventDate: escapeHtmlForEmail(input.eventDate.trim()),
+    location: escapeHtmlForEmail(input.location.trim()),
+    guestCount: escapeHtmlForEmail(input.guestCount.trim()),
+    packageName: escapeHtmlForEmail(input.packageName.trim()),
+    total: escapeHtmlForEmail(input.total.trim()),
+    depositAmount: escapeHtmlForEmail(input.depositAmount.trim()),
+    paymentInstructions: escapeHtmlForEmail(input.paymentInstructions.trim()),
+  }
+
+  const text = [
+    `Hello ${input.clientName.trim()},`,
+    '',
+    'Thank you for choosing Bornfidis Provisions.',
+    '',
+    "We're pleased to reserve your requested experience for:",
+    '',
+    `Event: ${input.eventType || 'Private chef experience'}`,
+    `Date: ${input.eventDate}`,
+    `Location: ${input.location}`,
+    `Guests: ${input.guestCount}`,
+    '',
+    'Booking summary',
+    `Selected experience: ${input.packageName}`,
+    `Estimated total: ${input.total}`,
+    `Deposit required (${input.depositPercent}%): ${input.depositAmount}`,
+    '',
+    'Your deposit secures the date, locks in planning, and allows us to begin menu preparation and sourcing.' +
+      testimonialText,
+    '',
+    'Payment method',
+    input.paymentInstructions,
+    '',
+    'Warm regards,',
+    'Brian Maylor',
+    'Bornfidis Provisions',
+  ].join('\n')
+
+  const html = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #111827;">
+      <h2 style="color: #0F3D2E; margin-bottom: 16px;">Hello ${safe.clientName}</h2>
+      <p>Thank you for choosing Bornfidis Provisions.</p>
+      <p>We&rsquo;re pleased to reserve your requested experience for:</p>
+      <ul style="margin: 16px 0; padding-left: 20px;">
+        <li><strong>Event:</strong> ${safe.eventType}</li>
+        <li><strong>Date:</strong> ${safe.eventDate}</li>
+        <li><strong>Location:</strong> ${safe.location}</li>
+        <li><strong>Guests:</strong> ${safe.guestCount}</li>
+      </ul>
+      <h3 style="color: #0F3D2E; font-size: 16px; margin-top: 24px;">Booking summary</h3>
+      <p style="margin: 8px 0;"><strong>Selected experience:</strong> ${safe.packageName}</p>
+      <p style="margin: 8px 0;"><strong>Estimated total:</strong> ${safe.total}</p>
+      <p style="margin: 8px 0;"><strong>Deposit required (${input.depositPercent}%):</strong> ${safe.depositAmount}</p>
+      <p style="margin-top: 16px;">Your deposit secures the date, locks in planning, and allows us to begin menu preparation and sourcing.</p>
+      ${testimonialHtml}
+      <h3 style="color: #0F3D2E; font-size: 16px; margin-top: 24px;">Payment method</h3>
+      <p style="white-space: pre-wrap;">${safe.paymentInstructions.replace(/\n/g, '<br/>')}</p>
+      <p style="margin-top: 24px;">
+        Warm regards,<br/>
+        <strong>Brian Maylor</strong><br/>
+        Bornfidis Provisions
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: input.to,
+      subject: `Bornfidis Provisions — Deposit request for ${input.clientName.trim()}`,
+      text,
+      html,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('sendDepositRequestEmail error:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
+ * Automated Resend: formal **quote** offer. Place testimonial after offer summary, before or beside pricing.
+ */
+export async function sendQuoteOfferEmail(
+  input: QuoteOfferEmailInput,
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — quote email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!input.to?.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+
+  const testimonialText = renderTestimonialSnippet(input.quoteEmailTestimonial)
+  const testimonialHtml = renderTestimonialSnippetHtml(input.quoteEmailTestimonial)
+  const pay = (input.paymentInstructions || 'We will send a secure payment link once you confirm.').trim()
+
+  const safe = {
+    clientName: escapeHtmlForEmail(input.clientName.trim()),
+    eventDate: escapeHtmlForEmail(input.eventDate.trim()),
+    location: escapeHtmlForEmail(input.location.trim()),
+    guests: escapeHtmlForEmail(input.guests.trim()),
+    experienceSummary: escapeHtmlForEmail(input.experienceSummary.trim()),
+    estimatedTotal: escapeHtmlForEmail(input.estimatedTotal.trim()),
+    depositAmount: escapeHtmlForEmail(input.depositAmount.trim()),
+    paymentInstructions: escapeHtmlForEmail(pay),
+  }
+
+  const text = [
+    `Hello ${input.clientName.trim()},`,
+    '',
+    'Thank you for your interest in Bornfidis Provisions.',
+    '',
+    'Here is your personalized quote summary:',
+    '',
+    `Date: ${input.eventDate}`,
+    `Location: ${input.location}`,
+    `Guests: ${input.guests}`,
+    '',
+    `Experience: ${input.experienceSummary}`,
+    '',
+    `Estimated total: ${input.estimatedTotal}`,
+    `Deposit (${input.depositPercent}%): ${input.depositAmount}`,
+    ...(testimonialText.trim() ? [testimonialText.trim()] : []),
+    '',
+    'Next steps',
+    pay,
+    '',
+    'Warm regards,',
+    'Brian Maylor',
+    'Bornfidis Provisions',
+  ].join('\n')
+
+  const html = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #111827;">
+      <h2 style="color: #0F3D2E; margin-bottom: 16px;">Hello ${safe.clientName}</h2>
+      <p>Thank you for your interest in Bornfidis Provisions.</p>
+      <p><strong>Here is your personalized quote summary:</strong></p>
+      <ul style="margin: 16px 0; padding-left: 20px;">
+        <li><strong>Date:</strong> ${safe.eventDate}</li>
+        <li><strong>Location:</strong> ${safe.location}</li>
+        <li><strong>Guests:</strong> ${safe.guests}</li>
+      </ul>
+      <p style="margin-top: 16px;"><strong>Experience</strong></p>
+      <p style="white-space: pre-wrap;">${safe.experienceSummary.replace(/\n/g, '<br/>')}</p>
+      <div style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 12px; border: 1px solid #e5e7eb;">
+        <p style="margin: 0 0 8px;"><strong>Estimated total:</strong> ${safe.estimatedTotal}</p>
+        <p style="margin: 0;"><strong>Deposit (${input.depositPercent}%):</strong> ${safe.depositAmount}</p>
+      </div>
+      ${testimonialHtml}
+      <h3 style="color: #0F3D2E; font-size: 16px; margin-top: 24px;">Next steps</h3>
+      <p style="white-space: pre-wrap;">${safe.paymentInstructions.replace(/\n/g, '<br/>')}</p>
+      <p style="margin-top: 24px;">
+        Warm regards,<br/>
+        <strong>Brian Maylor</strong><br/>
+        Bornfidis Provisions
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: input.to,
+      subject: `Your Bornfidis quote — ${input.clientName.trim()}`,
+      text,
+      html,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('sendQuoteOfferEmail error:', error)
+    return { success: false, error: message }
+  }
+}
 
 /**
  * Phase 2L: Generic transactional email (e.g. chef status notifications).
@@ -116,8 +395,8 @@ export async function sendAcademyPurchaseConfirmationEmail(
 }
 
 /**
- * Phase 1: Client booking confirmation email
- * Simple, clean template for booking submissions
+ * Phase 2: Instant auto-response after booking form submit (reassurance + next steps).
+ * WhatsApp link: `BOOKING_INQUIRY_WA_ME_URL` (default https://wa.me/18027335348).
  */
 export async function sendBookingConfirmationEmail(
   to: string,
@@ -139,40 +418,126 @@ export async function sendBookingConfirmationEmail(
     return { success: false, error: 'Invalid email address' }
   }
 
-  try {
-    // Format event date for display
-    const eventDateFormatted = new Date(bookingData.eventDate).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    })
+  const firstName = escapeHtmlForEmail(name.trim().split(/\s+/)[0] || 'there')
+  const waHref =
+    process.env.BOOKING_INQUIRY_WA_ME_URL?.trim() || 'https://wa.me/18027335348'
+  const waDisplay = escapeHtmlForEmail(waHref.replace(/^https?:\/\//, ''))
 
-    console.log('📧 Sending confirmation email to:', to)
+  const plainText = [
+    `Hi ${name.trim().split(/\s+/)[0] || 'there'},`,
+    '',
+    'Thank you for reaching out to Bornfidis.',
+    '',
+    "We've received your request and we're currently reviewing your details to design a personalized experience tailored to your occasion.",
+    '',
+    'What happens next:',
+    '• We review your request',
+    '• We design your experience',
+    '• We send your custom proposal',
+    '',
+    'You can expect a response within 24 hours.',
+    '',
+    'If your request is time-sensitive, feel free to message directly on WhatsApp:',
+    waHref,
+    '',
+    'We look forward to serving you.',
+    '',
+    '— Brian Maylor',
+    'Bornfidis Provisions',
+  ].join('\n')
+
+  try {
+    console.log('📧 Sending Phase 2 inquiry confirmation to:', to)
     const result = await resend.emails.send({
       from: FROM_EMAIL,
       to,
-      subject: 'We received your Bornfidis booking request',
+      subject: 'Thank you for reaching out to Bornfidis',
+      text: plainText,
       html: `
-        <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #1a5f3f; margin-bottom: 16px;">Thank you for your inquiry, ${name}</h2>
-          
-          <p>We've received your booking request for <strong>${eventDateFormatted}</strong>.</p>
-          
-          <p>Our team will review and contact you shortly.</p>
-
-          <p style="margin-top: 24px;">
-            With gratitude,<br/>
-            <strong>Bornfidis Provisions</strong><br/>
-            Regenerative Food • Community • Trust
+        <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 600px; margin: 0 auto; padding: 28px 24px; line-height: 1.65; color: #1f2937;">
+          <p style="margin: 0 0 20px; font-size: 16px;">Hi ${firstName},</p>
+          <p style="margin: 0 0 16px; font-size: 16px;">
+            Thank you for reaching out to <strong style="color: #0F3D2E;">Bornfidis</strong>.
+          </p>
+          <p style="margin: 0 0 20px; font-size: 16px;">
+            We've received your request and we're currently reviewing your details to design a personalized experience tailored to your occasion.
+          </p>
+          <p style="margin: 0 0 8px; font-size: 15px; font-weight: 600; color: #0F3D2E;">What happens next:</p>
+          <ul style="margin: 0 0 20px; padding-left: 20px; font-size: 15px;">
+            <li style="margin-bottom: 6px;">We review your request</li>
+            <li style="margin-bottom: 6px;">We design your experience</li>
+            <li style="margin-bottom: 6px;">We send your custom proposal</li>
+          </ul>
+          <p style="margin: 0 0 20px; font-size: 16px;">
+            You can expect a response within <strong>24 hours</strong>.
+          </p>
+          <p style="margin: 0 0 8px; font-size: 15px;">
+            If your request is time-sensitive, feel free to message directly on WhatsApp:
+          </p>
+          <p style="margin: 0 0 24px;">
+            <a href="${escapeHtmlForEmail(waHref)}" style="color: #0F3D2E; font-weight: 600; word-break: break-all;">${waDisplay}</a>
+          </p>
+          <p style="margin: 0 0 8px; font-size: 16px;">We look forward to serving you.</p>
+          <p style="margin: 28px 0 0; font-size: 15px; color: #374151;">
+            — Brian Maylor<br/>
+            <strong style="color: #0F3D2E;">Bornfidis Provisions</strong>
           </p>
         </div>
       `,
     })
-    console.log('✅ Confirmation email sent successfully')
+    console.log('✅ Inquiry confirmation email sent')
     return { success: true, data: result }
   } catch (error: any) {
     console.error('❌ Error sending confirmation email:', error)
     return { success: false, error: error.message || 'Failed to send email' }
+  }
+}
+
+/**
+ * Sent when Stripe deposit checkout completes — mirrors admin deposit copy with optional social proof.
+ */
+export async function sendDepositReceivedEmail(
+  to: string,
+  name: string,
+  options?: {
+    testimonialSnippet?: QuoteDepositTestimonialSnippet | null
+    /** Alias for the same snippet (matches quote/deposit template naming) */
+    quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
+  },
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — deposit email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const safeName = escapeHtmlForEmail(name.trim() || 'there')
+  const snippet = options?.quoteEmailTestimonial ?? options?.testimonialSnippet
+  const testimonialHtml = emailTestimonialBlockHtml(snippet)
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: 'We received your deposit — Bornfidis Provisions',
+      html: `
+        <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
+          <h2 style="color: #0F3D2E; margin-bottom: 16px;">Thank you, ${safeName}</h2>
+          <p>We&rsquo;ve received your deposit and your date is moving forward with our team.</p>
+          <p>You&rsquo;ll hear from us next with confirmation and any prep details.</p>
+          ${testimonialHtml}
+          <p style="margin-top: 24px;">
+            With gratitude,<br/>
+            <strong>Bornfidis Provisions</strong>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Deposit received email error:', error)
+    return { success: false, error: message }
   }
 }
 
@@ -372,7 +737,11 @@ export async function sendInvoiceEmail(
     depositPaid: string
     balancePaid: string
     invoicePdfUrl?: string
-  }
+    /** Optional approved testimonial — same source as admin deposit copy */
+    testimonialSnippet?: QuoteDepositTestimonialSnippet | null
+    /** Same as testimonialSnippet (preferred name for new call sites) */
+    quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
+  },
 ) {
   if (!resend) {
     console.error('Resend client not initialized. Check RESEND_API_KEY in .env.local')
@@ -386,6 +755,10 @@ export async function sendInvoiceEmail(
 
   try {
     console.log('Sending invoice email to:', to)
+
+    const testimonialHtml = emailTestimonialBlockHtml(
+      bookingData.quoteEmailTestimonial ?? bookingData.testimonialSnippet,
+    )
 
     const emailOptions: any = {
       from: FROM_EMAIL,
@@ -407,6 +780,7 @@ export async function sendInvoiceEmail(
               <li style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #FFBC00;"><strong style="font-size: 18px; color: #22c55e;">Status: Fully Paid ✓</strong></li>
             </ul>
           </div>
+          ${testimonialHtml}
           
           <p>Your invoice details are below. Please keep this email for your records.</p>
           

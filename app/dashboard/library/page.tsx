@@ -5,10 +5,9 @@ import { getCurrentSupabaseUser } from '@/lib/auth'
 import { Button } from '@/components/ui/Button'
 import { SuccessAlert } from '@/components/ui/SuccessAlert'
 import { db } from '@/lib/db'
-import {
-  getAcademyProductBySlug,
-  ACADEMY_UPSELL_SUGGESTION,
-} from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
+import { isBundleSlug, getIncludedSlugs } from '@/lib/academy-bundles'
 import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
 
 export const dynamic = 'force-dynamic'
@@ -78,6 +77,28 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       )
     }
 
+    const slugsToResolve = new Set<string>()
+    for (const p of purchases) {
+      slugsToResolve.add(p.productSlug)
+      if (isBundleSlug(p.productSlug)) {
+        for (const s of getIncludedSlugs(p.productSlug)) slugsToResolve.add(s)
+      }
+    }
+    const productBySlug: Record<string, Awaited<ReturnType<typeof getAcademyProductBySlugPublic>> | null> = {}
+    await Promise.all(
+      [...slugsToResolve].map(async (slug) => {
+        productBySlug[slug] = await getAcademyProductBySlugPublic(slug)
+      })
+    )
+
+    const firstPurchase = purchases[0]
+    const wasFree = firstPurchase?.productPrice === 0
+    const suggestedSlug =
+      purchases.length === 1
+        ? ACADEMY_UPSELL_SUGGESTION[firstPurchase.productSlug] ?? (wasFree ? 'llc-starter-kit' : undefined)
+        : undefined
+    const suggestedProduct = suggestedSlug ? await getAcademyProductBySlugPublic(suggestedSlug) : null
+
     return (
     <main className="max-w-4xl mx-auto px-6 py-16">
       {claimed && (
@@ -104,15 +125,71 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       ) : (
         <ul className="space-y-6">
           {purchases.map((p) => {
-            const product = getAcademyProductBySlug(p.productSlug)
+            const isBundle = isBundleSlug(p.productSlug)
+            const includedSlugs = isBundle ? getIncludedSlugs(p.productSlug) : []
+            const product = productBySlug[p.productSlug] ?? null
+            const priceDisplay =
+              p.productPrice === 0 ? 'FREE' : `$${(p.productPrice / 100).toFixed(2)}`
+
+            if (isBundle && includedSlugs.length > 0) {
+              return (
+                <li
+                  key={p.id}
+                  className="flex flex-col rounded-xl border border-gray-200 bg-white overflow-hidden shadow-sm"
+                >
+                  <div className="p-4 border-b border-gray-100">
+                    <h2 className="font-bold text-forest">{p.productTitle}</h2>
+                    <p className="text-sm text-gray-500">
+                      Purchased {new Date(p.purchasedAt).toLocaleDateString()}
+                      {priceDisplay !== 'FREE' && ` · ${priceDisplay}`}
+                      {' · '}
+                      <span className="text-forest/80">Bundle ({includedSlugs.length} manuals)</span>
+                    </p>
+                  </div>
+                  <ul className="divide-y divide-gray-100">
+                    {includedSlugs.map((slug) => {
+                      const includedProduct = productBySlug[slug] ?? null
+                      const isCourse = includedProduct?.type === 'COURSE'
+                      const href = isCourse && includedProduct
+                        ? `/academy/course/${includedProduct.slug}`
+                        : `/api/academy/download/${slug}`
+                      const label = isCourse && includedProduct ? 'Open course' : 'Download'
+                      const title = includedProduct?.title ?? slug
+                      return (
+                        <li key={slug} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
+                          <span className="font-medium text-forest">{title}</span>
+                          {isCourse && includedProduct ? (
+                            <Link
+                              href={href}
+                              className="text-sm font-semibold text-forest hover:underline"
+                            >
+                              {label} →
+                            </Link>
+                          ) : (
+                            <TrackedDownloadLink
+                              href={href}
+                              productSlug={slug}
+                              productTitle={title}
+                              source="library"
+                              className="text-sm font-semibold text-forest hover:underline"
+                            >
+                              {label} →
+                            </TrackedDownloadLink>
+                          )}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </li>
+              )
+            }
+
             const isCourse = product?.type === 'COURSE'
             const href = isCourse && product
               ? `/academy/course/${product.slug}`
               : `/api/academy/download/${p.productSlug}`
             const label = isCourse && product ? 'Open course' : 'Download guide'
             const fileAvailable = !isCourse || !!product
-            const priceDisplay =
-              p.productPrice === 0 ? 'FREE' : `$${(p.productPrice / 100).toFixed(2)}`
             return (
               <li
                 key={p.id}
@@ -169,30 +246,22 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       )}
 
       {/* Soft upsell when user has exactly 1 purchase: map or free → paid entry */}
-      {purchases.length === 1 && (() => {
-        const firstSlug = purchases[0].productSlug
-        const wasFree = purchases[0].productPrice === 0
-        const suggestedSlug =
-          ACADEMY_UPSELL_SUGGESTION[firstSlug] ?? (wasFree ? 'llc-starter-kit' : undefined)
-        const suggested = suggestedSlug ? getAcademyProductBySlug(suggestedSlug) : null
-        if (!suggested) return null
-        return (
-          <div className="mt-8 rounded-2xl border-2 border-goldAccent bg-card p-6">
-            <h2 className="text-lg font-bold text-forest mb-2">
-              Complete Your Foundation — Add {suggested.title}
-            </h2>
-            <p className="text-sm text-gray-600 mb-4">
-              {suggested.description}
-            </p>
-            <Link
-              href={`/academy/${suggested.slug}`}
-              className="inline-block bg-forest text-goldAccent font-semibold px-5 py-2 rounded-xl hover:opacity-90 transition"
-            >
-              View {suggested.title} ({suggested.priceDisplay}) →
-            </Link>
-          </div>
-        )
-      })()}
+      {purchases.length === 1 && suggestedProduct && (
+        <div className="mt-8 rounded-2xl border-2 border-goldAccent bg-card p-6">
+          <h2 className="text-lg font-bold text-forest mb-2">
+            Complete Your Foundation — Add {suggestedProduct.title}
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            {suggestedProduct.description}
+          </p>
+          <Link
+            href={`/academy/${suggestedProduct.slug}`}
+            className="inline-block bg-forest text-goldAccent font-semibold px-5 py-2 rounded-xl hover:opacity-90 transition"
+          >
+            View {suggestedProduct.title} ({suggestedProduct.priceDisplay}) →
+          </Link>
+        </div>
+      )}
 
       <p className="mt-8 text-center text-sm text-gray-500">
         <Link href="/academy" className="text-forest hover:underline">

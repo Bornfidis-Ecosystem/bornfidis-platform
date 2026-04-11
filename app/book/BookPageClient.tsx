@@ -15,6 +15,8 @@ import { homepageImages } from '@/lib/homepage-images'
 import { bookImages } from '@/lib/book-images'
 import { cdnImages } from '@/lib/bornfidis-cdn-images'
 import BrutalistBookingNav from '@/components/layout/BrutalistBookingNav'
+import { HowItWorks } from '@/components/book/HowItWorks'
+import { Testimonials } from '@/components/book/Testimonials'
 
 const BG = '#080808'
 const SURFACE = '#141414'
@@ -348,6 +350,8 @@ export default function BookPageClient() {
         </div>
       </section>
 
+      <Testimonials />
+
       {/* Provisions add-on */}
       <section
         id="provisions"
@@ -407,6 +411,8 @@ export default function BookPageClient() {
           </div>
         </div>
       </section>
+
+      <HowItWorks />
 
       {/* Booking form */}
       <section

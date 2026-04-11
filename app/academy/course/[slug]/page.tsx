@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getCurrentSupabaseUser } from '@/lib/auth'
-import { getAcademyProductBySlug } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { db } from '@/lib/db'
 import { CoursePlayerClient } from './CoursePlayerClient'
 
@@ -17,7 +17,7 @@ interface PageProps {
  */
 export default async function AcademyCoursePage({ params }: PageProps) {
   const { slug } = await params
-  const product = getAcademyProductBySlug(slug)
+  const product = await getAcademyProductBySlugPublic(slug)
   if (!product || product.type !== 'COURSE') notFound()
 
   const user = await getCurrentSupabaseUser()

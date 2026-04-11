@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { db } from '@/lib/db'
-import { getAcademyProductBySlug, ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
+import { logActivity } from '@/lib/activity-log'
 
 /**
  * Phase A — Academy Stripe webhook
@@ -69,7 +71,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true })
   }
 
-  const product = getAcademyProductBySlug(productSlug)
+  const product = await getAcademyProductBySlugPublic(productSlug)
   if (!product) {
     console.error('Academy webhook: unknown product slug', productSlug)
     return NextResponse.json({ received: true })
@@ -86,6 +88,13 @@ export async function POST(req: NextRequest) {
         purchasedAt: new Date(),
       },
     })
+    logActivity({
+      type: 'ACADEMY_PURCHASE',
+      title: 'Course purchased',
+      description: product.title,
+      division: 'ACADEMY',
+      metadata: { productSlug, stripeSessionId: session.id },
+    }).catch(() => {})
   } catch (err) {
     console.error('Academy webhook: failed to save purchase', err)
     return NextResponse.json({ error: 'Failed to record purchase' }, { status: 500 })
@@ -101,7 +110,7 @@ export async function POST(req: NextRequest) {
     const libraryUrl = `${baseUrl}/dashboard/library`
     const downloadUrl = `${baseUrl}/api/academy/download/${productSlug}`
     const suggestedSlug = ACADEMY_UPSELL_SUGGESTION[productSlug]
-    const suggestedProduct = suggestedSlug ? getAcademyProductBySlug(suggestedSlug) : null
+    const suggestedProduct = suggestedSlug ? await getAcademyProductBySlugPublic(suggestedSlug) : null
     await sendAcademyPurchaseConfirmationEmail(customerEmail, {
       productTitle: product.title,
       amountPaidCents: product.priceCents,

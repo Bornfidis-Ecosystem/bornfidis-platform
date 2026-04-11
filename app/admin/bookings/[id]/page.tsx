@@ -1,8 +1,11 @@
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { getBookingWithQuote } from '../actions'
+import { getBookingActivities, getBookingWithQuote, getClientProfileSummaryForBooking } from '../actions'
+import { getLastStripeActivityForBooking } from '@/lib/admin-payment-health'
+import BookingPaymentSummaryCard from '@/components/admin/BookingPaymentSummaryCard'
 import { getInsightsForBooking } from '@/lib/ai-ops-insights'
+import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import BookingDetailClient from './BookingDetailClient'
 import AiInsightsBlock from './AiInsightsBlock'
 import TimelineSection from './TimelineSection'
@@ -26,6 +29,41 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   }
 
   const booking = result.booking
+  const aiInsights = await getInsightsForBooking(booking.id)
+  const lastStripeActivity = await getLastStripeActivityForBooking(booking.id)
+
+  const activitiesResult = await getBookingActivities(booking.id)
+  const activities = activitiesResult.success ? activitiesResult.activities : []
+  const clientProfileResult = await getClientProfileSummaryForBooking(booking.id)
+  const clientProfile = clientProfileResult.success ? clientProfileResult.clientProfile : null
+
+  const eventDateForQuotes = (() => {
+    const raw = booking.event_date || ''
+    const dateOnlyMatch = raw.match(/^\d{4}-\d{2}-\d{2}/)
+    if (dateOnlyMatch) return dateOnlyMatch[0]
+
+    const d = new Date(raw)
+    if (Number.isNaN(d.getTime())) return ''
+    return d.toISOString().slice(0, 10)
+  })()
+
+  const quotesSearch = new URLSearchParams({
+    clientName: booking.name,
+    guestCount: booking.guests != null ? String(booking.guests) : '',
+    eventDate: eventDateForQuotes || booking.event_date,
+  })
+
+  if (!booking.guests || booking.guests <= 0) quotesSearch.delete('guestCount')
+
+  const quotesHref = `/admin/quotes/builder?${quotesSearch.toString()}`
+
+  const quoteEmailTestimonial = await getQuoteDepositTestimonialSnippet(booking.id)
+
+  const quoteLineItems = booking.quote_line_items
+  const hasSavedQuote =
+    (booking.quote_total_cents ?? 0) > 0 &&
+    Array.isArray(quoteLineItems) &&
+    quoteLineItems.length > 0
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -48,6 +86,15 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
               </Link>
               <h1 className="text-2xl font-bold">Booking Details</h1>
               <p className="text-gold text-sm mt-1">{booking.name}</p>
+
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <Link
+                  href={quotesHref}
+                  className="inline-flex items-center justify-center rounded-xl bg-gold px-5 py-2.5 text-sm font-semibold text-navy hover:opacity-90 transition"
+                >
+                  Create quote from booking
+                </Link>
+              </div>
             </div>
             <SignOutButton />
           </div>
@@ -60,6 +107,12 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
           {/* Booking Overview - Read Only */}
           <SlaSection booking={booking} />
           <AiInsightsBlock insights={aiInsights} />
+
+          <BookingPaymentSummaryCard
+            booking={booking}
+            lastStripeActivity={lastStripeActivity}
+            hasSavedQuote={hasSavedQuote}
+          />
 
           <div className="bg-white border rounded-lg p-6 mb-6">
             <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -194,11 +247,35 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             ) : null}
           </div>
 
+          <div className="bg-white border rounded-lg p-5">
+            <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">Client Profile</h3>
+            {clientProfile ? (
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-base font-semibold text-gray-900">{clientProfile.name}</p>
+                  <p className="text-sm text-gray-600">{clientProfile.phone || '—'} · {clientProfile.email || '—'}</p>
+                </div>
+                <Link
+                  href={`/admin/clients/${clientProfile.id}`}
+                  className="inline-flex items-center rounded-lg border border-navy/20 px-4 py-2 text-sm font-semibold text-navy hover:bg-navy hover:text-white transition"
+                >
+                  View client profile
+                </Link>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">No linked client profile.</p>
+            )}
+          </div>
+
           {/* Admin Section - Editable */}
           <section className="border-t pt-6">
             <h2 className="text-xl font-semibold text-navy mb-4">Admin Management</h2>
             <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading...</div>}>
-              <BookingDetailClient booking={booking} />
+              <BookingDetailClient
+                booking={booking}
+                activities={activities}
+                quoteEmailTestimonial={quoteEmailTestimonial}
+              />
             </Suspense>
           </section>
 

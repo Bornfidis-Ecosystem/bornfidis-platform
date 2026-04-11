@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isAuthorizedCronRequest } from '@/lib/cron-auth'
 import { db } from '@/lib/db'
 import { notifyChefPrepReminder } from '@/lib/web-push-helper'
 
@@ -10,9 +11,7 @@ export const maxDuration = 60
  * GET /api/cron/prep-reminders
  */
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

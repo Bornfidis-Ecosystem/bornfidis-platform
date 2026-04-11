@@ -4,6 +4,7 @@ import fs from 'fs'
 import { getCurrentSupabaseUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getAcademyStorageFilename } from '@/lib/academy-storage'
+import { getBundleSlugs, getIncludedSlugs } from '@/lib/academy-bundles'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,13 +34,27 @@ export async function GET(
     return NextResponse.redirect(loginUrl, 302)
   }
 
-  let purchase: Awaited<ReturnType<typeof db.academyPurchase.findFirst>>
+  let hasAccess = false
   try {
-    purchase = await db.academyPurchase.findFirst({
+    const direct = await db.academyPurchase.findFirst({
       where: { authUserId: user.id, productSlug: slug },
     })
+    if (direct) {
+      hasAccess = true
+    } else {
+      const bundleSlugs = getBundleSlugs()
+      const bundlePurchases = await db.academyPurchase.findMany({
+        where: { authUserId: user.id, productSlug: { in: bundleSlugs } },
+      })
+      for (const p of bundlePurchases) {
+        if (getIncludedSlugs(p.productSlug).includes(slug)) {
+          hasAccess = true
+          break
+        }
+      }
+    }
   } catch (err) {
-    console.error(LOG_LABEL, 'db.academyPurchase.findFirst failed', {
+    console.error(LOG_LABEL, 'access check failed', {
       slug,
       userId: user.id,
       error: err instanceof Error ? err.message : String(err),
@@ -47,7 +62,7 @@ export async function GET(
     return NextResponse.json({ error: 'Unable to verify purchase' }, { status: 500 })
   }
 
-  if (!purchase) {
+  if (!hasAccess) {
     return NextResponse.json({ error: 'Forbidden: purchase required' }, { status: 403 })
   }
 

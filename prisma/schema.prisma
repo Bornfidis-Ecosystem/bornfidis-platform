@@ -290,6 +290,7 @@ model BookingInquiry {
   balancePaymentIntentId       String?             @map("balance_payment_intent_id")
   balancePaidAt                DateTime?           @map("balance_paid_at")
   balanceAmountCents           Int?                @default(0) @map("balance_amount_cents")
+  lastBalanceReminderSentAt    DateTime?           @map("last_balance_reminder_sent_at")
   fullyPaidAt                  DateTime?           @map("fully_paid_at")
   quoteUpdatedAt               DateTime?           @map("quote_updated_at")
   quoteServiceFeeCents         Int?                @default(0) @map("quote_service_fee_cents")
@@ -319,12 +320,26 @@ model BookingInquiry {
   chefTierSnapshot             String?             @map("chef_tier_snapshot")
   chefRateMultiplier           Decimal?            @map("chef_rate_multiplier") @db.Decimal(4, 2)
   regionCode                   String?             @map("region_code")
+  clientProfileId              String?             @map("client_profile_id")
+  testimonialRequestedAt       DateTime?           @map("testimonial_requested_at")
+  testimonialReceivedAt        DateTime?           @map("testimonial_received_at")
+  testimonialText              String?             @map("testimonial_text")
+  testimonialApproved          Boolean             @default(false) @map("testimonial_approved")
+  menuConfirmed                Boolean             @default(false) @map("menu_confirmed")
+  dietaryConfirmed             Boolean             @default(false) @map("dietary_confirmed")
+  guestCountConfirmed          Boolean             @default(false) @map("guest_count_confirmed")
+  arrivalTimeConfirmed         Boolean             @default(false) @map("arrival_time_confirmed")
+  locationConfirmed            Boolean             @default(false) @map("location_confirmed")
+  ingredientsSourced           Boolean             @default(false) @map("ingredients_sourced")
+  equipmentPacked              Boolean             @default(false) @map("equipment_packed")
   regionMultiplierSnapshot     Float?              @map("region_multiplier_snapshot")
   regionTravelFeeCentsSnapshot Int?                @map("region_travel_fee_cents_snapshot")
   regionMinimumCentsSnapshot   Int?                @map("region_minimum_cents_snapshot")
   assignedFarmers              BookingFarmer[]
   prepItems                    BookingPrepItem[]
   timeline                     BookingTimeline[]
+  activities                   BookingActivity[]
+  clientProfile                ClientProfile?      @relation(fields: [clientProfileId], references: [id], onDelete: SetNull)
   chefAssignment               ChefAssignment?
   chefPrepChecklist            ChefPrepChecklist?
   farmerPayouts                FarmerPayout[]
@@ -332,6 +347,25 @@ model BookingInquiry {
   marginOverrideLogs           MarginOverrideLog[]
 
   @@map("booking_inquiries")
+  @@schema("public")
+}
+
+model ClientProfile {
+  id                 String           @id @default(uuid())
+  name               String
+  email              String?
+  phone              String?
+  dietaryPreferences String?          @map("dietary_preferences")
+  favoriteNotes      String?          @map("favorite_notes")
+  preferredLocations String?          @map("preferred_locations")
+  internalNotes      String?          @map("internal_notes")
+  createdAt          DateTime         @default(now()) @map("created_at")
+  updatedAt          DateTime         @updatedAt @map("updated_at")
+  bookings           BookingInquiry[]
+
+  @@index([phone], map: "idx_client_profiles_phone")
+  @@index([email], map: "idx_client_profiles_email")
+  @@map("client_profiles")
   @@schema("public")
 }
 
@@ -862,6 +896,31 @@ model BookingTimeline {
   @@schema("public")
 }
 
+model BookingActivity {
+  id            String         @id @default(uuid())
+  bookingId     String         @map("booking_id")
+  type          String
+  title         String
+  description   String?
+  actorName     String?        @map("actor_name")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  stripeEventId String?        @unique @map("stripe_event_id")
+  booking       BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@index([bookingId, createdAt], map: "idx_booking_activities_booking_id_created_at")
+  @@map("booking_activities")
+  @@schema("public")
+}
+
+/// Tracks Stripe webhook events (evt_…) so duplicate deliveries are ignored.
+model StripeWebhookEvent {
+  id        String   @id // Stripe event id e.g. evt_xxx
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("stripe_webhook_events")
+  @@schema("public")
+}
+
 model BookingPrepItem {
   id                String                 @id @default(uuid())
   bookingId         String                 @map("booking_id")
@@ -976,6 +1035,7 @@ model AcademyProduct {
   priceCents    Int      @map("price_cents")
   stripePriceId String?  @map("stripe_price_id")
   active        Boolean  @default(true)
+  featured      Boolean  @default(false)
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
@@ -1083,8 +1143,10 @@ model EmailSubscriber {
 model ActivityLog {
   id          String   @id @default(cuid())
   eventType   String   @map("event_type")
+  title       String   @default("")
   description String
   division    String
+  metadata    Json?
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
   @@map("activity_log")
@@ -1247,11 +1309,21 @@ model quotes {
   payment_terms      String?
   notes              String?
   customer_notes     String?
+  quote_number       String?         @unique
   booking_items      booking_items[]
   bookings           bookings?       @relation(fields: [booking_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([booking_id], map: "idx_quotes_booking_id")
   @@index([quote_status], map: "idx_quotes_status")
+  @@schema("public")
+}
+
+/// Per-calendar-year atomic sequence for quote reference numbers (BF-YYYY-####).
+model quote_sequences {
+  year       Int      @id
+  last_value Int      @default(0)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz(6)
+
   @@schema("public")
 }
 

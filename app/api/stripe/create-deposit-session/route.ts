@@ -86,6 +86,8 @@ export async function POST(request: NextRequest) {
       customer_email: customer_email || booking.email || undefined,
       metadata: {
         booking_id: booking_id,
+        bookingId: booking_id,
+        payment_type: 'deposit',
         customer_name: customer_name || booking.name || '',
         internal_notes: internal_notes || '',
         type: 'deposit',

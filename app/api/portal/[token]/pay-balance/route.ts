@@ -36,7 +36,9 @@ export async function POST(
     // Verify token and get booking
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
-      .select('id, name, email, quote_total_cents, deposit_amount_cents, balance_amount_cents, paid_at, balance_paid_at, customer_portal_token_revoked_at')
+      .select(
+        'id, name, email, event_date, quote_total_cents, deposit_amount_cents, balance_amount_cents, paid_at, balance_paid_at, customer_portal_token_revoked_at',
+      )
       .eq('customer_portal_token', token)
       .is('customer_portal_token_revoked_at', null)
       .single()
@@ -100,8 +102,12 @@ export async function POST(
       customer_email: booking.email || undefined,
       metadata: {
         booking_id: booking.id,
-        customer_name: booking.name || '',
+        bookingId: booking.id,
+        checkout_mode: 'balance',
         payment_type: 'balance',
+        balance_amount_cents: String(balanceAmountCents),
+        guest_name: booking.name || '',
+        event_date: booking.event_date ? String(booking.event_date).slice(0, 10) : '',
       },
     })
 
@@ -110,6 +116,7 @@ export async function POST(
       .from('booking_inquiries')
       .update({
         stripe_balance_session_id: session.id,
+        balance_session_id: session.id,
       })
       .eq('id', booking.id)
 

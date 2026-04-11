@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isAuthorizedCronRequest } from '@/lib/cron-auth'
 import { getInvestorReportData } from '@/lib/investor-report'
 
 export const dynamic = 'force-dynamic'
@@ -9,9 +10,7 @@ export const maxDuration = 60
  * Pulls from ops + forecast; returns snapshot JSON. One-click regenerate / resend can use this or page.
  */
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

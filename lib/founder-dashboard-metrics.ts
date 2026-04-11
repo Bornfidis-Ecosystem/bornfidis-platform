@@ -29,32 +29,22 @@ export async function getFounderDashboardMetrics(): Promise<FounderDashboardMetr
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
 
+  // Batched (not one giant Promise.all) to avoid exhausting Supabase session pool / max clients.
   const [
     academyRevenueCents,
     sportswearRevenueCents,
     provisionsRevenueCents,
     leadsBookingInquiry,
     leadsEmailSubscriber,
-    leadsFarmer,
-    emailSubscriberTotal,
-    emailSubscriberLast30,
-    conversionAcademyPurchase,
-    conversionAcademyEnrollment,
-    conversionSportswear,
-    conversionProvisions,
-    pipelineBookings,
   ] = await Promise.all([
-    // 1. Revenue This Month — Academy (completed purchases this month)
     db.academyPurchase.aggregate({
       where: { purchasedAt: { gte: startOfMonth } },
       _sum: { productPrice: true },
     }),
-    // 1. Revenue This Month — Sportswear (paid this month; paidAt set when payment completes)
     db.sportswearOrder.aggregate({
       where: { paidAt: { gte: startOfMonth, not: null } },
       _sum: { totalCents: true },
     }),
-    // 1. Revenue This Month — Provisions (paid or fully paid this month; use totalCents or quoteTotalCents)
     db.bookingInquiry.findMany({
       where: {
         AND: [
@@ -64,32 +54,29 @@ export async function getFounderDashboardMetrics(): Promise<FounderDashboardMetr
       },
       select: { totalCents: true, quoteTotalCents: true },
     }),
-    // 2. Leads This Week — new BookingInquiry
     db.bookingInquiry.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-    // 2. Leads This Week — new EmailSubscriber
     db.emailSubscriber.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-    // 2. Leads This Week — new Farmer
-    db.farmer.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
-    // 3. Email Subscribers — total
-    db.emailSubscriber.count(),
-    // 3. Email Subscribers — last 30 days
-    db.emailSubscriber.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
-    // 4. Conversion Actions — Academy purchases this month
-    db.academyPurchase.count({ where: { purchasedAt: { gte: startOfMonth } } }),
-    // 4. Conversion Actions — Academy enrollments this month
-    db.academyEnrollment.count({ where: { enrolledAt: { gte: startOfMonth } } }),
-    // 4. Conversion Actions — Sportswear paid this month
+  ])
+
+  const [leadsFarmer, emailSubscriberTotal, emailSubscriberLast30, conversionAcademyPurchase, conversionAcademyEnrollment] =
+    await Promise.all([
+      db.farmer.count({ where: { createdAt: { gte: sevenDaysAgo } } }),
+      db.emailSubscriber.count(),
+      db.emailSubscriber.count({ where: { createdAt: { gte: thirtyDaysAgo } } }),
+      db.academyPurchase.count({ where: { purchasedAt: { gte: startOfMonth } } }),
+      db.academyEnrollment.count({ where: { enrolledAt: { gte: startOfMonth } } }),
+    ])
+
+  const [conversionSportswear, conversionProvisions, pipelineBookings] = await Promise.all([
     db.sportswearOrder.count({
       where: { paidAt: { gte: startOfMonth, not: null } },
     }),
-    // 4. Conversion Actions — Provisions confirmed/paid this month (has paidAt or fullyPaidAt in month)
     db.bookingInquiry.count({
       where: {
         OR: [{ paidAt: { gte: startOfMonth } }, { fullyPaidAt: { gte: startOfMonth } }],
         status: { notIn: ['cancelled', 'completed', 'Cancelled', 'Completed'] },
       },
     }),
-    // 5. Active Pipeline Value — open BookingInquiry with a value
     db.bookingInquiry.findMany({
       where: {
         status: { in: OPEN_BOOKING_STATUSES },

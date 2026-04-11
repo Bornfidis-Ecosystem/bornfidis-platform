@@ -13,9 +13,7 @@ import { sendChefMonthlyStatementEmail } from '@/lib/email'
  * Vercel Cron: set CRON_SECRET in env and protect this route.
  */
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -48,7 +48,8 @@ export const homepageImages: Record<HomepageImageSlot, string | null> = {
   hero: homepageImagePath('hero'),
   serviceIntimate: cdnImages.servicePrivateDinner,
   serviceGathering: cdnImages.serviceRetreat,
-  serviceRetreat: cdnImages.serviceWedding,
+  /** Matches homepage “Wedding & Events” — local grill shot (not CDN stove-flame still). */
+  serviceRetreat: '/images/story/service-wedding-grill.png',
   experienceBoard: cdnImages.tableAtmosphere,
   experienceFresh: cdnImages.chefAction,
   provisionsSpice: homepageImagePath('provisionsSpice'),

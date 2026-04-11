@@ -16,16 +16,17 @@ const CDN =
 const LOGO_GOLD = `${CDN}/provisions_logo_gold_58563b10.png`
 const ICON_GOLD = `${CDN}/provisions_icon_gold_9f14d9ac.png`
 
-const IMG_HERO_PLATING =
-  `${CDN}/bf_hero_plating-Q4siqWWiN2dJrsPg36aB9L.webp`
+/** Local photography — grill / stovetop line (chicken, sides, sauces). Shared with Story ChefBio. */
+const IMG_HERO_KITCHEN = '/images/story/chef-bio-kitchen.png'
 const IMG_TABLE_ATM =
   `${CDN}/bf_table_atmosphere-bcEjpnGnjRAmyk6468tLiS.webp`
-const IMG_SAUCE = `${CDN}/bf_sauce_product-EBzaKv2hmX58EXcahVJ3tM.webp`
-const IMG_CHEF_FIRE = `${CDN}/bf_chef_action-9BXPzDRYxeQhLdMochL5QL.webp`
+/** Local — Chef Brian at the grill (chicken). Replaces CDN still where flames read as stove flare, not pan work. */
+const IMG_CHEF_GRILL = '/images/story/service-wedding-grill.png'
 
-const IMG_942 = `${CDN}/942_0dc4fef3.jpg`
-const IMG_943 = `${CDN}/943_fb799aa3.jpg`
-const IMG_948 = `${CDN}/948_e9531ec5.jpg`
+/** Provisions product photography — `public/images/provisions/*.png` (1200×1200 square). */
+const IMG_PROVISION_MAPLE_JERK = '/images/provisions/maple-jerk-rub.png'
+const IMG_PROVISION_ISLAND_FIRE = '/images/provisions/island-fire-hot-sauce.png'
+const IMG_PROVISION_SMOKED_TAMARIND = '/images/provisions/smoked-tamarind-bbq.png'
 
 const BG = '#080808'
 const CREAM = '#F2EDE4'
@@ -50,7 +51,7 @@ const SERVICES = [
     desc: 'A curated multi-course dinner prepared in your home, villa, or Airbnb. From amuse-bouche to dessert, every detail is designed around you.',
     price: 'From $650',
     guests: '2–12 guests',
-    image: IMG_948,
+    image: IMG_HERO_KITCHEN,
   },
   {
     num: '02',
@@ -59,7 +60,7 @@ const SERVICES = [
     desc: 'Full culinary service for your weekend getaway — breakfast, dinner, and a signature event night. All handled by Chef Brian and Caryll.',
     price: 'From $1,200',
     guests: 'Up to 20 guests',
-    image: IMG_942,
+    image: IMG_TABLE_ATM,
   },
   {
     num: '03',
@@ -68,7 +69,7 @@ const SERVICES = [
     desc: 'Bespoke menus for intimate wedding celebrations. Caribbean, Italian, or fusion — crafted to reflect your story and delight your guests.',
     price: 'Custom quote',
     guests: 'Up to 50 guests',
-    image: IMG_943,
+    image: IMG_CHEF_GRILL,
   },
 ] as const
 
@@ -109,19 +110,22 @@ const PROVISIONS = [
     name: 'Maple Jerk Rub',
     desc: 'Vermont maple meets Jamaican jerk. Dry rub for chicken, pork, or vegetables.',
     tag: 'Dry Rub',
-    image: IMG_SAUCE,
+    image: IMG_PROVISION_MAPLE_JERK,
+    imageAlt: 'Bornfidis Maple Jerk Rub — glass jar with green label on dark stone',
   },
   {
     name: 'Island Fire Hot Sauce',
     desc: 'Scotch bonnet, mango, and tamarind. Heat with purpose.',
     tag: 'Hot Sauce',
-    image: IMG_SAUCE,
+    image: IMG_PROVISION_ISLAND_FIRE,
+    imageAlt: 'Bornfidis Island Fire hot sauce bottle on volcanic rock',
   },
   {
     name: 'Smoked Tamarind BBQ',
     desc: 'Slow-smoked tamarind base with molasses and allspice. A Caribbean barbecue classic.',
     tag: 'BBQ Sauce',
-    image: IMG_SAUCE,
+    image: IMG_PROVISION_SMOKED_TAMARIND,
+    imageAlt: 'Bornfidis Smoked Tamarind BBQ sauce jar on charred wood',
   },
 ] as const
 
@@ -415,11 +419,11 @@ export default function HomeBornfidisBrutalist() {
       <section className="relative flex min-h-screen flex-col justify-end overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src={IMG_HERO_PLATING}
-            alt=""
+            src={IMG_HERO_KITCHEN}
+            alt="Jerk-style chicken, sides, and sauces — kitchen line for service"
             fill
             priority
-            className="object-cover object-[center_30%]"
+            className="object-cover object-center"
             sizes="100vw"
           />
           <div
@@ -644,10 +648,10 @@ export default function HomeBornfidisBrutalist() {
         <div className="mx-auto grid max-w-[1280px] items-center gap-14 lg:grid-cols-2">
           <div className="relative aspect-[4/5] w-full overflow-hidden">
             <Image
-              src={IMG_CHEF_FIRE}
-              alt="Chef in action"
+              src={IMG_CHEF_GRILL}
+              alt="Chef Brian grilling chicken on a commercial grill"
               fill
-              className="object-cover"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
             <div
@@ -705,9 +709,9 @@ export default function HomeBornfidisBrutalist() {
                 <div className="relative aspect-square w-full">
                   <Image
                     src={p.image}
-                    alt=""
+                    alt={p.imageAlt}
                     fill
-                    className="object-cover"
+                    className="object-cover object-center"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
                 </div>

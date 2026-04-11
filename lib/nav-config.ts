@@ -37,13 +37,48 @@ export const NAV_ITEMS: NavItem[] = [
     roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
   },
   {
+    label: 'Clients',
+    href: '/admin/clients',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
+    label: 'Testimonials',
+    href: '/admin/testimonials',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
+    label: 'Provisions pipeline',
+    href: '/admin/provisions-pipeline',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
+    label: 'Quote Builder',
+    href: '/admin/quotes',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
     label: 'Academy',
     href: '/admin/academy',
     roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
   },
   {
+    label: 'Academy products',
+    href: '/admin/academy-products',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
+    label: 'Design Agent',
+    href: '/admin/design-agent',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
     label: 'Schedule',
     href: '/admin/schedule',
+    roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
+  },
+  {
+    label: 'Calendar',
+    href: '/admin/calendar',
     roles: [UserRole.ADMIN, UserRole.STAFF, UserRole.COORDINATOR],
   },
   {

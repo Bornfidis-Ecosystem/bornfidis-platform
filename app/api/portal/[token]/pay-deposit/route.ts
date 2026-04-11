@@ -93,6 +93,7 @@ export async function POST(
       customer_email: booking.email || undefined,
       metadata: {
         booking_id: booking.id,
+        bookingId: booking.id,
         customer_name: booking.name || '',
         payment_type: 'deposit',
       },

@@ -53,3 +53,5 @@ next-env.d.ts
 
 # data (keep status file, but ignore other data files if added)
 # /data/proju-crop-status.json is committed (admin-managed)
+
+.vercel

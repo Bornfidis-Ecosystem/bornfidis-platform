@@ -4,33 +4,78 @@ import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { PDFDownloadLink, BlobProvider } from '@react-pdf/renderer'
 import toast from 'react-hot-toast'
-import { updateBooking, updateBookingQuote } from '../actions'
+import {
+  addBookingActivity,
+  markTestimonialRequested,
+  saveTestimonialReceived,
+  setTestimonialApproved,
+  updateBooking,
+  updateBookingQuote,
+} from '../actions'
+import { createStripeDepositLink } from '../quote-actions'
+import { sendBookingDepositRequestEmail, sendBookingQuoteOfferEmail } from '../outreach-email-actions'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { dollarsToCents, centsToDollars, formatUSD, parseDollarsToCents } from '@/lib/money'
 import { isStripeConfigured } from '@/lib/stripe'
 import { InvoicePdfDocument } from '@/components/pdf/InvoicePdf'
 import { StatusWorkflow } from '@/components/booking/StatusWorkflow'
+import BookingTimeline from '@/components/admin/BookingTimeline'
+import ServiceChecklistSection from './ServiceChecklistSection'
+import type { BookingActivity } from '@/types/booking-activity'
+import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 
 interface BookingDetailClientProps {
   booking: BookingInquiry
+  activities: BookingActivity[]
+  quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
 }
 
 /**
  * Client component for booking detail page
  * Handles status updates and admin notes with real-time feedback
  */
-export default function BookingDetailClient({ booking }: BookingDetailClientProps) {
+export default function BookingDetailClient({
+  booking,
+  activities,
+  quoteEmailTestimonial = null,
+}: BookingDetailClientProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [status, setStatus] = useState<BookingStatus>(booking.status)
   const [adminNotes, setAdminNotes] = useState(booking.admin_notes || '')
   const [isSaving, setIsSaving] = useState(false)
 
+  const [bookingActivities, setBookingActivities] = useState<BookingActivity[]>(activities)
+
   // Portal token state
   const [portalToken, setPortalToken] = useState<string | null>(null)
   const [portalUrl, setPortalUrl] = useState<string | null>(null)
   const [isGeneratingToken, setIsGeneratingToken] = useState(false)
   const [isTokenRevoked, setIsTokenRevoked] = useState(false)
+  const [isCreatingStripeDepositLink, setIsCreatingStripeDepositLink] = useState(false)
+  const [isSendingQuoteEmail, setIsSendingQuoteEmail] = useState(false)
+  const [isSendingDepositRequestEmail, setIsSendingDepositRequestEmail] = useState(false)
+  const [didPromptDepositPaid, setDidPromptDepositPaid] = useState(false)
+
+  useEffect(() => {
+    setBookingActivities(activities)
+  }, [activities])
+
+  const [internalNote, setInternalNote] = useState('')
+  const [isAddingInternalNote, setIsAddingInternalNote] = useState(false)
+
+  const [testimonialText, setTestimonialText] = useState(booking.testimonial_text || '')
+  const [testimonialApprovedLocal, setTestimonialApprovedLocal] = useState(booking.testimonial_approved ?? false)
+  const [isTestimonialBusy, setIsTestimonialBusy] = useState(false)
+
+  useEffect(() => {
+    setTestimonialText(booking.testimonial_text || '')
+    setTestimonialApprovedLocal(booking.testimonial_approved ?? false)
+  }, [booking.testimonial_text, booking.testimonial_approved])
+
+  type StatusSuggestionPromptVariant = 'quoted' | 'booked' | 'confirmed'
+  const [statusSuggestionPrompt, setStatusSuggestionPrompt] = useState<StatusSuggestionPromptVariant | null>(null)
+  const [isStatusSuggestionBusy, setIsStatusSuggestionBusy] = useState(false)
 
   // Quote & Payment state
   const [lineItems, setLineItems] = useState<QuoteLineItem[]>(() => {
@@ -222,12 +267,459 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
     }
   }
 
+  const copyTextToClipboard = async (text: string, label?: string) => {
+    if (!text) return false
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+        const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        toast.success(label ? `${label} copied (${time})` : `Copied to clipboard (${time})`)
+        return true
+      }
+
+      // Fallback for older browsers
+      const el = document.createElement('textarea')
+      el.value = text
+      el.style.position = 'fixed'
+      el.style.left = '-9999px'
+      document.body.appendChild(el)
+      el.select()
+      document.execCommand('copy')
+      document.body.removeChild(el)
+      const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+      toast.success(label ? `${label} copied (${time})` : `Copied to clipboard (${time})`)
+      return true
+    } catch {
+      toast.error('Copy failed. Please try again.')
+      return false
+    }
+  }
+
+  const logBookingActivity = async (payload: { type: string; title: string; description?: string }) => {
+    try {
+      const res = await addBookingActivity(booking.id, payload)
+      if (res.success) {
+        setBookingActivities((prev) => [res.activity, ...prev])
+        return res.activity
+      }
+      return null
+    } catch (e) {
+      console.error('Failed to add booking activity:', e)
+      return null
+    }
+  }
+
+  const formatEventDateLong = (dateString: string | undefined) => {
+    if (!dateString) return '—'
+    const d = new Date(dateString)
+    if (Number.isNaN(d.getTime())) return dateString
+    return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })
+  }
+
+  const hasSavedQuote = (booking.quote_total_cents ?? 0) > 0 && (booking.quote_line_items?.length ?? 0) > 0
+
+  // Use saved quote amounts from the booking record (these are what Caryll will copy after quote is saved).
+  // Avoid depending on in-progress UI totals because those are calculated later in this component.
+  const savedQuoteTotalCents = booking.quote_total_cents ?? 0
+  const savedDepositPercent = booking.deposit_percentage ?? depositPercentage
+  const savedDepositCents = booking.deposit_amount_cents ?? booking.quote_deposit_cents ?? 0
+  const savedBalanceCents = booking.balance_amount_cents ?? Math.max(savedQuoteTotalCents - savedDepositCents, 0)
+
+  const ensureStripeDepositUrl = async (): Promise<string | null> => {
+    if (booking.stripe_payment_link_url) return booking.stripe_payment_link_url
+    if (isCreatingStripeDepositLink) return null
+    if (!hasSavedQuote) {
+      toast.error('Save the quote before generating a deposit link.')
+      return null
+    }
+
+    setIsCreatingStripeDepositLink(true)
+    try {
+      const res = await createStripeDepositLink(booking.id)
+      if (!res.success || !res.url) {
+        toast.error(res.error || 'Could not generate the deposit link.')
+        return null
+      }
+      toast.success('Deposit link generated')
+      router.refresh()
+      return res.url
+    } catch (e: any) {
+      toast.error(e?.message || 'Could not generate the deposit link.')
+      return null
+    } finally {
+      setIsCreatingStripeDepositLink(false)
+    }
+  }
+
+  const buildDepositRequestWhatsApp = (stripeUrl: string | null) => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentLine = stripeUrl ? `Pay your deposit here (Stripe):\n${stripeUrl}` : 'Pay your deposit using your deposit link (Stripe) provided by Bornfidis.'
+
+    const lines = [
+      `Hello ${booking.name},`,
+      ``,
+      `Thanks for your inquiry. Here is your Bornfidis Provisions quote summary:`,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      `Total estimate: ${formatUSD(savedQuoteTotalCents)}`,
+      `Deposit requested (${savedDepositPercent}%): ${formatUSD(savedDepositCents)}`,
+      ``,
+      paymentLine,
+      ``,
+      `Once the deposit is paid, we confirm your chef team and lock your date.`,
+    ]
+    if (quoteEmailTestimonial) {
+      lines.push(
+        ``,
+        `What guests have said:`,
+        `"${quoteEmailTestimonial.quote}" — ${quoteEmailTestimonial.name}`,
+      )
+    }
+    return lines.join('\n')
+  }
+
+  const buildDepositRequestEmail = (stripeUrl: string | null) => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentLine = stripeUrl
+      ? `Pay your deposit here (Stripe):\n${stripeUrl}`
+      : `Pay your deposit using your deposit link (Stripe) provided by Bornfidis.`
+
+    const subject = `Bornfidis Provisions — Deposit Request for ${booking.name}`
+    const emailLines = [
+      `Hello ${booking.name},`,
+      ``,
+      `Thank you for reaching out to Bornfidis Provisions. Below is your client-ready deposit request:`,
+      ``,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      `Total estimate: ${formatUSD(savedQuoteTotalCents)}`,
+      `Deposit requested (${savedDepositPercent}%): ${formatUSD(savedDepositCents)}`,
+      ``,
+      paymentLine,
+      ``,
+      `Once the deposit is paid, we confirm your chef team and lock your date.`,
+    ]
+    if (quoteEmailTestimonial) {
+      emailLines.push(
+        ``,
+        `What guests have said:`,
+        `"${quoteEmailTestimonial.quote}" — ${quoteEmailTestimonial.name}`,
+      )
+    }
+    const emailBody = emailLines.join('\n')
+
+    return `Subject: ${subject}\n\n${emailBody}`.trim()
+  }
+
+  const buildBookingConfirmationWhatsApp = () => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentPortalLine = portalUrl ? `Payment portal link:\n${portalUrl}` : 'If you have not yet received your payment portal, we will send it shortly.'
+
+    const balanceLine = depositPaid ? `Remaining balance: ${formatUSD(savedBalanceCents)}` : 'Remaining balance: will be confirmed after your deposit is paid.'
+
+    return [
+      `Hello ${booking.name},`,
+      ``,
+      depositPaid
+        ? `Thank you! Your deposit has been received and your booking is confirmed.`
+        : `To confirm your booking, we just need your deposit payment.`,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      balanceLine,
+      ``,
+      `Please use the payment portal to settle the remaining balance:`,
+      paymentPortalLine,
+      ``,
+      `If you have dietary updates, reply here and we will adjust accordingly.`,
+    ].join('\n')
+  }
+
+  const buildBookingConfirmationEmail = () => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentPortalLine = portalUrl ? `Payment portal link:\n${portalUrl}` : 'If you have not yet received your payment portal, we will send it shortly.'
+
+    const balanceLine = depositPaid ? `Remaining balance: ${formatUSD(savedBalanceCents)}` : 'Remaining balance: will be confirmed after your deposit is paid.'
+
+    const subject = `Bornfidis Provisions — Booking Confirmation for ${booking.name}`
+    const emailBody = [
+      `Hello ${booking.name},`,
+      ``,
+      depositPaid
+        ? `Thank you! Your deposit has been received and your booking is confirmed.`
+        : `To confirm your booking, we just need your deposit payment.`,
+      ``,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      balanceLine,
+      ``,
+      `Please use the payment portal to settle the remaining balance:`,
+      portalUrl ? portalUrl : paymentPortalLine,
+      ``,
+      `If you have dietary updates, reply here and we will adjust accordingly.`,
+    ].join('\n')
+
+    return `Subject: ${subject}\n\n${emailBody}`.trim()
+  }
+
+  const buildFinalBalanceReminderWhatsApp = () => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentPortalLine = portalUrl ? `Payment portal link:\n${portalUrl}` : 'If you need the payment link, reply here and we will resend it.'
+
+    const balanceLine = depositPaid
+      ? `Remaining balance: ${formatUSD(savedBalanceCents)}`
+      : 'Remaining balance: will be confirmed after your deposit is paid.'
+
+    return [
+      `Hello ${booking.name},`,
+      ``,
+      fullyPaid
+        ? `Your balance is fully paid. We are looking forward to serving you!`
+        : depositPaid
+          ? `Friendly reminder: your remaining balance is due.`
+          : `Quick reminder: please pay your deposit first, and we will confirm your remaining balance.`,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      balanceLine,
+      ``,
+      depositPaid ? `Please settle the remaining balance using the payment portal:` : `To pay your deposit, please use the payment portal:`,
+      paymentPortalLine,
+      ``,
+      `Reply if you have any dietary updates.`,
+    ].join('\n')
+  }
+
+  const buildFinalBalanceReminderEmail = () => {
+    const eventLine = `${formatEventDateLong(booking.event_date)}${booking.event_time ? ` at ${booking.event_time}` : ''}`
+    const guestsLine = booking.guests ? `${booking.guests} guest${booking.guests === 1 ? '' : 's'}` : 'Guests: —'
+    const paymentPortalLine = portalUrl ? `Payment portal link:\n${portalUrl}` : 'If you need the payment link, reply here and we will resend it.'
+
+    const balanceLine = depositPaid
+      ? `Remaining balance: ${formatUSD(savedBalanceCents)}`
+      : 'Remaining balance: will be confirmed after your deposit is paid.'
+
+    const subject = `Bornfidis Provisions — Final Balance Reminder for ${booking.name}`
+    const emailBody = [
+      `Hello ${booking.name},`,
+      ``,
+      fullyPaid
+        ? `Your balance is fully paid. We are looking forward to serving you!`
+        : depositPaid
+          ? `Friendly reminder: your remaining balance is due.`
+          : `Quick reminder: please pay your deposit first, and we will confirm your remaining balance.`,
+      ``,
+      `Event: ${eventLine}`,
+      `Location: ${booking.location}`,
+      `Guests: ${guestsLine}`,
+      ``,
+      balanceLine,
+      ``,
+      depositPaid ? `Please settle the remaining balance using the payment portal:` : `To pay your deposit, please use the payment portal:`,
+      portalUrl ? portalUrl : paymentPortalLine,
+      ``,
+      `Reply if you have any dietary updates.`,
+    ].join('\n')
+
+    return `Subject: ${subject}\n\n${emailBody}`.trim()
+  }
+
+  const handleCopyDepositRequestWhatsapp = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate deposit request.')
+      return
+    }
+    const stripeUrl = (await ensureStripeDepositUrl()) || booking.stripe_payment_link_url || null
+    const text = buildDepositRequestWhatsApp(stripeUrl)
+    const ok = await copyTextToClipboard(text, 'Deposit request (WhatsApp)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'deposit_request_copied_whatsapp',
+        title: 'Deposit request copied',
+        description: 'WhatsApp',
+      })
+    }
+  }
+
+  const handleCopyDepositRequestEmail = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate deposit email draft.')
+      return
+    }
+    const stripeUrl = (await ensureStripeDepositUrl()) || booking.stripe_payment_link_url || null
+    const text = buildDepositRequestEmail(stripeUrl)
+    const ok = await copyTextToClipboard(text, 'Deposit request (Email)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'deposit_request_copied_email',
+        title: 'Deposit request copied',
+        description: 'Email draft',
+      })
+    }
+  }
+
+  const handleCopyBookingConfirmationWhatsapp = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate booking confirmation.')
+      return
+    }
+    const text = buildBookingConfirmationWhatsApp()
+    const ok = await copyTextToClipboard(text, 'Booking confirmation (WhatsApp)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'booking_confirmation_copied_whatsapp',
+        title: 'Booking confirmation copied',
+        description: 'WhatsApp',
+      })
+    }
+  }
+
+  const handleCopyBookingConfirmationEmail = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate booking confirmation email draft.')
+      return
+    }
+    const text = buildBookingConfirmationEmail()
+    const ok = await copyTextToClipboard(text, 'Booking confirmation (Email)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'booking_confirmation_copied_email',
+        title: 'Booking confirmation copied',
+        description: 'Email draft',
+      })
+    }
+  }
+
+  const handleCopyFinalBalanceReminderWhatsapp = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate final balance reminder.')
+      return
+    }
+    const text = buildFinalBalanceReminderWhatsApp()
+    const ok = await copyTextToClipboard(text, 'Final balance reminder (WhatsApp)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'final_balance_reminder_copied_whatsapp',
+        title: 'Final balance reminder copied',
+        description: 'WhatsApp',
+      })
+    }
+  }
+
+  const handleCopyFinalBalanceReminderEmail = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate final balance reminder email draft.')
+      return
+    }
+    const text = buildFinalBalanceReminderEmail()
+    const ok = await copyTextToClipboard(text, 'Final balance reminder (Email)')
+    if (ok) {
+      await logBookingActivity({
+        type: 'final_balance_reminder_copied_email',
+        title: 'Final balance reminder copied',
+        description: 'Email draft',
+      })
+    }
+  }
+
+  const handleOpenDepositLink = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to generate a deposit link.')
+      return
+    }
+
+    const stripeUrl = (await ensureStripeDepositUrl()) || booking.stripe_payment_link_url || null
+    if (!stripeUrl) {
+      toast.error('Deposit link is not available.')
+      return
+    }
+
+    window.open(stripeUrl, '_blank', 'noopener,noreferrer')
+    const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+    toast.success(`Opened deposit link (${time})`)
+    await logBookingActivity({
+      type: 'deposit_link_opened',
+      title: 'Deposit link opened',
+      description: 'Stripe',
+    })
+
+    if (status !== 'booked') {
+      setStatusSuggestionPrompt('booked')
+    }
+  }
+
+  const handleEmailQuoteOffer = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to send a quote email.')
+      return
+    }
+    if (!booking.email?.trim()) {
+      toast.error('Add a client email on this booking first.')
+      return
+    }
+    setIsSendingQuoteEmail(true)
+    try {
+      const res = await sendBookingQuoteOfferEmail(booking.id)
+      if (res.success) {
+        toast.success('Quote offer email sent')
+        setBookingActivities((prev) => [res.activity, ...prev])
+        router.refresh()
+      } else {
+        toast.error(res.error)
+      }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Failed to send email')
+    } finally {
+      setIsSendingQuoteEmail(false)
+    }
+  }
+
+  const handleEmailDepositRequest = async () => {
+    if (!hasSavedQuote) {
+      toast.error('Save the quote first to send a deposit request email.')
+      return
+    }
+    if (!booking.email?.trim()) {
+      toast.error('Add a client email on this booking first.')
+      return
+    }
+    setIsSendingDepositRequestEmail(true)
+    try {
+      const res = await sendBookingDepositRequestEmail(booking.id)
+      if (res.success) {
+        toast.success('Deposit request email sent')
+        setBookingActivities((prev) => [res.activity, ...prev])
+        router.refresh()
+      } else {
+        toast.error(res.error)
+      }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Failed to send email')
+    } finally {
+      setIsSendingDepositRequestEmail(false)
+    }
+  }
+
   // Single source of status options (no duplicates by value)
   const statusOptions: { value: BookingStatus; label: string }[] = [
     { value: 'pending', label: 'Pending' },
     { value: 'reviewed', label: 'Reviewed' },
     { value: 'quoted', label: 'Quoted' },
     { value: 'booked', label: 'Booked' },
+    { value: 'Confirmed', label: 'Confirmed' },
     { value: 'declined', label: 'Declined' },
   ].filter((opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i)
 
@@ -239,6 +731,13 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
         admin_notes: adminNotes,
       })
       if (result.success) {
+        if (status !== booking.status) {
+          await logBookingActivity({
+            type: 'status_changed',
+            title: 'Status changed',
+            description: `From ${booking.status} to ${status}`,
+          })
+        }
         toast.success('Changes saved!')
         router.refresh()
       } else {
@@ -295,6 +794,102 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
   const balancePaid = !!booking.balance_paid_at
   const fullyPaid = !!booking.fully_paid_at
 
+  useEffect(() => {
+    if (!depositPaid || didPromptDepositPaid) return
+    setDidPromptDepositPaid(true)
+
+    if (status === 'Confirmed') return
+    setStatusSuggestionPrompt('confirmed')
+  }, [depositPaid, didPromptDepositPaid, status])
+
+  const handleNotNowStatusSuggestion = () => {
+    // Quote saved previously relied on an unconditional refresh (even if user chose "Not now").
+    if (statusSuggestionPrompt === 'quoted') {
+      router.refresh()
+    }
+    setStatusSuggestionPrompt(null)
+  }
+
+  const handleConfirmStatusSuggestion = async () => {
+    if (!statusSuggestionPrompt || isStatusSuggestionBusy) return
+
+    setIsStatusSuggestionBusy(true)
+    try {
+      const previousStatus = status
+
+      if (statusSuggestionPrompt === 'quoted') {
+        const res = await updateBooking(booking.id, {
+          status: 'quoted',
+          admin_notes: adminNotes,
+        })
+        if (res.success) {
+          setStatus('quoted')
+          const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+          toast.success(`Status updated to Quoted (${time})`)
+          await logBookingActivity({
+            type: 'status_changed',
+            title: 'Status changed',
+            description: `From ${previousStatus} to quoted`,
+          })
+          router.refresh()
+          setStatusSuggestionPrompt(null)
+          return
+        }
+
+        toast.error(res.error || 'Failed to update status')
+        return
+      }
+
+      if (statusSuggestionPrompt === 'booked') {
+        const res = await updateBooking(booking.id, {
+          status: 'booked',
+          admin_notes: adminNotes,
+        })
+        if (res.success) {
+          setStatus('booked')
+          const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+          toast.success(`Status updated to Booked (${time})`)
+          await logBookingActivity({
+            type: 'status_changed',
+            title: 'Status changed',
+            description: `From ${previousStatus} to booked`,
+          })
+          router.refresh()
+          setStatusSuggestionPrompt(null)
+          return
+        }
+
+        toast.error(res.error || 'Failed to update status')
+        return
+      }
+
+      if (statusSuggestionPrompt === 'confirmed') {
+        const res = await updateBooking(booking.id, {
+          status: 'Confirmed',
+          admin_notes: adminNotes,
+        })
+        if (res.success) {
+          setStatus('Confirmed')
+          const time = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+          toast.success(`Status updated to Confirmed (${time})`)
+          await logBookingActivity({
+            type: 'status_changed',
+            title: 'Status changed',
+            description: `From ${previousStatus} to Confirmed`,
+          })
+          router.refresh()
+          setStatusSuggestionPrompt(null)
+          return
+        }
+
+        toast.error(res.error || 'Failed to update status')
+        return
+      }
+    } finally {
+      setIsStatusSuggestionBusy(false)
+    }
+  }
+
   // Quote & Payment handlers
   const addLineItem = () => {
     setLineItems([
@@ -349,7 +944,12 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
 
       if (result.success) {
         toast.success('Quote saved successfully!')
-        router.refresh()
+        await logBookingActivity({
+          type: 'quote_saved',
+          title: 'Quote saved',
+          description: `Quote total: ${formatUSD(totalCents)} • Deposit: ${formatUSD(depositCents)} (${depositPercentage}%)`,
+        })
+        setStatusSuggestionPrompt('quoted')
       } else {
         toast.error(result.error || 'Failed to save quote. Please try again.')
       }
@@ -494,6 +1094,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
               value={status}
               onChange={(e) => setStatus(e.target.value as BookingStatus)}
               className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              title="Booking status"
             >
               {statusOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -683,6 +1284,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                               onChange={(e) => updateLineItem(index, 'title', e.target.value)}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                               placeholder="Service name"
+                              title="Service name"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -692,6 +1294,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                               onChange={(e) => updateLineItem(index, 'description', e.target.value)}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                               placeholder="Optional"
+                              title="Optional description"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -701,6 +1304,8 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                               value={item.quantity}
                               onChange={(e) => updateLineItem(index, 'quantity', parseInt(e.target.value) || 1)}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center"
+                              title="Quantity"
+                              placeholder="1"
                             />
                           </td>
                           <td className="px-4 py-3">
@@ -713,6 +1318,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                               }}
                               className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right"
                               placeholder="0.00"
+                              title="Unit price (USD)"
                             />
                           </td>
                           <td className="px-4 py-3 text-right text-sm font-medium">
@@ -789,6 +1395,8 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                   max={100}
                   value={depositPercentage}
                   onChange={(e) => setDepositPercentage(parseInt(e.target.value) || 30)}
+                  placeholder="30"
+                  title="Deposit percentage"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 />
               </div>
@@ -801,6 +1409,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                   value={regionCode}
                   onChange={(e) => setRegionCode(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  title="Choose a region (optional)"
                 >
                   <option value="">No region</option>
                   {regionOptions.map((r) => (
@@ -877,6 +1486,125 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
               </div>
             </div>
 
+            {/* Deposit & Confirmation Templates */}
+            <div className="border border-gray-200 rounded-lg bg-white p-4">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">Deposit and confirmation tools</h4>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Quote total</span>
+                  <span className="font-semibold text-gray-900">{hasSavedQuote ? formatUSD(savedQuoteTotalCents) : '—'}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-600">Deposit ({savedDepositPercent}%)</span>
+                  <span className="font-semibold text-gray-900">{hasSavedQuote ? formatUSD(savedDepositCents) : '—'}</span>
+                </div>
+
+                <div className="pt-2 border-t border-gray-200 flex items-center justify-between gap-3">
+                  <span className="text-gray-600 text-sm">Stripe deposit</span>
+                  <button
+                    type="button"
+                    onClick={handleOpenDepositLink}
+                    disabled={!hasSavedQuote || isCreatingStripeDepositLink}
+                    className="px-4 py-2 bg-navy text-white font-semibold rounded-lg hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isCreatingStripeDepositLink ? 'Opening...' : 'Open Deposit Link'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Send via Resend</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={handleEmailQuoteOffer}
+                    disabled={
+                      !hasSavedQuote ||
+                      !booking.email?.trim() ||
+                      isSendingQuoteEmail ||
+                      isCreatingStripeDepositLink
+                    }
+                    className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  >
+                    {isSendingQuoteEmail ? 'Sending…' : 'Send Quote Email'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleEmailDepositRequest}
+                    disabled={
+                      !hasSavedQuote ||
+                      !booking.email?.trim() ||
+                      isSendingDepositRequestEmail ||
+                      isCreatingStripeDepositLink
+                    }
+                    className="px-4 py-2 bg-sky-700 text-white font-semibold rounded-lg hover:bg-sky-800 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  >
+                    {isSendingDepositRequestEmail ? 'Sending…' : 'Send Deposit Request Email'}
+                  </button>
+                </div>
+                {!booking.email?.trim() && (
+                  <p className="mt-2 text-xs text-amber-700">Add a client email above to enable Resend.</p>
+                )}
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={handleCopyDepositRequestWhatsapp}
+                  disabled={!hasSavedQuote || isCreatingStripeDepositLink}
+                  className="px-4 py-2 bg-gold text-navy font-semibold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Deposit Request (WhatsApp)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyDepositRequestEmail}
+                  disabled={!hasSavedQuote || isCreatingStripeDepositLink}
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Deposit Request (Email)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyBookingConfirmationWhatsapp}
+                  disabled={!hasSavedQuote}
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Booking Confirmation (WhatsApp)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyBookingConfirmationEmail}
+                  disabled={!hasSavedQuote}
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Booking Confirmation (Email)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyFinalBalanceReminderWhatsapp}
+                  disabled={!hasSavedQuote}
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Final Balance Reminder (WhatsApp)
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCopyFinalBalanceReminderEmail}
+                  disabled={!hasSavedQuote}
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                >
+                  Copy Final Balance Reminder (Email)
+                </button>
+              </div>
+
+              {!hasSavedQuote && (
+                <p className="mt-3 text-xs text-gray-500">Save the quote first to enable deposit and confirmation templates.</p>
+              )}
+            </div>
+
             {/* Save Quote */}
             <button
               type="button"
@@ -886,6 +1614,18 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
             >
               {isSavingQuote ? 'Saving...' : 'Save Quote'}
             </button>
+
+            {/* Shortcut: most-used deposit message */}
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={handleCopyDepositRequestWhatsapp}
+                disabled={!hasSavedQuote || isCreatingStripeDepositLink}
+                className="w-full px-6 py-2 bg-gray-100 text-gray-800 font-semibold rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              >
+                Copy Deposit Request (WhatsApp)
+              </button>
+            </div>
 
             {/* Download Invoice when fully paid */}
             {fullyPaid && lineItems.length > 0 && (
@@ -908,6 +1648,224 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
         )}
       </div>
 
+      <ServiceChecklistSection
+        booking={booking}
+        onActivity={(a) => setBookingActivities((prev) => [a, ...prev])}
+      />
+
+      {/* Booking activity timeline (sales/ops trail) */}
+      <div className="mt-6">
+        <BookingTimeline activities={bookingActivities} />
+
+        {/* Add internal note */}
+        <form
+          onSubmit={async (e) => {
+            e.preventDefault()
+            const note = internalNote.trim()
+            if (!note) {
+              toast.error('Please write an internal note first.')
+              return
+            }
+
+            setIsAddingInternalNote(true)
+            try {
+              const res = await addBookingActivity(booking.id, {
+                type: 'admin_note',
+                title: 'Internal note',
+                description: note,
+              })
+
+              if (res.success) {
+                setBookingActivities((prev) => [res.activity, ...prev])
+                setInternalNote('')
+                toast.success('Internal note added.')
+              } else {
+                toast.error(res.error || 'Failed to add note.')
+              }
+            } catch (err: any) {
+              toast.error(err?.message || 'Failed to add note.')
+            } finally {
+              setIsAddingInternalNote(false)
+            }
+          }}
+          className="mt-4 space-y-2"
+        >
+          <label className="block text-sm font-medium text-gray-700">Add internal note</label>
+          <textarea
+            value={internalNote}
+            onChange={(e) => setInternalNote(e.target.value)}
+            rows={3}
+            placeholder="Write a quick internal note (e.g., client called, dietary update confirmed, follow-up planned)..."
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
+            title="Internal note"
+          />
+          <div className="flex items-center gap-3">
+            <button
+              type="submit"
+              disabled={isAddingInternalNote}
+              className="px-4 py-2 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isAddingInternalNote ? 'Saving...' : 'Add note'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setInternalNote('')}
+              disabled={isAddingInternalNote || internalNote.length === 0}
+              className="px-4 py-2 border border-navy/20 text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Testimonial capture */}
+      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-5">
+        <h3 className="text-base font-semibold text-navy mb-3">Testimonial</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600 mb-4">
+          <div>
+            <span className="text-gray-500">Requested</span>
+            <p className="font-medium text-gray-900">
+              {booking.testimonial_requested_at
+                ? new Date(booking.testimonial_requested_at).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })
+                : '—'}
+            </p>
+          </div>
+          <div>
+            <span className="text-gray-500">Received</span>
+            <p className="font-medium text-gray-900">
+              {booking.testimonial_received_at
+                ? new Date(booking.testimonial_received_at).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  })
+                : '—'}
+            </p>
+          </div>
+        </div>
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-sm text-gray-600">Approved for use</span>
+          <span
+            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+              testimonialApprovedLocal ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'
+            }`}
+          >
+            {testimonialApprovedLocal ? 'Yes' : 'No'}
+          </span>
+        </div>
+        <label htmlFor="testimonial_text" className="block text-sm font-medium text-gray-700 mb-1">
+          Testimonial text
+        </label>
+        <textarea
+          id="testimonial_text"
+          value={testimonialText}
+          onChange={(e) => setTestimonialText(e.target.value)}
+          rows={5}
+          placeholder="Paste the client’s testimonial here when received…"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy/30 focus:border-navy/40 resize-y text-sm"
+          title="Testimonial text"
+        />
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            disabled={isTestimonialBusy}
+            onClick={async () => {
+              setIsTestimonialBusy(true)
+              try {
+                const res = await markTestimonialRequested(booking.id)
+                if (res.success) {
+                  toast.success('Testimonial request recorded.')
+                  router.refresh()
+                } else toast.error(res.error || 'Failed')
+              } catch (e: any) {
+                toast.error(e?.message || 'Failed')
+              } finally {
+                setIsTestimonialBusy(false)
+              }
+            }}
+            className="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+          >
+            Mark Requested
+          </button>
+          <button
+            type="button"
+            disabled={isTestimonialBusy}
+            onClick={async () => {
+              setIsTestimonialBusy(true)
+              try {
+                const res = await saveTestimonialReceived({ bookingId: booking.id, testimonialText })
+                if (res.success) {
+                  toast.success('Testimonial saved.')
+                  router.refresh()
+                } else toast.error(res.error || 'Failed')
+              } catch (e: any) {
+                toast.error(e?.message || 'Failed')
+              } finally {
+                setIsTestimonialBusy(false)
+              }
+            }}
+            className="px-4 py-2 border border-navy/20 text-navy text-sm font-semibold rounded-lg hover:bg-navy hover:text-white disabled:opacity-50"
+          >
+            Save Testimonial
+          </button>
+          <button
+            type="button"
+            disabled={isTestimonialBusy || !testimonialText.trim()}
+            onClick={async () => {
+              setIsTestimonialBusy(true)
+              try {
+                const res = await setTestimonialApproved({ bookingId: booking.id, approved: true })
+                if (res.success) {
+                  setTestimonialApprovedLocal(true)
+                  toast.success('Testimonial approved for use.')
+                  router.refresh()
+                } else toast.error(res.error || 'Failed')
+              } catch (e: any) {
+                toast.error(e?.message || 'Failed')
+              } finally {
+                setIsTestimonialBusy(false)
+              }
+            }}
+            className="px-4 py-2 bg-gold text-navy text-sm font-semibold rounded-lg hover:opacity-90 disabled:opacity-50"
+          >
+            Approve for Use
+          </button>
+          {testimonialApprovedLocal && (
+            <button
+              type="button"
+              disabled={isTestimonialBusy}
+              onClick={async () => {
+                setIsTestimonialBusy(true)
+                try {
+                  const res = await setTestimonialApproved({ bookingId: booking.id, approved: false })
+                  if (res.success) {
+                    setTestimonialApprovedLocal(false)
+                    toast.success('Approval removed.')
+                    router.refresh()
+                  } else toast.error(res.error || 'Failed')
+                } catch (e: any) {
+                  toast.error(e?.message || 'Failed')
+                } finally {
+                  setIsTestimonialBusy(false)
+                }
+              }}
+              className="px-4 py-2 text-sm text-gray-600 underline hover:text-navy disabled:opacity-50"
+            >
+              Remove approval
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Phase 4B: Customer Portal Section */}
       <div className="border-t pt-6 mt-6">
         <h3 className="text-lg font-semibold text-navy mb-4">Customer Portal</h3>
@@ -923,6 +1881,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                     type="text"
                     value={portalUrl || ''}
                     readOnly
+                    title="Payment portal link"
                     className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm"
                   />
                   <button
@@ -1066,6 +2025,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                     value={selectedChefId}
                     onChange={(e) => handleChefAssignment(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    title="Select a chef to assign"
                   >
                     <option value="">Select Chef</option>
                     {activeChefs.map((chef) => (
@@ -1079,6 +2039,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                       type="checkbox"
                       checked={overrideAvailability}
                       onChange={(e) => setOverrideAvailability(e.target.checked)}
+                      title="Override availability"
                     />
                     Override availability (assign even if chef marked unavailable or double-booked)
                   </label>
@@ -1096,6 +2057,7 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
                   value=""
                   onChange={(e) => handleFarmerAssignment(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  title="Select a farmer to add"
                 >
                   <option value="">Select Farmer to Add</option>
                   {availableFarmers
@@ -1160,6 +2122,48 @@ export default function BookingDetailClient({ booking }: BookingDetailClientProp
         <strong>Keyboard Shortcuts:</strong>{' '}
         ⌘/Ctrl + S = Save Changes | ⌘/Ctrl + K = Copy Portal Link | ⌘/Ctrl + Q = Toggle Quote | ⌘/Ctrl + T = Toggle Team
       </div>
+
+      {/* Non-blocking status suggestion modal */}
+      {statusSuggestionPrompt && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div
+            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-lg"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="status-suggestion-title"
+          >
+            <h3 id="status-suggestion-title" className="text-lg font-semibold text-gray-900 mb-2">
+              Update booking status
+            </h3>
+            <p className="text-gray-600 mb-6">
+              {statusSuggestionPrompt === 'quoted' &&
+                'Quote saved. Mark this booking as Quoted?'}
+              {statusSuggestionPrompt === 'booked' &&
+                'Deposit request opened. Mark this booking as Booked?'}
+              {statusSuggestionPrompt === 'confirmed' &&
+                'Deposit received. Mark this booking as Confirmed?'}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                type="button"
+                onClick={handleNotNowStatusSuggestion}
+                disabled={isStatusSuggestionBusy}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Not now
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmStatusSuggestion}
+                disabled={isStatusSuggestionBusy}
+                className="px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isStatusSuggestionBusy ? 'Updating...' : 'Yes, update'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

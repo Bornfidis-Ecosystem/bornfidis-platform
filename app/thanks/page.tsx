@@ -1,7 +1,91 @@
 import Link from 'next/link'
 import { SuccessAlert } from '@/components/ui/SuccessAlert'
 
-export default function ThanksPage() {
+type Search = {
+  type?: string | string[]
+  checkout?: string | string[]
+  session_id?: string | string[]
+  booking_id?: string | string[]
+}
+
+function first(param?: string | string[]): string | undefined {
+  if (Array.isArray(param)) return param[0]
+  return param
+}
+
+export default async function ThanksPage({ searchParams }: { searchParams: Promise<Search> }) {
+  const params = await searchParams
+  const type = (first(params.type) || '').toLowerCase()
+  const checkout = (first(params.checkout) || '').toLowerCase()
+  const sessionId = first(params.session_id)
+  const bookingId = first(params.booking_id)
+
+  if (type === 'deposit' || type === 'balance') {
+    const isDeposit = type === 'deposit'
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-lg rounded-lg bg-white p-10 shadow-sm">
+          <SuccessAlert
+            title={isDeposit ? 'Deposit received' : 'Balance payment received'}
+            message={
+              isDeposit
+                ? 'Thank you — your deposit was processed securely. We will confirm your booking details by email.'
+                : 'Thank you — your remaining balance was processed successfully. A confirmation will be sent to the email on your booking.'
+            }
+            className="mb-6"
+          />
+          {bookingId ? (
+            <p className="mb-4 text-center text-sm text-gray-600">
+              Booking reference: <span className="font-mono text-gray-800">{bookingId.slice(0, 8)}…</span>
+            </p>
+          ) : null}
+          {sessionId ? (
+            <p className="mb-8 text-center text-xs text-gray-400 font-mono break-all">
+              Session: {sessionId}
+            </p>
+          ) : null}
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center px-6 py-3 bg-gold text-navy rounded-lg font-semibold hover:opacity-90 transition"
+            >
+              Back to home
+            </Link>
+            <Link
+              href="/book"
+              className="inline-flex items-center justify-center px-6 py-3 border border-navy/20 text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition"
+            >
+              Bornfidis Provisions
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (checkout === 'consulting' || type === 'consulting') {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="w-full max-w-lg rounded-lg bg-white p-10 shadow-sm text-center">
+          <SuccessAlert
+            title="Thank you"
+            message="Your consulting session payment went through. We will reach out shortly with next steps."
+            className="mb-6"
+          />
+          {sessionId ? (
+            <p className="mb-8 text-xs text-gray-400 font-mono break-all">Session: {sessionId}</p>
+          ) : null}
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center px-6 py-3 bg-gold text-navy rounded-lg font-semibold hover:opacity-90 transition"
+          >
+            Back to home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="container mx-auto px-4 max-w-2xl text-center">
@@ -29,7 +113,10 @@ export default function ThanksPage() {
               </li>
               <li className="flex items-start">
                 <span className="font-semibold mr-2">4.</span>
-                <span>When your chef is assigned, you&apos;ll see their profile and verified credentials in your booking portal.</span>
+                <span>
+                  When your chef is assigned, you&apos;ll see their profile and verified credentials in your booking
+                  portal.
+                </span>
               </li>
             </ol>
           </div>
@@ -68,4 +155,3 @@ export default function ThanksPage() {
     </div>
   )
 }
-

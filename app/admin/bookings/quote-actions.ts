@@ -190,8 +190,8 @@ export async function markQuoteSent(
 }
 
 /**
- * Create Stripe Checkout Session for deposit payment
- * Returns the checkout URL
+ * Create Stripe Checkout Session for deposit payment (fixed Price `STRIPE_DEPOSIT_PRICE_ID`).
+ * Same implementation as `POST /api/checkout` with `mode: "deposit"`.
  */
 export async function createStripeDepositLink(
   bookingId: string
@@ -199,7 +199,6 @@ export async function createStripeDepositLink(
   await requireAuth()
 
   try {
-    // Check if Stripe is configured
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY
     if (!stripeSecretKey) {
       return {
@@ -208,7 +207,6 @@ export async function createStripeDepositLink(
       }
     }
 
-    // Get booking to fetch deposit amount
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
       .select('quote_deposit_cents, name, email, quote_total_cents')
@@ -224,51 +222,9 @@ export async function createStripeDepositLink(
       return { success: false, error: 'Deposit amount must be greater than 0. Please save the quote first.' }
     }
 
-    // Import Stripe dynamically (only if configured)
-    const stripe = await import('stripe').then((m) => new m.default(stripeSecretKey))
-
-    // Create Checkout Session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `Deposit - ${booking.name || 'Booking'}`,
-              description: `Deposit payment for booking #${bookingId.slice(0, 8)}`,
-            },
-            unit_amount: depositCents,
-          },
-          quantity: 1,
-        },
-      ],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/admin/bookings/${bookingId}?payment=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/admin/bookings/${bookingId}?payment=cancelled`,
-      customer_email: booking.email || undefined,
-      metadata: {
-        booking_id: bookingId,
-        type: 'deposit',
-      },
-    })
-
-    // Save session URL and ID to booking
-    const { error: updateError } = await supabaseAdmin
-      .from('booking_inquiries')
-      .update({
-        stripe_payment_link_url: session.url,
-        stripe_invoice_id: session.id, // Store session ID
-        stripe_payment_status: 'unpaid',
-      })
-      .eq('id', bookingId)
-
-    if (updateError) {
-      console.error('Error saving Stripe session to booking:', updateError)
-      // Still return success with URL even if save fails
-    }
-
-    return { success: true, url: session.url || undefined }
+    const { createDepositCheckoutSessionForBooking } = await import('@/lib/stripe-deposit-checkout')
+    const { url } = await createDepositCheckoutSessionForBooking(bookingId)
+    return { success: true, url }
   } catch (error: any) {
     console.error('Error creating Stripe deposit link:', error)
     return {

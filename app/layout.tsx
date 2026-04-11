@@ -1,12 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
 import './globals.css'
-import PublicNav from '@/components/layout/PublicNav'
-import ConditionalPublicFooter from '@/components/layout/ConditionalPublicFooter'
-import { ToastContainer } from '@/components/ui/Toast'
-import { SyncButton } from '@/components/ui/SyncButton'
-import { OfflineSyncProvider } from '@/components/ui/OfflineSyncProvider'
+import RootShell from '@/components/layout/RootShell'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -34,16 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-x-hidden">
       <body className={`${playfair.variable} ${inter.variable} font-sans overflow-x-hidden`}>
-        <div className="min-h-screen flex flex-col">
-          <OfflineSyncProvider>
-            <PublicNav />
-            <main className="flex-1 w-full">{children}</main>
-            <ConditionalPublicFooter />
-            <ToastContainer />
-            <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-            <SyncButton />
-          </OfflineSyncProvider>
-        </div>
+        <RootShell>{children}</RootShell>
       </body>
     </html>
   )

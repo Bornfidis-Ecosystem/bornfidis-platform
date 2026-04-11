@@ -2,8 +2,10 @@ import { randomUUID } from 'crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { getCurrentSupabaseUser } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { getAcademyProductBySlug, ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
+import { logActivity } from '@/lib/activity-log'
 
 /**
  * TASK 3 — Free product claim
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'productId is required' }, { status: 400 })
   }
 
-  const product = getAcademyProductBySlug(productId)
+  const product = await getAcademyProductBySlugPublic(productId)
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
   }
@@ -76,6 +78,14 @@ export async function POST(req: NextRequest) {
     },
   })
 
+  logActivity({
+    type: 'ACADEMY_PURCHASE',
+    title: 'Course purchased',
+    description: product.title,
+    division: 'ACADEMY',
+    metadata: { productSlug: product.slug, freeClaim: true },
+  }).catch(() => {})
+
   // Post-purchase confirmation email: productTitle, library link, suggest 1 related product
   const customerEmail = user.email
   if (customerEmail) {
@@ -85,7 +95,7 @@ export async function POST(req: NextRequest) {
       (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
     const libraryUrl = `${baseUrl}/dashboard/library`
     const suggestedSlug = ACADEMY_UPSELL_SUGGESTION[product.slug] ?? 'llc-starter-kit'
-    const suggestedProduct = getAcademyProductBySlug(suggestedSlug)
+    const suggestedProduct = await getAcademyProductBySlugPublic(suggestedSlug)
     await sendAcademyPurchaseConfirmationEmail(customerEmail, {
       productTitle: product.title,
       amountPaidCents: 0,

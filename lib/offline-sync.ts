@@ -132,7 +132,8 @@ export async function syncPendingSubmissions(): Promise<{ synced: number; failed
 }
 
 /**
- * Initialize auto-sync on online event
+ * Initialize auto-sync on online event.
+ * Safe to import from the client bundle: no IndexedDB or window access at module load — only here + API calls.
  */
 export function initAutoSync() {
   if (typeof window === 'undefined') return

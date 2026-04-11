@@ -1,4 +1,18 @@
-export type BookingStatus = 'pending' | 'reviewed' | 'quoted' | 'booked' | 'declined' | 'New' | 'Contacted' | 'Confirmed' | 'Closed'
+export type BookingStatus =
+  | 'pending'
+  | 'reviewed'
+  | 'quoted'
+  | 'booked'
+  | 'declined'
+  | 'New'
+  | 'Contacted'
+  | 'Confirmed'
+  | 'Closed'
+  | 'Quote Sent'
+  | 'Follow Up'
+  | 'Completed'
+  | 'quote_sent'
+  | 'follow_up'
 export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'declined'
 
 export interface QuoteLineItem {
@@ -20,6 +34,7 @@ export interface BookingInquiry {
   name: string
   email?: string
   phone?: string
+  client_profile_id?: string
   event_date: string
   event_time?: string
   location: string
@@ -107,4 +122,17 @@ export interface BookingInquiry {
   surge_applied_at?: string
   surge_label?: string
   sla_acknowledged_by?: string
+  /** Testimonial capture (admin) */
+  testimonial_requested_at?: string
+  testimonial_received_at?: string
+  testimonial_text?: string | null
+  testimonial_approved?: boolean
+  /** Service checklist (manual ops); deposit/balance/testimonial request use payment + testimonial fields. */
+  menu_confirmed?: boolean
+  dietary_confirmed?: boolean
+  guest_count_confirmed?: boolean
+  arrival_time_confirmed?: boolean
+  location_confirmed?: boolean
+  ingredients_sourced?: boolean
+  equipment_packed?: boolean
 }

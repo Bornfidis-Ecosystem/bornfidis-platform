@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { HomepageBrandImage } from '@/components/home/HomepageBrandImage'
+import { ChefBio } from '@/components/story/ChefBio'
 import { storyImages } from '@/lib/story-images'
 
 export const metadata: Metadata = {
@@ -136,6 +137,8 @@ export default function StoryPage() {
           </div>
         </div>
       </section>
+
+      <ChefBio />
 
       {/* 1 — The Craft */}
       <section id="the-craft" className="scroll-mt-8">

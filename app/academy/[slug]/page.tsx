@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getAcademyProductBySlug } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { getAcademyStats } from '@/lib/academy-stats'
 import AcademyBuyButton from '@/components/academy/AcademyBuyButton'
 import { AcademyProductViewTracker } from '@/components/academy/AcademyProductViewTracker'
@@ -78,7 +78,7 @@ function getAudienceLabel(category: string): string {
 
 export default async function AcademyProductPage({ params }: PageProps) {
   const { slug } = await params
-  const product = getAcademyProductBySlug(slug)
+  const product = await getAcademyProductBySlugPublic(slug)
   if (!product) notFound()
 
   const hasRichDetail =

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import Stripe from 'stripe'
-import { getAcademyProductBySlug } from '@/lib/academy-products'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { db } from '@/lib/db'
 import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
 import { AcademyCheckoutCompleteTracker } from '@/components/academy/AcademyCheckoutCompleteTracker'
@@ -93,7 +93,7 @@ export default async function AcademySuccessPage({
     )
   }
 
-  const product = getAcademyProductBySlug(productSlug)
+  const product = await getAcademyProductBySlugPublic(productSlug)
   const productTitle = product?.title ?? session.metadata?.productTitle ?? productSlug
   const amountTotal = typeof session.amount_total === 'number' ? session.amount_total : (product?.priceCents ?? 0)
 

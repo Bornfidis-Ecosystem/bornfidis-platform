@@ -41,7 +41,9 @@ export async function POST(request: NextRequest) {
     // Fetch booking with quote data (Phase 3C fields)
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
-      .select('id, name, email, quote_total_cents, deposit_amount_cents, deposit_percentage, balance_paid_at, balance_amount_cents, paid_at, status')
+      .select(
+        'id, name, email, event_date, quote_total_cents, deposit_amount_cents, deposit_percentage, balance_paid_at, balance_amount_cents, paid_at, status',
+      )
       .eq('id', booking_id)
       .single()
 
@@ -66,7 +68,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if deposit is paid (Phase 3A requirement)
-    const depositPaid = !!booking.paid_at || booking.status === 'booked'
+    const depositPaid =
+      !!booking.paid_at || String(booking.status || '').toLowerCase() === 'booked'
     if (!depositPaid && depositPaidCents > 0) {
       return NextResponse.json(
         { success: false, error: 'Deposit must be paid before requesting balance payment.' },
@@ -97,6 +100,10 @@ export async function POST(request: NextRequest) {
       apiVersion: '2024-11-20.acacia',
     })
 
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -114,23 +121,26 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/admin/bookings/${booking_id}?payment=success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/admin/bookings/${booking_id}?payment=cancel`,
+      success_url: `${siteUrl}/thanks?type=balance&booking_id=${encodeURIComponent(booking_id)}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/book`,
       customer_email: booking.email || undefined,
       metadata: {
         booking_id: booking_id,
+        bookingId: booking_id,
+        checkout_mode: 'balance',
         payment_type: 'balance',
-        customer_name: booking.name || '',
+        balance_amount_cents: String(balanceCents),
+        guest_name: booking.name || '',
+        event_date: booking.event_date ? String(booking.event_date).slice(0, 10) : '',
       },
     })
 
-    // Save session ID to booking (Phase 3C: stripe_balance_session_id)
+    // Save session ID to booking (canonical + Prisma-compatible column)
     const { error: updateError } = await supabaseAdmin
       .from('booking_inquiries')
       .update({
         stripe_balance_session_id: session.id,
-        // balance_amount_cents should already be set from quote save
-        // Don't update status yet - wait for webhook
+        balance_session_id: session.id,
       })
       .eq('id', booking_id)
 

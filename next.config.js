@@ -10,6 +10,11 @@ const nextConfig = {
         hostname: 'd2xsxph8kpxj0f.cloudfront.net',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
     ],
   },
   // Use this directory as the workspace root for file tracing (avoids picking up parent pnpm-lock.yaml).

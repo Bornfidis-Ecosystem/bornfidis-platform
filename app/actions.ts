@@ -1,9 +1,11 @@
 'use server'
 
-import { bookingSchema } from '@/lib/validation'
+import { bookingSchema, mergeBookingNotesFields } from '@/lib/validation'
 import { db } from '@/lib/db'
 import { sendBookingConfirmationEmail, sendAdminNotificationEmail } from '@/lib/email'
+import { logActivity } from '@/lib/activity-log'
 import { sendSubmissionConfirmationSMS } from '@/lib/sms-utils'
+import { ensureClientProfile } from '@/lib/client-profiles'
 
 export async function submitBooking(formData: FormData | Record<string, string>) {
   try {
@@ -14,6 +16,7 @@ export async function submitBooking(formData: FormData | Record<string, string>)
 
     // Validate data
     const validated = bookingSchema.parse(data)
+    const mergedNotes = mergeBookingNotesFields(validated)
 
     // Check honeypot
     const websiteUrl = data.website_url?.toString() || ''
@@ -22,6 +25,12 @@ export async function submitBooking(formData: FormData | Record<string, string>)
     }
 
     // Insert into database using Prisma
+    const clientProfile = await ensureClientProfile({
+      name: validated.name,
+      email: validated.email || null,
+      phone: validated.phone || null,
+    })
+
     const booking = await db.bookingInquiry.create({
       data: {
         name: validated.name,
@@ -35,8 +44,30 @@ export async function submitBooking(formData: FormData | Record<string, string>)
         dietaryRestrictions: validated.dietaryRestrictions || null,
         notes: validated.notes || null,
         status: 'New',
+        clientProfileId: clientProfile.id,
       },
     })
+
+    // Seed booking timeline with a clear origin event.
+    db.bookingActivity.create({
+      data: {
+        bookingId: booking.id,
+        type: 'booking_created',
+        title: 'Booking created',
+        description: 'Inquiry received and recorded in the system.',
+        actorName: 'System',
+      },
+    }).catch((activityError) => {
+      console.error('Failed to create booking_created activity (non-blocking):', activityError)
+    })
+
+    logActivity({
+      type: 'BOOKING_LEAD',
+      title: 'New booking inquiry',
+      description: `${validated.name} — ${validated.location}`,
+      division: 'PROVISIONS',
+      metadata: { bookingId: booking.id },
+    }).catch(() => {})
 
     // Send confirmation email to customer (if email provided)
     if (validated.email) {
@@ -68,7 +99,7 @@ export async function submitBooking(formData: FormData | Record<string, string>)
       guestCount: validated.guests,
       budgetRange: validated.budgetRange,
       dietaryRestrictions: validated.dietaryRestrictions,
-      notes: validated.notes,
+      notes: mergedNotes ?? undefined,
     })
     if (!adminEmailResult.success) {
       console.error('Failed to send admin notification email:', adminEmailResult.error)
@@ -86,7 +117,7 @@ export async function submitBooking(formData: FormData | Record<string, string>)
         guests: validated.guests,
         budgetRange: validated.budgetRange,
         dietaryRestrictions: validated.dietaryRestrictions,
-        notes: validated.notes,
+        notes: mergedNotes ?? undefined,
       }).catch((smsError) => {
         console.error('Error sending SMS (non-blocking):', smsError)
         // Don't fail the booking if SMS fails

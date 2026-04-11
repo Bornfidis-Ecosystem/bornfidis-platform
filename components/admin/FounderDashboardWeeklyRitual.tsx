@@ -27,22 +27,22 @@ export function FounderDashboardWeeklyRitual() {
   const yesCount = answers.filter((a) => a === 'yes').length
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
         {QUESTIONS.map((q, i) => (
           <div
             key={i}
-            className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col min-w-0"
+            className="bg-white border border-stone-200/80 rounded-xl p-5 flex flex-col min-w-0"
           >
-            <p className="text-sm font-medium text-gray-800 mb-3 break-words">{q}</p>
+            <p className="text-sm font-medium text-stone-800 mb-4 break-words leading-snug">{q}</p>
             <div className="flex gap-2 mt-auto flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setAnswer(i, 'yes')}
-                className={`flex-1 min-w-0 py-2 rounded-lg text-sm font-medium border ${
+                className={`flex-1 min-w-0 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
                   answers[i] === 'yes'
                     ? 'bg-[#1A3C34] text-white border-[#1A3C34]'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                    : 'bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:text-stone-800'
                 }`}
               >
                 Yes
@@ -50,10 +50,10 @@ export function FounderDashboardWeeklyRitual() {
               <button
                 type="button"
                 onClick={() => setAnswer(i, 'no')}
-                className={`flex-1 min-w-0 py-2 rounded-lg text-sm font-medium border ${
+                className={`flex-1 min-w-0 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
                   answers[i] === 'no'
-                    ? 'bg-gray-700 text-white border-gray-700'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-gray-300'
+                    ? 'bg-stone-600 text-white border-stone-600'
+                    : 'bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:text-stone-800'
                 }`}
               >
                 No
@@ -63,7 +63,7 @@ export function FounderDashboardWeeklyRitual() {
         ))}
       </div>
       {allAnswered && (
-        <p className="text-sm text-gray-600 border-t border-gray-200 pt-4">
+        <p className="text-sm text-stone-600 border-t border-stone-200 pt-5">
           Weekly ritual: {yesCount}/5 yes — {yesCount >= 4 ? 'Strong week.' : yesCount >= 2 ? 'Mixed.' : 'Focus next week.'}
         </p>
       )}
