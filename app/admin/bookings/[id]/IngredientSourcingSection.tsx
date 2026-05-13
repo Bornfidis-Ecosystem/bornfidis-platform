@@ -159,7 +159,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-      <h4 className="text-sm font-semibold text-[#1a5f3f] mb-2">Ingredient Sourcing</h4>
+      <h4 className="text-sm font-semibold text-forestDark mb-2">Ingredient Sourcing</h4>
 
       {/* Messages */}
       {message && (
@@ -178,7 +178,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
         <div className="bg-white rounded p-3 border border-gray-200">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-semibold text-gray-700">Current Orders:</span>
-            <span className="text-sm font-bold text-[#1a5f3f]">{formatUSD(totalIngredientCost)}</span>
+            <span className="text-sm font-bold text-forestDark">{formatUSD(totalIngredientCost)}</span>
           </div>
           <div className="text-xs text-gray-500">
             {bookingIngredients.length} ingredient order{bookingIngredients.length !== 1 ? 's' : ''}
@@ -192,7 +192,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
           <h5 className="text-sm font-semibold text-gray-700">Add Ingredients</h5>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-3 py-1 bg-[#1a5f3f] text-white text-xs font-semibold rounded hover:bg-[#154a32] transition"
+            className="px-3 py-1 bg-forestDark text-white text-xs font-semibold rounded hover:bg-forestDarker transition"
           >
             {showAddForm ? 'Cancel' : '+ Add Ingredients'}
           </button>
@@ -207,7 +207,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
                   <select
                     value={item.ingredient_id}
                     onChange={(e) => updateIngredient(index, 'ingredient_id', e.target.value)}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#1a5f3f]"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-forestDark"
                   >
                     <option value="">-- Select --</option>
                     {ingredients.filter(i => i.is_active).map(ing => (
@@ -225,7 +225,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
                     min="0"
                     value={item.quantity}
                     onChange={(e) => updateIngredient(index, 'quantity', parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#1a5f3f]"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-forestDark"
                   />
                 </div>
                 <div className="w-20">
@@ -234,7 +234,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
                     type="text"
                     value={item.unit}
                     onChange={(e) => updateIngredient(index, 'unit', e.target.value)}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-[#1a5f3f]"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-forestDark"
                   />
                 </div>
                 <button
@@ -255,7 +255,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
               <button
                 onClick={handleAutoMatch}
                 disabled={isMatching || selectedIngredients.length === 0 || selectedIngredients.some(i => !i.ingredient_id)}
-                className="flex-1 px-4 py-2 bg-gold text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isMatching ? 'Matching...' : 'Auto-Match Farmers'}
               </button>
@@ -303,7 +303,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
           <button
             onClick={handleGenerateOrders}
             disabled={isSaving || matches.length === 0}
-            className="w-full mt-3 px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full mt-3 px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? 'Generating...' : 'Generate Purchase Orders'}
           </button>
@@ -338,7 +338,7 @@ export default function IngredientSourcingSection({ bookingId, booking }: Ingred
                       {bi.quantity} {bi.unit}
                     </td>
                     <td className="py-2 px-3 text-right text-gray-700">{formatUSD(bi.price_cents)}</td>
-                    <td className="py-2 px-3 text-right font-semibold text-[#1a5f3f]">{formatUSD(bi.total_cents)}</td>
+                    <td className="py-2 px-3 text-right font-semibold text-forestDark">{formatUSD(bi.total_cents)}</td>
                     <td className="py-2 px-3 text-center">{getFulfillmentBadge(bi.fulfillment_status)}</td>
                   </tr>
                 ))}

@@ -100,9 +100,13 @@ export default function PublicNav() {
                 }`}
               >
                 Academy
-                <svg className="w-4 h-4 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <span
+                  aria-hidden
+                  className="ml-0.5 inline-block align-middle text-[11px] leading-none"
+                  style={{ width: 10, textAlign: 'center' }}
+                >
+                  ▾
+                </span>
               </Link>
               {academyDropdownOpen && (
                 <div className="absolute left-0 top-full pt-1 z-50 min-w-[180px]">
@@ -154,11 +158,11 @@ export default function PublicNav() {
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { sendDepositReceivedEmail, sendInvoiceEmail } from '@/lib/email'
+import { sendPrivateDiningBookingConfirmedEmail, sendInvoiceEmail } from '@/lib/email'
 import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import { sendEmail } from '@/lib/email'
 import { formatUSD } from '@/lib/money'
@@ -185,7 +185,7 @@ export async function POST(request: NextRequest) {
                         .from('booking_inquiries')
                         .update({
                             stripe_payment_intent_id: paymentIntentId ?? undefined,
-                            status: 'booked',
+                            status: 'confirmed',
                             paid_at: new Date().toISOString(),
                         })
                         .eq('id', bookingId)
@@ -202,14 +202,14 @@ export async function POST(request: NextRequest) {
                         bookingId,
                         type: 'deposit_paid',
                         title: 'Deposit received',
-                        description: 'Client secured booking with deposit',
+                        description: 'Client secured booking with deposit — status set to confirmed',
                         stripeEventId: event.id,
                     })
 
                     if (currentBooking.email && currentBooking.name) {
                         try {
                             const testimonialSnippet = await getQuoteDepositTestimonialSnippet(bookingId)
-                            const depResult = await sendDepositReceivedEmail(
+                            const depResult = await sendPrivateDiningBookingConfirmedEmail(
                                 currentBooking.email,
                                 currentBooking.name,
                                 {
@@ -217,12 +217,12 @@ export async function POST(request: NextRequest) {
                                 }
                             )
                             if (depResult.success) {
-                                console.log(`✅ Deposit received email sent to ${currentBooking.email}`)
+                                console.log(`✅ Booking confirmed email sent to ${currentBooking.email}`)
                             } else {
-                                console.warn(`⚠️  Deposit received email failed: ${depResult.error}`)
+                                console.warn(`⚠️  Booking confirmed email failed: ${depResult.error}`)
                             }
                         } catch (depEmailErr: unknown) {
-                            console.error('Error sending deposit received email:', depEmailErr)
+                            console.error('Error sending booking confirmed email:', depEmailErr)
                         }
                     }
                 }

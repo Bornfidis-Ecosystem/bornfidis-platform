@@ -1,13 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { PDFDownloadLink, BlobProvider } from '@react-pdf/renderer'
 import toast from 'react-hot-toast'
 import {
   addBookingActivity,
+  markBookingConfirmedSilently,
   markTestimonialRequested,
   saveTestimonialReceived,
+  sendInquiryReminderForBooking,
   setTestimonialApproved,
   updateBooking,
   updateBookingQuote,
@@ -15,12 +17,14 @@ import {
 import { createStripeDepositLink } from '../quote-actions'
 import { sendBookingDepositRequestEmail, sendBookingQuoteOfferEmail } from '../outreach-email-actions'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
+import { BOOKING_PIPELINE_STATUS_LABEL, BOOKING_PIPELINE_STATUSES } from '@/lib/booking-pipeline-status'
 import { dollarsToCents, centsToDollars, formatUSD, parseDollarsToCents } from '@/lib/money'
 import { isStripeConfigured } from '@/lib/stripe'
 import { InvoicePdfDocument } from '@/components/pdf/InvoicePdf'
 import { StatusWorkflow } from '@/components/booking/StatusWorkflow'
-import BookingTimeline from '@/components/admin/BookingTimeline'
-import ServiceChecklistSection from './ServiceChecklistSection'
+import { AdminBookingNotesCard } from '@/components/admin/booking-detail/AdminBookingNotesCard'
+import { AdminBookingChecklistCard } from '@/components/admin/booking-detail/AdminBookingChecklistCard'
+import { AdminBookingTimelineCard } from '@/components/admin/booking-detail/AdminBookingTimelineCard'
 import type { BookingActivity } from '@/types/booking-activity'
 import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 
@@ -55,6 +59,9 @@ export default function BookingDetailClient({
   const [isCreatingStripeDepositLink, setIsCreatingStripeDepositLink] = useState(false)
   const [isSendingQuoteEmail, setIsSendingQuoteEmail] = useState(false)
   const [isSendingDepositRequestEmail, setIsSendingDepositRequestEmail] = useState(false)
+  const [notifyOnManualConfirm, setNotifyOnManualConfirm] = useState(true)
+  const [isMarkingConfirmedNoDeposit, setIsMarkingConfirmedNoDeposit] = useState(false)
+  const [isSendingInquiryReminder, setIsSendingInquiryReminder] = useState(false)
   const [didPromptDepositPaid, setDidPromptDepositPaid] = useState(false)
 
   useEffect(() => {
@@ -656,7 +663,7 @@ export default function BookingDetailClient({
       description: 'Stripe',
     })
 
-    if (status !== 'booked') {
+    if (status !== 'booked' && status !== 'confirmed') {
       setStatusSuggestionPrompt('booked')
     }
   }
@@ -713,15 +720,107 @@ export default function BookingDetailClient({
     }
   }
 
-  // Single source of status options (no duplicates by value)
+  const statusLowerPipeline = String(status).toLowerCase()
+  const canMarkConfirmedNoDeposit = ![
+    'confirmed',
+    'in_prep',
+    'completed',
+    'cancelled',
+    'canceled',
+    'declined',
+    'closed',
+  ].includes(statusLowerPipeline)
+  const canSendInquiryReminder =
+    ['new_inquiry', 'reviewing', 'New'].includes(status) && Boolean(booking.email?.trim())
+
+  const handleMarkConfirmedNoDeposit = async () => {
+    if (!canMarkConfirmedNoDeposit) return
+    if (
+      !window.confirm(
+        notifyOnManualConfirm
+          ? 'Set status to confirmed and send the standard approval email and SMS (if on file)?'
+          : 'Set status to confirmed without sending the standard approval email or SMS?',
+      )
+    ) {
+      return
+    }
+    setIsMarkingConfirmedNoDeposit(true)
+    try {
+      if (notifyOnManualConfirm) {
+        const result = await updateBooking(booking.id, { status: 'confirmed' })
+        if (result.success) {
+          setStatus('confirmed')
+          toast.success('Confirmed. Client notification sent when email/phone are on file.')
+          router.refresh()
+        } else {
+          toast.error(result.error || 'Failed to update')
+        }
+      } else {
+        const result = await markBookingConfirmedSilently(booking.id)
+        if (result.success) {
+          setStatus('confirmed')
+          toast.success('Confirmed (silent — no approval email/SMS from this action).')
+          router.refresh()
+        } else {
+          toast.error(result.error || 'Failed to update')
+        }
+      }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Failed')
+    } finally {
+      setIsMarkingConfirmedNoDeposit(false)
+    }
+  }
+
+  const handleSendInquiryReminder = async () => {
+    if (!canSendInquiryReminder) return
+    if (
+      !window.confirm(
+        'Send a "still reviewing" follow-up to the client? This sets inquiry reminder timestamp.',
+      )
+    ) {
+      return
+    }
+    setIsSendingInquiryReminder(true)
+    try {
+      const res = await sendInquiryReminderForBooking(booking.id)
+      if (res.success) {
+        toast.success('Inquiry reminder sent')
+        router.refresh()
+      } else {
+        toast.error(res.error || 'Failed to send')
+      }
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : 'Failed')
+    } finally {
+      setIsSendingInquiryReminder(false)
+    }
+  }
+
+  // Private-dining pipeline + legacy (deduped by value)
   const statusOptions: { value: BookingStatus; label: string }[] = [
+    ...BOOKING_PIPELINE_STATUSES.map((v) => ({
+      value: v as BookingStatus,
+      label: BOOKING_PIPELINE_STATUS_LABEL[v],
+    })),
+    { value: 'New', label: 'New (legacy)' },
+    { value: 'Quote Sent', label: 'Quote sent (legacy)' },
+    { value: 'Follow Up', label: 'Follow up (legacy)' },
+    { value: 'Contacted', label: 'Contacted' },
     { value: 'pending', label: 'Pending' },
     { value: 'reviewed', label: 'Reviewed' },
     { value: 'quoted', label: 'Quoted' },
     { value: 'booked', label: 'Booked' },
     { value: 'Confirmed', label: 'Confirmed' },
     { value: 'declined', label: 'Declined' },
-  ].filter((opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i)
+    { value: 'Closed', label: 'Closed' },
+    { value: 'Completed', label: 'Completed (legacy)' },
+    { value: 'Cancelled', label: 'Cancelled' },
+    { value: 'Canceled', label: 'Canceled' },
+  ].filter((opt, i, arr) => arr.findIndex((o) => o.value === opt.value) === i) as {
+    value: BookingStatus
+    label: string
+  }[]
 
   const handleSave = async () => {
     setIsSaving(true)
@@ -749,6 +848,39 @@ export default function BookingDetailClient({
       setIsSaving(false)
     }
   }
+
+  const handleAddInternalNote = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
+      const note = internalNote.trim()
+      if (!note) {
+        toast.error('Please write an internal note first.')
+        return
+      }
+
+      setIsAddingInternalNote(true)
+      try {
+        const res = await addBookingActivity(booking.id, {
+          type: 'admin_note',
+          title: 'Internal note',
+          description: note,
+        })
+
+        if (res.success) {
+          setBookingActivities((prev) => [res.activity, ...prev])
+          setInternalNote('')
+          toast.success('Internal note added.')
+        } else {
+          toast.error(res.error || 'Failed to add note.')
+        }
+      } catch (err: unknown) {
+        toast.error(err instanceof Error ? err.message : 'Failed to add note.')
+      } finally {
+        setIsAddingInternalNote(false)
+      }
+    },
+    [booking.id, internalNote]
+  )
 
   const hasChanges = status !== booking.status || adminNotes !== (booking.admin_notes || '')
 
@@ -1104,6 +1236,58 @@ export default function BookingDetailClient({
             </select>
           </div>
 
+          {canMarkConfirmedNoDeposit ? (
+            <div className="rounded-lg border border-amber-200 bg-amber-50/80 p-4 space-y-3">
+              <p className="text-sm font-semibold text-gray-900">Mark confirmed (no Stripe deposit)</p>
+              <p className="text-xs text-gray-600 leading-relaxed">
+                Use when the date is firm without a card deposit (e.g. wire, contract, or internal
+                sign-off). This sets status to <span className="font-mono text-gray-800">confirmed</span>
+                — it does not record a payment in Stripe.
+              </p>
+              <label className="flex cursor-pointer items-start gap-2 text-sm text-gray-800">
+                <input
+                  type="checkbox"
+                  className="mt-0.5 h-4 w-4 rounded border-gray-300"
+                  checked={notifyOnManualConfirm}
+                  onChange={(e) => setNotifyOnManualConfirm(e.target.checked)}
+                />
+                <span>
+                  Also send the standard &quot;booking approved&quot; email and SMS (when contact info
+                  exists)
+                </span>
+              </label>
+              <button
+                type="button"
+                onClick={handleMarkConfirmedNoDeposit}
+                disabled={isMarkingConfirmedNoDeposit}
+                className="w-full rounded-lg bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-800 transition disabled:opacity-50"
+              >
+                {isMarkingConfirmedNoDeposit ? 'Updating…' : 'Mark confirmed'}
+              </button>
+            </div>
+          ) : null}
+
+          {canSendInquiryReminder ? (
+            <div className="rounded-lg border border-sky-200 bg-sky-50/80 p-4 space-y-2">
+              <p className="text-sm font-semibold text-gray-900">Inquiry follow-up</p>
+              <p className="text-xs text-gray-600">
+                Send a short &quot;still reviewing&quot; note. Sets{' '}
+                <span className="font-mono">inquiryReminderSentAt</span> for reporting.
+                {booking.reminder_sent_at
+                  ? ` Last sent: ${new Date(booking.reminder_sent_at).toLocaleString()}.`
+                  : ' No reminder logged yet.'}
+              </p>
+              <button
+                type="button"
+                onClick={handleSendInquiryReminder}
+                disabled={isSendingInquiryReminder}
+                className="w-full rounded-lg border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-800 hover:bg-sky-100 transition disabled:opacity-50"
+              >
+                {isSendingInquiryReminder ? 'Sending…' : 'Send inquiry reminder email'}
+              </button>
+            </div>
+          ) : null}
+
           {/* Quick Action Buttons */}
           {(status === 'pending' || status === 'reviewed') && (
             <div className="flex gap-3">
@@ -1162,23 +1346,7 @@ export default function BookingDetailClient({
             </div>
           )}
 
-          {/* Admin Notes */}
-          <div>
-            <label htmlFor="admin_notes" className="flex items-center gap-2 text-sm font-bold text-gray-700 mb-2">
-              Internal Notes
-              <span className="text-xs text-gray-500 font-normal" title="Only admins can see these notes">
-                ℹ️ Only admins can see these notes
-              </span>
-            </label>
-            <textarea
-              id="admin_notes"
-              value={adminNotes}
-              onChange={(e) => setAdminNotes(e.target.value)}
-              rows={4}
-              placeholder="e.g. call notes, follow-ups, dietary notes, issues (only visible to admins)"
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
-            />
-          </div>
+          <AdminBookingNotesCard value={adminNotes} onChange={setAdminNotes} />
 
           {/* Action Buttons: Save (primary) + Copy Portal Link (secondary) side by side */}
           <div className="flex flex-wrap gap-3 items-center">
@@ -1648,75 +1816,21 @@ export default function BookingDetailClient({
         )}
       </div>
 
-      <ServiceChecklistSection
-        booking={booking}
-        onActivity={(a) => setBookingActivities((prev) => [a, ...prev])}
-      />
-
-      {/* Booking activity timeline (sales/ops trail) */}
       <div className="mt-6">
-        <BookingTimeline activities={bookingActivities} />
+        <AdminBookingChecklistCard
+          booking={booking}
+          onActivity={(a) => setBookingActivities((prev) => [a, ...prev])}
+        />
+      </div>
 
-        {/* Add internal note */}
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault()
-            const note = internalNote.trim()
-            if (!note) {
-              toast.error('Please write an internal note first.')
-              return
-            }
-
-            setIsAddingInternalNote(true)
-            try {
-              const res = await addBookingActivity(booking.id, {
-                type: 'admin_note',
-                title: 'Internal note',
-                description: note,
-              })
-
-              if (res.success) {
-                setBookingActivities((prev) => [res.activity, ...prev])
-                setInternalNote('')
-                toast.success('Internal note added.')
-              } else {
-                toast.error(res.error || 'Failed to add note.')
-              }
-            } catch (err: any) {
-              toast.error(err?.message || 'Failed to add note.')
-            } finally {
-              setIsAddingInternalNote(false)
-            }
-          }}
-          className="mt-4 space-y-2"
-        >
-          <label className="block text-sm font-medium text-gray-700">Add internal note</label>
-          <textarea
-            value={internalNote}
-            onChange={(e) => setInternalNote(e.target.value)}
-            rows={3}
-            placeholder="Write a quick internal note (e.g., client called, dietary update confirmed, follow-up planned)..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
-            title="Internal note"
-          />
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={isAddingInternalNote}
-              className="px-4 py-2 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isAddingInternalNote ? 'Saving...' : 'Add note'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setInternalNote('')}
-              disabled={isAddingInternalNote || internalNote.length === 0}
-              className="px-4 py-2 border border-navy/20 text-navy rounded-lg font-semibold hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Clear
-            </button>
-          </div>
-        </form>
+      <div className="mt-6">
+        <AdminBookingTimelineCard
+          activities={bookingActivities}
+          internalNote={internalNote}
+          onInternalNoteChange={setInternalNote}
+          onAddInternalNote={handleAddInternalNote}
+          isAddingInternalNote={isAddingInternalNote}
+        />
       </div>
 
       {/* Testimonial capture */}
@@ -1990,7 +2104,7 @@ export default function BookingDetailClient({
                         type="button"
                         onClick={() => handleChefAssignment(rec.id)}
                         disabled={teamSaving}
-                        className="px-3 py-1.5 text-sm bg-forestDark text-white rounded hover:bg-[#144a30] disabled:opacity-50"
+                        className="px-3 py-1.5 text-sm bg-forestDark text-white rounded hover:bg-forestDarker disabled:opacity-50"
                       >
                         Assign
                       </button>

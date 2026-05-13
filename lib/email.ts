@@ -542,6 +542,124 @@ export async function sendDepositReceivedEmail(
 }
 
 /**
+ * After Stripe deposit succeeds — “booking confirmed” (private dining pipeline).
+ * Complements the payment receipt; focuses on what happens next.
+ */
+export async function sendPrivateDiningBookingConfirmedEmail(
+  to: string,
+  name: string,
+  options?: {
+    quoteEmailTestimonial?: QuoteDepositTestimonialSnippet | null
+  },
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — booking confirmed email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const safe = escapeHtmlForEmail(name.trim() || 'there')
+  const testimonialHtml = emailTestimonialBlockHtml(options?.quoteEmailTestimonial ?? null)
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: 'Your private dining is confirmed — Bornfidis Provisions',
+      text: [
+        `Hi ${name.trim().split(/\s+/)[0] || 'there'},`,
+        '',
+        'We received your deposit and your event is confirmed with Bornfidis Provisions.',
+        'Our team will follow up with any prep details and final touches for your table.',
+        '',
+        'With gratitude,',
+        'Bornfidis Provisions',
+      ].join('\n'),
+      html: `
+        <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 600px; margin: 0 auto; padding: 28px 24px; line-height: 1.65; color: #1f2937;">
+          <h2 style="color: #0F3D2E; margin-top: 0;">You&apos;re confirmed, ${safe}</h2>
+          <p>We&rsquo;ve received your deposit and your private dining date is <strong>confirmed</strong> with our team.</p>
+          <p>Next, we&rsquo;ll connect on menu direction, service timing, and any final details so the day runs smoothly.</p>
+          ${testimonialHtml}
+          <p style="margin-top: 28px;">With gratitude,<br/><strong style="color: #0F3D2E;">Bornfidis Provisions</strong></p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Booking confirmed email error:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
+ * Stale-inquiry nudge — still under review, no quote yet. Used by admin button and `/api/cron/inquiry-reminders`.
+ */
+export async function sendInquiryStalenessReminderEmail(
+  to: string,
+  name: string,
+  ctx: { eventDate: Date; eventLocation: string }
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — inquiry reminder skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const first = escapeHtmlForEmail((name || '').trim().split(/\s+/)[0] || 'there')
+  const when = ctx.eventDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+  const loc = escapeHtmlForEmail((ctx.eventLocation || '').trim() || '—')
+  const short = (name || '').trim().split(/\s+/)[0] || 'there'
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: "We're still with you — Bornfidis Provisions",
+      text: [
+        `Hi ${short},`,
+        '',
+        "Thanks again for your private dining inquiry. We're still reviewing the details and will be in touch shortly with next steps.",
+        '',
+        `Event: ${when}`,
+        `Location: ${ctx.eventLocation || '—'}`,
+        '',
+        'If anything changed (date, guest count, or location), reply to this email and we will adjust the plan.',
+        '',
+        '— Bornfidis Provisions',
+      ].join('\n'),
+      html: `
+        <div style="font-family: Georgia, 'Times New Roman', serif; max-width: 600px; margin: 0 auto; padding: 28px 24px; line-height: 1.65; color: #1f2937;">
+          <p style="margin: 0 0 16px; font-size: 16px;">Hi ${first},</p>
+          <p style="margin: 0 0 16px; font-size: 16px;">
+            Thanks again for your private dining inquiry. We&rsquo;re <strong>still reviewing</strong> the details
+            and will be in touch shortly with next steps.
+          </p>
+          <p style="margin: 0 0 6px; font-size: 15px;"><strong>Event</strong> — ${when}</p>
+          <p style="margin: 0 0 20px; font-size: 15px;"><strong>Location</strong> — ${loc}</p>
+          <p style="margin: 0; font-size: 15px;">
+            If anything changed, reply to this email and we&rsquo;ll adjust the plan.
+          </p>
+          <p style="margin: 28px 0 0; font-size: 15px; color: #0F3D2E;">
+            <strong>Bornfidis Provisions</strong>
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Inquiry reminder email error:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 1: Admin booking notification email
  * Simple notification to tech@bornfidis.com when booking is submitted
  */
@@ -585,7 +703,7 @@ export async function sendAdminNotificationEmail(
       subject: `New Bornfidis Booking Inquiry`,
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #1a5f3f; margin-bottom: 16px;">New Booking Inquiry</h2>
+          <h2 style="color: #2E6B4F; margin-bottom: 16px;">New Booking Inquiry</h2>
           
           <ul style="list-style: none; padding: 0;">
             <li style="margin-bottom: 8px;"><strong>Name:</strong> ${bookingData.name}</li>
@@ -640,7 +758,7 @@ export async function sendBookingApprovedEmail(
       subject: 'Your booking is confirmed 🎉',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #1a5f3f; margin-bottom: 16px;">Your booking is confirmed 🎉</h2>
+          <h2 style="color: #2E6B4F; margin-bottom: 16px;">Your booking is confirmed 🎉</h2>
 
           <p>Hi ${name},</p>
 
@@ -694,7 +812,7 @@ export async function sendBookingDeclinedEmail(
       subject: 'Regarding your Bornfidis inquiry',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #1a5f3f; margin-bottom: 16px;">Thank you for your inquiry</h2>
+          <h2 style="color: #2E6B4F; margin-bottom: 16px;">Thank you for your inquiry</h2>
 
           <p>Hi ${name},</p>
 
@@ -766,18 +884,18 @@ export async function sendInvoiceEmail(
       subject: `Invoice #${bookingData.invoiceNumber} - Bornfidis Provisions`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #002747;">Invoice #${bookingData.invoiceNumber}</h1>
+          <h1 style="color: #0D1F2D;">Invoice #${bookingData.invoiceNumber}</h1>
           <p>Dear ${name},</p>
           
           <p>Thank you for your payment! Your booking is now fully paid.</p>
           
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #FFBC00;">
-            <h2 style="color: #002747; margin-top: 0;">Payment Summary</h2>
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #C8963E;">
+            <h2 style="color: #0D1F2D; margin-top: 0;">Payment Summary</h2>
             <ul style="line-height: 1.8; list-style: none; padding: 0;">
               <li style="margin-bottom: 10px;"><strong>Total Amount:</strong> ${bookingData.totalAmount}</li>
               <li style="margin-bottom: 10px;"><strong>Deposit Paid:</strong> ${bookingData.depositPaid}</li>
               <li style="margin-bottom: 10px;"><strong>Balance Paid:</strong> ${bookingData.balancePaid}</li>
-              <li style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #FFBC00;"><strong style="font-size: 18px; color: #22c55e;">Status: Fully Paid ✓</strong></li>
+              <li style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #C8963E;"><strong style="font-size: 18px; color: #22c55e;">Status: Fully Paid ✓</strong></li>
             </ul>
           </div>
           ${testimonialHtml}
@@ -859,12 +977,12 @@ export async function sendChefOnboardingEmail(
       subject: 'Complete Your Stripe Onboarding - Bornfidis Chef Network',
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #1a5f3f;">Welcome to the Bornfidis Chef Network, ${data.chef_name}!</h1>
+          <h1 style="color: #2E6B4F;">Welcome to the Bornfidis Chef Network, ${data.chef_name}!</h1>
           
           <p>Your application has been approved! To start receiving bookings and payouts, please complete your Stripe Connect onboarding.</p>
           
-          <div style="background-color: #f0f9f4; border-left: 4px solid #1a5f3f; padding: 16px; margin: 24px 0;">
-            <p style="margin: 0; font-weight: 600; color: #1a5f3f;">Next Steps:</p>
+          <div style="background-color: #f0f9f4; border-left: 4px solid #2E6B4F; padding: 16px; margin: 24px 0;">
+            <p style="margin: 0; font-weight: 600; color: #2E6B4F;">Next Steps:</p>
             <ol style="margin: 12px 0 0 0; padding-left: 20px; line-height: 1.8;">
               <li>Click the button below to start onboarding</li>
               <li>Complete your Stripe account setup (takes ~5 minutes)</li>
@@ -874,7 +992,7 @@ export async function sendChefOnboardingEmail(
           
           <div style="text-align: center; margin: 32px 0;">
             <a href="${data.onboarding_url}" 
-               style="display: inline-block; background-color: #1a5f3f; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+               style="display: inline-block; background-color: #2E6B4F; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
               Complete Stripe Onboarding
             </a>
           </div>
@@ -1000,7 +1118,7 @@ export async function sendChefMonthlyStatementEmail({
       subject: `Your Monthly Chef Statement – ${monthLabel}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #1a5f3f;">Monthly Chef Statement</h2>
+          <h2 style="color: #2E6B4F;">Monthly Chef Statement</h2>
           <p>Hi ${chefName},</p>
           <p>Your earnings statement for <strong>${monthLabel}</strong> is attached as a PDF.</p>
           <p>This statement is for your records. Totals match payouts already made.</p>
@@ -1049,7 +1167,7 @@ export async function sendChefTaxSummaryEmail({
       subject: `Your ${year} Tax Summary – Bornfidis Chef`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #1a5f3f;">Annual Tax Summary (Informational)</h2>
+          <h2 style="color: #2E6B4F;">Annual Tax Summary (Informational)</h2>
           <p>Hi ${chefName},</p>
           <p>Your earnings summary for <strong>${year}</strong> is attached as a PDF.</p>
           <p>This is an informational summary for your records. It is not tax advice. Consult a tax professional for filing.</p>
@@ -1098,9 +1216,9 @@ export async function sendLeadMagnetDeliveryEmail({
       subject: `Your free guide: ${guideTitle}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #1a5f3f;">Your guide is attached</h2>
+          <h2 style="color: #2E6B4F;">Your guide is attached</h2>
           <p>Thanks for signing up. Your free guide <strong>${guideTitle}</strong> is attached to this email.</p>
-          <p>Save it, print it, and start cooking. If you want to go deeper — full techniques, 28 lessons, and 42 professional recipes — check out <a href="${academyUrl}" style="color: #1a5f3f;">Caribbean Culinary Foundations</a> in the Academy.</p>
+          <p>Save it, print it, and start cooking. If you want to go deeper — full techniques, 28 lessons, and 42 professional recipes — check out <a href="${academyUrl}" style="color: #2E6B4F;">Caribbean Culinary Foundations</a> in the Academy.</p>
           <p style="margin-top: 24px; color: #666;">
             Bornfidis Academy
           </p>

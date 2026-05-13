@@ -162,7 +162,13 @@ export function initAutoSync() {
 export async function submitWithOfflineFallback(
   payload: Record<string, any>,
   endpoint: string
-): Promise<{ success: boolean; offline?: boolean; id?: string; error?: string }> {
+): Promise<{
+  success: boolean
+  offline?: boolean
+  id?: string
+  bookingId?: string
+  error?: string
+}> {
   // Try to submit online first
   if (isOnline()) {
     try {
@@ -177,7 +183,7 @@ export async function submitWithOfflineFallback(
       const data = await response.json()
 
       if (response.ok && data.success) {
-        return { success: true }
+        return { success: true, bookingId: typeof data.bookingId === 'string' ? data.bookingId : undefined }
       } else {
         // Server error - save offline
         const id = await saveOfflineSubmission(payload, endpoint)

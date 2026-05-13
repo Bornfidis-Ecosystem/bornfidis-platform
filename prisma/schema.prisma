@@ -260,7 +260,13 @@ model BookingInquiry {
   menuPreferences              String?             @map("menu_preferences")
   specialRequests              String?             @map("special_requests")
   notes                        String?
-  status                       String              @default("New")
+  /// Private dining: plated / family / buffet, etc.
+  diningStyle                  String?             @map("dining_style")
+  /// Add-on product slugs or labels from the booking form
+  upsellInterests              String[]            @default([]) @map("upsell_interests")
+  /// Generic inquiry reminder (distinct from balance reminders)
+  inquiryReminderSentAt        DateTime?           @map("inquiry_reminder_sent_at")
+  status                       String              @default("new_inquiry")
   statusUpdatedAt              DateTime?           @map("status_updated_at")
   followUpDate                 DateTime?           @map("follow_up_date") @db.Date
   adminNotes                   String?             @map("admin_notes")
@@ -1348,6 +1354,27 @@ enum UserRole {
   USER
   EDUCATOR
 
+  @@schema("public")
+}
+
+/// Bornfidis ops console: founder vs manager vs staff (see lib/admin-rbac.ts)
+enum AppRole {
+  founder_admin
+  manager
+  staff
+
+  @@schema("public")
+}
+
+model AdminUserRole {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  role      AppRole
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_user_roles")
   @@schema("public")
 }
 

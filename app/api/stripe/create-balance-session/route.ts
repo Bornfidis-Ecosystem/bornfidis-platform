@@ -69,7 +69,8 @@ export async function POST(request: NextRequest) {
 
     // Check if deposit is paid (Phase 3A requirement)
     const depositPaid =
-      !!booking.paid_at || String(booking.status || '').toLowerCase() === 'booked'
+      !!booking.paid_at ||
+      ['booked', 'confirmed'].includes(String(booking.status || '').toLowerCase())
     if (!depositPaid && depositPaidCents > 0) {
       return NextResponse.json(
         { success: false, error: 'Deposit must be paid before requesting balance payment.' },

@@ -1,8 +1,11 @@
 import Link from 'next/link'
+import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
 import { getAllBookings } from './actions'
-import { BookingStatus } from '@/types/booking'
 import SignOutButton from '@/components/admin/SignOutButton'
 import BookingsQueueTable from '@/components/admin/BookingsQueueTable'
+import { AdminBookingsHeader } from '@/components/admin/bookings/AdminBookingsHeader'
+import { AdminBookingsFilters } from '@/components/admin/bookings/AdminBookingsFilters'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   applyBookingsQueryFilter,
   bulkReminderTypeForQuery,
@@ -29,6 +32,7 @@ function hasActiveQuery(q: ParsedBookingsQuery): boolean {
 }
 
 export default async function AdminBookingsPage({ searchParams }: { searchParams: BookingsSearchParams }) {
+  await requireManagerOrFounderPageAccess()
   const raw = await searchParams
   const query = parseBookingsQuery(raw)
 
@@ -73,87 +77,65 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
       {/* Header */}
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="min-w-0">
-              <h1 className="text-2xl font-bold">Bookings Dashboard</h1>
-              <p className="text-gold text-sm mt-1">
-                {filterActive ? 'Filtered queue' : 'Manage all booking inquiries'}
-              </p>
-              {filterActive && (
-                <div className="mt-3 space-y-2">
-                  <ul className="text-white/90 text-xs space-y-1 list-disc list-inside">
-                    {activeDescriptions.map((line) => (
-                      <li key={line}>{line}</li>
-                    ))}
-                  </ul>
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <Link
-                      href="/admin/bookings"
-                      className="inline-flex items-center rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold hover:bg-white/20 transition"
-                    >
-                      Clear all filters
-                    </Link>
-                    <Link href="/admin" className="text-xs text-white/80 underline hover:text-gold">
-                      ← Founder dashboard
-                    </Link>
-                  </div>
-                </div>
-              )}
+          <AdminBookingsHeader
+            title="Bookings"
+            subtext={filterActive ? 'Filtered queue — see active filters below.' : 'Track inquiries, quotes, deposits, and confirmed events.'}
+            actions={
+              <>
+                <Link
+                  href="/admin/submissions"
+                  className="px-4 py-2 bg-gold text-navy rounded hover:bg-opacity-90 transition text-sm font-semibold"
+                >
+                  Legacy Submissions
+                </Link>
+                <SignOutButton />
+              </>
+            }
+          />
+          {filterActive && (
+            <div className="mt-4 text-white/90 text-xs space-y-2 max-w-3xl">
+              <ul className="list-disc list-inside space-y-1">
+                {activeDescriptions.map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap gap-2 items-center">
+                <Link
+                  href="/admin/bookings"
+                  className="inline-flex items-center rounded-lg bg-white/10 px-3 py-1.5 text-xs font-semibold hover:bg-white/20 transition"
+                >
+                  Clear all filters
+                </Link>
+                <Link href="/admin" className="text-xs text-white/80 underline hover:text-gold">
+                  ← Founder dashboard
+                </Link>
+              </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <Link
-                href="/admin/submissions"
-                className="px-4 py-2 bg-gold text-navy rounded hover:bg-opacity-90 transition text-sm font-semibold"
-              >
-                Legacy Submissions
-              </Link>
-              <SignOutButton />
-            </div>
-          </div>
+          )}
         </div>
       </header>
 
-      {/* Quick filter chips */}
-      <div className="border-b border-stone-200 bg-white">
-        <div className="container mx-auto px-4 py-3">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-500 mb-2">Quick queues</p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { href: '/admin/bookings?status=confirmed', label: 'Confirmed' },
-              { href: '/admin/bookings?status=completed', label: 'Completed' },
-              { href: '/admin/bookings?prep=incomplete&upcoming=7', label: 'Prep incomplete · 7d' },
-              { href: '/admin/bookings?upcoming=7', label: 'Upcoming · 7d' },
-              { href: '/admin/bookings?deposit=pending', label: 'Deposit pending' },
-              { href: '/admin/bookings?balance=pending', label: 'Balance pending' },
-              { href: '/admin/bookings?testimonial=needed', label: 'Testimonial follow-up' },
-            ].map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                className="inline-flex items-center rounded-full border border-navy/15 bg-stone-50 px-3 py-1 text-xs font-medium text-navy hover:bg-navy hover:text-white transition"
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </div>
+      <AdminBookingsFilters />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-lg shadow-sm overflow-hidden">
           {bookings.length === 0 ? (
-            <div className="text-center py-12 text-gray-500">
-              <p className="text-lg">No bookings match this view</p>
-              <p className="text-sm mt-2">
-                {filterActive ? 'Try another filter or clear filters.' : 'Bookings will appear here once customers submit inquiries.'}
-              </p>
-              {filterActive && (
-                <Link href="/admin/bookings" className="inline-block mt-4 text-sm font-semibold text-navy underline">
-                  Show all bookings
-                </Link>
-              )}
-            </div>
+            <EmptyState
+              title="No bookings match this view"
+              description={
+                filterActive
+                  ? 'Try another filter or clear filters.'
+                  : 'Bookings will appear here once customers submit inquiries.'
+              }
+              action={
+                filterActive ? (
+                  <Link href="/admin/bookings" className="text-sm font-semibold text-navy underline">
+                    Show all bookings
+                  </Link>
+                ) : undefined
+              }
+            />
           ) : (
             <BookingsQueueTable rows={queueRows} bulkReminderType={bulkReminderType} />
           )}
@@ -169,13 +151,19 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="text-sm text-gray-500">Pending</div>
               <div className="text-2xl font-bold text-blue-600 mt-1">
-                {bookings.filter((b) => b.status === 'pending' || b.status === 'New').length}
+                {bookings.filter((b) => {
+                  const s = (b.status || '').toLowerCase()
+                  return s === 'pending' || s === 'new_inquiry' || b.status === 'New'
+                }).length}
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <div className="text-sm text-gray-500">Booked / Confirmed</div>
               <div className="text-2xl font-bold text-green-600 mt-1">
-                {bookings.filter((b) => b.status === 'booked' || b.status === 'Confirmed').length}
+                {bookings.filter((b) => {
+                  const s = (b.status || '').toLowerCase()
+                  return s === 'booked' || s === 'confirmed' || b.status === 'Confirmed' || s === 'in_prep'
+                }).length}
               </div>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-sm">

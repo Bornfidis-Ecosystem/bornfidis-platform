@@ -40,8 +40,8 @@ export async function createBalanceCheckoutSessionForBooking(
   }
 
   const depositPaidCents = booking.depositAmountCents ?? 0
-  const depositPaid =
-    !!booking.paidAt || String(booking.status || '').toLowerCase() === 'booked'
+  const st = String(booking.status || '').toLowerCase()
+  const depositPaid = !!booking.paidAt || st === 'booked' || st === 'confirmed'
   if (!depositPaid && depositPaidCents > 0) {
     return { success: false, error: 'Deposit must be paid before requesting balance payment.' }
   }

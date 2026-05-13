@@ -62,11 +62,11 @@ export default function BrutalistBookingNav() {
       </Link>
 
       <div className="hidden items-center gap-8 md:flex">
-        <Link href="/#services" className={linkClass}>
-          Services
+        <Link href="/experience" className={linkClass}>
+          Experience
         </Link>
-        <Link href="/#menu" className={linkClass}>
-          Menu
+        <Link href="/menu" className={linkClass}>
+          Menus
         </Link>
         <Link href="/story" className={linkClass}>
           Story

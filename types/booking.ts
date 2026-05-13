@@ -13,6 +13,15 @@ export type BookingStatus =
   | 'Completed'
   | 'quote_sent'
   | 'follow_up'
+  | 'new_inquiry'
+  | 'reviewing'
+  | 'awaiting_deposit'
+  | 'confirmed'
+  | 'in_prep'
+  | 'completed'
+  | 'cancelled'
+  | 'Cancelled'
+  | 'Canceled'
 export type QuoteStatus = 'draft' | 'sent' | 'accepted' | 'declined'
 
 export interface QuoteLineItem {
@@ -42,6 +51,11 @@ export interface BookingInquiry {
   budget_range?: string
   dietary?: string
   notes?: string
+  event_type?: string
+  dining_style?: string
+  upsell_interests?: string[]
+  deposit_paid_at?: string
+  reminder_sent_at?: string
   status: BookingStatus
   follow_up_date?: string
   admin_notes?: string // Phase 2A: Admin-only notes field
