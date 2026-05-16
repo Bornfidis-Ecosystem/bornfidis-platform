@@ -34,7 +34,7 @@ export const ADMIN_NAV_GROUP_STYLES: Record<AdminNavVisualGroup, string> = {
   core:
     'border-emerald-200/90 bg-emerald-50/95 text-emerald-950 hover:bg-emerald-100/95 focus-visible:ring-emerald-600/40',
   provisions:
-    'border-sky-200/90 bg-sky-50/95 text-[#002747] hover:bg-sky-100/95 focus-visible:ring-sky-600/40',
+    'border-sky-200/90 bg-sky-50/95 text-midnight hover:bg-sky-100/95 focus-visible:ring-sky-600/40',
   academy:
     'border-violet-200/90 bg-violet-50/95 text-violet-950 hover:bg-violet-100/95 focus-visible:ring-violet-600/40',
   schedule:

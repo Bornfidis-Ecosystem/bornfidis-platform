@@ -13,8 +13,8 @@ export function getAllowedAdminEmails(): string[] {
   const adminEmails = process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || ''
   return adminEmails
     .split(',')
-    .map(email => email.trim())
-    .filter(email => email.length > 0)
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => email.length > 0)
 }
 
 /**
