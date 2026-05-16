@@ -1,16 +1,26 @@
 import type { Metadata } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Inter, Libre_Caslon_Text, Montserrat } from 'next/font/google'
 import './globals.css'
 import RootShell from '@/components/layout/RootShell'
 
-const playfair = Playfair_Display({
+/** Headlines — WordPress brief: Libre Caslon Text (wired to legacy --font-playfair for Tailwind). */
+const headline = Libre_Caslon_Text({
   subsets: ['latin'],
+  weight: ['400', '700'],
   variable: '--font-playfair',
 })
 
-const inter = Inter({
+/** UI / body — WordPress brief: Montserrat (wired to legacy --font-inter for Tailwind). */
+const ui = Montserrat({
   subsets: ['latin'],
   variable: '--font-inter',
+})
+
+/** Culinary OS / admin operational UI — DESIGN.md (Inter). */
+const culinaryUi = Inter({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-culinary-ui',
 })
 
 export const metadata: Metadata = {
@@ -28,7 +38,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="overflow-x-hidden">
-      <body className={`${playfair.variable} ${inter.variable} font-sans overflow-x-hidden`}>
+      <body
+        className={`${headline.variable} ${ui.variable} ${culinaryUi.variable} font-sans overflow-x-hidden`}
+      >
         <RootShell>{children}</RootShell>
       </body>
     </html>

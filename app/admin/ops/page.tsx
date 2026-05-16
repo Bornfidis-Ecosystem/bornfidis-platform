@@ -32,7 +32,7 @@ export default async function AdminOpsPage({
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
         <p className="text-gray-600">Ops dashboard is available to ADMIN and STAFF only.</p>
-        <a href="/admin" className="text-[#1a5f3f] hover:underline">Back to Dashboard</a>
+        <a href="/admin" className="text-forestDark hover:underline">Back to Dashboard</a>
       </div>
     )
   }

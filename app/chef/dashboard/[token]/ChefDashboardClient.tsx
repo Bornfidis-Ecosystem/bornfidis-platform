@@ -94,7 +94,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white py-8">
+      <header className="bg-forestDark text-white py-8">
         <div className="container mx-auto px-4 max-w-6xl">
           <h1 className="text-3xl font-bold mb-2">Chef Dashboard</h1>
           <div className="h-1 w-24 bg-gold mb-4"></div>
@@ -106,7 +106,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Stripe Connect Status */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Stripe Account Status
           </h2>
           <div className="flex items-center justify-between">
@@ -125,7 +125,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Earnings Summary */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Earnings Summary
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -152,7 +152,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Upcoming Bookings */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Upcoming Bookings
           </h2>
           {dashboardData.bookings.upcoming.length === 0 ? (
@@ -207,7 +207,7 @@ export default function ChefDashboardClient({ dashboardData, chefId }: ChefDashb
 
         {/* Completed Bookings */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Completed Bookings
           </h2>
           {dashboardData.bookings.completed.length === 0 ? (

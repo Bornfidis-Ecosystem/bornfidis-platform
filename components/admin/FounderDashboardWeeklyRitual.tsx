@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { CulinaryCard } from '@/components/culinary-os'
 
 const QUESTIONS = [
   'Revenue up this week?',
@@ -27,22 +28,19 @@ export function FounderDashboardWeeklyRitual() {
   const yesCount = answers.filter((a) => a === 'yes').length
 
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+    <div className="space-y-stack-md">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {QUESTIONS.map((q, i) => (
-          <div
-            key={i}
-            className="bg-white border border-stone-200/80 rounded-xl p-5 flex flex-col min-w-0"
-          >
-            <p className="text-sm font-medium text-stone-800 mb-4 break-words leading-snug">{q}</p>
-            <div className="flex gap-2 mt-auto flex-shrink-0">
+          <CulinaryCard key={i} className="flex min-w-0 flex-col">
+            <p className="mb-4 break-words font-culinary-sans text-sm font-medium leading-snug text-culinary-ink">{q}</p>
+            <div className="mt-auto flex flex-shrink-0 gap-2">
               <button
                 type="button"
                 onClick={() => setAnswer(i, 'yes')}
-                className={`flex-1 min-w-0 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                className={`min-w-0 flex-1 rounded-none border py-2.5 font-culinary-sans text-sm font-medium transition-colors ${
                   answers[i] === 'yes'
-                    ? 'bg-[#1A3C34] text-white border-[#1A3C34]'
-                    : 'bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:text-stone-800'
+                    ? 'border-culinary-navy bg-culinary-navy text-culinary-on-navy'
+                    : 'border-culinary-outline bg-culinary-bone text-culinary-text-muted hover:border-culinary-gold-line hover:bg-culinary-surface-low hover:text-culinary-ink'
                 }`}
               >
                 Yes
@@ -50,20 +48,20 @@ export function FounderDashboardWeeklyRitual() {
               <button
                 type="button"
                 onClick={() => setAnswer(i, 'no')}
-                className={`flex-1 min-w-0 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                className={`min-w-0 flex-1 rounded-none border py-2.5 font-culinary-sans text-sm font-medium transition-colors ${
                   answers[i] === 'no'
-                    ? 'bg-stone-600 text-white border-stone-600'
-                    : 'bg-white text-stone-600 border-stone-200 hover:border-stone-300 hover:text-stone-800'
+                    ? 'border-culinary-ink bg-culinary-ink text-culinary-on-navy'
+                    : 'border-culinary-outline bg-culinary-bone text-culinary-text-muted hover:border-culinary-gold-line hover:bg-culinary-surface-low hover:text-culinary-ink'
                 }`}
               >
                 No
               </button>
             </div>
-          </div>
+          </CulinaryCard>
         ))}
       </div>
       {allAnswered && (
-        <p className="text-sm text-stone-600 border-t border-stone-200 pt-5">
+        <p className="border-t border-culinary-outline pt-5 font-culinary-sans text-sm text-culinary-text-muted">
           Weekly ritual: {yesCount}/5 yes — {yesCount >= 4 ? 'Strong week.' : yesCount >= 2 ? 'Mixed.' : 'Focus next week.'}
         </p>
       )}

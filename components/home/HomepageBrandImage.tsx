@@ -13,6 +13,14 @@ type Props = {
   variant?: 'hero' | 'section' | 'banner'
 }
 
+/** Scrim uses Midnight + Jamaica green (brand tokens as rgba) for legibility on photography */
+const SCRIM_HERO =
+  'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(13,31,45,0.5)_0%,rgba(46,107,79,0.12)_42%,rgba(0,0,0,0.08)_62%,transparent_78%)]'
+const SCRIM_BANNER =
+  'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(13,31,45,0.28)_0%,transparent_58%,transparent_100%)]'
+const SCRIM_SECTION =
+  'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(13,31,45,0.48)_0%,rgba(46,107,79,0.14)_38%,transparent_72%)]'
+
 export function HomepageBrandImage({
   src,
   alt,
@@ -27,8 +35,8 @@ export function HomepageBrandImage({
 
   const border =
     variant === 'hero'
-      ? 'border border-white/20 shadow-lg shadow-black/20'
-      : 'border border-[#E8E1D2]'
+      ? 'border border-white/15 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.55)]'
+      : 'border border-gold/15'
 
   const imageClass =
     variant === 'hero'
@@ -38,11 +46,7 @@ export function HomepageBrandImage({
         : 'object-cover'
 
   const scrimClass =
-    variant === 'hero'
-      ? 'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(15,61,46,0.42)_0%,rgba(0,0,0,0.12)_38%,transparent_65%)]'
-      : variant === 'banner'
-        ? 'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(15,61,46,0.2)_0%,transparent_55%,transparent_100%)]'
-        : 'pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,rgba(15,61,46,0.52)_0%,rgba(15,61,46,0.12)_42%,transparent_72%)]'
+    variant === 'hero' ? SCRIM_HERO : variant === 'banner' ? SCRIM_BANNER : SCRIM_SECTION
 
   const innerClass =
     variant === 'banner'
@@ -55,7 +59,7 @@ export function HomepageBrandImage({
       : '(max-width: 1024px) 100vw, 42vw'
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl bg-[#0F3D2E] ${border} ${className}`}>
+    <div className={`relative overflow-hidden rounded-3xl bg-midnight ${border} ${className}`}>
       <div className={innerClass}>
         <Image
           src={src}

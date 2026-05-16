@@ -153,7 +153,7 @@ export default async function AdminFarmersPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <Link
                           href={`/admin/farmers/${app.id}`}
-                          className="text-forestDark hover:text-[#154a32]"
+                          className="text-forestDark hover:text-forestDarker"
                         >
                           View
                         </Link>

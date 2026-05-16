@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -154,14 +155,14 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="rounded bg-forestDark text-white text-sm px-3 py-1.5 hover:bg-[#144a30]"
+          className="rounded bg-forestDark text-white text-sm px-3 py-1.5 hover:bg-forestDarker"
         >
           + Log risk
         </button>
       </div>
 
       {showForm && (
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        <CulinaryCard>
           <h2 className="text-sm font-semibold text-gray-700 mb-3">Log new risk</h2>
           <form onSubmit={handleCreate} className="space-y-3 text-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -209,10 +210,10 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
               <button type="button" onClick={() => setShowForm(false)} className="text-gray-600 hover:underline text-sm">Cancel</button>
             </div>
           </form>
-        </div>
+        </CulinaryCard>
       )}
 
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
@@ -268,7 +269,7 @@ export default function RisksClient({ initialRisks, initialCategory, initialStat
         {risks.length === 0 && (
           <p className="p-4 text-sm text-gray-500">No risks match the filter. Log a risk to get started.</p>
         )}
-      </div>
+      </CulinaryCard>
 
       <p className="text-xs text-gray-500">
         Review cadence: monthly. Mark as reviewed when you re-assess. Close when risk is no longer relevant.
@@ -291,7 +292,7 @@ function EditForm({
   onCancel: () => void
 }) {
   return (
-    <div className="inline-block p-3 rounded border border-gray-200 bg-white shadow">
+    <div className="inline-block rounded-none border border-culinary-outline bg-culinary-bone p-3 shadow-none">
       <form onSubmit={onSave} className="space-y-2 text-xs min-w-[280px]">
         <label className="block">
           <span className="text-gray-600">Category</span>

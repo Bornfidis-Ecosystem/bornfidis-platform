@@ -167,7 +167,7 @@ export default function OkrsClient({ initialPeriod, initialPeriods, initialOKRs 
         <button
           type="button"
           onClick={handleRefresh}
-          className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-[#144a30]"
+          className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-forestDarker"
         >
           Refresh from live data
         </button>

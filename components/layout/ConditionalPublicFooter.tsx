@@ -7,5 +7,6 @@ import PublicFooter from '@/components/layout/PublicFooter'
 export default function ConditionalPublicFooter() {
   const pathname = usePathname()
   if (pathname === '/' || pathname === '/book') return null
+  if (pathname?.startsWith('/admin')) return null
   return <PublicFooter />
 }

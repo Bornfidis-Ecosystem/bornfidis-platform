@@ -6,42 +6,42 @@ const paths = [
     description: 'Host a faith-anchored meal for your community.',
     href: '/book',
     buttonText: 'Book Now',
-    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
+    color: 'bg-gold text-forestDark hover:bg-gold-dark',
   },
   {
     title: 'Join as Chef',
     description: 'Partner with us to serve regenerative meals.',
     href: '/chef/apply',
     buttonText: 'Apply',
-    color: 'bg-[#1a5f3f] text-white hover:bg-[#154a32]',
+    color: 'bg-forestDark text-white hover:bg-forestDarker',
   },
   {
     title: 'Join as Farmer',
     description: 'Supply regenerative ingredients to our network.',
     href: '/farm/apply',
     buttonText: 'Apply',
-    color: 'bg-[#1a5f3f] text-white hover:bg-[#154a32]',
+    color: 'bg-forestDark text-white hover:bg-forestDarker',
   },
   {
     title: 'Launch a Region',
     description: 'Bring Bornfidis to your community.',
     href: '/replicate/apply-leader',
     buttonText: 'Learn More',
-    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
+    color: 'bg-gold text-forestDark hover:bg-gold-dark',
   },
   {
     title: 'Invest in Impact',
     description: 'Support regenerative agriculture and community development.',
     href: '/replicate/invest',
     buttonText: 'Invest',
-    color: 'bg-[#1a5f3f] text-white hover:bg-[#154a32]',
+    color: 'bg-forestDark text-white hover:bg-forestDarker',
   },
   {
     title: 'Apply for Housing',
     description: 'Join our community-owned housing program.',
     href: '/housing',
     buttonText: 'Apply',
-    color: 'bg-[#FFBC00] text-forestDark hover:bg-gold-dark',
+    color: 'bg-gold text-forestDark hover:bg-gold-dark',
   },
 ]
 
@@ -51,7 +51,7 @@ export default function HomePaths() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-forestDark mb-4">Choose Your Path</h2>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
             Whether you're hosting an event, joining our network, or investing in impact,
             there's a path for you in the Bornfidis movement.

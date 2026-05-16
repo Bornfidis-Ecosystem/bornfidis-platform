@@ -14,7 +14,7 @@ export default async function IncidentDetailPage({ params }: { params: { id: str
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-6 max-w-3xl">
-        <Link href="/admin/incidents" className="text-sm text-[#1a5f3f] hover:underline mb-4 inline-block">
+        <Link href="/admin/incidents" className="text-sm text-forestDark hover:underline mb-4 inline-block">
           ← Incidents
         </Link>
         <IncidentDetailClient incident={incident} />

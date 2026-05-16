@@ -43,12 +43,12 @@ export default async function AdminHousingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Generational Wealth & Housing Covenant</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">Building faith-aligned housing and inheritance</p>
+              <p className="text-gold text-sm mt-1">Building faith-aligned housing and inheritance</p>
             </div>
             <SignOutButton />
           </div>

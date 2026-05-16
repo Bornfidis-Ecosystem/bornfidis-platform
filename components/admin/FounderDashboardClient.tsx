@@ -1,19 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { CulinaryCard } from '@/components/culinary-os'
 
-const BRAND = {
-  forest: '#1A3C34',
-  coral: '#E07B54',
-  gold: '#C9A84C',
-  sage: '#8FBC8B',
-}
 const DIVISION_COLORS: Record<string, string> = {
   Sportswear: '#CE472E',
   Academy: '#534AB7',
-  Provisions: '#002747',
+  Provisions: '#0D1F2D',
   ProJu: '#3B6D11',
 }
+
+const DIVISION_BORDER_LEFT: Record<string, string> = {
+  Sportswear: 'border-l-[#CE472E]',
+  Academy: 'border-l-[#534AB7]',
+  Provisions: 'border-l-midnight',
+  ProJu: 'border-l-[#3B6D11]',
+}
+
+const sectionHeading =
+  'mb-4 border-b border-culinary-outline pb-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-text-muted'
 
 interface Metrics {
   monthlyRevenueCents: number
@@ -88,7 +93,9 @@ export function FounderDashboardClient() {
     }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    load()
+  }, [])
 
   const saveSetting = async (key: 'storeConversionRate' | 'cashReserve', value: number) => {
     try {
@@ -131,181 +138,179 @@ export function FounderDashboardClient() {
   const formatCurrency = (cents: number) => `$${(cents / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}`
   const formatDate = (d: string | null) => (d ? new Date(d).toLocaleDateString() : '—')
 
+  const inputClass =
+    'rounded-none border border-culinary-outline bg-culinary-bone px-2 py-1.5 font-culinary-sans text-sm text-culinary-ink focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30'
+
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto">
-        <p className="text-gray-500">Loading dashboard…</p>
+      <div className="mx-auto max-w-7xl p-8">
+        <p className="font-culinary-sans text-sm text-culinary-text-muted">Loading dashboard…</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="p-8 max-w-7xl mx-auto">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+      <div className="mx-auto max-w-7xl p-8">
+        <div className="rounded-none border border-red-200 bg-red-50 px-4 py-3 font-culinary-sans text-red-800">
           <p className="font-semibold">Error</p>
-          <p className="text-sm mt-1">{error}</p>
+          <p className="mt-1 text-sm">{error}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-culinary-bone p-6 md:p-8">
+      <div className="mx-auto max-w-7xl space-y-stack-lg">
         <header>
-          <h1 className="text-2xl font-bold text-gray-900" style={{ color: BRAND.forest }}>
-            Founder Dashboard
-          </h1>
-          <p className="text-gray-600 text-sm mt-1">Ecosystem health at a glance</p>
+          <h1 className="font-culinary-display text-2xl font-bold text-culinary-forest">Founder Dashboard</h1>
+          <p className="mt-1 font-culinary-sans text-sm text-culinary-text-muted">Ecosystem health at a glance</p>
         </header>
 
         {/* Zone 1 — Ecosystem Health KPIs */}
         <section>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Ecosystem Health</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-xs font-medium text-gray-500 uppercase">Monthly Revenue</p>
-              <p className="text-xl font-bold mt-1" style={{ color: BRAND.forest }}>
+          <h2 className={sectionHeading}>Ecosystem Health</h2>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <CulinaryCard className="border-t-2 border-t-culinary-navy">
+              <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Monthly Revenue</p>
+              <p className="mt-1 font-culinary-display text-xl font-bold tabular-nums text-culinary-navy">
                 {metrics ? formatCurrency(metrics.monthlyRevenueCents) : '—'}
               </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-xs font-medium text-gray-500 uppercase">Total Customers</p>
-              <p className="text-xl font-bold mt-1" style={{ color: BRAND.forest }}>
-                {metrics?.totalCustomers ?? '—'}
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-xs font-medium text-gray-500 uppercase">Email Subscribers</p>
-              <p className="text-xl font-bold mt-1" style={{ color: BRAND.forest }}>
-                {metrics?.emailSubscribers ?? '—'}
-              </p>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-xs font-medium text-gray-500 uppercase">Store Conversion Rate</p>
+            </CulinaryCard>
+            <CulinaryCard>
+              <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Total Customers</p>
+              <p className="mt-1 font-culinary-display text-xl font-bold tabular-nums text-culinary-navy">{metrics?.totalCustomers ?? '—'}</p>
+            </CulinaryCard>
+            <CulinaryCard>
+              <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Email Subscribers</p>
+              <p className="mt-1 font-culinary-display text-xl font-bold tabular-nums text-culinary-navy">{metrics?.emailSubscribers ?? '—'}</p>
+            </CulinaryCard>
+            <CulinaryCard>
+              <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Store Conversion Rate</p>
               {editingKpi === 'conversion' ? (
-                <div className="mt-1 flex items-center gap-2">
+                <div className="mt-1 flex flex-wrap items-center gap-2">
                   <input
                     type="number"
                     step="0.1"
                     value={conversionInput}
                     onChange={(e) => setConversionInput(e.target.value)}
-                    className="w-20 border border-gray-300 rounded px-2 py-1 text-sm"
+                    className={`w-20 ${inputClass}`}
                   />
                   <button
                     type="button"
                     onClick={() => saveSetting('storeConversionRate', parseFloat(conversionInput) || 0)}
-                    className="text-xs font-medium rounded px-2 py-1"
-                    style={{ backgroundColor: BRAND.sage, color: BRAND.forest }}
+                    className="rounded-none border border-culinary-navy bg-culinary-navy px-2 py-1 font-culinary-sans text-xs font-medium text-culinary-on-navy transition-colors duration-refined ease-refined hover:opacity-90"
                   >
                     Save
                   </button>
-                  <button type="button" onClick={() => setEditingKpi(null)} className="text-gray-500 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setEditingKpi(null)}
+                    className="font-culinary-sans text-xs text-culinary-text-muted hover:underline"
+                  >
                     Cancel
                   </button>
                 </div>
               ) : (
-                <p className="text-xl font-bold mt-1 flex items-center gap-2" style={{ color: BRAND.forest }}>
+                <p className="mt-1 flex items-center gap-2 font-culinary-display text-xl font-bold tabular-nums text-culinary-navy">
                   {metrics?.storeConversionRate ?? 0}%
                   <button
                     type="button"
                     onClick={() => setEditingKpi('conversion')}
-                    className="text-xs text-gray-500 hover:underline"
+                    className="font-culinary-sans text-xs text-culinary-text-muted hover:underline"
                   >
                     Edit
                   </button>
                 </p>
               )}
-            </div>
-            <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-              <p className="text-xs font-medium text-gray-500 uppercase">Cash Reserve</p>
+            </CulinaryCard>
+            <CulinaryCard>
+              <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Cash Reserve</p>
               {editingKpi === 'reserve' ? (
-                <div className="mt-1 flex items-center gap-2">
-                  <input
-                    type="number"
-                    value={reserveInput}
-                    onChange={(e) => setReserveInput(e.target.value)}
-                    className="w-24 border border-gray-300 rounded px-2 py-1 text-sm"
-                  />
+                <div className="mt-1 flex flex-wrap items-center gap-2">
+                  <input type="number" value={reserveInput} onChange={(e) => setReserveInput(e.target.value)} className={`w-24 ${inputClass}`} />
                   <button
                     type="button"
                     onClick={() => saveSetting('cashReserve', parseFloat(reserveInput) || 0)}
-                    className="text-xs font-medium rounded px-2 py-1"
-                    style={{ backgroundColor: BRAND.sage, color: BRAND.forest }}
+                    className="rounded-none border border-culinary-navy bg-culinary-navy px-2 py-1 font-culinary-sans text-xs font-medium text-culinary-on-navy transition-colors duration-refined ease-refined hover:opacity-90"
                   >
                     Save
                   </button>
-                  <button type="button" onClick={() => setEditingKpi(null)} className="text-gray-500 text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setEditingKpi(null)}
+                    className="font-culinary-sans text-xs text-culinary-text-muted hover:underline"
+                  >
                     Cancel
                   </button>
                 </div>
               ) : (
-                <p className="text-xl font-bold mt-1 flex items-center gap-2" style={{ color: BRAND.forest }}>
+                <p className="mt-1 flex items-center gap-2 font-culinary-display text-xl font-bold tabular-nums text-culinary-navy">
                   {metrics != null ? `$${Number(metrics.cashReserve).toLocaleString()}` : '—'}
                   <button
                     type="button"
                     onClick={() => setEditingKpi('reserve')}
-                    className="text-xs text-gray-500 hover:underline"
+                    className="font-culinary-sans text-xs text-culinary-text-muted hover:underline"
                   >
                     Edit
                   </button>
                 </p>
               )}
-            </div>
+            </CulinaryCard>
           </div>
         </section>
 
         {/* Zone 2 — Division Cards */}
         <section>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Divisions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h2 className={sectionHeading}>Divisions</h2>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {divisions && (
               <>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: DIVISION_COLORS.Sportswear }} />
-                    <h3 className="font-semibold text-gray-900">Sportswear</h3>
+                <CulinaryCard className={`min-w-0 border-l-4 ${DIVISION_BORDER_LEFT.Sportswear}`}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-3 w-3 shrink-0 rounded-none" style={{ backgroundColor: DIVISION_COLORS.Sportswear }} />
+                    <h3 className="font-culinary-sans font-semibold text-culinary-ink">Sportswear</h3>
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <ul className="space-y-1 font-culinary-sans text-sm text-culinary-text-muted">
                     <li>Orders this week: {divisions.sportswear.ordersThisWeek}</li>
                     <li>Revenue this week: {formatCurrency(divisions.sportswear.revenueThisWeekCents)}</li>
                     <li>Top product: {divisions.sportswear.topProductByUnits}</li>
                   </ul>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: DIVISION_COLORS.Academy }} />
-                    <h3 className="font-semibold text-gray-900">Academy</h3>
+                </CulinaryCard>
+                <CulinaryCard className={`min-w-0 border-l-4 ${DIVISION_BORDER_LEFT.Academy}`}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-3 w-3 shrink-0 rounded-none" style={{ backgroundColor: DIVISION_COLORS.Academy }} />
+                    <h3 className="font-culinary-sans font-semibold text-culinary-ink">Academy</h3>
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <ul className="space-y-1 font-culinary-sans text-sm text-culinary-text-muted">
                     <li>Students enrolled (MTD): {divisions.academy.studentsEnrolled}</li>
                     <li>Guide downloads (MTD): {divisions.academy.guideDownloadsThisMonth}</li>
                     <li>Courses live: {divisions.academy.coursesLiveCount}</li>
                   </ul>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: DIVISION_COLORS.Provisions }} />
-                    <h3 className="font-semibold text-gray-900">Provisions</h3>
+                </CulinaryCard>
+                <CulinaryCard className={`min-w-0 border-l-4 ${DIVISION_BORDER_LEFT.Provisions}`}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-3 w-3 shrink-0 rounded-none" style={{ backgroundColor: DIVISION_COLORS.Provisions }} />
+                    <h3 className="font-culinary-sans font-semibold text-culinary-ink">Provisions</h3>
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <ul className="space-y-1 font-culinary-sans text-sm text-culinary-text-muted">
                     <li>Upcoming bookings: {divisions.provisions.upcomingBookingsCount}</li>
                     <li>Active leads: {divisions.provisions.activeLeadsCount}</li>
                     <li>Next event: {divisions.provisions.nextEventDate ?? '—'}</li>
                   </ul>
-                </div>
-                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: DIVISION_COLORS.ProJu }} />
-                    <h3 className="font-semibold text-gray-900">ProJu</h3>
+                </CulinaryCard>
+                <CulinaryCard className={`min-w-0 border-l-4 ${DIVISION_BORDER_LEFT.ProJu}`}>
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className="h-3 w-3 shrink-0 rounded-none" style={{ backgroundColor: DIVISION_COLORS.ProJu }} />
+                    <h3 className="font-culinary-sans font-semibold text-culinary-ink">ProJu</h3>
                   </div>
-                  <ul className="text-sm text-gray-600 space-y-1">
+                  <ul className="space-y-1 font-culinary-sans text-sm text-culinary-text-muted">
                     <li>Farmers contacted: {divisions.proju.farmersContactedCount}</li>
                     <li>Listings live: {divisions.proju.listingsLive}</li>
                     <li>Buyer inquiries (MTD): {divisions.proju.buyerInquiriesThisMonth}</li>
                   </ul>
-                </div>
+                </CulinaryCard>
               </>
             )}
           </div>
@@ -313,36 +318,36 @@ export function FounderDashboardClient() {
 
         {/* Zone 3 — Pipeline */}
         <section>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Pipeline</h2>
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+          <h2 className={sectionHeading}>Pipeline</h2>
+          <CulinaryCard padded={false} className="overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-culinary-outline font-culinary-sans">
                 <thead>
-                  <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Division</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Expected Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Est. Value</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <tr className="bg-culinary-surface-low">
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">Title</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">Division</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">Expected Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">Est. Value</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-culinary-outline">
                   {pipeline.map((item) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">{item.title}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{item.division}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">{formatDate(item.expectedDate)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-600">
+                    <tr key={item.id} className="transition-colors duration-refined ease-refined hover:bg-culinary-surface-low">
+                      <td className="px-4 py-3 text-sm text-culinary-ink">{item.title}</td>
+                      <td className="px-4 py-3 text-sm text-culinary-text-muted">{item.division}</td>
+                      <td className="px-4 py-3 text-sm text-culinary-text-muted">{formatDate(item.expectedDate)}</td>
+                      <td className="px-4 py-3 text-sm text-culinary-text-muted">
                         {item.estimatedValue != null ? `$${Number(item.estimatedValue).toLocaleString()}` : '—'}
                       </td>
                       <td className="px-4 py-3">
-                        <span className="text-xs font-medium px-2 py-0.5 rounded" style={{ backgroundColor: BRAND.sage, color: BRAND.forest }}>
+                        <span className="rounded-none border border-culinary-outline bg-culinary-surface-high px-2 py-0.5 font-culinary-sans text-xs font-medium text-culinary-ink">
                           {item.status}
                         </span>
                       </td>
                     </tr>
                   ))}
-                  <tr className="bg-gray-50">
+                  <tr className="bg-culinary-surface-low">
                     <td colSpan={5} className="px-4 py-3">
                       <form onSubmit={addPipeline} className="flex flex-wrap items-center gap-2">
                         <input
@@ -350,12 +355,12 @@ export function FounderDashboardClient() {
                           placeholder="Title"
                           value={pipelineForm.title}
                           onChange={(e) => setPipelineForm((f) => ({ ...f, title: e.target.value }))}
-                          className="border border-gray-300 rounded px-2 py-1.5 text-sm min-w-[140px]"
+                          className={`min-w-[140px] ${inputClass}`}
                         />
                         <select
                           value={pipelineForm.division}
                           onChange={(e) => setPipelineForm((f) => ({ ...f, division: e.target.value }))}
-                          className="border border-gray-300 rounded px-2 py-1.5 text-sm"
+                          className={inputClass}
                         >
                           <option value="Sportswear">Sportswear</option>
                           <option value="Academy">Academy</option>
@@ -366,19 +371,19 @@ export function FounderDashboardClient() {
                           type="date"
                           value={pipelineForm.expectedDate}
                           onChange={(e) => setPipelineForm((f) => ({ ...f, expectedDate: e.target.value }))}
-                          className="border border-gray-300 rounded px-2 py-1.5 text-sm"
+                          className={inputClass}
                         />
                         <input
                           type="number"
                           placeholder="Est. value ($)"
                           value={pipelineForm.estimatedValue}
                           onChange={(e) => setPipelineForm((f) => ({ ...f, estimatedValue: e.target.value }))}
-                          className="border border-gray-300 rounded px-2 py-1.5 text-sm w-28"
+                          className={`w-28 ${inputClass}`}
                         />
                         <select
                           value={pipelineForm.status}
                           onChange={(e) => setPipelineForm((f) => ({ ...f, status: e.target.value }))}
-                          className="border border-gray-300 rounded px-2 py-1.5 text-sm"
+                          className={inputClass}
                         >
                           <option value="lead">Lead</option>
                           <option value="confirmed">Confirmed</option>
@@ -386,8 +391,7 @@ export function FounderDashboardClient() {
                         </select>
                         <button
                           type="submit"
-                          className="rounded px-3 py-1.5 text-sm font-medium text-white"
-                          style={{ backgroundColor: BRAND.forest }}
+                          className="rounded-none border border-culinary-navy bg-culinary-navy px-3 py-1.5 font-culinary-sans text-sm font-medium text-culinary-on-navy transition-colors duration-refined ease-refined hover:opacity-90"
                         >
                           Add
                         </button>
@@ -397,32 +401,32 @@ export function FounderDashboardClient() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </CulinaryCard>
         </section>
 
         {/* Zone 4 — Activity Feed */}
         <section>
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Activity Feed</h2>
-          <div className="bg-white border border-gray-200 rounded-lg shadow-sm divide-y divide-gray-200 max-h-[400px] overflow-y-auto">
+          <h2 className={sectionHeading}>Activity Feed</h2>
+          <CulinaryCard padded={false} className="max-h-[400px] divide-y divide-culinary-outline overflow-y-auto">
             {activity.length === 0 ? (
-              <p className="px-4 py-6 text-gray-500 text-sm">No activity yet.</p>
+              <p className="px-gutter py-6 font-culinary-sans text-sm text-culinary-text-muted">No activity yet.</p>
             ) : (
               activity.map((item) => (
-                <div key={item.id} className="px-4 py-3 flex items-start gap-3">
+                <div key={item.id} className="flex items-start gap-3 px-gutter py-3">
                   <span
-                    className="flex-shrink-0 w-2.5 h-2.5 rounded-full mt-1.5"
-                    style={{ backgroundColor: DIVISION_COLORS[item.division] ?? BRAND.forest }}
+                    className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-none"
+                    style={{ backgroundColor: DIVISION_COLORS[item.division] ?? '#2e5c34' }}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-900">{item.description}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="font-culinary-sans text-sm text-culinary-ink">{item.description}</p>
+                    <p className="mt-0.5 font-culinary-sans text-xs text-culinary-text-muted">
                       {item.division} · {item.eventType} · {new Date(item.createdAt).toLocaleString()}
                     </p>
                   </div>
                 </div>
               ))
             )}
-          </div>
+          </CulinaryCard>
         </section>
       </div>
     </div>

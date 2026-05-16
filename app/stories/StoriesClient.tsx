@@ -88,7 +88,7 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
                       {story.author_name}
                       {story.author_region && ` • ${story.author_region}`}
                     </p>
-                    <span className="px-2 py-1 bg-[#FFBC00] text-forestDark rounded-full text-xs font-semibold capitalize">
+                    <span className="px-2 py-1 bg-gold text-forestDark rounded-full text-xs font-semibold capitalize">
                       {story.category}
                     </span>
                   </div>
@@ -105,7 +105,7 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
           <h2 className="text-3xl font-bold text-forestDark">All Stories</h2>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-6 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="px-6 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             {showForm ? 'Cancel' : 'Share Your Story'}
           </button>
@@ -119,7 +119,7 @@ export default function StoriesClient({ initialData }: StoriesClientProps) {
               onClick={() => setSelectedCategory(category)}
               className={`px-4 py-2 rounded-lg font-medium transition ${
                 selectedCategory === category
-                  ? 'bg-[#1a5f3f] text-white'
+                  ? 'bg-forestDark text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >

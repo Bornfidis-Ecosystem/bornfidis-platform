@@ -78,7 +78,7 @@ export default function WhatsAppAdmin() {
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold mb-4">WhatsApp Messages</h1>
           <div className="flex items-center gap-2">
-            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#1a5f3f]"></div>
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-forestDark"></div>
             <p>Loading messages...</p>
           </div>
           <p className="text-sm text-gray-500 mt-2">If this takes too long, check the browser console for errors.</p>
@@ -122,7 +122,7 @@ export default function WhatsAppAdmin() {
           <h1 className="text-3xl font-bold text-gray-900">WhatsApp Messages</h1>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-[#1a5f3f] text-white rounded hover:bg-[#144a32]"
+            className="px-4 py-2 bg-forestDark text-white rounded hover:bg-forestDarker"
           >
             Refresh
           </button>
@@ -137,7 +137,7 @@ export default function WhatsAppAdmin() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className="bg-white rounded-lg shadow p-6 border-l-4 border-[#1a5f3f]"
+                className="bg-white rounded-lg shadow p-6 border-l-4 border-forestDark"
               >
                 <div className="flex justify-between items-start mb-2">
                   <div>

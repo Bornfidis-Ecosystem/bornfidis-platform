@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
 import { FounderDashboardActivityForm } from '@/components/admin/FounderDashboardActivityForm'
 import { FounderDashboardActivityFeed } from '@/components/admin/FounderDashboardActivityFeed'
 import { FounderDashboardWeeklyRitual } from '@/components/admin/FounderDashboardWeeklyRitual'
@@ -14,20 +15,21 @@ import { getAdminDivisionsData } from '@/lib/admin-divisions-data'
 import { getAdminActivityFeedItems } from '@/lib/admin-activity-data'
 import { getAdminPaymentHealth } from '@/lib/admin-payment-health'
 import PaymentHealthSection from '@/components/admin/PaymentHealthSection'
+import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 
 export const dynamic = 'force-dynamic'
 
 const DIVISION_COLORS: Record<string, string> = {
   Sportswear: '#CE472E',
   Academy: '#534AB7',
-  Provisions: '#002747',
+  Provisions: '#0D1F2D',
   ProJu: '#3B6D11',
 }
 
 const DIVISION_BORDER_LEFT_CLASSES: Record<string, string> = {
   Sportswear: 'border-l-[#CE472E]',
   Academy: 'border-l-[#534AB7]',
-  Provisions: 'border-l-[#002747]',
+  Provisions: 'border-l-midnight',
   ProJu: 'border-l-[#3B6D11]',
 }
 
@@ -85,6 +87,14 @@ interface Trends {
 }
 
 export default async function AdminPage() {
+  let platformRole: Awaited<ReturnType<typeof resolveAdminPlatformRole>> = null
+  try {
+    platformRole = await resolveAdminPlatformRole()
+  } catch (e) {
+    console.error('[admin/page] resolveAdminPlatformRole', e)
+  }
+  const showFounderOnly = isFounderAdminRole(platformRole)
+
   let metrics: Metrics | null = null
   let divisions: Divisions | null = null
   let activity: ActivityItem[] = []
@@ -97,23 +107,36 @@ export default async function AdminPage() {
   // Load in-process (no self-fetch to /api/admin/*): avoids duplicate work and DB spikes.
   // Run founder KPIs before other loaders so two heavy Prisma batches don't overlap (Supabase session pool).
   try {
-    const m = await getFounderDashboardMetrics()
-    metrics = {
-      revenueThisMonthDollars: m.revenueThisMonthDollars,
-      leadsThisWeek: m.leadsThisWeek,
-      emailSubscribers: m.emailSubscribers,
-      emailSubscribersLast30Days: m.emailSubscribersLast30Days,
-      conversionActionsThisMonth: m.conversionActionsThisMonth,
-      activePipelineValueDollars: m.activePipelineValueDollars,
+    if (showFounderOnly) {
+      const m = await getFounderDashboardMetrics()
+      metrics = {
+        revenueThisMonthDollars: m.revenueThisMonthDollars,
+        leadsThisWeek: m.leadsThisWeek,
+        emailSubscribers: m.emailSubscribers,
+        emailSubscribersLast30Days: m.emailSubscribersLast30Days,
+        conversionActionsThisMonth: m.conversionActionsThisMonth,
+        activePipelineValueDollars: m.activePipelineValueDollars,
+      }
     }
   } catch (e) {
     console.error('[admin/page] founder metrics', e)
   }
 
+  try {
+    if (showFounderOnly) {
+      paymentHealth = await getAdminPaymentHealth()
+    }
+  } catch (e) {
+    console.error('[admin/page] payment health', e)
+  }
+
+  const trendPromise = showFounderOnly ? getFounderDashboardTrends() : Promise.resolve(null as Trends | null)
+  const activityFeedPromise = showFounderOnly ? getAdminActivityFeedItems() : Promise.resolve([] as ActivityItem[])
+
   const settled = await Promise.allSettled([
     getAdminDivisionsData(),
-    getAdminActivityFeedItems(),
-    getFounderDashboardTrends(),
+    activityFeedPromise,
+    trendPromise,
     getAdminDashboardMetrics(),
     getAdminActionNeeded(),
     getPrepAttentionNeeded(),
@@ -138,98 +161,104 @@ export default async function AdminPage() {
     `$${Number(dollars).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
   const formatCurrency = (cents: number) => formatDollars(cents / 100)
 
+  const sectionHeading =
+    'mb-5 border-b border-culinary-outline pb-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-text-muted'
+
   return (
-    <div className="min-h-screen bg-stone-50">
-      {/* Topbar — editorial, timeless */}
-      <div className="border-b border-stone-200 bg-white/95 backdrop-blur-sm px-4 py-4 md:px-6">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-baseline gap-2">
-            <Link
-              href="/admin"
-              className="text-[#1A3C34] font-semibold tracking-[0.2em] uppercase text-sm"
+    <div className="min-h-screen space-y-stack-xl bg-culinary-bone">
+      <CulinaryPageHeader
+        title={showFounderOnly ? 'Command View' : 'Operations'}
+        description={
+          showFounderOnly
+            ? 'A unified operational perspective for Bornfidis executive culinary management.'
+            : 'Pipeline, bookings, and calendar for day-to-day culinary operations.'
+        }
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <span
+              className="font-culinary-sans text-body-md text-culinary-text-muted tabular-nums"
+              suppressHydrationWarning
             >
-              Bornfidis
-            </Link>
-            <span className="text-stone-300 font-light">/</span>
-            <span className="text-stone-600 font-medium">Founder Dashboard</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-stone-500 tabular-nums" suppressHydrationWarning>
               {today}
             </span>
-            <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-[#1A3C34] text-white tracking-wide">
+            <span className="rounded-none border border-culinary-outline bg-culinary-surface-low px-2 py-1 font-culinary-sans text-[10px] font-bold uppercase tracking-[0.12em] text-culinary-navy">
               Phase 1
             </span>
             <Link
               href="/admin/quotes"
-              className="hidden sm:inline-flex items-center justify-center rounded-xl bg-gold px-5 py-2.5 font-semibold text-navy hover:opacity-90 transition"
+              className="hidden sm:inline-flex items-center justify-center rounded-none bg-culinary-navy px-5 py-2.5 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
             >
-              Open Quote Builder
+              Quote Builder
             </Link>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-10 space-y-10">
-        {/* Zone 1 — KPI row: clear hierarchy, tabular numbers, forest accent */}
-        <section className="min-w-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-            {[
-              {
-                label: 'Revenue This Month',
-                value: metrics != null ? formatDollars(metrics.revenueThisMonthDollars) : null,
-                sub: 'Paid revenue (Academy, Sportswear, Provisions)',
-              },
-              {
-                label: 'Leads This Week',
-                value: metrics != null ? String(metrics.leadsThisWeek) : null,
-                sub: 'New inquiries, subscribers, farmers (7 days)',
-              },
-              {
-                label: 'Email Subscribers',
-                value: metrics != null ? String(metrics.emailSubscribers) : null,
-                sub:
-                  metrics != null && metrics.emailSubscribersLast30Days > 0
-                    ? `+${metrics.emailSubscribersLast30Days} in last 30 days`
-                    : 'Total list size',
-              },
-              {
-                label: 'Conversion Actions',
-                value: metrics != null ? String(metrics.conversionActionsThisMonth) : null,
-                sub: 'Purchases, enrollments, paid orders (this month)',
-              },
-              {
-                label: 'Active Pipeline Value',
-                value: metrics != null ? formatDollars(metrics.activePipelineValueDollars) : null,
-                sub: 'Open opportunities with quoted value',
-              },
-            ].map(({ label, value, sub }) => (
-              <div
-                key={label}
-                className="bg-white border border-stone-200/80 rounded-xl p-5 min-w-0 border-t-2 border-t-[#1A3C34]"
-              >
-                <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">
-                  {label}
-                </p>
-                <p
-                  className="mt-2 font-serif text-2xl font-semibold text-[#1A3C34] tabular-nums truncate"
-                  title={value ?? undefined}
-                >
-                  {value ?? '—'}
-                </p>
-                <p className="mt-1 text-xs text-stone-400 leading-snug">{sub}</p>
-              </div>
-            ))}
+        }
+      />
+        {!showFounderOnly && (
+          <div className="rounded-none border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
+            <p className="font-medium">Operations view</p>
+            <p className="mt-1 text-amber-900/90">
+              Company-wide revenue, payment health, and founder activity tools are hidden. Use Bookings, Calendar, and
+              Pipeline for day-to-day work.
+            </p>
           </div>
-        </section>
+        )}
+
+        {/* Zone 1 — KPI row (founder_admin only) */}
+        {showFounderOnly && (
+          <section className="min-w-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+              {[
+                {
+                  label: 'Revenue This Month',
+                  value: metrics != null ? formatDollars(metrics.revenueThisMonthDollars) : null,
+                  sub: 'Paid revenue (Academy, Sportswear, Provisions)',
+                },
+                {
+                  label: 'Leads This Week',
+                  value: metrics != null ? String(metrics.leadsThisWeek) : null,
+                  sub: 'New inquiries, subscribers, farmers (7 days)',
+                },
+                {
+                  label: 'Email Subscribers',
+                  value: metrics != null ? String(metrics.emailSubscribers) : null,
+                  sub:
+                    metrics != null && metrics.emailSubscribersLast30Days > 0
+                      ? `+${metrics.emailSubscribersLast30Days} in last 30 days`
+                      : 'Total list size',
+                },
+                {
+                  label: 'Conversion Actions',
+                  value: metrics != null ? String(metrics.conversionActionsThisMonth) : null,
+                  sub: 'Purchases, enrollments, paid orders (this month)',
+                },
+                {
+                  label: 'Active Pipeline Value',
+                  value: metrics != null ? formatDollars(metrics.activePipelineValueDollars) : null,
+                  sub: 'Open opportunities with quoted value',
+                },
+              ].map(({ label, value, sub }) => (
+                <CulinaryCard key={label} className="min-w-0 border-t-2 border-t-culinary-navy">
+                  <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                    {label}
+                  </p>
+                  <p
+                    className="mt-2 truncate font-culinary-display text-2xl font-semibold tabular-nums text-culinary-navy"
+                    title={value ?? undefined}
+                  >
+                    {value ?? '—'}
+                  </p>
+                  <p className="mt-1 font-culinary-sans text-xs leading-snug text-culinary-text-muted">{sub}</p>
+                </CulinaryCard>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Zone 1.25 — Provisions dashboard metrics */}
         <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Provisions Dashboard Metrics
-          </h2>
+          <h2 className={sectionHeading}>Provisions Dashboard Metrics</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
             {[
               { label: 'New Leads', value: dashboardMetrics?.pipeline.newLeads },
               { label: 'Quoted', value: dashboardMetrics?.pipeline.quoted },
@@ -237,75 +266,88 @@ export default async function AdminPage() {
               { label: 'Confirmed', value: dashboardMetrics?.pipeline.confirmed },
               { label: 'Completed', value: dashboardMetrics?.pipeline.completed },
             ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-stone-200/80 bg-white p-4">
-                <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">{item.label}</p>
-                <p className="mt-2 font-serif text-2xl font-semibold text-navy tabular-nums">{item.value ?? '—'}</p>
-              </div>
+              <CulinaryCard key={item.label}>
+                <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-culinary-display text-2xl font-semibold tabular-nums text-culinary-navy">
+                  {item.value ?? '—'}
+                </p>
+              </CulinaryCard>
             ))}
           </div>
 
-          <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { label: 'Total Quoted Revenue', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.totalQuotedRevenueCents) : '—' },
-              { label: 'Confirmed Revenue', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.confirmedRevenueCents) : '—' },
-              { label: 'Deposits Collected', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.depositsCollectedCents) : '—' },
-            ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-stone-200/80 bg-white p-4">
-                <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">{item.label}</p>
-                <p className="mt-2 font-serif text-xl font-semibold text-[#1A3C34] tabular-nums">{item.value}</p>
-              </div>
-            ))}
-          </div>
+          {showFounderOnly && (
+            <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
+              {[
+                { label: 'Total Quoted Revenue', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.totalQuotedRevenueCents) : '—' },
+                { label: 'Confirmed Revenue', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.confirmedRevenueCents) : '—' },
+                { label: 'Deposits Collected', value: dashboardMetrics ? formatUSD(dashboardMetrics.revenue.depositsCollectedCents) : '—' },
+              ].map((item) => (
+                <CulinaryCard key={item.label}>
+                  <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 font-culinary-display text-xl font-semibold tabular-nums text-culinary-navy">{item.value}</p>
+                </CulinaryCard>
+              ))}
+            </div>
+          )}
 
-          <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
               { label: 'Bookings Created This Week', value: dashboardMetrics?.weekly.bookingsCreated },
               { label: 'Quotes Created This Week', value: dashboardMetrics?.weekly.quotesCreated },
               { label: 'Deposits Received This Week', value: dashboardMetrics?.weekly.depositsReceived },
             ].map((item) => (
-              <div key={item.label} className="rounded-xl border border-stone-200/80 bg-white p-4">
-                <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">{item.label}</p>
-                <p className="mt-2 font-serif text-2xl font-semibold text-navy tabular-nums">{item.value ?? '—'}</p>
-              </div>
+              <CulinaryCard key={item.label}>
+                <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                  {item.label}
+                </p>
+                <p className="mt-2 font-culinary-display text-2xl font-semibold tabular-nums text-culinary-navy">{item.value ?? '—'}</p>
+              </CulinaryCard>
             ))}
           </div>
 
-          <div className="mt-5 rounded-xl border border-stone-200/80 bg-white p-5">
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-              <h3 className="text-sm font-semibold text-navy">Upcoming bookings (next 7 days)</h3>
+          <CulinaryCard className="mt-5">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-culinary-sans text-sm font-semibold text-culinary-navy">Upcoming bookings (next 7 days)</h3>
               <Link
                 href="/admin/bookings?upcoming=7"
-                className="text-xs font-semibold text-navy hover:underline shrink-0"
+                className="shrink-0 font-culinary-sans text-xs font-semibold text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted"
               >
                 View all in bookings →
               </Link>
             </div>
             {!dashboardMetrics || dashboardMetrics.upcoming.length === 0 ? (
-              <p className="text-sm text-stone-500">No upcoming bookings in the next 7 days.</p>
+              <p className="font-culinary-sans text-sm text-culinary-text-muted">No upcoming bookings in the next 7 days.</p>
             ) : (
               <div className="space-y-2">
                 {dashboardMetrics.upcoming.map((booking) => (
                   <Link
                     key={booking.id}
                     href={`/admin/bookings/${booking.id}`}
-                    className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-stone-200 px-3 py-2 hover:bg-stone-50 transition"
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-none border border-culinary-outline px-3 py-2 transition refined hover:border-culinary-gold-line hover:bg-culinary-surface-low"
                   >
                     <div>
-                      <p className="text-sm font-semibold text-stone-900">{booking.name}</p>
-                      <p className="text-xs text-stone-600">
-                        {booking.eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} · {booking.eventType || 'Event'}
+                      <p className="font-culinary-sans text-sm font-semibold text-culinary-ink">{booking.name}</p>
+                      <p className="font-culinary-sans text-xs text-culinary-text-muted">
+                        {booking.eventDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ·{' '}
+                        {booking.eventType || 'Event'}
                       </p>
                     </div>
-                    <span className="text-xs font-medium rounded-full bg-stone-100 text-stone-700 px-2.5 py-1">{booking.status}</span>
+                    <span className="rounded-none border border-culinary-outline bg-culinary-surface-high px-2.5 py-1 font-culinary-sans text-xs font-medium text-culinary-ink">
+                      {booking.status}
+                    </span>
                   </Link>
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
         </section>
 
-        {/* Payment throughput + pending (Provisions / Stripe truth) */}
-        <PaymentHealthSection data={paymentHealth} />
+        {/* Payment throughput + pending (founder_admin only) */}
+        {showFounderOnly && <PaymentHealthSection data={paymentHealth} />}
 
         {/* Zone 1.35 — Action Needed */}
         <ActionNeededSection actionNeeded={actionNeeded} />
@@ -315,78 +357,81 @@ export default async function AdminPage() {
 
         {/* Zone 1.5 — Provisions Quote Builder quick launch */}
         <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Provisions Quote Builder
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Link
+          <h2 className={sectionHeading}>Provisions Quote Builder</h2>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <CulinaryCard
+              as={Link}
               href="/admin/quotes"
-              className="group rounded-2xl border border-navy/10 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md lg:col-span-1"
+              className="group block transition refined hover:border-culinary-gold-line hover:bg-culinary-surface-low lg:col-span-1"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-navy">Provisions Quote Builder</h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                  <h3 className="font-culinary-display text-lg font-semibold text-culinary-navy">Provisions Quote Builder</h3>
+                  <p className="mt-2 font-culinary-sans text-sm leading-6 text-culinary-text-muted">
                     Generate client-ready quotes, deposit totals, and copy-ready WhatsApp and email replies.
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">New</div>
+                <div className="rounded-none border border-culinary-gold-line bg-culinary-bone px-3 py-1 font-culinary-sans text-xs font-semibold text-culinary-navy">
+                  New
+                </div>
               </div>
 
-              <div className="mt-4 inline-flex items-center text-sm font-semibold text-navy group-hover:text-gold">
+              <div className="mt-4 inline-flex items-center font-culinary-sans text-sm font-semibold text-culinary-navy group-hover:text-culinary-gold">
                 Open Quote Builder →
               </div>
-            </Link>
+            </CulinaryCard>
           </div>
         </section>
 
-        {/* Zone 2 — Revenue Trend (30d / 90d) */}
-        <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Revenue trend
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {trends && (
-              <>
-                <div className="bg-white border border-stone-200/80 rounded-xl p-5 border-t-2 border-t-[#1A3C34]">
-                  <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">Last 30 days</p>
-                  <p className="mt-2 font-serif text-xl font-semibold text-[#1A3C34] tabular-nums">
-                    {formatDollars((trends.revenueTrend.last30Days.totalCents ?? 0) / 100)}
-                  </p>
-                  <div className="mt-3 space-y-1.5 text-sm text-stone-600">
-                    <p>Academy: {formatCurrency(trends.revenueTrend.last30Days.academyCents ?? 0)}</p>
-                    <p>Provisions: {formatCurrency(trends.revenueTrend.last30Days.provisionsCents ?? 0)}</p>
-                    <p>Sportswear: {formatCurrency(trends.revenueTrend.last30Days.sportswearCents ?? 0)}</p>
-                  </div>
-                </div>
-                <div className="bg-white border border-stone-200/80 rounded-xl p-5 border-t-2 border-t-[#1A3C34]">
-                  <p className="text-[11px] font-medium text-stone-500 uppercase tracking-widest">Last 90 days</p>
-                  <p className="mt-2 font-serif text-xl font-semibold text-[#1A3C34] tabular-nums">
-                    {formatDollars((trends.revenueTrend.last90Days.totalCents ?? 0) / 100)}
-                  </p>
-                  <div className="mt-3 space-y-1.5 text-sm text-stone-600">
-                    <p>Academy: {formatCurrency(trends.revenueTrend.last90Days.academyCents ?? 0)}</p>
-                    <p>Provisions: {formatCurrency(trends.revenueTrend.last90Days.provisionsCents ?? 0)}</p>
-                    <p>Sportswear: {formatCurrency(trends.revenueTrend.last90Days.sportswearCents ?? 0)}</p>
-                  </div>
-                </div>
-              </>
-            )}
-            {!trends && (
-              <div className="bg-white border border-stone-200/80 rounded-xl p-5 text-stone-400 text-sm">
-                Revenue trend unavailable
-              </div>
-            )}
-          </div>
-        </section>
+        {/* Zone 2 — Revenue Trend (founder_admin only) */}
+        {showFounderOnly && (
+          <section className="min-w-0">
+            <h2 className={sectionHeading}>Revenue trend</h2>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {trends && (
+                <>
+                  <CulinaryCard className="border-t-2 border-t-culinary-navy">
+                    <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                      Last 30 days
+                    </p>
+                    <p className="mt-2 font-culinary-display text-xl font-semibold tabular-nums text-culinary-navy">
+                      {formatDollars((trends.revenueTrend.last30Days.totalCents ?? 0) / 100)}
+                    </p>
+                    <div className="mt-3 space-y-1.5 font-culinary-sans text-sm text-culinary-text-muted">
+                      <p>Academy: {formatCurrency(trends.revenueTrend.last30Days.academyCents ?? 0)}</p>
+                      <p>Provisions: {formatCurrency(trends.revenueTrend.last30Days.provisionsCents ?? 0)}</p>
+                      <p>Sportswear: {formatCurrency(trends.revenueTrend.last30Days.sportswearCents ?? 0)}</p>
+                    </div>
+                  </CulinaryCard>
+                  <CulinaryCard className="border-t-2 border-t-culinary-navy">
+                    <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                      Last 90 days
+                    </p>
+                    <p className="mt-2 font-culinary-display text-xl font-semibold tabular-nums text-culinary-navy">
+                      {formatDollars((trends.revenueTrend.last90Days.totalCents ?? 0) / 100)}
+                    </p>
+                    <div className="mt-3 space-y-1.5 font-culinary-sans text-sm text-culinary-text-muted">
+                      <p>Academy: {formatCurrency(trends.revenueTrend.last90Days.academyCents ?? 0)}</p>
+                      <p>Provisions: {formatCurrency(trends.revenueTrend.last90Days.provisionsCents ?? 0)}</p>
+                      <p>Sportswear: {formatCurrency(trends.revenueTrend.last90Days.sportswearCents ?? 0)}</p>
+                    </div>
+                  </CulinaryCard>
+                </>
+              )}
+              {!trends && (
+                <CulinaryCard className="font-culinary-sans text-sm text-culinary-text-muted md:col-span-2">
+                  Revenue trend unavailable
+                </CulinaryCard>
+              )}
+            </div>
+          </section>
+        )}
 
         {/* Zone 3 — Divisions: colored accent, subtle depth */}
         <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Divisions
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <h2 className={sectionHeading}>Divisions</h2>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {divisions && (
               <>
                 {[
@@ -431,22 +476,19 @@ export default async function AdminPage() {
                     ],
                   },
                 ].map(({ key, borderLeftClass, title, lines }) => (
-                  <div
-                    key={key}
-                    className={`bg-white border border-stone-200/80 rounded-xl p-5 min-w-0 border-l-4 ${borderLeftClass}`}
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="font-semibold text-stone-900 truncate">{title}</span>
-                      <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-stone-100 text-stone-600 shrink-0 uppercase tracking-wider">
+                  <CulinaryCard key={key} className={`min-w-0 border-l-4 ${borderLeftClass}`}>
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span className="truncate font-culinary-sans font-semibold text-culinary-ink">{title}</span>
+                      <span className="shrink-0 rounded-none border border-culinary-outline bg-culinary-surface-high px-2 py-0.5 font-culinary-sans text-[10px] font-medium uppercase tracking-wider text-culinary-text-muted">
                         Live
                       </span>
                     </div>
-                    <div className="text-sm text-stone-600 space-y-1.5 break-words">
+                    <div className="space-y-1.5 break-words font-culinary-sans text-sm text-culinary-text-muted">
                       {lines.map((line, i) => (
                         <p key={i}>{line}</p>
                       ))}
                     </div>
-                  </div>
+                  </CulinaryCard>
                 ))}
               </>
             )}
@@ -455,74 +497,82 @@ export default async function AdminPage() {
 
         {/* Zone 4 — Provisions funnel summary */}
         <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200 flex items-center justify-between gap-2 flex-wrap">
+          <h2 className={`${sectionHeading} flex flex-wrap items-center justify-between gap-2`}>
             <span>Provisions funnel</span>
-            <Link href="/admin/provisions-pipeline" className="text-xs font-medium text-[#1A3C34] hover:underline">
+            <Link
+              href="/admin/provisions-pipeline"
+              className="font-culinary-sans text-xs font-medium text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted"
+            >
               View pipeline →
             </Link>
           </h2>
-          <div className="bg-white border border-stone-200/80 rounded-xl p-5">
+          <CulinaryCard>
             {trends && trends.provisionsFunnel.length > 0 ? (
               <div className="flex flex-wrap items-center gap-4 md:gap-6">
                 {trends.provisionsFunnel.map((stage, i) => (
                   <div key={stage.id} className="flex items-baseline gap-2">
-                    <span className="text-sm font-medium text-stone-700">{stage.label}</span>
-                    <span className="font-serif text-lg font-semibold text-[#1A3C34] tabular-nums">{stage.count}</span>
+                    <span className="font-culinary-sans text-sm font-medium text-culinary-ink">{stage.label}</span>
+                    <span className="font-culinary-display text-lg font-semibold tabular-nums text-culinary-navy">
+                      {stage.count}
+                    </span>
                     {stage.conversionFromPrevious != null && (
-                      <span className="text-xs text-stone-500">({stage.conversionFromPrevious}% from previous)</span>
+                      <span className="font-culinary-sans text-xs text-culinary-text-muted">
+                        ({stage.conversionFromPrevious}% from previous)
+                      </span>
                     )}
                     {i < trends.provisionsFunnel.length - 1 && (
-                      <span className="text-stone-300 hidden sm:inline" aria-hidden>·</span>
+                      <span className="hidden text-culinary-outline-variant sm:inline" aria-hidden>
+                        ·
+                      </span>
                     )}
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-stone-500">No funnel data</p>
+              <p className="font-culinary-sans text-sm text-culinary-text-muted">No funnel data</p>
             )}
-          </div>
+          </CulinaryCard>
         </section>
 
-        {/* Zone 5 — Email growth (last 8 weeks) */}
-        <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Email subscriber growth
-          </h2>
-          <div className="bg-white border border-stone-200/80 rounded-xl p-5">
-            {trends && trends.emailGrowth.length > 0 ? (
-              <div className="flex flex-wrap gap-x-6 gap-y-3">
-                {trends.emailGrowth.map((w) => (
-                  <div key={w.weekStart} className="flex items-baseline gap-2">
-                    <span className="text-xs text-stone-500 tabular-nums">{w.weekLabel}</span>
-                    <span className="font-semibold text-[#1A3C34] tabular-nums">+{w.count}</span>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-stone-500">No growth data</p>
-            )}
-          </div>
-        </section>
+        {/* Zone 5 — Email growth (founder_admin only) */}
+        {showFounderOnly && (
+          <section className="min-w-0">
+            <h2 className={sectionHeading}>Email subscriber growth</h2>
+            <CulinaryCard>
+              {trends && trends.emailGrowth.length > 0 ? (
+                <div className="flex flex-wrap gap-x-6 gap-y-3">
+                  {trends.emailGrowth.map((w) => (
+                    <div key={w.weekStart} className="flex items-baseline gap-2">
+                      <span className="font-culinary-sans text-xs tabular-nums text-culinary-text-muted">{w.weekLabel}</span>
+                      <span className="font-semibold tabular-nums text-culinary-navy">+{w.count}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="font-culinary-sans text-sm text-culinary-text-muted">No growth data</p>
+              )}
+            </CulinaryCard>
+          </section>
+        )}
 
-        {/* Zone 6 — Live Activity Feed (polls every 30s) */}
-        <section className="min-w-0 pb-24 md:pb-20">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Activity
-          </h2>
-          <div className="bg-white border border-stone-200/80 rounded-xl p-5 min-w-0">
-            <FounderDashboardActivityFeed initialActivity={activity} />
-            <FounderDashboardActivityForm />
-          </div>
-        </section>
+        {/* Zone 6 — Live Activity Feed (founder_admin only) */}
+        {showFounderOnly && (
+          <section className="min-w-0 pb-24 md:pb-20">
+            <h2 className={sectionHeading}>Activity</h2>
+            <CulinaryCard className="min-w-0">
+              <FounderDashboardActivityFeed initialActivity={activity} />
+              <FounderDashboardActivityForm />
+            </CulinaryCard>
+          </section>
+        )}
 
-        {/* Zone 7 — Weekly ritual */}
-        <section className="min-w-0">
-          <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-5 pb-2 border-b border-stone-200">
-            Weekly ritual
-          </h2>
-          <FounderDashboardWeeklyRitual />
-        </section>
-      </div>
+        {/* Zone 7 — Weekly ritual (founder_admin only) */}
+        {showFounderOnly && (
+          <section className="min-w-0">
+            <h2 className={sectionHeading}>Weekly ritual</h2>
+            <FounderDashboardWeeklyRitual />
+          </section>
+        )}
     </div>
   )
 }

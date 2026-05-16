@@ -14,7 +14,7 @@ export default function Error({
         <p className="text-gray-600 mb-4">{error.message}</p>
         <button
           onClick={() => reset()}
-          className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg hover:bg-[#154a32] transition"
+          className="px-4 py-2 bg-forestDark text-white rounded-lg hover:bg-forestDarker transition"
         >
           Try again
         </button>

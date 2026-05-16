@@ -15,10 +15,10 @@ export default async function ChefsLeaderboardPage() {
 
   return (
     <div className="bg-white min-h-screen">
-      <header className="bg-[#1a5f3f] text-white py-12">
+      <header className="bg-forestDark text-white py-12">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-4xl font-bold mb-2">Chef Leaderboard</h1>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-4" />
+          <div className="h-1 w-24 bg-gold mx-auto mb-4" />
           <p className="text-green-100">
             Celebrating excellence. Top 10 chefs by performance (last 90 days).
           </p>
@@ -45,7 +45,7 @@ export default async function ChefsLeaderboardPage() {
                 key={e.chefId}
                 className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm flex items-center gap-4"
               >
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#1a5f3f] text-white flex items-center justify-center font-bold text-lg">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-forestDark text-white flex items-center justify-center font-bold text-lg">
                   {e.rank}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -54,7 +54,7 @@ export default async function ChefsLeaderboardPage() {
                       {e.name ?? 'Chef'}
                     </span>
                     {e.topPerformer && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-forestDark">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gold text-forestDark">
                         Top Performer
                       </span>
                     )}

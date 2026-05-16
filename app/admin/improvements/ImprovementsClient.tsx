@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { CulinaryCard } from '@/components/culinary-os'
 import {
   createImprovementAction,
   updateImprovementAction,
@@ -121,7 +122,7 @@ export default function ImprovementsClient({
   return (
     <div className="space-y-6">
       {/* Create */}
-      <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <CulinaryCard className="p-4">
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">
           {showForm ? 'Add to backlog' : 'Improvement backlog'}
         </h2>
@@ -191,12 +192,12 @@ export default function ImprovementsClient({
             </div>
           </form>
         )}
-      </div>
+      </CulinaryCard>
 
       {/* Edit modal */}
       {editing && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6">
+          <CulinaryCard className="max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Edit item</h3>
             <form onSubmit={handleUpdate} className="space-y-3 text-sm">
               <label className="block">
@@ -254,13 +255,13 @@ export default function ImprovementsClient({
                 </button>
               </div>
             </form>
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Open (priority order; top 3 highlighted) */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
+      <CulinaryCard padded={false} className="overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-culinary-outline bg-culinary-surface-low text-sm font-semibold text-gray-700">
           Open (Backlog + In Progress) — ship top 3
         </h2>
         <div className="overflow-x-auto">
@@ -290,11 +291,11 @@ export default function ImprovementsClient({
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Blocked */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
+      <CulinaryCard padded={false} className="overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-culinary-outline bg-culinary-surface-low text-sm font-semibold text-gray-700">
           Blocked
         </h2>
         <div className="overflow-x-auto">
@@ -329,11 +330,11 @@ export default function ImprovementsClient({
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Shipped this week */}
-      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-        <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
+      <CulinaryCard padded={false} className="overflow-hidden">
+        <h2 className="px-4 py-3 border-b border-culinary-outline bg-culinary-surface-low text-sm font-semibold text-gray-700">
           Shipped this week
         </h2>
         <div className="overflow-x-auto">
@@ -366,7 +367,7 @@ export default function ImprovementsClient({
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }

@@ -4,8 +4,8 @@ export default function LeaderThankYouPage() {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="max-w-2xl w-full text-center">
-        <div className="bg-[#1a5f3f] text-white py-12 rounded-lg shadow-lg">
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+        <div className="bg-forestDark text-white py-12 rounded-lg shadow-lg">
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
           <h1 className="text-4xl font-bold mb-4">Thank You!</h1>
           <p className="text-green-100 text-lg mb-6">
             Your region leader application has been submitted successfully.
@@ -16,7 +16,7 @@ export default function LeaderThankYouPage() {
           </p>
           <Link
             href="/replicate"
-            className="inline-block px-6 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition"
+            className="inline-block px-6 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition"
           >
             Return to Replication
           </Link>

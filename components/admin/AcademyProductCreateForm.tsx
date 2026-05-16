@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useTransition } from 'react'
 import { createAcademyProduct } from '@/app/admin/academy-products/actions'
+import { CulinaryCard } from '@/components/culinary-os'
 
 const TYPES = ['COURSE', 'DOWNLOAD', 'BUNDLE']
 
@@ -49,9 +50,10 @@ export function AcademyProductCreateForm() {
   }
 
   return (
-    <form
+    <CulinaryCard
+      as="form"
       onSubmit={handleSubmit}
-      className="bg-white border border-stone-200/80 rounded-xl p-5 space-y-4 max-w-2xl"
+      className="max-w-2xl space-y-4"
     >
       {error && (
         <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>
@@ -171,6 +173,6 @@ export function AcademyProductCreateForm() {
       >
         {pending ? 'Creating…' : 'Create product'}
       </button>
-    </form>
+    </CulinaryCard>
   )
 }

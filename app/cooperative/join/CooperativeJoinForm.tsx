@@ -61,7 +61,7 @@ export default function CooperativeJoinForm() {
           type="text"
           value={formData.name || ''}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           required
         />
         {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -75,7 +75,7 @@ export default function CooperativeJoinForm() {
           type="email"
           value={formData.email || ''}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           required
         />
         {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -87,7 +87,7 @@ export default function CooperativeJoinForm() {
           type="tel"
           value={formData.phone || ''}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
         />
       </div>
 
@@ -98,7 +98,7 @@ export default function CooperativeJoinForm() {
         <select
           value={formData.role || 'farmer'}
           onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           required
         >
           <option value="farmer">Farmer (Regenerative Agriculture)</option>
@@ -117,7 +117,7 @@ export default function CooperativeJoinForm() {
           type="text"
           value={formData.region || ''}
           onChange={(e) => setFormData({ ...formData, region: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           placeholder="e.g., Jamaica, Caribbean, Global"
           required
         />
@@ -130,7 +130,7 @@ export default function CooperativeJoinForm() {
           value={formData.bio || ''}
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
           rows={4}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
           placeholder="Tell us about yourself and your regenerative work..."
         />
       </div>
@@ -142,7 +142,7 @@ export default function CooperativeJoinForm() {
             type="url"
             value={formData.website_url || ''}
             onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             placeholder="https://..."
           />
         </div>
@@ -152,7 +152,7 @@ export default function CooperativeJoinForm() {
             type="text"
             value={formData.instagram_handle || ''}
             onChange={(e) => setFormData({ ...formData, instagram_handle: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             placeholder="@yourhandle"
           />
         </div>
@@ -167,7 +167,7 @@ export default function CooperativeJoinForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+        className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
       >
         {isSubmitting ? 'Submitting...' : 'Submit Application'}
       </button>

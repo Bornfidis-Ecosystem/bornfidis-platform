@@ -85,7 +85,7 @@ export default function PublicImpactClient({ impactData }: PublicImpactClientPro
                       </p>
                     )}
                   </div>
-                  <span className="px-2 py-1 bg-[#1a5f3f] text-white text-xs rounded capitalize">{fund.fund_type}</span>
+                  <span className="px-2 py-1 bg-forestDark text-white text-xs rounded capitalize">{fund.fund_type}</span>
                 </div>
               </div>
             ))}
@@ -124,7 +124,7 @@ export default function PublicImpactClient({ impactData }: PublicImpactClientPro
           </p>
           <Link
             href="/replicate"
-            className="inline-block px-6 py-3 bg-[#1a5f3f] text-white font-semibold rounded-lg shadow-md hover:bg-[#154a32] transition"
+            className="inline-block px-6 py-3 bg-forestDark text-white font-semibold rounded-lg shadow-md hover:bg-forestDarker transition"
           >
             Launch a Region
           </Link>
@@ -132,7 +132,7 @@ export default function PublicImpactClient({ impactData }: PublicImpactClientPro
       </section>
 
       {/* Invest in Regeneration */}
-      <section className="bg-[#1a5f3f] text-white p-8 rounded-lg shadow-md text-center">
+      <section className="bg-forestDark text-white p-8 rounded-lg shadow-md text-center">
         <h2 className="text-3xl font-bold mb-4">Invest in Regeneration</h2>
         <p className="text-green-100 mb-6 max-w-2xl mx-auto">
           Your investment directly supports regenerative agriculture, community development, and global replication.

@@ -29,7 +29,7 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
   return (
     <div className="space-y-12">
       {/* Vision Story */}
-      <div className="bg-gradient-to-r from-[#1a5f3f] to-[#154a32] rounded-lg shadow-lg p-8 text-white">
+      <div className="bg-gradient-to-r from-forestDark to-forestDarker rounded-lg shadow-lg p-8 text-white">
         <h2 className="text-3xl font-bold mb-4">Our Vision</h2>
         <div className="h-1 w-24 bg-gold mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed">
@@ -56,12 +56,12 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-white border-2 border-[#1a5f3f] rounded-lg shadow-sm p-6 text-center">
+        <div className="bg-white border-2 border-forestDark rounded-lg shadow-sm p-6 text-center">
           <div className="text-4xl font-bold text-forestDark mb-2">{data.totalMembers}</div>
           <div className="text-gray-700 font-semibold">Total Members</div>
         </div>
         {Object.entries(data.membersByRole).map(([role, count]) => (
-          <div key={role} className="bg-white border-2 border-[#FFBC00] rounded-lg shadow-sm p-6 text-center">
+          <div key={role} className="bg-white border-2 border-gold rounded-lg shadow-sm p-6 text-center">
             <div className="text-4xl font-bold text-forestDark mb-2">{count}</div>
             <div className="text-gray-700 font-semibold capitalize">{role}s</div>
           </div>
@@ -90,7 +90,7 @@ export default function PublicCooperativeClient({ data }: PublicCooperativeClien
         </p>
         <a
           href="/cooperative/join"
-          className="inline-block px-8 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+          className="inline-block px-8 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
         >
           Apply to Join
         </a>

@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LegacyLeader, LegacyDocument, PrayerRequest, LegacySummary } from '@/types/legacy'
@@ -59,7 +60,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-forestDark'
+                  ? 'border-gold text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -74,31 +75,31 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
         <div className="space-y-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Leaders</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_leaders}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.active_leaders} active</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Succession Ready</h3>
               <p className="text-3xl font-bold text-gold">{summary.succession_ready_count}</p>
               <p className="text-xs text-gray-500 mt-1">Leaders prepared</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Legacy Documents</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_documents}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.public_documents} public</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Prayer Requests</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_prayer_requests}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.answered_prayers} answered</p>
-            </div>
+            </CulinaryCard>
           </div>
 
           {/* Succession Ready Leaders */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Succession Ready Leaders
             </h2>
             {successionReadyLeaders.length === 0 ? (
@@ -117,11 +118,11 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
 
           {/* Recent Prayer Requests */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Recent Prayer Requests
             </h2>
             {unansweredPrayers.length === 0 ? (
@@ -145,13 +146,13 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Succession Tab */}
       {activeTab === 'succession' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Succession Planner</h2>
             <button
@@ -206,12 +207,12 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Documents Tab */}
       {activeTab === 'documents' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Vision Archive</h2>
             <button
@@ -251,13 +252,13 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               ))}
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Prayers Tab */}
       {activeTab === 'prayers' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+        <CulinaryCard>
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Prayer Dashboard
           </h2>
           {prayers.length === 0 ? (
@@ -296,7 +297,7 @@ export default function LegacyDashboardClient({ initialData }: LegacyDashboardCl
               ))}
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
     </div>
   )

@@ -64,9 +64,9 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
       )}
 
       {/* The Covenant */}
-      <section className="bg-[#1a5f3f] text-white p-8 rounded-lg shadow-md">
+      <section className="bg-forestDark text-white p-8 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center">The Covenant</h2>
-        <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+        <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed max-w-3xl mx-auto">
           <p>
             We, the Bornfidis community, covenant together before God to:
@@ -126,7 +126,7 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
       )}
 
       {/* Join the Movement */}
-      <section className="bg-[#FFBC00] p-8 rounded-lg shadow-md text-center">
+      <section className="bg-gold p-8 rounded-lg shadow-md text-center">
         <h2 className="text-3xl font-bold text-forestDark mb-4">Join the Movement</h2>
         <p className="text-forestDark mb-6 max-w-2xl mx-auto">
           Be part of a movement that's regenerating the land, empowering communities, and building
@@ -135,7 +135,7 @@ export default function PublicTestamentClient({ testamentData }: PublicTestament
         <div className="flex flex-wrap gap-4 justify-center">
           <Link
             href="/book"
-            className="px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Book Your Event
           </Link>

@@ -3,10 +3,11 @@
  */
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { UserRole } from '@prisma/client'
 import { checkAdminAccess } from '@/lib/requireAdmin'
-import AdminHeaderBar from '@/components/admin/AdminHeaderBar'
-import { AppNav } from '@/components/AppNav'
-import AdminPushWrap from '@/components/push/AdminPushWrap'
+import { CulinaryAdminChrome } from '@/components/culinary-os'
+import { getNavForRole } from '@/lib/filter-nav'
+import { ADMIN_AREA_ROLES, hasRole } from '@/lib/require-role'
 
 const ADMIN_LOAD_ERROR = 'ADMIN_LOAD_ERROR'
 
@@ -20,6 +21,13 @@ function isNextRedirect(err: unknown): boolean {
  */
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
+
+/** Nav + badge role: allowlist/platform admins without Prisma ADMIN still see ops links. */
+function effectiveAdminNavRole(prismaRole: string | null, isAdmin: boolean): UserRole | string | null {
+  if (prismaRole && hasRole(prismaRole, ADMIN_AREA_ROLES)) return prismaRole
+  if (isAdmin) return UserRole.ADMIN
+  return prismaRole
+}
 
 function AdminErrorUI() {
   return (
@@ -77,7 +85,7 @@ export default async function AdminLayout({
 
     if (!result.isAdmin) {
       const debugInfo = process.env.NODE_ENV === 'development'
-        ? { email: result.user?.email, role: result.role, error: result.error }
+        ? { email: result.user?.email, role: result.role, platformRole: result.platformRole, error: result.error }
         : null
 
       return (
@@ -100,15 +108,16 @@ export default async function AdminLayout({
       )
     }
 
+    const navRole = effectiveAdminNavRole(result.role, result.isAdmin)
+
     return (
-      <>
-        <AdminHeaderBar user={result.user} role={result.role} />
-        <div className="border-b border-gray-200 bg-stone-50/80 px-3 py-2 md:px-4">
-          <AppNav role={result.role} />
-        </div>
-        <AdminPushWrap />
+      <CulinaryAdminChrome
+        navItems={getNavForRole(navRole)}
+        user={result.user}
+        role={navRole}
+      >
         {children}
-      </>
+      </CulinaryAdminChrome>
     )
   } catch (err) {
     if (isNextRedirect(err)) throw err

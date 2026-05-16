@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { CulinaryCard } from '@/components/culinary-os'
 
 const ASSET_TYPES = [
   { id: 'label', label: 'Product label', tag: 'product label, packaging' },
@@ -101,7 +102,7 @@ export function DesignAgentClient() {
 
   return (
     <div className="max-w-2xl space-y-8">
-      <div className="rounded-xl border border-[#1A3C34]/20 bg-white p-6 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-4">
           Asset type
         </h2>
@@ -121,9 +122,9 @@ export function DesignAgentClient() {
             </button>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
-      <div className="rounded-xl border border-[#1A3C34]/20 bg-white p-6 shadow-sm">
+      <CulinaryCard>
         <label htmlFor="product-name" className="block text-sm font-semibold text-[#1A3C34] mb-2">
           Product name
         </label>
@@ -133,11 +134,11 @@ export function DesignAgentClient() {
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
           placeholder="e.g. Regenerative Enterprise Foundations"
-          className="w-full rounded-lg border border-stone-300 px-4 py-2.5 text-stone-900 placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-2 focus:ring-[#1A3C34]/20"
+          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]/20"
         />
-      </div>
+      </CulinaryCard>
 
-      <div className="rounded-xl border border-[#1A3C34]/20 bg-white p-6 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-3">
           Division
         </h2>
@@ -157,9 +158,9 @@ export function DesignAgentClient() {
             </button>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
-      <div className="rounded-xl border border-[#1A3C34]/20 bg-white p-6 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-3">
           AI tool
         </h2>
@@ -179,9 +180,9 @@ export function DesignAgentClient() {
             </button>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
-      <div className="rounded-xl border border-[#1A3C34]/20 bg-white p-6 shadow-sm">
+      <CulinaryCard>
         <label htmlFor="details" className="block text-sm font-semibold text-[#1A3C34] mb-2">
           Extra details
         </label>
@@ -191,7 +192,7 @@ export function DesignAgentClient() {
           onChange={(e) => setDetails(e.target.value)}
           placeholder="Mood, elements, or specific requests..."
           rows={3}
-          className="w-full rounded-lg border border-stone-300 px-4 py-2.5 text-stone-900 placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-2 focus:ring-[#1A3C34]/20 resize-y"
+          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]/20 resize-y"
         />
         <p className="text-xs text-stone-500 mt-2 mb-1">Quick tags:</p>
         <div className="flex flex-wrap gap-1.5">
@@ -206,24 +207,24 @@ export function DesignAgentClient() {
             </button>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
       <button
         type="button"
         onClick={handleGenerate}
-        className="w-full rounded-xl bg-[#1A3C34] text-white font-semibold py-3.5 px-6 hover:opacity-90 transition"
+        className="w-full rounded-none bg-[#1A3C34] text-white font-semibold py-3.5 px-6 shadow-none hover:opacity-90 transition"
       >
         Generate brand prompt
       </button>
 
       {generatedPrompt && (
-        <div className="rounded-xl border-2 border-[#1A3C34]/30 bg-stone-50 p-6">
+        <CulinaryCard className="border-2 border-[#1A3C34]/30 bg-culinary-surface-low">
           <div className="flex items-center justify-between gap-2 mb-3">
             <span className="text-sm font-semibold text-[#1A3C34]">Your prompt</span>
             <button
               type="button"
               onClick={handleCopy}
-              className="rounded-lg bg-[#C9A84C] text-[#1A3C34] font-medium px-4 py-2 text-sm hover:opacity-90 transition"
+              className="rounded-none bg-[#C9A84C] text-[#1A3C34] font-medium px-4 py-2 text-sm shadow-none hover:opacity-90 transition"
             >
               {copied ? 'Copied!' : 'Copy'}
             </button>
@@ -234,7 +235,7 @@ export function DesignAgentClient() {
           <p className="text-xs text-stone-500 mt-3">
             Paste this into Midjourney, DALL·E, or Adobe Firefly.
           </p>
-        </div>
+        </CulinaryCard>
       )}
 
       <p className="text-center text-sm text-stone-500">

@@ -82,7 +82,7 @@ export default function MarginGuardrailsClient({ initialConfigs, initialLogs }: 
               <button
                 type="button"
                 onClick={() => { setEditing(c); setIsNew(false) }}
-                className="text-[#1a5f3f] hover:underline"
+                className="text-forestDark hover:underline"
               >
                 Edit
               </button>
@@ -152,7 +152,7 @@ export default function MarginGuardrailsClient({ initialConfigs, initialLogs }: 
                   <tr key={log.id} className="border-b">
                     <td className="py-2 pr-2 text-gray-600">{new Date(log.createdAt).toLocaleString()}</td>
                     <td className="py-2 pr-2">
-                      <Link href={`/admin/bookings/${log.bookingId}`} className="text-[#1a5f3f] hover:underline">
+                      <Link href={`/admin/bookings/${log.bookingId}`} className="text-forestDark hover:underline">
                         {log.bookingId.slice(0, 8)}…
                       </Link>
                     </td>
@@ -165,7 +165,7 @@ export default function MarginGuardrailsClient({ initialConfigs, initialLogs }: 
             </tbody>
           </table>
         </div>
-        <button type="button" onClick={refreshLogs} className="mt-2 text-sm text-[#1a5f3f] hover:underline">Refresh log</button>
+        <button type="button" onClick={refreshLogs} className="mt-2 text-sm text-forestDark hover:underline">Refresh log</button>
       </div>
     </div>
   )

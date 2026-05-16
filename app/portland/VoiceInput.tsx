@@ -156,7 +156,7 @@ export default function VoiceInput({ onResult, label, value = '', onClear }: Voi
           className={`px-4 py-3 rounded-lg font-semibold text-sm transition active:scale-95 relative ${
             isListening
               ? 'bg-red-600 text-white shadow-lg'
-              : 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-opacity-90'
+              : 'bg-gold text-forestDark hover:bg-opacity-90'
           }`}
           title={isListening ? 'Stop listening' : 'Start voice input'}
         >
@@ -189,7 +189,7 @@ export default function VoiceInput({ onResult, label, value = '', onClear }: Voi
       )}
       {/* Visual listening indicator */}
       {isListening && (
-        <div className="flex items-center gap-2 text-sm text-[#1a5f3f]">
+        <div className="flex items-center gap-2 text-sm text-forestDark">
           <div className="flex gap-1">
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
             <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>

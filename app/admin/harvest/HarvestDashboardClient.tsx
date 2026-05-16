@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { HarvestMetric, KingdomFund, ImpactTransaction, HarvestSummary } from '@/types/harvest'
@@ -72,7 +73,7 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-forestDark'
+                  ? 'border-gold text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -87,43 +88,43 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
         <div className="space-y-6">
           {/* Key Metrics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Food (Tons)</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_food_tons.toLocaleString()}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Meals Served</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_meals_served.toLocaleString()}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Land Regenerated (Acres)</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_land_regenerated_acres.toLocaleString()}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Kingdom Funds</h3>
               <p className="text-3xl font-bold text-gold">{formatUSD(totalFundBalance)}</p>
-            </div>
+            </CulinaryCard>
           </div>
 
           {/* Additional Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Farmers Supported</h3>
               <p className="text-2xl font-bold text-forestDark">{summary.total_farmers_supported}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Chefs Deployed</h3>
               <p className="text-2xl font-bold text-forestDark">{summary.total_chefs_deployed}</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Disciples Trained</h3>
               <p className="text-2xl font-bold text-forestDark">{summary.total_disciples_trained}</p>
-            </div>
+            </CulinaryCard>
           </div>
 
           {/* Recent Activity */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Recent Transactions
             </h2>
             {transactions.length === 0 ? (
@@ -159,18 +160,18 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
                 </table>
               </div>
             )}
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Metrics Tab */}
       {activeTab === 'metrics' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Harvest Metrics</h2>
             <button
               onClick={() => alert('Add Metric - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Metric
             </button>
@@ -207,17 +208,17 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Funds Tab */}
       {activeTab === 'funds' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Kingdom Funds</h2>
             <button
               onClick={() => alert('Create Fund - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Create Fund
             </button>
@@ -251,13 +252,13 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
               ))}
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Transactions Tab */}
       {activeTab === 'transactions' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+        <CulinaryCard>
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Impact Transactions
           </h2>
           {transactions.length === 0 ? (
@@ -301,7 +302,7 @@ export default function HarvestDashboardClient({ initialData }: HarvestDashboard
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
     </div>
   )

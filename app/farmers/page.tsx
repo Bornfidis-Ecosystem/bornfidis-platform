@@ -1,21 +1,46 @@
 /**
  * Community layer — Farmer network.
  */
+import Image from 'next/image'
 import Link from 'next/link'
+import { brandPhotos } from '@/lib/brand-photos'
 
 export default function FarmersPage() {
   return (
     <div className="bg-white">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white py-16">
+      <header className="bg-forestDark text-white py-16">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-5xl font-bold mb-4">Island Harvest Hub</h1>
-          <div className="h-1 w-32 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-32 bg-gold mx-auto mb-6"></div>
           <p className="text-green-100 text-lg max-w-2xl mx-auto">
             Our network of regenerative farmers supplying fresh, sustainable ingredients.
           </p>
         </div>
       </header>
+
+      <div className="container mx-auto max-w-5xl px-4 -mt-10 mb-12">
+        <div className="grid gap-4 md:grid-cols-2">
+          <figure className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+            <Image
+              src={brandPhotos.cocoaHarvest}
+              alt="Harvesting cocoa — hands in the field with fresh pods"
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </figure>
+          <figure className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg">
+            <Image
+              src={brandPhotos.jamaicaStream}
+              alt="Regenerative land — clear water and tropical growth in Jamaica"
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </figure>
+        </div>
+      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 max-w-4xl">
@@ -52,7 +77,7 @@ export default function FarmersPage() {
             </div>
             <Link
               href="/farm/apply"
-              className="inline-block px-8 py-3 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="inline-block px-8 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Apply to Join the Hub
             </Link>

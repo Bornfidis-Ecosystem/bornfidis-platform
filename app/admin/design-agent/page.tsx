@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic'
 
 export default function DesignAgentPage() {
   return (
-    <div className="min-h-screen bg-stone-50">
-      <div className="border-b border-stone-200 bg-white/95 backdrop-blur-sm px-4 py-4 md:px-6">
+    <div className="min-h-screen bg-culinary-bone">
+      <div className="border-b border-culinary-outline bg-culinary-bone px-4 py-4 md:px-6">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-baseline gap-2">
             <Link

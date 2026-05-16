@@ -38,7 +38,7 @@ export default function ChefTierOverrideForm({ chefId, currentOverride }: Props)
       <button
         type="submit"
         disabled={saving}
-        className="rounded bg-[#1a5f3f] px-3 py-1.5 text-sm text-white hover:bg-[#154a32] disabled:opacity-50"
+        className="rounded bg-forestDark px-3 py-1.5 text-sm text-white hover:bg-forestDarker disabled:opacity-50"
       >
         {saving ? 'Saving…' : 'Save'}
       </button>

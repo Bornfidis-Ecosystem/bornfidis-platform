@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
+import { CulinaryCard } from '@/components/culinary-os'
 
 function formatDate(value?: Date | null) {
   if (!value) return '—'
@@ -12,7 +13,7 @@ function formatDate(value?: Date | null) {
 }
 
 export default async function AdminClientsPage() {
-  await requireAdminUser()
+  await requireManagerOrFounderPageAccess()
 
   const clients = await db.clientProfile.findMany({
     orderBy: { createdAt: 'desc' },
@@ -27,7 +28,7 @@ export default async function AdminClientsPage() {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-2xl font-bold">Client Profiles</h1>
@@ -36,7 +37,7 @@ export default async function AdminClientsPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-200">
+        <CulinaryCard padded={false} className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -75,7 +76,7 @@ export default async function AdminClientsPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

@@ -19,7 +19,7 @@ export function AcademyProductsTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
-        <thead className="bg-stone-50 border-b border-stone-200">
+        <thead className="border-b border-culinary-outline bg-culinary-surface-low">
           <tr>
             <th className="px-4 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
               Title / Slug
@@ -47,9 +47,9 @@ export function AcademyProductsTable({
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-stone-200">
+        <tbody className="divide-y divide-culinary-outline">
           {products.map((p) => (
-            <tr key={p.id} className="hover:bg-stone-50/50">
+            <tr key={p.id} className="hover:bg-culinary-surface-low/50">
               <td className="px-4 py-3">
                 <div className="font-medium text-stone-900">{p.title}</div>
                 <div className="text-xs text-stone-500 font-mono">{p.slug}</div>

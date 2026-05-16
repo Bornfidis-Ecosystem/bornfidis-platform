@@ -9,7 +9,7 @@ export default function ChefApplicationThankYouPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-forestDark mb-4">Application Received!</h1>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         </div>
 
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 mb-8">
@@ -19,7 +19,7 @@ export default function ChefApplicationThankYouPage() {
           <p className="text-gray-600 mb-6">
             We've received your application and will review it carefully. Our team will get back to you within 3-5 business days.
           </p>
-          <div className="bg-green-50 border-l-4 border-[#1a5f3f] p-4 text-left">
+          <div className="bg-green-50 border-l-4 border-forestDark p-4 text-left">
             <p className="text-sm text-gray-700">
               <strong>What's Next?</strong>
             </p>
@@ -35,7 +35,7 @@ export default function ChefApplicationThankYouPage() {
         <div className="text-center">
           <a
             href="/"
-            className="inline-block px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="inline-block px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Return to Home
           </a>

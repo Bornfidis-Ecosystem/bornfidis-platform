@@ -18,6 +18,10 @@ const ICON_GOLD = `${CDN}/provisions_icon_gold_9f14d9ac.png`
 
 /** Local photography — grill / stovetop line (chicken, sides, sauces). Shared with Story ChefBio. */
 const IMG_HERO_KITCHEN = '/images/story/chef-bio-kitchen.png'
+/** Editorial marketing — garden gathering, charcuterie spread, plated menu detail */
+const IMG_EVENTS_GARDEN = '/images/marketing/events-garden-party.png'
+const IMG_CHARCUTERIE = '/images/marketing/catering-charcuterie.png'
+const IMG_MENU_DETAIL = '/images/marketing/dining-menu-detail.png'
 const IMG_TABLE_ATM =
   `${CDN}/bf_table_atmosphere-bcEjpnGnjRAmyk6468tLiS.webp`
 /** Local — Chef Brian at the grill (chicken). Replaces CDN still where flames read as stove flare, not pan work. */
@@ -51,7 +55,7 @@ const SERVICES = [
     desc: 'A curated multi-course dinner prepared in your home, villa, or Airbnb. From amuse-bouche to dessert, every detail is designed around you.',
     price: 'From $650',
     guests: '2–12 guests',
-    image: IMG_HERO_KITCHEN,
+    image: IMG_MENU_DETAIL,
   },
   {
     num: '02',
@@ -60,7 +64,7 @@ const SERVICES = [
     desc: 'Full culinary service for your weekend getaway — breakfast, dinner, and a signature event night. All handled by Chef Brian and Caryll.',
     price: 'From $1,200',
     guests: 'Up to 20 guests',
-    image: IMG_TABLE_ATM,
+    image: IMG_EVENTS_GARDEN,
   },
   {
     num: '03',
@@ -69,7 +73,7 @@ const SERVICES = [
     desc: 'Bespoke menus for intimate wedding celebrations. Caribbean, Italian, or fusion — crafted to reflect your story and delight your guests.',
     price: 'Custom quote',
     guests: 'Up to 50 guests',
-    image: IMG_CHEF_GRILL,
+    image: IMG_CHARCUTERIE,
   },
 ] as const
 

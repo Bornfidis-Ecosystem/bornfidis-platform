@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
 import CopyTextButton from '@/components/admin/CopyTextButton'
+import { CulinaryCard } from '@/components/culinary-os'
 import { Prisma } from '@prisma/client'
 
 export const dynamic = 'force-dynamic'
@@ -12,7 +13,7 @@ function CtaButton({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="inline-flex items-center justify-center rounded-lg bg-[#0F3D2E] px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
+      className="inline-flex items-center justify-center rounded-none bg-[#0F3D2E] px-4 py-2 text-sm font-semibold text-white shadow-none hover:opacity-90 transition"
     >
       {label}
     </Link>
@@ -65,66 +66,66 @@ function TestimonialsEmptyState({
 }) {
   if (searchTerm) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+      <CulinaryCard className="p-8 text-center">
         <h3 className="text-lg font-semibold text-navy">No testimonials found</h3>
         <p className="mt-2 text-sm text-gray-600">Try a different name, keyword, or clear your search.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <CtaButton href="/admin/testimonials" label="View approved testimonials" />
           <CtaButton href="/admin/testimonials?filter=all" label="View all testimonials" />
         </div>
-      </div>
+      </CulinaryCard>
     )
   }
   if (!hasAnyTestimonials) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+      <CulinaryCard className="p-8 text-center">
         <h3 className="text-lg font-semibold text-navy">No testimonials yet</h3>
         <p className="mt-2 text-sm text-gray-600">Testimonials are captured from completed bookings.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <CtaButton href="/admin/bookings?status=completed" label="View completed bookings" />
           <CtaButton href="/admin" label="Go to dashboard" />
         </div>
-      </div>
+      </CulinaryCard>
     )
   }
   if (filterMode === 'approved') {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+      <CulinaryCard className="p-8 text-center">
         <h3 className="text-lg font-semibold text-navy">No approved testimonials yet</h3>
         <p className="mt-2 text-sm text-gray-600">You have testimonials saved, but none are approved for use.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <CtaButton href="/admin/testimonials?filter=all" label="Review all testimonials" />
           <CtaButton href="/admin/bookings?status=completed" label="Request testimonials" />
         </div>
-      </div>
+      </CulinaryCard>
     )
   }
   if (filterMode === 'recent') {
     return (
-      <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+      <CulinaryCard className="p-8 text-center">
         <h3 className="text-lg font-semibold text-navy">No recent testimonials</h3>
         <p className="mt-2 text-sm text-gray-600">No testimonials have been received in the last {RECENT_DAYS} days.</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <CtaButton href="/admin/testimonials?filter=all" label="View all testimonials" />
           <CtaButton href="/admin/bookings?status=completed" label="Follow up with clients" />
         </div>
-      </div>
+      </CulinaryCard>
     )
   }
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-8 text-center">
+    <CulinaryCard className="p-8 text-center">
       <h3 className="text-lg font-semibold text-navy">No testimonials match this view</h3>
       <p className="mt-2 text-sm text-gray-600">Try another filter or search.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <CtaButton href="/admin/testimonials" label="View approved testimonials" />
         <CtaButton href="/admin/testimonials?filter=all" label="View all testimonials" />
       </div>
-    </div>
+    </CulinaryCard>
   )
 }
 
 export default async function AdminTestimonialsPage({ searchParams }: { searchParams: SearchParams }) {
-  await requireAdminUser()
+  await requireManagerOrFounderPageAccess()
   const params = await searchParams
   const filterMode = parseFilter(params.filter)
   const sortMode = parseSort(params.sort)
@@ -197,7 +198,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
   const sortLabel = sortMode === 'event' ? 'Event date (newest first)' : 'Recently received'
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
           <Link href="/admin" className="text-gold text-sm hover:underline">
@@ -220,7 +221,8 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-6xl space-y-4">
-        <form method="GET" className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 space-y-4">
+        <CulinaryCard>
+        <form method="GET" className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:items-end">
             <div className="flex-1 min-w-[200px]">
               <label htmlFor="q" className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">
@@ -232,7 +234,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
                 type="search"
                 defaultValue={searchRaw}
                 placeholder="Client name or testimonial text…"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-navy focus:ring-1 focus:ring-navy"
+                className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 text-sm text-gray-900 shadow-none focus:border-navy focus:ring-1 focus:ring-navy"
                 autoComplete="off"
               />
             </div>
@@ -244,7 +246,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
                 id="filter"
                 name="filter"
                 defaultValue={filterMode}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-navy focus:ring-1 focus:ring-navy"
+                className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 text-sm text-gray-900 shadow-none focus:border-navy focus:ring-1 focus:ring-navy"
               >
                 <option value="approved">Approved only</option>
                 <option value="all">All testimonials</option>
@@ -259,7 +261,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
                 id="sort"
                 name="sort"
                 defaultValue={sortMode}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-navy focus:ring-1 focus:ring-navy"
+                className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 text-sm text-gray-900 shadow-none focus:border-navy focus:ring-1 focus:ring-navy"
               >
                 <option value="received">Date received</option>
                 <option value="event">Event date</option>
@@ -267,7 +269,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
             </div>
             <button
               type="submit"
-              className="w-full sm:w-auto px-4 py-2 rounded-md bg-navy text-white text-sm font-semibold hover:bg-navy/90"
+              className="w-full sm:w-auto rounded-none bg-navy px-4 py-2 text-sm font-semibold text-white shadow-none hover:bg-navy/90"
             >
               Apply
             </button>
@@ -276,6 +278,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
             Search matches client name or testimonial body (case-insensitive). Quick filters preserve your search and sort.
           </p>
         </form>
+        </CulinaryCard>
 
         <div className="flex flex-wrap items-center gap-3 text-sm">
           <span className="text-gray-600">Quick filter:</span>
@@ -301,7 +304,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <CulinaryCard padded={false} className="overflow-hidden">
           {items.length === 0 ? (
             <TestimonialsEmptyState
               searchTerm={searchTerm}
@@ -365,7 +368,7 @@ export default async function AdminTestimonialsPage({ searchParams }: { searchPa
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

@@ -109,9 +109,9 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
       </section>
 
       {/* Generational Covenant */}
-      <section className="bg-[#1a5f3f] text-white p-8 rounded-lg shadow-md">
+      <section className="bg-forestDark text-white p-8 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center">Generational Covenant</h2>
-        <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+        <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed max-w-3xl mx-auto">
           <p>
             We commit to building Bornfidis as a legacy that will thrive for 100+ years, passing on not just a business,
@@ -159,7 +159,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
           <h2 className="text-3xl font-bold text-forestDark">Prayer Wall</h2>
           <button
             onClick={() => setShowPrayerForm(!showPrayerForm)}
-            className="px-6 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="px-6 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             {showPrayerForm ? 'Cancel' : 'Submit Prayer Request'}
           </button>
@@ -178,7 +178,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   id="name"
                   name="name"
                   required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -189,7 +189,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -200,7 +200,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   type="text"
                   id="region"
                   name="region"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -212,13 +212,13 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   name="request"
                   required
                   rows={5}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 ></textarea>
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+                className="w-full px-6 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Prayer Request'}
               </button>

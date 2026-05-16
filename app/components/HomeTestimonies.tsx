@@ -30,7 +30,7 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-forestDark mb-4">Living Testimonies</h2>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="bg-[#f0fdf4] border-2 border-[#d1fae5] rounded-lg p-8 md:p-12 shadow-lg">
@@ -58,7 +58,7 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`w-3 h-3 rounded-full transition ${
-                    index === currentIndex ? 'bg-[#FFBC00]' : 'bg-gray-300'
+                    index === currentIndex ? 'bg-gold' : 'bg-gray-300'
                   }`}
                   aria-label={`Go to testimony ${index + 1}`}
                 />
@@ -68,7 +68,7 @@ export default function HomeTestimonies({ testimonies }: HomeTestimoniesProps) {
           <div className="text-center mt-8">
             <Link
               href="/testament"
-              className="inline-block px-6 py-2 text-forestDark font-semibold hover:text-[#154a32] transition"
+              className="inline-block px-6 py-2 text-forestDark font-semibold hover:text-forestDarker transition"
             >
               Read More Testimonies →
             </Link>

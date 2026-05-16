@@ -5,6 +5,7 @@ import { getCoachOptions } from './actions'
 import CoachingListClient from './CoachingListClient'
 import SignOutButton from '@/components/admin/SignOutButton'
 import EvaluateAllButton from './EvaluateAllButton'
+import { CulinaryCard } from '@/components/culinary-os'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,12 +19,12 @@ export default async function AdminCoachingPage() {
   ])
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#1a5f3f] text-white">
+    <div className="min-h-screen bg-culinary-bone">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Link href="/admin" className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block">
+              <Link href="/admin" className="text-gold hover:underline text-sm mb-2 inline-block">
                 ← Admin
               </Link>
               <h1 className="text-2xl font-bold">Coaching</h1>
@@ -40,12 +41,12 @@ export default async function AdminCoachingPage() {
         <div className="mb-4">
           <EvaluateAllButton />
         </div>
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200">
+        <CulinaryCard padded={false} className="overflow-hidden">
+          <div className="px-4 py-3 border-b border-culinary-outline">
             <h2 className="text-lg font-semibold text-gray-900">Cases</h2>
           </div>
           <CoachingListClient cases={cases} coachOptions={coachOptions} />
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

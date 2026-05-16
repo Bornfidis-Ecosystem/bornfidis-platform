@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { getAcademyProducts } from './actions'
 import { AcademyProductsTable } from '@/components/admin/AcademyProductsTable'
 import { AcademyProductCreateForm } from '@/components/admin/AcademyProductCreateForm'
+import { CulinaryCard } from '@/components/culinary-os'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,9 +28,9 @@ export default async function AdminAcademyProductsPage() {
 
   if (!result.success) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-culinary-bone p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3">
+          <div className="rounded-none border border-red-200 bg-red-50 px-4 py-3 text-red-700 shadow-none">
             <p className="font-semibold">Error loading Academy products</p>
             <p className="text-sm mt-1">{result.error}</p>
             <Link href="/admin" className="text-sm underline mt-2 inline-block">
@@ -78,7 +79,7 @@ export default async function AdminAcademyProductsPage() {
           <h2 className="text-xs font-semibold text-stone-500 uppercase tracking-[0.2em] mb-4 pb-2 border-b border-stone-200">
             All products
           </h2>
-          <div className="bg-white border border-stone-200/80 rounded-xl overflow-hidden">
+          <CulinaryCard padded={false} className="overflow-hidden">
             {products.length === 0 ? (
               <div className="p-12 text-center text-stone-500 text-sm">
                 No Academy products yet. Create one above.
@@ -93,7 +94,7 @@ export default async function AdminAcademyProductsPage() {
                 }))}
               />
             )}
-          </div>
+          </CulinaryCard>
         </section>
       </div>
     </div>

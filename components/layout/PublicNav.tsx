@@ -45,6 +45,9 @@ export default function PublicNav() {
   /* Marketing pages ship their own editorial nav */
   if (pathname === '/' || pathname === '/book') return null
 
+  /* Platform admin uses Culinary OS shell — no marketing nav */
+  if (pathname?.startsWith('/admin')) return null
+
   return (
     <nav className="bg-navy text-white shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 max-w-7xl">

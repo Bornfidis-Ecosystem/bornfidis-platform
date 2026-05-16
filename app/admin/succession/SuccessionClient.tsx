@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -113,7 +114,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
@@ -235,7 +236,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
@@ -376,7 +377,7 @@ function EditForm({
   )
 
   return (
-    <div className="inline-block mt-1 p-2 rounded border border-gray-200 bg-white shadow">
+    <div className="inline-block mt-1 rounded-none border border-culinary-outline bg-culinary-bone p-2 shadow-none">
       <div className="flex flex-col gap-2 text-xs">
         <label className="flex items-center gap-2">
           Readiness:

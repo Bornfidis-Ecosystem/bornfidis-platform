@@ -21,7 +21,7 @@ export default async function AdminChefEarningsPage({ params }: { params: Promis
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <Link href={`/admin/chefs/${id}`} className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block">
+              <Link href={`/admin/chefs/${id}`} className="text-gold hover:underline text-sm mb-2 inline-block">
                 ← {chef.name}
               </Link>
               <h1 className="text-2xl font-bold">Earnings Projections</h1>

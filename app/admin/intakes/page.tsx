@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import SignOutButton from '@/components/admin/SignOutButton'
 import ReprocessIntakeButton from '@/components/admin/ReprocessIntakeButton'
 import Link from 'next/link'
+import { CulinaryCard } from '@/components/culinary-os'
 
 interface ParsedJson {
   name?: string | null
@@ -80,7 +81,7 @@ export default async function IntakesPage() {
   const { intakes, error: fetchError } = await getIntakes()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       {/* Header */}
       <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
@@ -102,7 +103,7 @@ export default async function IntakesPage() {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-7xl">
         {fetchError ? (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden p-8">
+          <CulinaryCard className="p-8">
             <div className="text-center">
               <div className="text-red-600 text-6xl mb-4">⚠️</div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Database Connection Error</h2>
@@ -122,14 +123,14 @@ export default async function IntakesPage() {
               </div>
               <Link
                 href="/admin/intakes"
-                className="inline-block mt-6 px-6 py-2 bg-forestDark text-white rounded-lg hover:bg-[#154a32] transition-colors"
+                className="inline-block mt-6 px-6 py-2 bg-forestDark text-white rounded-lg hover:bg-forestDarker transition-colors"
               >
                 Try Again
               </Link>
             </div>
-          </div>
+          </CulinaryCard>
         ) : (
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <CulinaryCard padded={false} className="overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -230,7 +231,7 @@ export default async function IntakesPage() {
                               <div>
                                 <Link
                                   href={`/admin/farmers/${intake.farmer.id}`}
-                                  className="font-medium text-forestDark hover:text-[#154a32]"
+                                  className="font-medium text-forestDark hover:text-forestDarker"
                                 >
                                   {intake.farmer.name}
                                 </Link>
@@ -254,7 +255,7 @@ export default async function IntakesPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </CulinaryCard>
         )}
       </main>
     </div>

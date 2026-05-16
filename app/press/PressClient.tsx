@@ -47,7 +47,7 @@ export default function PressClient({ initialData }: PressClientProps) {
         ) : (
           <div className="space-y-4">
             {initialData.pressKits.map((kit) => (
-              <div key={kit.id} className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-[#1a5f3f] transition">
+              <div key={kit.id} className="bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-forestDark transition">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-xl font-semibold text-forestDark mb-2">{kit.title}</h3>
@@ -64,7 +64,7 @@ export default function PressClient({ initialData }: PressClientProps) {
                   </div>
                   <button
                     onClick={() => handleDownload(kit)}
-                    className="px-6 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition whitespace-nowrap"
+                    className="px-6 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition whitespace-nowrap"
                   >
                     Download
                   </button>

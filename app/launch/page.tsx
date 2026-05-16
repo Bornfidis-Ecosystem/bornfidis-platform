@@ -4,10 +4,10 @@ export default function LaunchPage() {
   return (
     <div className="bg-white">
       {/* Header */}
-      <header className="bg-gradient-to-br from-[#1a5f3f] to-[#154a32] text-white py-20">
+      <header className="bg-gradient-to-br from-forestDark to-forestDarker text-white py-20">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-5xl md:text-6xl font-bold mb-4">We're Launching!</h1>
-          <div className="h-1 w-32 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-32 bg-gold mx-auto mb-6"></div>
           <p className="text-green-100 text-xl max-w-2xl mx-auto">
             Bornfidis Provisions is officially launching. Join us in regenerating land, people, and enterprise.
           </p>
@@ -42,7 +42,7 @@ export default function LaunchPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Link
                 href="/stories"
-                className="bg-white border-2 border-[#1a5f3f] rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
+                className="bg-white border-2 border-forestDark rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
               >
                 <div className="text-4xl mb-4">📖</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Share Your Story</h3>
@@ -50,7 +50,7 @@ export default function LaunchPage() {
               </Link>
               <Link
                 href="/documentary"
-                className="bg-white border-2 border-[#1a5f3f] rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
+                className="bg-white border-2 border-forestDark rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
               >
                 <div className="text-4xl mb-4">🎬</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Watch the Documentary</h3>
@@ -58,7 +58,7 @@ export default function LaunchPage() {
               </Link>
               <Link
                 href="/press"
-                className="bg-white border-2 border-[#1a5f3f] rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
+                className="bg-white border-2 border-forestDark rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
               >
                 <div className="text-4xl mb-4">📰</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Press Kit</h3>
@@ -66,7 +66,7 @@ export default function LaunchPage() {
               </Link>
               <Link
                 href="/partners"
-                className="bg-white border-2 border-[#1a5f3f] rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
+                className="bg-white border-2 border-forestDark rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
               >
                 <div className="text-4xl mb-4">🤝</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Partner With Us</h3>
@@ -74,7 +74,7 @@ export default function LaunchPage() {
               </Link>
               <Link
                 href="/book"
-                className="bg-[#FFBC00] border-2 border-[#FFBC00] rounded-lg p-6 hover:bg-gold-dark transition text-center"
+                className="bg-gold border-2 border-gold rounded-lg p-6 hover:bg-gold-dark transition text-center"
               >
                 <div className="text-4xl mb-4">🍽️</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Book Your Event</h3>
@@ -82,7 +82,7 @@ export default function LaunchPage() {
               </Link>
               <Link
                 href="/replicate/apply-leader"
-                className="bg-white border-2 border-[#1a5f3f] rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
+                className="bg-white border-2 border-forestDark rounded-lg p-6 hover:bg-[#f0fdf4] transition text-center"
               >
                 <div className="text-4xl mb-4">🌍</div>
                 <h3 className="text-xl font-semibold text-forestDark mb-2">Launch a Region</h3>
@@ -96,7 +96,7 @@ export default function LaunchPage() {
             <h2 className="text-3xl font-bold text-forestDark mb-6 text-center">Launch Timeline</h2>
             <div className="max-w-3xl mx-auto space-y-4">
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#FFBC00] rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
+                <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
                   1
                 </div>
                 <div>
@@ -105,7 +105,7 @@ export default function LaunchPage() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#FFBC00] rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
+                <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
                   2
                 </div>
                 <div>
@@ -114,7 +114,7 @@ export default function LaunchPage() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#FFBC00] rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
+                <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
                   3
                 </div>
                 <div>
@@ -123,7 +123,7 @@ export default function LaunchPage() {
                 </div>
               </div>
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-[#FFBC00] rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
+                <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center font-bold text-forestDark flex-shrink-0">
                   4
                 </div>
                 <div>

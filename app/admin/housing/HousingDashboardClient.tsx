@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { HousingProject, HousingResident, LegacyFund, HousingSummary } from '@/types/housing'
@@ -62,7 +63,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-forestDark'
+                  ? 'border-gold text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -77,31 +78,31 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
         <div className="space-y-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Projects</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_projects}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.active_projects} active</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Units</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_units}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.occupied_units} occupied</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Active Residents</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.active_residents}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.owners} owners</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Legacy Funds</h3>
               <p className="text-3xl font-bold text-gold">{formatUSD(summary.total_legacy_balance_cents)}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.total_legacy_funds} funds</p>
-            </div>
+            </CulinaryCard>
           </div>
 
           {/* Active Projects */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Active Projects
             </h2>
             {activeProjects.length === 0 ? (
@@ -129,11 +130,11 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
 
           {/* Recent Residents */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Recent Residents
             </h2>
             {activeResidents.length === 0 ? (
@@ -174,13 +175,13 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
                 </table>
               </div>
             )}
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Projects Tab */}
       {activeTab === 'projects' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Project Builder</h2>
             <button
@@ -234,12 +235,12 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Residents Tab */}
       {activeTab === 'residents' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Resident Equity Tracker</h2>
             <button
@@ -296,12 +297,12 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Funds Tab */}
       {activeTab === 'funds' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Trust Dashboard</h2>
             <button
@@ -345,7 +346,7 @@ export default function HousingDashboardClient({ initialData }: HousingDashboard
               ))}
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
     </div>
   )

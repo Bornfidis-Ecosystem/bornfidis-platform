@@ -101,7 +101,7 @@ export default function PartnersClient() {
       </section>
 
       {/* Inquiry Form */}
-      <section className="bg-white border-2 border-[#1a5f3f] rounded-lg p-8">
+      <section className="bg-white border-2 border-forestDark rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-forestDark mb-6">Partner Interest Form</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -115,7 +115,7 @@ export default function PartnersClient() {
                 value={formData.organization_name}
                 onChange={(e) => setFormData({ ...formData, organization_name: e.target.value })}
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -126,7 +126,7 @@ export default function PartnersClient() {
                 id="organization_type"
                 value={formData.organization_type || ''}
                 onChange={(e) => setFormData({ ...formData, organization_type: e.target.value as any || undefined })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               >
                 <option value="">Select type...</option>
                 <option value="media">Media</option>
@@ -150,7 +150,7 @@ export default function PartnersClient() {
                 value={formData.contact_name}
                 onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -163,7 +163,7 @@ export default function PartnersClient() {
                 value={formData.contact_email}
                 onChange={(e) => setFormData({ ...formData, contact_email: e.target.value })}
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function PartnersClient() {
                 id="contact_phone"
                 value={formData.contact_phone || ''}
                 onChange={(e) => setFormData({ ...formData, contact_phone: e.target.value })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -189,7 +189,7 @@ export default function PartnersClient() {
                 id="partnership_interest"
                 value={formData.partnership_interest || ''}
                 onChange={(e) => setFormData({ ...formData, partnership_interest: e.target.value as any || undefined })}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               >
                 <option value="">Select interest...</option>
                 <option value="sponsorship">Sponsorship</option>
@@ -211,7 +211,7 @@ export default function PartnersClient() {
               value={formData.website_url || ''}
               onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
               placeholder="https://example.com"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
 
@@ -225,7 +225,7 @@ export default function PartnersClient() {
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               required
               rows={6}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               placeholder="Tell us about your organization and how you'd like to partner..."
             />
           </div>
@@ -233,7 +233,7 @@ export default function PartnersClient() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+            className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Inquiry'}
           </button>

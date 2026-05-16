@@ -12,9 +12,9 @@ function formatUSD(cents: number): string {
 
 const styles = StyleSheet.create({
   page: { padding: 40, fontSize: 10, fontFamily: 'Helvetica' },
-  title: { fontSize: 16, fontWeight: 'bold', marginBottom: 4, color: '#002747' },
+  title: { fontSize: 16, fontWeight: 'bold', marginBottom: 4, color: '#0D1F2D' },
   subtitle: { fontSize: 9, color: '#666', marginBottom: 16 },
-  sectionTitle: { fontSize: 12, fontWeight: 'bold', marginBottom: 8, color: '#002747', borderBottomWidth: 1, borderBottomColor: '#ddd', paddingBottom: 4 },
+  sectionTitle: { fontSize: 12, fontWeight: 'bold', marginBottom: 8, color: '#0D1F2D', borderBottomWidth: 1, borderBottomColor: '#ddd', paddingBottom: 4 },
   row: { flexDirection: 'row', marginBottom: 4 },
   label: { width: '55%', color: '#555' },
   value: { width: '45%', fontWeight: 'bold' },

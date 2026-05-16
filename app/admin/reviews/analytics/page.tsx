@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import { getAdminReviewAnalytics } from '@/lib/review-analytics'
 import SignOutButton from '@/components/admin/SignOutButton'
+import { RemoveIneligibleFeaturedButton } from './RemoveIneligibleFeaturedButton'
+import { CulinaryCard } from '@/components/culinary-os'
 
 export const dynamic = 'force-dynamic'
 
@@ -13,8 +15,8 @@ export default async function AdminReviewAnalyticsPage() {
   const { summary, chefs } = analytics
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#1a5f3f] text-white">
+    <div className="min-h-screen bg-culinary-bone">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
@@ -35,28 +37,28 @@ export default async function AdminReviewAnalyticsPage() {
 
         {/* Summary cards */}
         <div className="grid gap-4 sm:grid-cols-3 mb-8">
-          <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+          <CulinaryCard className="p-5">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Avg rating</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">
               {summary.totalReviews > 0 ? summary.avgRating.toFixed(1) : '—'} ★
             </p>
             <p className="text-sm text-gray-500 mt-1">All reviews</p>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+          </CulinaryCard>
+          <CulinaryCard className="p-5">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total reviews</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{summary.totalReviews}</p>
             <p className="text-sm text-gray-500 mt-1">Verified client reviews</p>
-          </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+          </CulinaryCard>
+          <CulinaryCard className="p-5">
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Low-rating %</p>
             <p className="text-2xl font-bold text-gray-900 mt-1">{summary.lowRatingPercent}%</p>
             <p className="text-sm text-gray-500 mt-1">≤3★ ({summary.flaggedCount} flagged)</p>
-          </div>
+          </CulinaryCard>
         </div>
 
         {/* Per-chef table */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          <h2 className="px-4 py-3 text-sm font-semibold text-gray-700 border-b border-gray-200">
+        <CulinaryCard padded={false} className="overflow-hidden">
+          <h2 className="px-4 py-3 text-sm font-semibold text-gray-700 border-b border-culinary-outline">
             By chef — click name for detail
           </h2>
           {chefs.length === 0 ? (
@@ -100,7 +102,7 @@ export default async function AdminReviewAnalyticsPage() {
               </tbody>
             </table>
           )}
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

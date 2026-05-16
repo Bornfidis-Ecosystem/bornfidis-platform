@@ -1,22 +1,37 @@
+import Image from 'next/image'
 import FarmerJoinFormVoiceFirst from '@/components/farm/FarmerJoinFormVoiceFirst'
+import { brandPhotos } from '@/lib/brand-photos'
 
 export default function FarmerApplyPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white py-12">
+      <header className="bg-forestDark text-white py-12">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-4xl font-bold mb-3">Island Harvest Hub</h1>
-          <div className="h-1 w-32 bg-[#FFBC00] mx-auto mb-4"></div>
+          <div className="h-1 w-32 bg-gold mx-auto mb-4"></div>
           <p className="text-green-100 text-lg">
             Join our regenerative supplier network
           </p>
         </div>
       </header>
 
+      <div className="container mx-auto max-w-3xl px-4 -mt-8 mb-10">
+        <div className="relative aspect-[21/9] overflow-hidden rounded-2xl shadow-md">
+          <Image
+            src={brandPhotos.cocoaHarvest}
+            alt="Farmers with fresh harvest — join the Island Harvest Hub"
+            fill
+            className="object-cover object-center"
+            sizes="(max-width: 768px) 100vw, 48rem"
+            priority
+          />
+        </div>
+      </div>
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="bg-white border-2 border-[#1a5f3f] rounded-lg shadow-lg p-4 md:p-8">
+        <div className="bg-white border-2 border-forestDark rounded-lg shadow-lg p-4 md:p-8">
           <FarmerJoinFormVoiceFirst />
         </div>
 

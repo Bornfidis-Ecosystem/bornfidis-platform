@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { db } from '@/lib/db'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
 import { formatDateKey, getAdjacentMonthKey, getMonthGridDates, groupBookingsByDate, parseMonthQuery } from '@/lib/bookings/calendar-utils'
+import { CulinaryCard } from '@/components/culinary-os'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +23,8 @@ function getStatusChipClass(status?: string | null) {
   if (normalized === 'quoted') return 'bg-amber-100 text-amber-800 border-amber-200'
   if (normalized === 'booked') return 'bg-blue-100 text-blue-800 border-blue-200'
   if (normalized === 'confirmed') return 'bg-green-100 text-green-800 border-green-200'
-  if (normalized === 'completed') return 'bg-stone-100 text-stone-700 border-stone-200'
+  if (normalized === 'completed')
+    return 'border border-culinary-forest/30 bg-culinary-surface-low text-culinary-forest'
   if (normalized === 'cancelled' || normalized === 'canceled') return 'bg-red-100 text-red-800 border-red-200'
   return 'bg-gray-100 text-gray-700 border-gray-200'
 }
@@ -30,7 +32,7 @@ function getStatusChipClass(status?: string | null) {
 type SearchParams = Promise<{ month?: string }>
 
 export default async function AdminCalendarPage({ searchParams }: { searchParams: SearchParams }) {
-  await requireAdminUser()
+  await requireManagerOrFounderPageAccess()
 
   const params = await searchParams
   const { monthStart, monthKey } = parseMonthQuery(params.month)
@@ -63,7 +65,7 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
   const thisMonthKey = parseMonthQuery(null).monthKey
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
           <h1 className="text-2xl font-bold">Admin Calendar</h1>
@@ -72,34 +74,46 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="rounded-xl border border-gray-200 bg-white shadow-sm p-4 sm:p-6">
+        <CulinaryCard className="p-4 sm:p-6">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-navy">{monthLabel}</h2>
             <div className="flex flex-wrap items-center gap-2">
-              <Link href={`/admin/calendar?month=${prevMonthKey}`} className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <Link
+                href={`/admin/calendar?month=${prevMonthKey}`}
+                className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1.5 text-sm font-medium text-culinary-ink shadow-none hover:bg-culinary-surface-low"
+              >
                 Previous
               </Link>
-              <Link href={`/admin/calendar?month=${thisMonthKey}`} className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <Link
+                href={`/admin/calendar?month=${thisMonthKey}`}
+                className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1.5 text-sm font-medium text-culinary-ink shadow-none hover:bg-culinary-surface-low"
+              >
                 Today
               </Link>
-              <Link href={`/admin/calendar?month=${nextMonthKey}`} className="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+              <Link
+                href={`/admin/calendar?month=${nextMonthKey}`}
+                className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1.5 text-sm font-medium text-culinary-ink shadow-none hover:bg-culinary-surface-low"
+              >
                 Next
               </Link>
             </div>
           </div>
 
-          <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-gray-200 bg-white p-3">
+          <CulinaryCard className="mb-4 flex flex-wrap items-center gap-3">
             <LegendItem color="bg-gray-400" label="New" />
             <LegendItem color="bg-amber-500" label="Quoted" />
             <LegendItem color="bg-blue-500" label="Booked" />
             <LegendItem color="bg-green-600" label="Confirmed" />
-            <LegendItem color="bg-stone-500" label="Completed" />
+            <LegendItem color="bg-culinary-forest" label="Completed" />
             <LegendItem color="bg-red-500" label="Cancelled" />
-          </div>
+          </CulinaryCard>
 
-          <div className="grid grid-cols-7 border border-gray-200 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-7 overflow-hidden rounded-none border border-culinary-outline shadow-none">
             {WEEKDAY_LABELS.map((label) => (
-              <div key={label} className="bg-gray-50 px-2 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500 border-b border-gray-200">
+              <div
+                key={label}
+                className="border-b border-culinary-outline bg-culinary-surface-low px-2 py-2 text-xs font-semibold uppercase tracking-wide text-culinary-text-muted"
+              >
                 {label}
               </div>
             ))}
@@ -115,7 +129,9 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
               return (
                 <div
                   key={dateKey}
-                  className={`min-h-[130px] border-b border-r border-gray-200 p-2 ${isCurrentMonth ? 'bg-white' : 'bg-gray-50'}`}
+                  className={`min-h-[130px] border-b border-r border-culinary-outline p-2 ${
+                    isCurrentMonth ? 'bg-culinary-bone' : 'bg-culinary-surface-low'
+                  }`}
                 >
                   <div className="mb-2">
                     <span
@@ -132,7 +148,7 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
                       <Link
                         key={booking.id}
                         href={`/admin/bookings/${booking.id}`}
-                        className={`block rounded-md border px-2 py-1 text-[11px] leading-snug hover:opacity-90 ${getStatusChipClass(booking.status)}`}
+                        className={`block rounded-none border px-2 py-1 text-[11px] leading-snug shadow-none hover:opacity-90 ${getStatusChipClass(booking.status)}`}
                         title={`${booking.name} — ${booking.eventType || 'Event'}`}
                       >
                         <div className="font-semibold truncate">{booking.name}</div>
@@ -145,7 +161,7 @@ export default async function AdminCalendarPage({ searchParams }: { searchParams
               )
             })}
           </div>
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

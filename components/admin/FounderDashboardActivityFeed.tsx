@@ -16,7 +16,7 @@ export interface ActivityEvent {
 
 const EVENT_COLORS: Record<string, string> = {
   EMAIL_SUBSCRIBER: '#3B6D11',
-  BOOKING_LEAD: '#002747',
+  BOOKING_LEAD: '#0D1F2D',
   ACADEMY_PURCHASE: '#534AB7',
   SPORTSWEAR_ORDER: '#CE472E',
   FARMER_SIGNUP: '#3B6D11',
@@ -64,24 +64,24 @@ export function FounderDashboardActivityFeed({
   return (
     <ul className="space-y-3">
       {activity.length === 0 ? (
-        <li className="text-sm text-stone-500 italic">No events yet.</li>
+        <li className="font-culinary-sans text-sm italic text-culinary-text-muted">No events yet.</li>
       ) : (
         activity.map((item) => (
           <li
             key={item.id}
-            className="flex items-start gap-3 text-sm border-b border-stone-100 last:border-0 pb-3 last:pb-0"
+            className="flex items-start gap-3 border-b border-culinary-outline pb-3 font-culinary-sans text-sm last:border-0 last:pb-0"
           >
             <span
-              className="mt-1.5 w-3 h-3 rounded-full shrink-0 flex-shrink-0"
+              className="mt-1.5 h-3 w-3 shrink-0 rounded-none"
               style={{
                 backgroundColor: EVENT_COLORS[item.type] ?? '#64748b',
               }}
               aria-hidden
             />
             <div className="min-w-0 flex-1">
-              <p className="font-medium text-stone-900">{item.title}</p>
-              <p className="text-stone-600 mt-0.5">{item.description}</p>
-              <p className="text-stone-400 text-xs mt-1 tabular-nums">
+              <p className="font-medium text-culinary-ink">{item.title}</p>
+              <p className="mt-0.5 text-culinary-text-muted">{item.description}</p>
+              <p className="mt-1 font-culinary-sans text-xs tabular-nums text-culinary-text-muted">
                 {getRelativeTime(item.createdAt)}
               </p>
             </div>

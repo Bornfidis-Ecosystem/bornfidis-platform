@@ -134,7 +134,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-[#1a5f3f] text-white p-6 rounded-t-xl">
+        <div className="bg-forestDark text-white p-6 rounded-t-xl">
           <div className="flex justify-between items-center">
             <h2 className="text-3xl font-bold">{t('joinAsFarmer')}</h2>
             <button
@@ -178,7 +178,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 required
-                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 placeholder={t('namePlaceholder')}
               />
               <VoiceInput
@@ -199,7 +199,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
                 value={formData.phone}
                 onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                 required
-                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 placeholder={t('phonePlaceholder')}
               />
               <VoiceInput
@@ -219,7 +219,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
                 id="acres"
                 value={formData.acres}
                 onChange={(e) => setFormData(prev => ({ ...prev, acres: e.target.value }))}
-                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 placeholder={t('acresPlaceholder')}
               />
               <VoiceInput
@@ -239,7 +239,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
                 id="crops"
                 value={formData.crops}
                 onChange={(e) => setFormData(prev => ({ ...prev, crops: e.target.value }))}
-                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="flex-1 border-2 border-gray-300 rounded-lg px-4 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 placeholder={t('cropsPlaceholder')}
               />
               <VoiceInput
@@ -260,7 +260,7 @@ export default function FarmerJoinFlow({ onClose, onSuccess }: FarmerJoinFlowPro
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-4 bg-[#1a5f3f] text-white rounded-lg font-bold text-xl hover:bg-[#154a32] transition active:scale-95 disabled:opacity-50 min-h-[48px]"
+              className="flex-1 px-6 py-4 bg-forestDark text-white rounded-lg font-bold text-xl hover:bg-forestDarker transition active:scale-95 disabled:opacity-50 min-h-[48px]"
             >
               {isSubmitting ? t('submitting') : t('submitForm')}
             </button>

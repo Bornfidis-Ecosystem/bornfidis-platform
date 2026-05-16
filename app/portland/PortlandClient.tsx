@@ -14,7 +14,7 @@ export default function PortlandClient() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <header className="bg-[#1a5f3f] text-white py-12 md:py-16 px-4">
+      <header className="bg-forestDark text-white py-12 md:py-16 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-start mb-6">
             <div className="flex-1">
@@ -28,7 +28,7 @@ export default function PortlandClient() {
             {/* Language Toggle - Top Right */}
             <button
               onClick={togglePatois}
-              className="px-4 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold text-sm md:text-base hover:bg-gold-dark transition active:scale-95 ml-4 flex-shrink-0"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold text-sm md:text-base hover:bg-gold-dark transition active:scale-95 ml-4 flex-shrink-0"
             >
               {isPatois ? '🇯🇲 Patois' : '🇺🇸 English'}
             </button>
@@ -43,35 +43,35 @@ export default function PortlandClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button
               onClick={() => setShowFarmerJoin(true)}
-              className="p-8 bg-[#1a5f3f] text-white rounded-xl text-center hover:bg-[#154a32] transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
+              className="p-8 bg-forestDark text-white rounded-xl text-center hover:bg-forestDarker transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
             >
               <div className="text-5xl mb-4">🌾</div>
               <h2 className="text-2xl font-bold mb-2">{t('joinAsFarmer')}</h2>
             </button>
             <button
               onClick={() => setShowChefJoin(true)}
-              className="p-8 bg-[#FFBC00] text-forestDark rounded-xl text-center hover:bg-gold-dark transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
+              className="p-8 bg-gold text-forestDark rounded-xl text-center hover:bg-gold-dark transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
             >
               <div className="text-5xl mb-4">👨‍🍳</div>
               <h2 className="text-2xl font-bold mb-2">{t('joinAsChef')}</h2>
             </button>
             <button
               onClick={() => setShowYouthApp(true)}
-              className="p-8 bg-[#1a5f3f] text-white rounded-xl text-center hover:bg-[#154a32] transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
+              className="p-8 bg-forestDark text-white rounded-xl text-center hover:bg-forestDarker transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
             >
               <div className="text-5xl mb-4">🌱</div>
               <h2 className="text-2xl font-bold mb-2">{t('youthApprenticeship')}</h2>
             </button>
             <Link
               href="/book"
-              className="p-8 bg-[#FFBC00] text-forestDark rounded-xl text-center hover:bg-gold-dark transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
+              className="p-8 bg-gold text-forestDark rounded-xl text-center hover:bg-gold-dark transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center"
             >
               <div className="text-5xl mb-4">🍽️</div>
               <h2 className="text-2xl font-bold mb-2">{t('bookEvent')}</h2>
             </Link>
             <Link
               href="/impact"
-              className="p-8 bg-[#1a5f3f] text-white rounded-xl text-center hover:bg-[#154a32] transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center md:col-span-2"
+              className="p-8 bg-forestDark text-white rounded-xl text-center hover:bg-forestDarker transition active:scale-95 min-h-[120px] flex flex-col items-center justify-center md:col-span-2"
             >
               <div className="text-5xl mb-4">🤝</div>
               <h2 className="text-2xl font-bold mb-2">{t('supportMovement')}</h2>
@@ -120,14 +120,14 @@ export default function PortlandClient() {
           <h2 className="text-3xl font-bold text-forestDark mb-8 text-center">{t('portlandStories')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white border-2 border-[#d1fae5] rounded-xl p-6">
-              <div className="w-20 h-20 bg-[#1a5f3f] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
+              <div className="w-20 h-20 bg-forestDark rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
                 👤
               </div>
               <h3 className="text-xl font-semibold text-forestDark mb-2 text-center">{t('story1Name')}</h3>
               <p className="text-gray-700 text-center">{t('story1Text')}</p>
             </div>
             <div className="bg-white border-2 border-[#d1fae5] rounded-xl p-6">
-              <div className="w-20 h-20 bg-[#FFBC00] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
+              <div className="w-20 h-20 bg-gold rounded-full mx-auto mb-4 flex items-center justify-center text-4xl">
                 👤
               </div>
               <h3 className="text-xl font-semibold text-forestDark mb-2 text-center">{t('story2Name')}</h3>

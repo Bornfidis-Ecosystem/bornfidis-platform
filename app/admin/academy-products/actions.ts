@@ -14,8 +14,8 @@ export interface AcademyProductRow {
   stripePriceId: string | null
   active: boolean
   featured: boolean
-  createdAt: Date
-  updatedAt: Date
+  createdAt: string
+  updatedAt: string
   purchaseCount: number
   enrollmentCount: number
 }
@@ -63,8 +63,8 @@ export async function getAcademyProducts(): Promise<{
       stripePriceId: p.stripePriceId,
       active: p.active,
       featured: (p as { featured?: boolean }).featured ?? false,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt,
+      createdAt: p.createdAt.toISOString(),
+      updatedAt: p.updatedAt.toISOString(),
       purchaseCount: purchaseBySlug[p.slug] ?? 0,
       enrollmentCount: enrollmentBySlug[p.slug] ?? 0,
     }))

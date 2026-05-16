@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getAllBookings } from '@/app/admin/bookings/actions'
+import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
 import { ProvisionsPipelineBoard } from '@/components/admin/ProvisionsPipelineBoard'
 import { PIPELINE_COLUMNS, getColumnIdForStatus } from '@/lib/provisions-pipeline'
 
@@ -10,6 +11,7 @@ export const dynamic = 'force-dynamic'
  * Columns: New | Quote Sent | Follow Up | Confirmed | Completed
  */
 export default async function ProvisionsPipelinePage() {
+  await requireManagerOrFounderPageAccess()
   const result = await getAllBookings()
 
   if (!result.success) {

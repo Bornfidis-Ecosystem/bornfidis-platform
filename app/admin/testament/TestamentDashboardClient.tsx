@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { LivingTestament, CommissionedLeader, TestamentSummary } from '@/types/testament'
@@ -54,7 +55,7 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
               onClick={() => setActiveTab(tab)}
               className={`py-4 px-1 border-b-2 font-medium text-sm capitalize ${
                 activeTab === tab
-                  ? 'border-[#FFBC00] text-forestDark'
+                  ? 'border-gold text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -69,26 +70,26 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
         <div className="space-y-6">
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Total Testimonies</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_testimonies}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.public_testimonies} public</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Featured Testimonies</h3>
               <p className="text-3xl font-bold text-gold">{summary.featured_testimonies}</p>
               <p className="text-xs text-gray-500 mt-1">On public page</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            </CulinaryCard>
+            <CulinaryCard>
               <h3 className="text-sm font-medium text-gray-500 mb-2">Commissioned Leaders</h3>
               <p className="text-3xl font-bold text-forestDark">{summary.total_commissioned}</p>
               <p className="text-xs text-gray-500 mt-1">{summary.covenant_signed_count} signed covenant</p>
-            </div>
+            </CulinaryCard>
           </div>
 
           {/* Featured Testimonies */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Featured Testimonies
             </h2>
             {featuredTestimonies.length === 0 ? (
@@ -107,11 +108,11 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
 
           {/* Commissioned Leaders */}
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+          <CulinaryCard>
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
               Commissioned Leaders
             </h2>
             {publicLeaders.length === 0 ? (
@@ -130,18 +131,18 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
                 ))}
               </div>
             )}
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Testimonies Tab */}
       {activeTab === 'testimonies' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Write Testimonies</h2>
             <button
               onClick={() => alert('Add Testimony - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Add Testimony
             </button>
@@ -159,7 +160,7 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
                     </div>
                     <div className="flex gap-2">
                       {testimony.is_featured && (
-                        <span className="px-2 py-1 bg-[#FFBC00] text-forestDark rounded-full text-xs font-semibold">
+                        <span className="px-2 py-1 bg-gold text-forestDark rounded-full text-xs font-semibold">
                           Featured
                         </span>
                       )}
@@ -178,17 +179,17 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
               ))}
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Leaders Tab */}
       {activeTab === 'leaders' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
+        <CulinaryCard>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold text-forestDark">Commission Leaders</h2>
             <button
               onClick={() => alert('Commission Leader - Feature coming soon')}
-              className="px-4 py-2 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
+              className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
             >
               Commission Leader
             </button>
@@ -231,13 +232,13 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
               </table>
             </div>
           )}
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Scripture Tab */}
       {activeTab === 'scripture' && (
-        <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-[#FFBC00]">
+        <CulinaryCard>
+          <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Publish Scripture Anchors
           </h2>
           <p className="text-gray-600 mb-4">
@@ -250,7 +251,7 @@ export default function TestamentDashboardClient({ initialData }: TestamentDashb
               will appear prominently on the public testament page.
             </p>
           </div>
-        </div>
+        </CulinaryCard>
       )}
     </div>
   )

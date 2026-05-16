@@ -1,9 +1,11 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { updateAcademyProduct } from '@/app/admin/academy-products/actions'
+import { CulinaryCard } from '@/components/culinary-os'
 
 const TYPES = ['COURSE', 'DOWNLOAD', 'BUNDLE']
 
@@ -54,9 +56,10 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
   }
 
   return (
-    <form
+    <CulinaryCard
+      as="form"
       onSubmit={handleSubmit}
-      className="bg-white border border-stone-200/80 rounded-xl p-5 space-y-4"
+      className="space-y-4"
     >
       {error && (
         <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>
@@ -158,11 +161,11 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
         </button>
         <Link
           href="/admin/academy-products"
-          className="px-4 py-2 rounded-lg border border-stone-300 text-stone-700 text-sm font-medium hover:bg-stone-50"
+          className="px-4 py-2 rounded-none border border-culinary-outline text-stone-700 text-sm font-medium hover:bg-culinary-surface-low shadow-none"
         >
           Cancel
         </Link>
       </div>
-    </form>
+    </CulinaryCard>
   )
 }

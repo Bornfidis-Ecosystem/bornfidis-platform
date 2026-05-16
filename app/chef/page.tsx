@@ -108,7 +108,7 @@ export default async function ChefDashboard() {
           <p className="text-sm text-gray-900">
             Rank #{leaderboardRank.rank} of {leaderboardRank.totalOnBoard}
             {leaderboardRank.topPerformer && (
-              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FFBC00] text-forestDark">
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gold text-forestDark">
                 Top Performer
               </span>
             )}

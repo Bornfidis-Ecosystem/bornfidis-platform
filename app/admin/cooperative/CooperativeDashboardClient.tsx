@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CooperativeMember, CooperativePayout } from '@/types/cooperative'
@@ -142,65 +143,65 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Total Members</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.totalMembers}</p>
+          <p className="text-2xl font-bold text-forestDark">{data.totalMembers}</p>
           <p className="text-xs text-gray-500 mt-1">{data.activeMembers} active</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Total Payouts</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{formatUSD(data.totalPayouts)}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+          <p className="text-2xl font-bold text-forestDark">{formatUSD(data.totalPayouts)}</p>
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Avg Impact Score</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.avgImpactScore}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+          <p className="text-2xl font-bold text-forestDark">{data.avgImpactScore}</p>
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Trainings</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.totalTrainings}</p>
-        </div>
+          <p className="text-2xl font-bold text-forestDark">{data.totalTrainings}</p>
+        </CulinaryCard>
       </div>
 
       {/* Governance Controls */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4">Governance Controls</h2>
+      <CulinaryCard>
+        <h2 className="text-xl font-semibold text-forestDark mb-4">Governance Controls</h2>
         <div className="flex gap-4">
           <button
             onClick={handleCalculateImpactScores}
             disabled={isCalculating}
-            className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+            className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
           >
             {isCalculating ? 'Calculating...' : 'Calculate Impact Scores'}
           </button>
           <button
             onClick={handleDistributePayouts}
             disabled={isDistributing}
-            className="px-4 py-2 bg-gold text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
+            className="px-4 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
           >
             {isDistributing ? 'Distributing...' : 'Distribute Payouts'}
           </button>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Members by Role */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4">Members by Role</h2>
+      <CulinaryCard>
+        <h2 className="text-xl font-semibold text-forestDark mb-4">Members by Role</h2>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {Object.entries(data.membersByRole).map(([role, count]) => (
             <div key={role} className="text-center">
               <div className={`px-3 py-2 rounded-lg ${getRoleBadgeColor(role)} mb-2`}>
                 <span className="text-sm font-semibold capitalize">{role}</span>
               </div>
-              <div className="text-2xl font-bold text-[#1a5f3f]">{count}</div>
+              <div className="text-2xl font-bold text-forestDark">{count}</div>
             </div>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Members List */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-[#1a5f3f]">All Members</h2>
+          <h2 className="text-xl font-semibold text-forestDark">All Members</h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -234,7 +235,7 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
                       </span>
                     </td>
                     <td className="py-3 px-6 text-gray-700">{member.region}</td>
-                    <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">{member.impact_score}</td>
+                    <td className="py-3 px-6 text-right font-semibold text-forestDark">{member.impact_score}</td>
                     <td className="py-3 px-6 text-right font-semibold text-gold">
                       {member.payout_share_percent.toFixed(2)}%
                     </td>
@@ -249,13 +250,13 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Recent Payouts */}
       {data.recentPayouts.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <CulinaryCard padded={false} className="overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-[#1a5f3f]">Recent Payouts</h2>
+            <h2 className="text-xl font-semibold text-forestDark">Recent Payouts</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -276,7 +277,7 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
                       <div className="text-xs text-gray-500">{(payout.member as any)?.role || ''}</div>
                     </td>
                     <td className="py-3 px-6 text-gray-700">{payout.period}</td>
-                    <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">{formatUSD(payout.amount_cents)}</td>
+                    <td className="py-3 px-6 text-right font-semibold text-forestDark">{formatUSD(payout.amount_cents)}</td>
                     <td className="py-3 px-6 text-right text-gray-700">{payout.impact_score}</td>
                     <td className="py-3 px-6 text-center">
                       {payout.payout_status === 'paid' ? (
@@ -292,7 +293,7 @@ export default function CooperativeDashboardClient({ data }: CooperativeDashboar
               </tbody>
             </table>
           </div>
-        </div>
+      </CulinaryCard>
       )}
     </div>
   )

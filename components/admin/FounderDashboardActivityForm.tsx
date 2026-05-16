@@ -43,27 +43,32 @@ export function FounderDashboardActivityForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-wrap items-end gap-3 mt-5 pt-5 border-t border-stone-100 min-w-0">
+    <form
+      onSubmit={handleSubmit}
+      className="mt-5 flex min-w-0 flex-wrap items-end gap-3 border-t border-culinary-outline pt-5 font-culinary-sans"
+    >
       <input
         type="text"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="What happened?"
-        className="flex-1 min-w-[180px] border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-1 focus:ring-[#1A3C34] focus:border-[#1A3C34]"
+        className="min-w-[180px] flex-1 rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 text-sm text-culinary-ink placeholder:text-culinary-text-muted focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30"
       />
       <select
         value={division}
         onChange={(e) => setDivision(e.target.value)}
-        className="border border-stone-200 rounded-lg px-3 py-2 text-sm text-stone-700 focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+        className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 text-sm text-culinary-ink focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30"
       >
         {DIVISIONS.map((d) => (
-          <option key={d} value={d}>{d}</option>
+          <option key={d} value={d}>
+            {d}
+          </option>
         ))}
       </select>
       <button
         type="submit"
         disabled={submitting || !description.trim()}
-        className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#1A3C34] hover:bg-[#0f2620] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="rounded-none bg-culinary-navy px-4 py-2 text-sm font-medium text-culinary-on-navy transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {submitting ? 'Logging…' : 'Log event'}
       </button>

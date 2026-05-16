@@ -21,12 +21,12 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
     <div className="space-y-12">
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-[#1a5f3f] to-[#154a32] rounded-lg shadow-lg p-8 text-white text-center">
+        <div className="bg-gradient-to-br from-forestDark to-forestDarker rounded-lg shadow-lg p-8 text-white text-center">
           <div className="text-5xl font-bold text-gold mb-2">{data.totalRegions}</div>
           <div className="text-lg font-semibold mb-1">Regions</div>
           <div className="text-sm text-green-100">Global reach</div>
         </div>
-        <div className="bg-gradient-to-br from-[#FFBC00] to-[#e6a500] rounded-lg shadow-lg p-8 text-forestDark text-center">
+        <div className="bg-gradient-to-br from-gold to-brass rounded-lg shadow-lg p-8 text-forestDark text-center">
           <div className="text-5xl font-bold mb-2">{data.activeRegions}</div>
           <div className="text-lg font-semibold mb-1">Active Hubs</div>
           <div className="text-sm">Operational hubs</div>
@@ -39,13 +39,13 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
       </div>
 
       {/* Navigation */}
-      <div className="bg-white border-2 border-[#1a5f3f] rounded-lg shadow-sm">
+      <div className="bg-white border-2 border-forestDark rounded-lg shadow-sm">
         <div className="flex border-b border-gray-200">
           <button
             onClick={() => setActiveSection('overview')}
             className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
               activeSection === 'overview'
-                ? 'bg-[#1a5f3f] text-white'
+                ? 'bg-forestDark text-white'
                 : 'text-gray-700 hover:bg-gray-50'
             }`}
           >
@@ -55,7 +55,7 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
             onClick={() => setActiveSection('leader')}
             className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
               activeSection === 'leader'
-                ? 'bg-[#1a5f3f] text-white'
+                ? 'bg-forestDark text-white'
                 : 'text-gray-700 hover:bg-gray-50'
             }`}
           >
@@ -65,7 +65,7 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
             onClick={() => setActiveSection('investor')}
             className={`flex-1 px-6 py-4 text-sm font-semibold transition ${
               activeSection === 'investor'
-                ? 'bg-[#1a5f3f] text-white'
+                ? 'bg-forestDark text-white'
                 : 'text-gray-700 hover:bg-gray-50'
             }`}
           >
@@ -78,7 +78,7 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
           {activeSection === 'overview' && (
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-forestDark">The Replication Model</h2>
-              <div className="h-1 w-24 bg-[#FFBC00] mb-6"></div>
+              <div className="h-1 w-24 bg-gold mb-6"></div>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
                   Bornfidis Provisions is more than a business—it's a replicable model for regenerative food systems.
@@ -108,14 +108,14 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
           {activeSection === 'leader' && (
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-forestDark">Apply as Region Leader</h2>
-              <div className="h-1 w-24 bg-[#FFBC00] mb-6"></div>
+              <div className="h-1 w-24 bg-gold mb-6"></div>
               <p className="text-gray-700 leading-relaxed">
                 Are you called to launch a regenerative food hub in your region? We're looking for leaders
                 who share our values of faith, regeneration, and community.
               </p>
               <a
                 href="/replicate/apply-leader"
-                className="inline-block px-8 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+                className="inline-block px-8 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
               >
                 Start Your Application
               </a>
@@ -126,14 +126,14 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
           {activeSection === 'investor' && (
             <div className="space-y-6">
               <h2 className="text-3xl font-bold text-forestDark">Impact Investor Portal</h2>
-              <div className="h-1 w-24 bg-[#FFBC00] mb-6"></div>
+              <div className="h-1 w-24 bg-gold mb-6"></div>
               <p className="text-gray-700 leading-relaxed">
                 Support the global replication of regenerative food systems. Your investment helps launch
                 new hubs, train leaders, and create lasting impact in communities worldwide.
               </p>
               <a
                 href="/replicate/invest"
-                className="inline-block px-8 py-3 bg-[#FFBC00] text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition"
+                className="inline-block px-8 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition"
               >
                 Become an Impact Investor
               </a>
@@ -163,7 +163,7 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
       )}
 
       {/* Call to Action */}
-      <div className="bg-[#FFBC00] rounded-lg shadow-lg p-8 text-center">
+      <div className="bg-gold rounded-lg shadow-lg p-8 text-center">
         <h2 className="text-3xl font-bold text-forestDark mb-4">Ready to Replicate?</h2>
         <p className="text-forestDark mb-6 max-w-2xl mx-auto">
           Join the global movement. Launch a regenerative food hub in your region and be part of
@@ -172,7 +172,7 @@ export default function PublicReplicationClient({ data }: PublicReplicationClien
         <div className="flex gap-4 justify-center">
           <a
             href="/replicate/apply-leader"
-            className="px-8 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="px-8 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Apply as Leader
           </a>
