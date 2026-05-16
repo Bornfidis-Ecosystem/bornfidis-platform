@@ -3,6 +3,7 @@
 import { bookingInquiryPayloadSchema } from '@/lib/booking-inquiry-payload'
 import { createBookingInquiryRecord } from '@/lib/booking-inquiry-create'
 import { sendBookingConfirmationEmail, sendAdminNotificationEmail } from '@/lib/email'
+import { bookingNotificationRecipient } from '@/lib/platform-email'
 import { sendSubmissionConfirmationSMS } from '@/lib/sms-utils'
 
 function bookingRawToObject(formData: FormData | Record<string, unknown>) {
@@ -47,7 +48,7 @@ export async function submitBooking(formData: FormData | Record<string, unknown>
     }
 
     // Send notification email to admin
-    const adminEmail = process.env.ADMIN_EMAIL || 'brian@bornfidis.com'
+    const adminEmail = bookingNotificationRecipient()
     const adminEmailResult = await sendAdminNotificationEmail(adminEmail, {
       name: validated.name,
       email: validated.email || undefined,

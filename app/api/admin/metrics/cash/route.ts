@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/requireAdmin'
+import { requireFounderAdminApi } from '@/lib/requireAdmin'
 
 export const dynamic = 'force-dynamic'
 
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
  * Stub: accepts cash reserve value for future persistence. Returns 200 for now.
  */
 export async function POST(request: NextRequest) {
-  const authError = await requireAdmin(request)
+  const authError = await requireFounderAdminApi(request)
   if (authError) return authError
 
   try {

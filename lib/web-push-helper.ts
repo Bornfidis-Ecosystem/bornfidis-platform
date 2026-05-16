@@ -5,8 +5,8 @@
 
 import webPush from 'web-push'
 import { db } from '@/lib/db'
-import { isQuietHours } from '@/lib/sla'
-import { getAdminEmails, getOpsLeadEmail } from '@/lib/sla'
+import { isQuietHours, getAdminEmails, getOpsLeadEmail } from '@/lib/sla'
+import { DEFAULT_PLATFORM_REPLY_TO } from '@/lib/platform-email'
 
 const VAPID_PUBLIC = process.env.VAPID_PUBLIC_KEY
 const VAPID_PRIVATE = process.env.VAPID_PRIVATE_KEY
@@ -14,7 +14,7 @@ const PUSH_ENABLED = !!VAPID_PUBLIC && !!VAPID_PRIVATE
 
 if (PUSH_ENABLED) {
   webPush.setVapidDetails(
-    'mailto:' + (process.env.ADMIN_EMAIL || 'noreply@bornfidis.com'),
+    `mailto:${process.env.RESEND_REPLY_TO?.trim()?.includes('@') ? process.env.RESEND_REPLY_TO.trim() : DEFAULT_PLATFORM_REPLY_TO}`,
     VAPID_PUBLIC!,
     VAPID_PRIVATE!
   )

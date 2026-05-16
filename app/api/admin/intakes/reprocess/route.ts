@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '@/lib/auth'
+import { requireFounderAdminApi } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { parseFarmerMessage, type ParsedFarmerMessage } from '@/lib/intakeParser'
 import { logActivity } from '@/lib/activity-log'
@@ -22,8 +22,8 @@ import { logActivity } from '@/lib/activity-log'
  */
 export async function POST(request: NextRequest) {
   try {
-    // Require admin authentication
-    await requireAuth()
+    const authError = await requireFounderAdminApi(request)
+    if (authError) return authError
 
     const body = await request.json()
     const { intakeId } = body

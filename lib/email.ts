@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
+import { transactionalReplyToPayload } from '@/lib/platform-email'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -314,6 +315,7 @@ export async function sendEmail({
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to,
       subject,
       html: `<div style="font-family: system-ui, sans-serif; max-width: 600px;">${text.replace(/\n/g, '<br>')}</div>`,
@@ -450,6 +452,7 @@ export async function sendBookingConfirmationEmail(
     console.log('📧 Sending Phase 2 inquiry confirmation to:', to)
     const result = await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to,
       subject: 'Thank you for reaching out to Bornfidis',
       text: plainText,
@@ -660,8 +663,7 @@ export async function sendInquiryStalenessReminderEmail(
 }
 
 /**
- * Phase 1: Admin booking notification email
- * Simple notification to tech@bornfidis.com when booking is submitted
+ * Phase 1: Admin booking notification email — recipient from `ADMIN_EMAIL` / fallback `bookings@bornfidis.com` (see `lib/platform-email.ts`).
  */
 export async function sendAdminNotificationEmail(
   adminEmail: string,
@@ -699,6 +701,7 @@ export async function sendAdminNotificationEmail(
     console.log('📧 Sending admin notification email to:', adminEmail)
     const result = await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to: adminEmail,
       subject: `New Bornfidis Booking Inquiry`,
       html: `

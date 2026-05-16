@@ -11,6 +11,8 @@ $replacements = @(
   @('focus:border-[#1a5f3f]', 'focus:border-forestDark'),
   @('text-[#FFBC00]', 'text-gold'),
   @('bg-[#FFBC00]', 'bg-gold'),
+  @('text-[#002747]', 'text-midnight'),
+  @('bg-[#002747]', 'bg-midnight'),
   @('border-[#154a32]', 'border-forestDarker'),
   @('border-[#1a5f3f]/20', 'border-forestDark/20'),
   @('border-[#1a5f3f]/30', 'border-forestDark/30')
