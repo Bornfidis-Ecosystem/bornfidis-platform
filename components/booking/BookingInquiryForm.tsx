@@ -13,6 +13,7 @@ import { TextField, TextareaField, SelectField } from '@/components/ui/FormField
 import { CheckboxGroup } from '@/components/ui/CheckboxGroup'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { BOOKING_UPSELL_OPTIONS } from '@/lib/booking-upsells'
+import { bookEyebrow, bookSection } from '@/components/booking/book-culinary-classes'
 
 const budgetTiers = [
   { value: '', label: 'Select budget tier' },
@@ -41,7 +42,7 @@ const diningStyles = [
   { value: 'not_sure_yet', label: 'Not Sure Yet' },
 ]
 
-const optionClass = 'bg-[#0a1410] text-cream'
+const optionClass = 'bg-[#fdf8f8] text-[#2c2c2c]'
 
 export function BookingInquiryForm() {
   const router = useRouter()
@@ -140,20 +141,20 @@ export function BookingInquiryForm() {
   }
 
   return (
-    <section
-      id="booking-form"
-      className="scroll-mt-24 border-t border-brass/15 py-16 md:py-24"
-      style={{ backgroundColor: '#141414' }}
-    >
-      <PageContainer>
+    <section id="booking-form" className={`scroll-mt-24 ${bookSection}`}>
+      <PageContainer wide>
         <SectionHeading
+          theme="culinary"
           eyebrow="Inquiry"
           title="Request Your Experience"
           subtitle="Tell us about your event and we'll prepare a custom dining experience for you."
         />
-        <BrandedCard className="mt-10">
+        <BrandedCard theme="culinary" className="mt-10">
           {error ? (
-            <div className="mb-6 border border-red-500/40 bg-red-950/50 px-4 py-3 text-sm text-red-200" role="alert">
+            <div
+              className="mb-6 rounded-none border border-red-700/40 bg-red-50 px-4 py-3 font-sans text-sm text-red-900 shadow-none"
+              role="alert"
+            >
               {error}
             </div>
           ) : null}
@@ -173,8 +174,9 @@ export function BookingInquiryForm() {
 
             <div className="grid gap-6 md:grid-cols-2 md:gap-8">
               <div className="space-y-5 md:space-y-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brass/90">Your details</p>
+                <p className={bookEyebrow}>Your details</p>
                 <TextField
+                  theme="culinary"
                   label="Full Name"
                   id="fullName"
                   name="fullName"
@@ -184,6 +186,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextField
+                  theme="culinary"
                   label="Email Address"
                   id="email"
                   name="email"
@@ -193,6 +196,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextField
+                  theme="culinary"
                   label="Phone Number"
                   id="phone"
                   name="phone"
@@ -203,6 +207,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextField
+                  theme="culinary"
                   label="Event Date"
                   id="eventDate"
                   name="eventDate"
@@ -213,6 +218,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextareaField
+                  theme="culinary"
                   label="Event Location"
                   id="location"
                   name="location"
@@ -223,6 +229,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextField
+                  theme="culinary"
                   label="Number of Guests"
                   id="guestCount"
                   name="guestCount"
@@ -235,8 +242,9 @@ export function BookingInquiryForm() {
                 />
               </div>
               <div className="space-y-5 md:space-y-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brass/90">Event & preferences</p>
+                <p className={bookEyebrow}>Event & preferences</p>
                 <SelectField
+                  theme="culinary"
                   label="Occasion"
                   id="occasion"
                   name="occasion"
@@ -251,6 +259,7 @@ export function BookingInquiryForm() {
                   ))}
                 </SelectField>
                 <SelectField
+                  theme="culinary"
                   label="Budget Tier"
                   id="budgetTier"
                   name="budgetTier"
@@ -265,6 +274,7 @@ export function BookingInquiryForm() {
                   ))}
                 </SelectField>
                 <SelectField
+                  theme="culinary"
                   label="Dining Style"
                   id="diningStyle"
                   name="diningStyle"
@@ -279,6 +289,7 @@ export function BookingInquiryForm() {
                   ))}
                 </SelectField>
                 <TextareaField
+                  theme="culinary"
                   label="Allergies or Dietary Restrictions"
                   id="allergies"
                   name="allergies"
@@ -288,6 +299,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextareaField
+                  theme="culinary"
                   label="Kitchen Access Notes"
                   id="kitchenNotes"
                   name="kitchenNotes"
@@ -297,6 +309,7 @@ export function BookingInquiryForm() {
                   onChange={handleChange}
                 />
                 <TextareaField
+                  theme="culinary"
                   label="Additional Details"
                   id="message"
                   name="message"
@@ -309,6 +322,7 @@ export function BookingInquiryForm() {
             </div>
 
             <CheckboxGroup
+              theme="culinary"
               legend="Enhance Your Experience (Optional)"
               name="upsell"
               options={BOOKING_UPSELL_OPTIONS.map((o) => ({ id: o.id, label: o.label }))}
@@ -317,10 +331,15 @@ export function BookingInquiryForm() {
             />
 
             <div className="pt-2">
-              <PrimaryButton type="submit" disabled={isSubmitting} className="w-full min-h-[52px] sm:max-w-md">
+              <PrimaryButton
+                theme="culinary"
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full min-h-[52px] sm:max-w-md"
+              >
                 {isSubmitting ? (
                   <span className="inline-flex items-center gap-2">
-                    <Spinner size="sm" className="text-midnight" />
+                    <Spinner size="sm" className="text-[#fdf8f8]" />
                     Sending…
                   </span>
                 ) : (

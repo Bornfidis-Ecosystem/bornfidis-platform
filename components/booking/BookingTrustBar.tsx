@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components/ui/PageContainer'
+import { bookSection } from '@/components/booking/book-culinary-classes'
 
 const ITEMS = [
   'Customized Menus',
@@ -9,16 +10,16 @@ const ITEMS = [
 
 export function BookingTrustBar() {
   return (
-    <section className="border-t border-brass/20 bg-midnight/60 py-8">
-      <PageContainer>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <section className={bookSection}>
+      <PageContainer wide>
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ITEMS.map((item) => (
             <li
               key={item}
-              className="flex items-center gap-2 border-b border-brass/10 pb-3 text-sm text-cream/85 last:border-0 sm:border-0 sm:pb-0"
+              className="flex items-center gap-3 border-b border-[#C9A84C]/35 pb-4 font-sans text-sm text-[#2c2c2c] last:border-0 sm:border-0 sm:pb-0"
             >
-              <span className="text-brass" aria-hidden>
-                ✦
+              <span className="text-[#C9A84C]" aria-hidden>
+                —
               </span>
               <span>{item}</span>
             </li>

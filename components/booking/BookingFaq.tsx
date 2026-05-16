@@ -1,5 +1,6 @@
 import { PageContainer } from '@/components/ui/PageContainer'
 import { SectionHeading } from '@/components/ui/SectionHeading'
+import { bookSection } from '@/components/booking/book-culinary-classes'
 
 const FAQS: { q: string; a: string }[] = [
   {
@@ -26,17 +27,14 @@ const FAQS: { q: string; a: string }[] = [
 
 export function BookingFaq() {
   return (
-    <section className="border-t border-brass/15 py-16 md:py-24" style={{ backgroundColor: '#0a0f0c' }}>
-      <PageContainer>
-        <SectionHeading eyebrow="FAQ" title="Questions, answered" />
-        <ul className="mt-10 space-y-6 max-w-3xl">
+    <section className={bookSection}>
+      <PageContainer wide>
+        <SectionHeading theme="culinary" eyebrow="FAQ" title="Questions, answered" />
+        <ul className="mx-auto mt-10 max-w-3xl space-y-6">
           {FAQS.map((item) => (
-            <li
-              key={item.q}
-              className="border-b border-brass/10 pb-6 last:border-0 last:pb-0"
-            >
-              <h3 className="font-display text-lg text-cream">{item.q}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-cream/70">{item.a}</p>
+            <li key={item.q} className="border-b border-[#C9A84C]/35 pb-6 last:border-0 last:pb-0">
+              <h3 className="font-display text-lg font-normal text-[#2c2c2c]">{item.q}</h3>
+              <p className="mt-2 font-sans text-sm leading-relaxed text-[#2c2c2c]/75">{item.a}</p>
             </li>
           ))}
         </ul>

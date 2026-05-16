@@ -3,16 +3,23 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from 'react'
 import Link from 'next/link'
 
-const baseClass =
+const brutalistClass =
   'inline-flex min-h-[48px] items-center justify-center rounded-sm border border-brass/35 bg-transparent px-8 py-3 text-sm font-medium text-cream transition hover:border-brass/60 hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass/50'
 
+const culinaryClass =
+  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#2c2c2c] bg-transparent px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c] shadow-none transition-colors duration-refined hover:border-[#C9A84C] hover:text-[#2c2c2c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C9A84C]'
+
 type SecondaryButtonProps =
-  | ({ href: string; children: ReactNode; className?: string } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'className' | 'children'>)
-  | ({ href?: undefined; children: ReactNode; className?: string } & ButtonHTMLAttributes<HTMLButtonElement>)
+  | ({ href: string; children: ReactNode; className?: string; theme?: 'brutalist' | 'culinary' } & Omit<
+      AnchorHTMLAttributes<HTMLAnchorElement>,
+      'href' | 'className' | 'children'
+    >)
+  | ({ href?: undefined; children: ReactNode; className?: string; theme?: 'brutalist' | 'culinary' } & ButtonHTMLAttributes<HTMLButtonElement>)
 
 export function SecondaryButton(props: SecondaryButtonProps) {
-  const { children, className = '', ...rest } = props
-  const cls = `${baseClass} ${className}`.trim()
+  const { children, className = '', theme, ...rest } = props
+  const base = theme === 'culinary' ? culinaryClass : brutalistClass
+  const cls = `${base} ${className}`.trim()
   if ('href' in props && props.href) {
     const { href, ...a } = rest as AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
     return (
