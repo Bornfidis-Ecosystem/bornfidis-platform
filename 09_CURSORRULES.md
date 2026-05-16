@@ -5,14 +5,15 @@ Premium chef services booking platform. Faith-anchored, professional, clean desi
 
 ## DNS & Architecture (MANDATORY)
 - **Read and follow:** [DNS_ARCHITECTURE_GUARDRAILS.md](./DNS_ARCHITECTURE_GUARDRAILS.md)
+- **WordPress vs platform split (CTAs, slugs, brand parity):** `.cursor/rules/platform-wordpress-integration.mdc` and `lib/wp-platform-integration.ts`
 - **WordPress (Hostinger):** `bornfidis.com` — marketing, shop, blog only. MUST NOT handle intake forms, workflows, or APIs.
 - **Platform (Vercel/Next.js):** `platform.bornfidis.com` — ALL operational routes: `/farmer-intake`, `/chef-intake`, `/cooperative`, `/admin`, `/api`.
 - **Linking rule:** Operational links must use `https://platform.bornfidis.com/...`. Never create intake or operational routes on the root domain.
 - **If unsure about DNS or routing:** STOP and ask before changing. Breaking domain boundaries risks data loss and farmer trust.
 
 ## Brand Guidelines
-- Colors: Forest green (#2C5F2D), Gold (#D4AF37), Cream (#F8F6F3)
-- Fonts: Montserrat (headings), Lora (body)
+- **WordPress-aligned public UI (booking / parity surfaces):** Bone `#fdf8f8`, Slate `#2c2c2c`, Gold `#C9A84C`, CTA forest `#1A3C34` with Bone button text; headlines Libre Caslon Text; UI Montserrat uppercase tracked (see `app/layout.tsx`, `app/globals.css` `--wp-*`, utility `.text-ui-label`).
+- **Legacy / extended palette:** Still defined in `app/globals.css` / Tailwind for existing dark-ocean themed pages; migrate new public surfaces toward `--wp-*` where appropriate.
 - Tone: Professional, warm, grounded, faith-anchored (not preachy)
 - Voice: Active ("We build"), specific, confident, no hype
 

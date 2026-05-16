@@ -17,7 +17,7 @@
  * Use PNG or JPG; if you use a different extension, set the path manually instead of `homepageImagePath()`.
  */
 
-import { cdnImages } from '@/lib/bornfidis-cdn-images'
+import { marketingImages } from '@/lib/marketing-images'
 
 export const HOMEPAGE_IMAGE_DIR = '/images/homepage' as const
 
@@ -41,17 +41,16 @@ export function homepageImagePath(slot: HomepageImageSlot): string {
 }
 
 /**
- * Prefer CDN for slots used on /book and marketing so Vercel builds show photography
- * without committing large binaries. Optional: swap back to `homepageImagePath` per slot.
+ * Service & experience tiles use committed photography under `public/images/marketing/`.
+ * Hero and provisions slots still resolve from `public/images/homepage/` when present.
  */
 export const homepageImages: Record<HomepageImageSlot, string | null> = {
   hero: homepageImagePath('hero'),
-  serviceIntimate: cdnImages.servicePrivateDinner,
-  serviceGathering: cdnImages.serviceRetreat,
-  /** Matches homepage “Wedding & Events” — local grill shot (not CDN stove-flame still). */
-  serviceRetreat: '/images/story/service-wedding-grill.png',
-  experienceBoard: cdnImages.tableAtmosphere,
-  experienceFresh: cdnImages.chefAction,
+  serviceIntimate: marketingImages.diningMenuDetail,
+  serviceGathering: marketingImages.eventsGardenParty,
+  serviceRetreat: marketingImages.cateringCharcuterie,
+  experienceBoard: marketingImages.cateringBuffetRustic,
+  experienceFresh: marketingImages.chefPresentation,
   provisionsSpice: homepageImagePath('provisionsSpice'),
   provisionsPrep: homepageImagePath('provisionsPrep'),
   provisionsGourmet: homepageImagePath('provisionsGourmet'),

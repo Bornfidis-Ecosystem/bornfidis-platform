@@ -2,6 +2,8 @@
  * /story page photography — add files under `public/images/story/` and set paths here.
  * `null` keeps gradient placeholders via HomepageBrandImage fallbacks.
  */
+import { brandPhotos } from '@/lib/brand-photos'
+
 const DIR = '/images/story' as const
 
 export const STORY_IMAGE_FILES = {
@@ -18,6 +20,6 @@ export function storyImagePath(slot: StoryImageSlot): string {
 
 export const storyImages: Record<StoryImageSlot, string | null> = {
   hero: storyImagePath('hero'),
-  transition: null,
-  community: null,
+  transition: brandPhotos.jamaicaStream,
+  community: brandPhotos.cocoaHarvest,
 }

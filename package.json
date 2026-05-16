@@ -10,6 +10,7 @@
         "postinstall": "prisma generate",
         "db:seed": "tsx prisma/seed.ts",
         "db:seed-academy": "tsx scripts/seed-academy-products.ts",
+        "db:seed-admin-roles": "tsx scripts/seed-admin-user-roles.ts",
         "db:studio": "prisma generate && prisma studio",
         "copy-academy-covers": "node scripts/copy-academy-covers.mjs",
         "upload-lead-magnet": "tsx scripts/upload-lead-magnet.ts"

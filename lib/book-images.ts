@@ -1,8 +1,8 @@
 /**
- * /book hero — same kitchen line photography as homepage + Story ChefBio (`public/images/story/chef-bio-kitchen.png`).
+ * /book hero — editorial catering photography (see `lib/marketing-images.ts`).
  */
 export const bookImages: { hero: string } = {
-  hero: '/images/story/chef-bio-kitchen.png',
+  hero: '/images/marketing/catering-hammered-line.png',
 }
 
 export const BOOK_HERO_PATH = bookImages.hero
