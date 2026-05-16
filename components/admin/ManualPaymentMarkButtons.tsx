@@ -11,6 +11,9 @@ type Props = {
   balancePaid: boolean
 }
 
+const btn =
+  'inline-flex items-center justify-center rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:bg-culinary-surface-high disabled:cursor-not-allowed disabled:opacity-50'
+
 export default function ManualPaymentMarkButtons({ bookingId, depositPaid, balancePaid }: Props) {
   const router = useRouter()
   const [note, setNote] = useState('')
@@ -41,7 +44,7 @@ export default function ManualPaymentMarkButtons({ bookingId, depositPaid, balan
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-stack-sm">
       <label className="block">
         <span className="sr-only">Optional note</span>
         <textarea
@@ -50,24 +53,14 @@ export default function ManualPaymentMarkButtons({ bookingId, depositPaid, balan
           placeholder="Optional note (logged on activity)"
           rows={2}
           disabled={pending}
-          className="w-full rounded-lg border border-stone-200 px-3 py-2 text-sm text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#1A3C34]/30"
+          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 font-culinary-sans text-body-md text-culinary-ink placeholder:text-culinary-text-muted/70 focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30"
         />
       </label>
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          disabled={pending || depositPaid}
-          onClick={() => run('deposit')}
-          className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="button" disabled={pending || depositPaid} onClick={() => run('deposit')} className={btn}>
           {depositPaid ? 'Deposit already recorded' : 'Mark deposit paid (manual)'}
         </button>
-        <button
-          type="button"
-          disabled={pending || balancePaid}
-          onClick={() => run('balance')}
-          className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-800 hover:bg-stone-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button type="button" disabled={pending || balancePaid} onClick={() => run('balance')} className={btn}>
           {balancePaid ? 'Balance already recorded' : 'Mark balance paid (manual)'}
         </button>
       </div>

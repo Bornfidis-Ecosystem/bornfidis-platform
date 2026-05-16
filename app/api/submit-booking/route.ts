@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { bookingInquiryPayloadSchema } from '@/lib/booking-inquiry-payload'
 import { createBookingInquiryRecord } from '@/lib/booking-inquiry-create'
 import { sendBookingConfirmationEmail, sendAdminNotificationEmail } from '@/lib/email'
+import { bookingNotificationRecipient } from '@/lib/platform-email'
 import { sendSubmissionConfirmationSMS } from '@/lib/sms-utils'
 
 /**
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     sendAdminNotificationEmail(
-      (process.env.ADMIN_EMAIL || 'brian@bornfidis.com').split(',')[0].trim(),
+      bookingNotificationRecipient(),
       {
         name: validated.name,
         email: validated.email || undefined,

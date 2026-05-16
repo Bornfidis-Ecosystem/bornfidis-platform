@@ -1,6 +1,7 @@
 import BookingPaymentSummaryCard from '@/components/admin/BookingPaymentSummaryCard'
 import type { BookingInquiry } from '@/types/booking'
 import type { LastStripeActivityInfo } from '@/lib/admin-payment-health'
+import { CulinarySection } from '@/components/culinary-os'
 
 type Props = {
   booking: Pick<
@@ -25,15 +26,14 @@ type Props = {
   showFounderOnlyPaymentControls?: boolean
 }
 
-/** Wireframe “Quote & payment” snapshot — heading + existing payment summary card. */
+/** Quote & payment snapshot — heading + existing payment summary card. */
 export function AdminBookingQuoteCard(props: Props) {
   return (
-    <section className="space-y-2">
-      <header>
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-navy">Quote &amp; payment</h2>
-        <p className="mt-0.5 text-xs text-gray-500">Deposit / balance status and Stripe activity</p>
-      </header>
+    <CulinarySection eyebrow="Quote & payment" spacing="sm">
+      <p className="font-culinary-sans text-body-md text-culinary-text-muted">
+        Deposit / balance status and Stripe activity
+      </p>
       <BookingPaymentSummaryCard {...props} />
-    </section>
+    </CulinarySection>
   )
 }

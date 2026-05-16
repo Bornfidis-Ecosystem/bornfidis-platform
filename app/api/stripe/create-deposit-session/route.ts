@@ -64,6 +64,11 @@ export async function POST(request: NextRequest) {
     // Convert amount to cents
     const amountCents = Math.round(amount * 100)
 
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+      'http://localhost:3000'
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -81,8 +86,8 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/thanks?type=deposit&booking_id=${encodeURIComponent(booking_id)}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/book`,
+      success_url: `${siteUrl}/thanks?type=deposit&booking_id=${encodeURIComponent(booking_id)}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/book`,
       customer_email: customer_email || booking.email || undefined,
       metadata: {
         booking_id: booking_id,

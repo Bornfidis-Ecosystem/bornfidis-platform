@@ -12,15 +12,15 @@ const QUICK_QUEUES: { href: string; label: string }[] = [
 
 export function AdminBookingsFilters() {
   return (
-    <div className="border-b border-stone-200 bg-white">
-      <div className="container mx-auto px-4 py-3">
-        <p className="text-[10px] font-semibold uppercase tracking-wider text-stone-500 mb-2">Quick queues</p>
+    <div className="border-b border-culinary-outline bg-culinary-bone">
+      <div className="container mx-auto px-4 py-stack-sm">
+        <p className="mb-stack-sm font-culinary-sans text-label-caps text-culinary-text-muted">Quick queues</p>
         <div className="flex flex-wrap gap-2">
           {QUICK_QUEUES.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
-              className="inline-flex items-center rounded-full border border-navy/15 bg-stone-50 px-3 py-1 text-xs font-medium text-navy hover:bg-navy hover:text-white transition"
+              className="inline-flex items-center rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1 font-culinary-sans text-body-md font-medium text-culinary-navy transition refined hover:border-culinary-navy hover:bg-culinary-surface-low"
             >
               {label}
             </Link>

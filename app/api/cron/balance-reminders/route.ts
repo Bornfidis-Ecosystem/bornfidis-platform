@@ -38,7 +38,8 @@ function remainingBalanceCents(b: {
 }
 
 function depositPaid(b: { paidAt: Date | null; status: string }): boolean {
-  return !!b.paidAt || String(b.status || '').toLowerCase() === 'booked'
+  const s = String(b.status || '').toLowerCase()
+  return !!b.paidAt || s === 'booked' || s === 'confirmed'
 }
 
 /**
@@ -78,6 +79,7 @@ export async function GET(request: NextRequest) {
             OR: [
               { paidAt: { not: null } },
               { status: { equals: 'booked', mode: 'insensitive' } },
+              { status: { equals: 'confirmed', mode: 'insensitive' } },
             ],
           },
           {

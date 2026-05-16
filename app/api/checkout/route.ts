@@ -176,8 +176,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const depositPaid =
-      !!booking.paid_at || String(booking.status || '').toLowerCase() === 'booked'
+    const st = String(booking.status || '').toLowerCase()
+    const depositPaid = !!booking.paid_at || st === 'booked' || st === 'confirmed'
     if (!depositPaid && depositPaidCents > 0) {
       return NextResponse.json(
         { success: false, error: 'Deposit must be paid before requesting balance payment.' },

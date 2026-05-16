@@ -60,7 +60,7 @@ export const BOOKING_ACTIVITY_META: Record<
   },
   admin_note: {
     label: 'Internal Note Added',
-    dotClass: 'bg-stone-500',
+    dotClass: 'bg-culinary-text-muted',
   },
   booking_created: {
     label: 'Booking Created',
@@ -96,7 +96,7 @@ export const BOOKING_ACTIVITY_META: Record<
   },
   testimonial_unapproved: {
     label: 'Testimonial Unapproved',
-    dotClass: 'bg-stone-400',
+    dotClass: 'bg-culinary-outline-variant',
   },
   checklist_updated: {
     label: 'Service checklist',

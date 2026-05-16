@@ -23,6 +23,7 @@ import ChefPayoutBonusSection from './ChefPayoutBonusSection'
 import ErrorBoundary from './ErrorBoundary'
 import SignOutButton from '@/components/admin/SignOutButton'
 import SlaSection from './SlaSection'
+import { CulinaryCard } from '@/components/culinary-os'
 
 /**
  * Admin Booking Detail Page
@@ -80,8 +81,15 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   const showPostConfirmOps =
     booking.status === 'Confirmed' || statusNorm === 'confirmed' || statusNorm === 'in_prep'
 
+  const suspenseFallback = (label: string) => (
+    <div className="py-stack-md text-center font-culinary-sans text-body-md text-culinary-text-muted">{label}</div>
+  )
+
+  const sectionTitleClass =
+    'font-culinary-display text-title-md tracking-tight text-culinary-navy mb-stack-sm'
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="space-y-stack-lg">
       <AdminBookingHeader
         bookingId={booking.id}
         bookingName={booking.name}
@@ -89,94 +97,87 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
         actions={<SignOutButton />}
       />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl space-y-6">
-        <div className="rounded-lg bg-white p-6 shadow-sm space-y-6">
-          <SlaSection booking={booking} />
-          <AiInsightsBlock insights={aiInsights} />
+      <main className="container mx-auto max-w-4xl px-4 pb-stack-lg">
+        <CulinaryCard>
+          <div className="space-y-stack-lg">
+            <SlaSection booking={booking} />
+            <AiInsightsBlock insights={aiInsights} />
 
-          <AdminBookingQuoteCard
-            booking={booking}
-            lastStripeActivity={lastStripeActivity}
-            hasSavedQuote={hasSavedQuote}
-            showFounderOnlyPaymentControls={showFounderOnlyPaymentControls}
-          />
+            <AdminBookingQuoteCard
+              booking={booking}
+              lastStripeActivity={lastStripeActivity}
+              hasSavedQuote={hasSavedQuote}
+              showFounderOnlyPaymentControls={showFounderOnlyPaymentControls}
+            />
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <AdminBookingSummaryCard booking={booking} />
-            <AdminBookingClientCard booking={booking} clientProfile={clientProfile} />
-          </div>
+            <div className="grid gap-gutter lg:grid-cols-2">
+              <AdminBookingSummaryCard booking={booking} />
+              <AdminBookingClientCard booking={booking} clientProfile={clientProfile} />
+            </div>
 
-          {/* Admin Section - Editable */}
-          <section className="border-t border-stone-200 pt-6">
-            <h2 className="text-xl font-semibold text-navy mb-4">Admin Management</h2>
-            <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading...</div>}>
-              <BookingDetailClient
-                booking={booking}
-                activities={activities}
-                quoteEmailTestimonial={quoteEmailTestimonial}
-              />
-            </Suspense>
-          </section>
-
-          {/* Phase 2A: Booking Timeline */}
-          {showPostConfirmOps && (
-            <section className="border-t pt-6">
-              <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading timeline...</div>}>
-                <TimelineSection bookingId={booking.id} />
+            <section className="border-t border-culinary-outline pt-stack-lg">
+              <h2 className={sectionTitleClass}>Admin Management</h2>
+              <Suspense fallback={suspenseFallback('Loading...')}>
+                <BookingDetailClient
+                  booking={booking}
+                  activities={activities}
+                  quoteEmailTestimonial={quoteEmailTestimonial}
+                />
               </Suspense>
             </section>
-          )}
 
-          {/* Phase 3.5: Event Prep Checklist */}
-          {showPostConfirmOps && (
-            <section className="border-t pt-6">
-              <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading prep checklist...</div>}>
-                <PrepSection bookingId={booking.id} eventDate={booking.event_date} />
-              </Suspense>
-            </section>
-          )}
+            {showPostConfirmOps && (
+              <section className="border-t border-culinary-outline pt-stack-lg">
+                <Suspense fallback={suspenseFallback('Loading timeline...')}>
+                  <TimelineSection bookingId={booking.id} />
+                </Suspense>
+              </section>
+            )}
 
-          {/* Phase 4: Assigned Farmers */}
-          {showPostConfirmOps && (
-            <section className="border-t pt-6">
-                <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading farmer assignments...</div>}>
+            {showPostConfirmOps && (
+              <section className="border-t border-culinary-outline pt-stack-lg">
+                <Suspense fallback={suspenseFallback('Loading prep checklist...')}>
+                  <PrepSection bookingId={booking.id} eventDate={booking.event_date} />
+                </Suspense>
+              </section>
+            )}
+
+            {showPostConfirmOps && (
+              <section className="border-t border-culinary-outline pt-stack-lg">
+                <Suspense fallback={suspenseFallback('Loading farmer assignments...')}>
                   <FarmerAssignmentSection bookingId={booking.id} eventDate={booking.event_date || ''} />
                 </Suspense>
-            </section>
-          )}
+              </section>
+            )}
 
-          {/* Phase 2Q: Chef payout breakdown + override */}
-          {booking.chef_payout_amount_cents != null && booking.chef_payout_amount_cents > 0 && (
-            <section className="border-t pt-6">
-              <ChefPayoutBonusSection
-                bookingId={booking.id}
-                chefPayoutAmountCents={booking.chef_payout_amount_cents}
-                chefPayoutBaseCents={booking.chef_payout_base_cents}
-                chefPayoutBonusCents={booking.chef_payout_bonus_cents}
-                chefPayoutBonusBreakdown={booking.chef_payout_bonus_breakdown}
-                chefPayoutBonusOverride={booking.chef_payout_bonus_override}
-                chefPayoutStatus={booking.chef_payout_status}
-                chefTierSnapshot={booking.chef_tier_snapshot}
-                chefRateMultiplier={booking.chef_rate_multiplier}
-              />
-            </section>
-          )}
+            {booking.chef_payout_amount_cents != null && booking.chef_payout_amount_cents > 0 && (
+              <section className="border-t border-culinary-outline pt-stack-lg">
+                <ChefPayoutBonusSection
+                  bookingId={booking.id}
+                  chefPayoutAmountCents={booking.chef_payout_amount_cents}
+                  chefPayoutBaseCents={booking.chef_payout_base_cents}
+                  chefPayoutBonusCents={booking.chef_payout_bonus_cents}
+                  chefPayoutBonusBreakdown={booking.chef_payout_bonus_breakdown}
+                  chefPayoutBonusOverride={booking.chef_payout_bonus_override}
+                  chefPayoutStatus={booking.chef_payout_status}
+                  chefTierSnapshot={booking.chef_tier_snapshot}
+                  chefRateMultiplier={booking.chef_rate_multiplier}
+                />
+              </section>
+            )}
 
-          {/* Phase 4.5: Farmer Payouts */}
-          {showPostConfirmOps && (
-            <section className="border-t pt-6">
-              <ErrorBoundary>
-                <Suspense fallback={<div className="text-center text-gray-500 py-4">Loading payouts...</div>}>
-                  <PayoutSection bookingId={booking.id} />
-                </Suspense>
-              </ErrorBoundary>
-            </section>
-          )}
-
-        </div>
+            {showPostConfirmOps && (
+              <section className="border-t border-culinary-outline pt-stack-lg">
+                <ErrorBoundary>
+                  <Suspense fallback={suspenseFallback('Loading payouts...')}>
+                    <PayoutSection bookingId={booking.id} />
+                  </Suspense>
+                </ErrorBoundary>
+              </section>
+            )}
+          </div>
+        </CulinaryCard>
       </main>
     </div>
   )
 }
-

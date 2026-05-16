@@ -25,6 +25,7 @@ import { StatusWorkflow } from '@/components/booking/StatusWorkflow'
 import { AdminBookingNotesCard } from '@/components/admin/booking-detail/AdminBookingNotesCard'
 import { AdminBookingChecklistCard } from '@/components/admin/booking-detail/AdminBookingChecklistCard'
 import { AdminBookingTimelineCard } from '@/components/admin/booking-detail/AdminBookingTimelineCard'
+import { CulinaryCard } from '@/components/culinary-os'
 import type { BookingActivity } from '@/types/booking-activity'
 import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 
@@ -1205,12 +1206,12 @@ export default function BookingDetailClient({
   }, [quoteExpanded, teamExpanded, handleSave, handleCopyPortalUrl])
 
   return (
-    <div className="space-y-6 overflow-x-hidden max-w-full">
+    <div className="max-w-full space-y-stack-md overflow-x-hidden font-culinary-sans">
       <StatusWorkflow currentStatus={status} />
 
       {/* Admin Actions */}
-      <div className="bg-white border rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+      <CulinaryCard className="mb-stack-md">
+        <h2 className="mb-stack-md flex items-center gap-2 font-culinary-display text-title-md text-culinary-navy">
           <span className="text-2xl">⚙️</span>
           Admin Actions
         </h2>
@@ -1218,14 +1219,14 @@ export default function BookingDetailClient({
         <div className="space-y-4">
           {/* Status Dropdown */}
           <div>
-            <label htmlFor="status" className="block text-sm font-bold text-gray-700 mb-2">
+            <label htmlFor="status" className="block text-sm font-bold text-culinary-ink mb-2">
               Booking Status
             </label>
             <select
               id="status"
               value={status}
               onChange={(e) => setStatus(e.target.value as BookingStatus)}
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="w-full px-4 py-3 text-base border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
               title="Booking status"
             >
               {statusOptions.map((option) => (
@@ -1237,17 +1238,17 @@ export default function BookingDetailClient({
           </div>
 
           {canMarkConfirmedNoDeposit ? (
-            <div className="rounded-lg border border-amber-200 bg-amber-50/80 p-4 space-y-3">
-              <p className="text-sm font-semibold text-gray-900">Mark confirmed (no Stripe deposit)</p>
-              <p className="text-xs text-gray-600 leading-relaxed">
+            <div className="rounded-none border border-amber-200 bg-amber-50/80 p-4 space-y-3">
+              <p className="text-sm font-semibold text-culinary-ink">Mark confirmed (no Stripe deposit)</p>
+              <p className="text-xs text-culinary-text-muted leading-relaxed">
                 Use when the date is firm without a card deposit (e.g. wire, contract, or internal
-                sign-off). This sets status to <span className="font-mono text-gray-800">confirmed</span>
+                sign-off). This sets status to <span className="font-mono text-culinary-ink">confirmed</span>
                 — it does not record a payment in Stripe.
               </p>
-              <label className="flex cursor-pointer items-start gap-2 text-sm text-gray-800">
+              <label className="flex cursor-pointer items-start gap-2 text-sm text-culinary-ink">
                 <input
                   type="checkbox"
-                  className="mt-0.5 h-4 w-4 rounded border-gray-300"
+                  className="mt-0.5 h-4 w-4 rounded-none border-culinary-outline"
                   checked={notifyOnManualConfirm}
                   onChange={(e) => setNotifyOnManualConfirm(e.target.checked)}
                 />
@@ -1260,7 +1261,7 @@ export default function BookingDetailClient({
                 type="button"
                 onClick={handleMarkConfirmedNoDeposit}
                 disabled={isMarkingConfirmedNoDeposit}
-                className="w-full rounded-lg bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-800 transition disabled:opacity-50"
+                className="w-full rounded-none bg-amber-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-amber-800 transition disabled:opacity-50"
               >
                 {isMarkingConfirmedNoDeposit ? 'Updating…' : 'Mark confirmed'}
               </button>
@@ -1268,9 +1269,9 @@ export default function BookingDetailClient({
           ) : null}
 
           {canSendInquiryReminder ? (
-            <div className="rounded-lg border border-sky-200 bg-sky-50/80 p-4 space-y-2">
-              <p className="text-sm font-semibold text-gray-900">Inquiry follow-up</p>
-              <p className="text-xs text-gray-600">
+            <div className="rounded-none border border-sky-200 bg-sky-50/80 p-4 space-y-2">
+              <p className="text-sm font-semibold text-culinary-ink">Inquiry follow-up</p>
+              <p className="text-xs text-culinary-text-muted">
                 Send a short &quot;still reviewing&quot; note. Sets{' '}
                 <span className="font-mono">inquiryReminderSentAt</span> for reporting.
                 {booking.reminder_sent_at
@@ -1281,7 +1282,7 @@ export default function BookingDetailClient({
                 type="button"
                 onClick={handleSendInquiryReminder}
                 disabled={isSendingInquiryReminder}
-                className="w-full rounded-lg border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-800 hover:bg-sky-100 transition disabled:opacity-50"
+                className="w-full rounded-none border border-sky-600 bg-white px-4 py-2.5 text-sm font-semibold text-sky-800 hover:bg-sky-100 transition disabled:opacity-50"
               >
                 {isSendingInquiryReminder ? 'Sending…' : 'Send inquiry reminder email'}
               </button>
@@ -1313,7 +1314,7 @@ export default function BookingDetailClient({
                   }
                 }}
                 disabled={isSaving}
-                className="flex-1 px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-2 bg-green-600 text-white rounded-none font-semibold hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSaving ? 'Processing...' : '✓ Approve Booking'}
               </button>
@@ -1339,7 +1340,7 @@ export default function BookingDetailClient({
                   }
                 }}
                 disabled={isSaving}
-                className="flex-1 px-6 py-2 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-2 bg-red-600 text-white rounded-none font-semibold hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSaving ? 'Processing...' : '✕ Decline'}
               </button>
@@ -1354,26 +1355,25 @@ export default function BookingDetailClient({
               type="button"
               onClick={handleSave}
               disabled={isSaving || !hasChanges}
-              className="flex-1 min-w-[140px] px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="flex-1 min-w-[140px] px-6 py-3 bg-green-600 text-white font-semibold rounded-none hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isSaving ? 'Saving...' : 'Save Changes'}
             </button>
             <button
               type="button"
               onClick={handleCopyPortalUrl}
-              className="shrink-0 px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
+              className="shrink-0 px-6 py-3 bg-culinary-surface-high text-culinary-ink font-semibold rounded-none hover:bg-culinary-surface-highest transition flex items-center gap-2"
             >
               📋 Copy Portal Link
             </button>
           </div>
         </div>
-      </div>
-
-      {/* Follow-up Date (if exists) */}
+      </CulinaryCard>
+      {/* Follow-up date (if set on booking) */}
       {booking.follow_up_date && (
         <div>
-          <label className="block text-sm font-medium text-gray-500 mb-1">Follow-up Date</label>
-          <p className="text-gray-900">
+          <label className="block text-sm font-medium text-culinary-text-muted mb-1">Follow-up Date</label>
+          <p className="text-culinary-ink">
             {new Date(booking.follow_up_date).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
@@ -1384,34 +1384,34 @@ export default function BookingDetailClient({
       )}
 
       {/* Quote & Payment - Collapsible */}
-      <div className="bg-white border rounded-lg mb-6">
+      <CulinaryCard padded={false} className="mb-stack-md overflow-hidden">
         <button
           type="button"
           onClick={() => setQuoteExpanded(!quoteExpanded)}
-          className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition rounded-lg"
+          className="flex w-full items-center justify-between border-b border-culinary-outline px-gutter py-4 transition hover:bg-culinary-surface-low"
         >
           <div className="flex items-center gap-3">
             <span className="text-2xl">💰</span>
             <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-900">Quote & Payment</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-bold text-culinary-ink">Quote & Payment</h2>
+              <p className="text-sm text-culinary-text-muted">
                 {lineItems.length === 0
                   ? 'No quote created yet'
                   : `Total: $${calculateTotal().toFixed(2)}`}
               </p>
             </div>
           </div>
-          <span className="text-gray-400 text-sm">
+          <span className="text-culinary-text-muted text-sm">
             {quoteExpanded ? '▲ Collapse' : '▼ Expand'}
           </span>
         </button>
 
         {quoteExpanded && (
-          <div className="px-6 pb-6 border-t space-y-6 transition-all duration-300 ease-in-out">
+          <div className="space-y-stack-lg border-t border-culinary-outline px-gutter pb-gutter transition-all duration-300 ease-in-out">
             {/* Line Items */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                <h3 className="text-sm font-semibold text-culinary-ink uppercase tracking-wide">
                   Line Items
                 </h3>
                 <button
@@ -1423,9 +1423,9 @@ export default function BookingDetailClient({
                 </button>
               </div>
 
-              <div className="border rounded-lg overflow-hidden overflow-x-auto">
+              <div className="overflow-x-auto overflow-hidden rounded-none border border-culinary-outline">
                 <table className="w-full min-w-[600px]">
-                  <thead className="bg-gray-800 text-white">
+                  <thead className="bg-culinary-navy text-culinary-on-navy">
                     <tr>
                       <th className="px-4 py-3 text-left text-sm font-semibold">Title</th>
                       <th className="px-4 py-3 text-left text-sm font-semibold">Description</th>
@@ -1438,19 +1438,19 @@ export default function BookingDetailClient({
                   <tbody>
                     {lineItems.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                        <td colSpan={6} className="px-4 py-8 text-center text-culinary-text-muted">
                           No items yet. Click &quot;Add Item&quot; to get started.
                         </td>
                       </tr>
                     ) : (
                       lineItems.map((item, index) => (
-                        <tr key={index} className="border-t hover:bg-gray-50">
+                        <tr key={index} className="border-t border-culinary-outline hover:bg-culinary-surface-low">
                           <td className="px-4 py-3">
                             <input
                               type="text"
                               value={item.title}
                               onChange={(e) => updateLineItem(index, 'title', e.target.value)}
-                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                              className="w-full px-2 py-1 border border-culinary-outline rounded-none text-sm"
                               placeholder="Service name"
                               title="Service name"
                             />
@@ -1460,7 +1460,7 @@ export default function BookingDetailClient({
                               type="text"
                               value={item.description || ''}
                               onChange={(e) => updateLineItem(index, 'description', e.target.value)}
-                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+                              className="w-full px-2 py-1 border border-culinary-outline rounded-none text-sm"
                               placeholder="Optional"
                               title="Optional description"
                             />
@@ -1471,7 +1471,7 @@ export default function BookingDetailClient({
                               min={1}
                               value={item.quantity}
                               onChange={(e) => updateLineItem(index, 'quantity', parseInt(e.target.value) || 1)}
-                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-center"
+                              className="w-full px-2 py-1 border border-culinary-outline rounded-none text-sm text-center"
                               title="Quantity"
                               placeholder="1"
                             />
@@ -1484,7 +1484,7 @@ export default function BookingDetailClient({
                                 const cents = parseDollarsToCents(e.target.value)
                                 updateLineItem(index, 'unit_price_cents', cents)
                               }}
-                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm text-right"
+                              className="w-full px-2 py-1 border border-culinary-outline rounded-none text-sm text-right"
                               placeholder="0.00"
                               title="Unit price (USD)"
                             />
@@ -1511,7 +1511,7 @@ export default function BookingDetailClient({
 
             {/* Quote Notes */}
             <div>
-              <label htmlFor="quote_notes" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="quote_notes" className="block text-sm font-medium text-culinary-ink mb-2">
                 Quote Notes (for customer)
               </label>
               <textarea
@@ -1520,14 +1520,14 @@ export default function BookingDetailClient({
                 onChange={(e) => setQuoteNotes(e.target.value)}
                 rows={3}
                 placeholder="Add notes for the customer..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
+                className="w-full px-4 py-2 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
               />
             </div>
 
             {/* Tax, Service Fee, Deposit % */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="tax" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="tax" className="block text-sm font-medium text-culinary-ink mb-2">
                   Tax (USD)
                 </label>
                 <input
@@ -1536,11 +1536,11 @@ export default function BookingDetailClient({
                   value={taxDollars}
                   onChange={(e) => setTaxDollars(e.target.value)}
                   placeholder="0.00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full px-3 py-2 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 />
               </div>
               <div>
-                <label htmlFor="service_fee" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="service_fee" className="block text-sm font-medium text-culinary-ink mb-2">
                   Service Fee (USD)
                 </label>
                 <input
@@ -1549,11 +1549,11 @@ export default function BookingDetailClient({
                   value={serviceFeeDollars}
                   onChange={(e) => setServiceFeeDollars(e.target.value)}
                   placeholder="0.00"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full px-3 py-2 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 />
               </div>
               <div>
-                <label htmlFor="deposit_percentage" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="deposit_percentage" className="block text-sm font-medium text-culinary-ink mb-2">
                   Deposit Percentage
                 </label>
                 <input
@@ -1565,18 +1565,18 @@ export default function BookingDetailClient({
                   onChange={(e) => setDepositPercentage(parseInt(e.target.value) || 30)}
                   placeholder="30"
                   title="Deposit percentage"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full px-3 py-2 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                 />
               </div>
               <div>
-                <label htmlFor="region_code" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="region_code" className="block text-sm font-medium text-culinary-ink mb-2">
                   Region (Phase 2AL)
                 </label>
                 <select
                   id="region_code"
                   value={regionCode}
                   onChange={(e) => setRegionCode(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full px-3 py-2 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   title="Choose a region (optional)"
                 >
                   <option value="">No region</option>
@@ -1587,19 +1587,19 @@ export default function BookingDetailClient({
                   ))}
                 </select>
                 {regionCode && (
-                  <p className="text-xs text-gray-500 mt-1">Multiplier + travel fee + minimum applied on save; locked at quote time.</p>
+                  <p className="text-xs text-culinary-text-muted mt-1">Multiplier + travel fee + minimum applied on save; locked at quote time.</p>
                 )}
               </div>
             </div>
 
             {/* Totals */}
-            <div className="border-2 border-gray-800 rounded-lg p-4 space-y-2">
+            <div className="border-2 border-culinary-navy rounded-none p-4 space-y-2">
               <div className="flex justify-between text-base">
                 <span>Subtotal:</span>
                 <span>{formatUSD(subtotalCents)}</span>
               </div>
               {regionCode && previewJobCents != null && previewJobCents !== subtotalCents && (
-                <div className="flex justify-between text-base text-gray-600">
+                <div className="flex justify-between text-base text-culinary-text-muted">
                   <span>After region ({regionCode}):</span>
                   <span>{formatUSD(previewJobCents)}</span>
                 </div>
@@ -1616,38 +1616,38 @@ export default function BookingDetailClient({
                   <span>{formatUSD(serviceFeeCents)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-lg font-bold border-t pt-2">
+              <div className="flex justify-between border-t border-culinary-outline pt-2 text-lg font-bold">
                 <span>Total:</span>
                 <span>{formatUSD(totalCents)}</span>
               </div>
               {booking.surge_label && (
                 <p className="text-sm text-amber-700 font-medium">{booking.surge_label}</p>
               )}
-              <div className="flex justify-between text-lg font-bold bg-gray-800 text-white px-3 py-2 rounded -mx-2 -mb-2 mt-2">
+              <div className="flex justify-between text-lg font-bold bg-culinary-navy text-culinary-on-navy px-3 py-2 rounded-none -mx-2 -mb-2 mt-2">
                 <span>Deposit ({depositPercentage}%):</span>
                 <span>{formatUSD(depositCents)}</span>
               </div>
             </div>
 
             {/* Payment Status */}
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-3">Payment Status</h4>
+            <div className="bg-culinary-surface-low rounded-none p-4">
+              <h4 className="text-sm font-semibold text-culinary-ink mb-3">Payment Status</h4>
               <div className="grid grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-600">Deposit Paid:</span>
-                  <span className={`ml-2 font-medium ${depositPaid ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className="text-culinary-text-muted">Deposit Paid:</span>
+                  <span className={`ml-2 font-medium ${depositPaid ? 'text-green-600' : 'text-culinary-text-muted'}`}>
                     {depositPaid ? 'Yes' : 'No'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Balance Paid:</span>
-                  <span className={`ml-2 font-medium ${balancePaid ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className="text-culinary-text-muted">Balance Paid:</span>
+                  <span className={`ml-2 font-medium ${balancePaid ? 'text-green-600' : 'text-culinary-text-muted'}`}>
                     {balancePaid ? 'Yes' : 'No'}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-600">Fully Paid:</span>
-                  <span className={`ml-2 font-medium ${fullyPaid ? 'text-green-600' : 'text-gray-400'}`}>
+                  <span className="text-culinary-text-muted">Fully Paid:</span>
+                  <span className={`ml-2 font-medium ${fullyPaid ? 'text-green-600' : 'text-culinary-text-muted'}`}>
                     {fullyPaid ? 'Yes' : 'No'}
                   </span>
                 </div>
@@ -1655,35 +1655,35 @@ export default function BookingDetailClient({
             </div>
 
             {/* Deposit & Confirmation Templates */}
-            <div className="border border-gray-200 rounded-lg bg-white p-4">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3">Deposit and confirmation tools</h4>
+            <CulinaryCard className="!bg-culinary-surface-low">
+              <h4 className="text-sm font-semibold text-culinary-ink mb-3">Deposit and confirmation tools</h4>
 
               <div className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Quote total</span>
-                  <span className="font-semibold text-gray-900">{hasSavedQuote ? formatUSD(savedQuoteTotalCents) : '—'}</span>
+                  <span className="text-culinary-text-muted">Quote total</span>
+                  <span className="font-semibold text-culinary-ink">{hasSavedQuote ? formatUSD(savedQuoteTotalCents) : '—'}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-600">Deposit ({savedDepositPercent}%)</span>
-                  <span className="font-semibold text-gray-900">{hasSavedQuote ? formatUSD(savedDepositCents) : '—'}</span>
+                  <span className="text-culinary-text-muted">Deposit ({savedDepositPercent}%)</span>
+                  <span className="font-semibold text-culinary-ink">{hasSavedQuote ? formatUSD(savedDepositCents) : '—'}</span>
                 </div>
 
-                <div className="pt-2 border-t border-gray-200 flex items-center justify-between gap-3">
-                  <span className="text-gray-600 text-sm">Stripe deposit</span>
+                <div className="pt-2 border-t border-culinary-outline flex items-center justify-between gap-3">
+                  <span className="text-culinary-text-muted text-sm">Stripe deposit</span>
                   <button
                     type="button"
                     onClick={handleOpenDepositLink}
                     disabled={!hasSavedQuote || isCreatingStripeDepositLink}
-                    className="px-4 py-2 bg-navy text-white font-semibold rounded-lg hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-navy text-culinary-on-navy font-semibold rounded-none hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isCreatingStripeDepositLink ? 'Opening...' : 'Open Deposit Link'}
                   </button>
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Send via Resend</p>
+              <div className="mt-4 pt-4 border-t border-culinary-outline">
+                <p className="text-xs font-semibold text-culinary-text-muted uppercase tracking-wide mb-2">Send via Resend</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -1694,7 +1694,7 @@ export default function BookingDetailClient({
                       isSendingQuoteEmail ||
                       isCreatingStripeDepositLink
                     }
-                    className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-none hover:bg-indigo-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
                     {isSendingQuoteEmail ? 'Sending…' : 'Send Quote Email'}
                   </button>
@@ -1707,7 +1707,7 @@ export default function BookingDetailClient({
                       isSendingDepositRequestEmail ||
                       isCreatingStripeDepositLink
                     }
-                    className="px-4 py-2 bg-sky-700 text-white font-semibold rounded-lg hover:bg-sky-800 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    className="px-4 py-2 bg-sky-700 text-white font-semibold rounded-none hover:bg-sky-800 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
                     {isSendingDepositRequestEmail ? 'Sending…' : 'Send Deposit Request Email'}
                   </button>
@@ -1722,7 +1722,7 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyDepositRequestWhatsapp}
                   disabled={!hasSavedQuote || isCreatingStripeDepositLink}
-                  className="px-4 py-2 bg-gold text-navy font-semibold rounded-lg hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 bg-gold text-navy font-semibold rounded-none hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Deposit Request (WhatsApp)
                 </button>
@@ -1730,7 +1730,7 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyDepositRequestEmail}
                   disabled={!hasSavedQuote || isCreatingStripeDepositLink}
-                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-none hover:bg-navy hover:text-culinary-on-navy transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Deposit Request (Email)
                 </button>
@@ -1738,7 +1738,7 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyBookingConfirmationWhatsapp}
                   disabled={!hasSavedQuote}
-                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-none hover:bg-navy hover:text-culinary-on-navy transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Booking Confirmation (WhatsApp)
                 </button>
@@ -1746,7 +1746,7 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyBookingConfirmationEmail}
                   disabled={!hasSavedQuote}
-                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-none hover:bg-navy hover:text-culinary-on-navy transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Booking Confirmation (Email)
                 </button>
@@ -1754,7 +1754,7 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyFinalBalanceReminderWhatsapp}
                   disabled={!hasSavedQuote}
-                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-none hover:bg-navy hover:text-culinary-on-navy transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Final Balance Reminder (WhatsApp)
                 </button>
@@ -1762,23 +1762,23 @@ export default function BookingDetailClient({
                   type="button"
                   onClick={handleCopyFinalBalanceReminderEmail}
                   disabled={!hasSavedQuote}
-                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-lg hover:bg-navy hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 border border-navy/20 text-navy font-semibold rounded-none hover:bg-navy hover:text-culinary-on-navy transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Copy Final Balance Reminder (Email)
                 </button>
               </div>
 
               {!hasSavedQuote && (
-                <p className="mt-3 text-xs text-gray-500">Save the quote first to enable deposit and confirmation templates.</p>
+                <p className="mt-3 text-xs text-culinary-text-muted">Save the quote first to enable deposit and confirmation templates.</p>
               )}
-            </div>
+            </CulinaryCard>
 
             {/* Save Quote */}
             <button
               type="button"
               onClick={handleSaveQuote}
               disabled={isSavingQuote || lineItems.length === 0}
-              className="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-none hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isSavingQuote ? 'Saving...' : 'Save Quote'}
             </button>
@@ -1789,7 +1789,7 @@ export default function BookingDetailClient({
                 type="button"
                 onClick={handleCopyDepositRequestWhatsapp}
                 disabled={!hasSavedQuote || isCreatingStripeDepositLink}
-                className="w-full px-6 py-2 bg-gray-100 text-gray-800 font-semibold rounded-lg hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full px-6 py-2 bg-culinary-surface-high text-culinary-ink font-semibold rounded-none hover:bg-culinary-surface-highest transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
               >
                 Copy Deposit Request (WhatsApp)
               </button>
@@ -1800,7 +1800,7 @@ export default function BookingDetailClient({
               <PDFDownloadLink
                 document={<InvoicePdfDocument booking={booking} lineItems={lineItems} />}
                 fileName={`invoice-${booking.name.replace(/\s+/g, '-')}-${booking.id.slice(0, 8)}.pdf`}
-                className="block w-full px-6 py-3 bg-navy text-white font-semibold rounded-lg hover:bg-opacity-90 transition text-center"
+                className="block w-full px-6 py-3 bg-navy text-culinary-on-navy font-semibold rounded-none hover:bg-opacity-90 transition text-center"
               >
                 Download Invoice
               </PDFDownloadLink>
@@ -1808,22 +1808,22 @@ export default function BookingDetailClient({
 
             {/* Stripe note when not configured */}
             {!isStripeConfigured() && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
+              <div className="rounded-none border border-amber-200 bg-amber-50/90 p-gutter font-culinary-sans text-body-md text-amber-950">
                 ⚠️ <strong>Note:</strong> Stripe not configured. Track payments manually in Payment Status above.
               </div>
             )}
           </div>
         )}
-      </div>
+      </CulinaryCard>
 
-      <div className="mt-6">
+      <div className="mt-stack-md">
         <AdminBookingChecklistCard
           booking={booking}
           onActivity={(a) => setBookingActivities((prev) => [a, ...prev])}
         />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-stack-md">
         <AdminBookingTimelineCard
           activities={bookingActivities}
           internalNote={internalNote}
@@ -1834,12 +1834,12 @@ export default function BookingDetailClient({
       </div>
 
       {/* Testimonial capture */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-white p-5">
-        <h3 className="text-base font-semibold text-navy mb-3">Testimonial</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-600 mb-4">
+      <CulinaryCard className="mt-stack-md">
+        <h3 className="mb-stack-sm font-culinary-display text-title-md text-culinary-navy">Testimonial</h3>
+        <div className="mb-stack-md grid grid-cols-1 gap-gutter font-culinary-sans text-body-md text-culinary-text-muted sm:grid-cols-2">
           <div>
-            <span className="text-gray-500">Requested</span>
-            <p className="font-medium text-gray-900">
+            <span className="text-label-caps text-culinary-text-muted">Requested</span>
+            <p className="font-medium text-culinary-ink">
               {booking.testimonial_requested_at
                 ? new Date(booking.testimonial_requested_at).toLocaleString('en-US', {
                     month: 'short',
@@ -1852,8 +1852,8 @@ export default function BookingDetailClient({
             </p>
           </div>
           <div>
-            <span className="text-gray-500">Received</span>
-            <p className="font-medium text-gray-900">
+            <span className="text-label-caps text-culinary-text-muted">Received</span>
+            <p className="font-medium text-culinary-ink">
               {booking.testimonial_received_at
                 ? new Date(booking.testimonial_received_at).toLocaleString('en-US', {
                     month: 'short',
@@ -1866,17 +1866,19 @@ export default function BookingDetailClient({
             </p>
           </div>
         </div>
-        <div className="mb-3 flex items-center gap-2">
-          <span className="text-sm text-gray-600">Approved for use</span>
+        <div className="mb-stack-sm flex items-center gap-2">
+          <span className="font-culinary-sans text-body-md text-culinary-text-muted">Approved for use</span>
           <span
-            className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-              testimonialApprovedLocal ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-100 text-gray-600'
+            className={`inline-flex items-center rounded-none border px-2 py-0.5 font-culinary-sans text-label-caps ${
+              testimonialApprovedLocal
+                ? 'border-culinary-forest/50 text-culinary-forest'
+                : 'border-culinary-outline text-culinary-text-muted'
             }`}
           >
             {testimonialApprovedLocal ? 'Yes' : 'No'}
           </span>
         </div>
-        <label htmlFor="testimonial_text" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="testimonial_text" className="mb-1 block font-culinary-sans text-body-md font-medium text-culinary-ink">
           Testimonial text
         </label>
         <textarea
@@ -1885,10 +1887,10 @@ export default function BookingDetailClient({
           onChange={(e) => setTestimonialText(e.target.value)}
           rows={5}
           placeholder="Paste the client’s testimonial here when received…"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy/30 focus:border-navy/40 resize-y text-sm"
+          className="w-full resize-y rounded-none border border-culinary-outline bg-culinary-bone px-gutter py-3 font-culinary-sans text-body-md text-culinary-ink focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30"
           title="Testimonial text"
         />
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-stack-md flex flex-wrap gap-2">
           <button
             type="button"
             disabled={isTestimonialBusy}
@@ -1906,7 +1908,7 @@ export default function BookingDetailClient({
                 setIsTestimonialBusy(false)
               }
             }}
-            className="px-4 py-2 bg-navy text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 disabled:opacity-50"
+            className="rounded-none border border-culinary-navy bg-culinary-navy px-4 py-2 font-culinary-sans text-label-caps text-culinary-on-navy transition refined hover:opacity-90 disabled:opacity-50"
           >
             Mark Requested
           </button>
@@ -1927,7 +1929,7 @@ export default function BookingDetailClient({
                 setIsTestimonialBusy(false)
               }
             }}
-            className="px-4 py-2 border border-navy/20 text-navy text-sm font-semibold rounded-lg hover:bg-navy hover:text-white disabled:opacity-50"
+            className="rounded-none border border-culinary-navy bg-culinary-bone px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:bg-culinary-navy hover:text-culinary-on-navy disabled:opacity-50"
           >
             Save Testimonial
           </button>
@@ -1949,7 +1951,7 @@ export default function BookingDetailClient({
                 setIsTestimonialBusy(false)
               }
             }}
-            className="px-4 py-2 bg-gold text-navy text-sm font-semibold rounded-lg hover:opacity-90 disabled:opacity-50"
+            className="rounded-none border border-culinary-gold-line bg-culinary-gold px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:opacity-90 disabled:opacity-50"
           >
             Approve for Use
           </button>
@@ -1972,22 +1974,22 @@ export default function BookingDetailClient({
                   setIsTestimonialBusy(false)
                 }
               }}
-              className="px-4 py-2 text-sm text-gray-600 underline hover:text-navy disabled:opacity-50"
+              className="px-4 py-2 font-culinary-sans text-body-md text-culinary-text-muted underline decoration-culinary-gold-line underline-offset-4 hover:text-culinary-navy disabled:opacity-50"
             >
               Remove approval
             </button>
           )}
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Phase 4B: Customer Portal Section */}
-      <div className="border-t pt-6 mt-6">
-        <h3 className="text-lg font-semibold text-navy mb-4">Customer Portal</h3>
-        <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+      <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
+        <h3 className="mb-stack-sm font-culinary-display text-title-md text-culinary-navy">Customer Portal</h3>
+        <CulinaryCard className="!bg-culinary-surface-low space-y-stack-md">
           {portalToken && !isTokenRevoked ? (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-culinary-ink mb-2">
                   Portal Link
                 </label>
                 <div className="flex gap-2">
@@ -1996,16 +1998,16 @@ export default function BookingDetailClient({
                     value={portalUrl || ''}
                     readOnly
                     title="Payment portal link"
-                    className="flex-1 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm"
+                    className="flex-1 rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2 text-sm"
                   />
                   <button
                     onClick={handleCopyPortalUrl}
-                    className="px-4 py-2 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition text-sm"
+                    className="px-4 py-2 bg-navy text-culinary-on-navy rounded-none font-semibold hover:bg-opacity-90 transition text-sm"
                   >
                     Copy
                   </button>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-culinary-text-muted mt-1">
                   Share this link with the customer to access their booking portal.
                 </p>
               </div>
@@ -2013,7 +2015,7 @@ export default function BookingDetailClient({
                 <button
                   onClick={() => handleGeneratePortalToken(true)}
                   disabled={isGeneratingToken}
-                  className="px-4 py-2 bg-gold text-navy rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                  className="px-4 py-2 bg-gold text-navy rounded-none font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   {isGeneratingToken ? 'Rotating...' : 'Rotate Link'}
                 </button>
@@ -2021,82 +2023,82 @@ export default function BookingDetailClient({
             </>
           ) : isTokenRevoked ? (
             <>
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-none">
                 <p className="text-sm text-yellow-800 font-semibold mb-2">Portal Link Revoked</p>
                 <p className="text-xs text-yellow-700">The previous portal link has been revoked. Generate a new link to share with the customer.</p>
               </div>
               <button
                 onClick={() => handleGeneratePortalToken(false)}
                 disabled={isGeneratingToken}
-                className="px-4 py-2 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-navy text-culinary-on-navy rounded-none font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isGeneratingToken ? 'Generating...' : 'Generate Portal Link'}
               </button>
             </>
           ) : (
             <>
-              <p className="text-sm text-gray-600 mb-4">
+              <p className="text-sm text-culinary-text-muted mb-4">
                 Generate a secure portal link for the customer to view their booking, make payments, and download invoices.
               </p>
               <button
                 onClick={() => handleGeneratePortalToken(false)}
                 disabled={isGeneratingToken}
-                className="px-4 py-2 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 bg-navy text-culinary-on-navy rounded-none font-semibold hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isGeneratingToken ? 'Generating...' : 'Generate Portal Link'}
               </button>
             </>
           )}
-        </div>
+        </CulinaryCard>
       </div>
 
       {/* Team Assignment - Collapsible */}
-      <div className="bg-white border rounded-lg mb-6">
+      <CulinaryCard padded={false} className="mb-stack-md overflow-hidden">
         <button
           type="button"
           onClick={() => setTeamExpanded(!teamExpanded)}
-          className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition rounded-lg"
+          className="flex w-full items-center justify-between border-b border-culinary-outline px-gutter py-4 transition hover:bg-culinary-surface-low"
         >
           <div className="flex items-center gap-3">
             <span className="text-2xl">👨‍🍳</span>
             <div className="text-left">
-              <h2 className="text-xl font-bold text-gray-900">Team Assignment</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-xl font-bold text-culinary-ink">Team Assignment</h2>
+              <p className="text-sm text-culinary-text-muted">
                 {assignedChef ? `Chef: ${assignedChef.name}` : 'Chef: Not assigned'} |{' '}
                 {assignedFarmers.length > 0 ? ` Farmers: ${assignedFarmers.length}` : ' Farmers: None'}
               </p>
             </div>
           </div>
-          <span className="text-gray-400 text-sm">
+          <span className="text-culinary-text-muted text-sm">
             {teamExpanded ? '▲ Collapse' : '▼ Expand'}
           </span>
         </button>
 
         {teamExpanded && (
-          <div className="px-6 pb-6 border-t space-y-6 pt-6 transition-all duration-300 ease-in-out">
+          <div className="space-y-stack-lg border-t border-culinary-outline px-gutter pb-gutter pt-gutter transition-all duration-300 ease-in-out">
             {/* Phase 2AD: Recommended Chefs (scheduling optimizer) */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+              <h3 className="text-sm font-semibold text-culinary-ink uppercase tracking-wide mb-3">
                 Recommended Chefs
               </h3>
-              <p className="text-xs text-gray-500 mb-2">
+              <p className="text-xs text-culinary-text-muted mb-2">
                 Ranked by tier (40%), performance (40%), workload balance (20%). Only available chefs with no conflict.
               </p>
               {recommendedLoading ? (
-                <p className="text-sm text-gray-500">Loading…</p>
+                <p className="text-sm text-culinary-text-muted">Loading…</p>
               ) : recommendedWarning && recommendedChefs.length === 0 ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <div className="bg-amber-50 border border-amber-200 rounded-none p-3">
                   <p className="text-sm text-amber-800">{recommendedWarning}</p>
                 </div>
               ) : recommendedChefs.length > 0 ? (
                 <ul className="space-y-2 mb-2">
                   {recommendedChefs.map((rec) => (
-                    <li key={rec.id} className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-gray-100 last:border-0">
+                    <li key={rec.id} className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-culinary-outline last:border-0">
                       <div>
-                        <span className="font-medium text-gray-900">{rec.name}</span>
-                        <span className="ml-2 text-xs px-1.5 py-0.5 rounded bg-gray-200 text-gray-700">{rec.tierLabel}</span>
+                        <span className="font-medium text-culinary-ink">{rec.name}</span>
+                        <span className="ml-2 text-xs px-1.5 py-0.5 rounded-none bg-culinary-surface-highest text-culinary-ink">{rec.tierLabel}</span>
                         {rec.lastRating != null && (
-                          <span className="ml-2 text-sm text-gray-600">Rating {rec.lastRating}</span>
+                          <span className="ml-2 text-sm text-culinary-text-muted">Rating {rec.lastRating}</span>
                         )}
                         <span className="ml-2 text-xs text-green-600">{rec.availabilityStatus}</span>
                       </div>
@@ -2104,7 +2106,7 @@ export default function BookingDetailClient({
                         type="button"
                         onClick={() => handleChefAssignment(rec.id)}
                         disabled={teamSaving}
-                        className="px-3 py-1.5 text-sm bg-forestDark text-white rounded hover:bg-forestDarker disabled:opacity-50"
+                        className="px-3 py-1.5 text-sm bg-forestDark text-white rounded-none hover:bg-forestDarker disabled:opacity-50"
                       >
                         Assign
                       </button>
@@ -2112,17 +2114,17 @@ export default function BookingDetailClient({
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-gray-500">No recommendations (no event date or no eligible chefs).</p>
+                <p className="text-sm text-culinary-text-muted">No recommendations (no event date or no eligible chefs).</p>
               )}
             </div>
 
             {/* Assign Chef */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+              <h3 className="text-sm font-semibold text-culinary-ink uppercase tracking-wide mb-3">
                 Assign Chef
               </h3>
               {activeChefs.length === 0 ? (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="bg-yellow-50 border border-yellow-200 rounded-none p-4">
                   <p className="text-sm text-yellow-800 mb-2">
                     ⚠️ No active chefs available. Approve and onboard chefs first.
                   </p>
@@ -2138,7 +2140,7 @@ export default function BookingDetailClient({
                   <select
                     value={selectedChefId}
                     onChange={(e) => handleChefAssignment(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    className="w-full px-4 py-3 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     title="Select a chef to assign"
                   >
                     <option value="">Select Chef</option>
@@ -2148,7 +2150,7 @@ export default function BookingDetailClient({
                       </option>
                     ))}
                   </select>
-                  <label className="mt-2 flex items-center gap-2 text-sm text-gray-600">
+                  <label className="mt-2 flex items-center gap-2 text-sm text-culinary-text-muted">
                     <input
                       type="checkbox"
                       checked={overrideAvailability}
@@ -2163,14 +2165,14 @@ export default function BookingDetailClient({
 
             {/* Assign Farmers */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-3">
+              <h3 className="text-sm font-semibold text-culinary-ink uppercase tracking-wide mb-3">
                 Assign Farmers
               </h3>
               <div className="space-y-3">
                 <select
                   value=""
                   onChange={(e) => handleFarmerAssignment(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="w-full px-4 py-3 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   title="Select a farmer to add"
                 >
                   <option value="">Select Farmer to Add</option>
@@ -2184,12 +2186,12 @@ export default function BookingDetailClient({
                 </select>
 
                 {assignedFarmers.length > 0 && (
-                  <div className="border rounded-lg divide-y">
+                  <div className="divide-y divide-culinary-outline rounded-none border border-culinary-outline">
                     {assignedFarmers.map((assignment: any) => (
                       <div key={assignment.id} className="p-3 flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-gray-900">{assignment.farmer?.name ?? 'Farmer'}</p>
-                          <p className="text-sm text-gray-500">{assignment.role || 'General supplier'}</p>
+                          <p className="font-medium text-culinary-ink">{assignment.farmer?.name ?? 'Farmer'}</p>
+                          <p className="text-sm text-culinary-text-muted">{assignment.role || 'General supplier'}</p>
                         </div>
                         <button
                           type="button"
@@ -2207,7 +2209,7 @@ export default function BookingDetailClient({
 
             {/* Team Coordination Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-culinary-ink mb-2">
                 Team Coordination Notes
               </label>
               <textarea
@@ -2215,7 +2217,7 @@ export default function BookingDetailClient({
                 onChange={(e) => setTeamNotes(e.target.value)}
                 rows={3}
                 placeholder="Add notes about team coordination, special instructions, delivery details..."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
+                className="w-full px-4 py-3 border border-culinary-outline rounded-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-y"
               />
             </div>
 
@@ -2224,32 +2226,32 @@ export default function BookingDetailClient({
               type="button"
               onClick={handleSaveTeamAssignments}
               disabled={teamSaving}
-              className="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+              className="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-none hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {teamSaving ? 'Saving...' : 'Save Team Assignments'}
             </button>
           </div>
         )}
-      </div>
+      </CulinaryCard>
 
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg text-xs text-gray-600">
-        <strong>Keyboard Shortcuts:</strong>{' '}
+      <div className="mt-stack-md border border-culinary-outline bg-culinary-surface-low p-gutter font-culinary-sans text-body-md text-culinary-text-muted">
+        <strong className="text-culinary-ink">Keyboard Shortcuts:</strong>{' '}
         ⌘/Ctrl + S = Save Changes | ⌘/Ctrl + K = Copy Portal Link | ⌘/Ctrl + Q = Toggle Quote | ⌘/Ctrl + T = Toggle Team
       </div>
 
       {/* Non-blocking status suggestion modal */}
       {statusSuggestionPrompt && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div
-            className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-lg"
+            className="mx-4 w-full max-w-md border border-culinary-outline bg-culinary-bone p-gutter shadow-none"
             role="dialog"
             aria-modal="true"
             aria-labelledby="status-suggestion-title"
           >
-            <h3 id="status-suggestion-title" className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 id="status-suggestion-title" className="mb-stack-sm font-culinary-display text-title-md text-culinary-navy">
               Update booking status
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="mb-stack-lg font-culinary-sans text-body-md text-culinary-text-muted">
               {statusSuggestionPrompt === 'quoted' &&
                 'Quote saved. Mark this booking as Quoted?'}
               {statusSuggestionPrompt === 'booked' &&
@@ -2257,12 +2259,12 @@ export default function BookingDetailClient({
               {statusSuggestionPrompt === 'confirmed' &&
                 'Deposit received. Mark this booking as Confirmed?'}
             </p>
-            <div className="flex gap-3 justify-end">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={handleNotNowStatusSuggestion}
                 disabled={isStatusSuggestionBusy}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:bg-culinary-surface-high disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Not now
               </button>
@@ -2270,7 +2272,7 @@ export default function BookingDetailClient({
                 type="button"
                 onClick={handleConfirmStatusSuggestion}
                 disabled={isStatusSuggestionBusy}
-                className="px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-none border border-culinary-navy bg-culinary-navy px-4 py-2 font-culinary-sans text-label-caps text-culinary-on-navy transition refined hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isStatusSuggestionBusy ? 'Updating...' : 'Yes, update'}
               </button>

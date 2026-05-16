@@ -58,15 +58,15 @@ const fmtDateTime = (s: string | null) =>
 
 function StatusBadge({ status }: { status: string | null }) {
   const map: Record<string, string> = {
-    draft: 'bg-gray-100 text-gray-600',
-    sent: 'bg-blue-50 text-blue-700',
-    accepted: 'bg-green-50 text-green-700',
-    expired: 'bg-red-50 text-red-600',
-    declined: 'bg-orange-50 text-orange-700',
+    draft: 'border border-culinary-outline bg-culinary-surface-high text-culinary-text-muted',
+    sent: 'border border-blue-200/80 bg-blue-50/90 text-blue-900',
+    accepted: 'border border-culinary-forest/30 bg-culinary-surface-low text-culinary-forest',
+    expired: 'border border-red-200/80 bg-red-50/90 text-red-800',
+    declined: 'border border-amber-200/80 bg-amber-50/90 text-amber-900',
   }
-  const cls = map[status ?? ''] ?? 'bg-gray-100 text-gray-500'
+  const cls = map[status ?? ''] ?? 'border border-culinary-outline bg-culinary-surface-high text-culinary-text-muted'
   return (
-    <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${cls}`}>
+    <span className={`inline-flex items-center rounded-none border px-2 py-0.5 font-culinary-sans text-xs font-medium ${cls}`}>
       {status ?? 'unknown'}
     </span>
   )
@@ -75,13 +75,13 @@ function StatusBadge({ status }: { status: string | null }) {
 function ConfidenceBadge({ level }: { level: 'high' | 'medium' | 'low' | null }) {
   if (!level) return null
   const map = {
-    high: { cls: 'bg-green-50 text-green-700', label: 'High' },
-    medium: { cls: 'bg-amber-50 text-amber-700', label: 'Medium' },
-    low: { cls: 'bg-red-50 text-red-600', label: 'Low' },
+    high: { cls: 'border border-culinary-forest/30 bg-culinary-surface-low text-culinary-forest', label: 'High' },
+    medium: { cls: 'border border-amber-200/80 bg-amber-50/90 text-amber-900', label: 'Medium' },
+    low: { cls: 'border border-red-200/80 bg-red-50/90 text-red-800', label: 'Low' },
   }
   const { cls, label } = map[level]
   return (
-    <span className={`inline-flex items-center rounded px-2 py-0.5 text-xs font-medium ${cls}`}>
+    <span className={`inline-flex items-center rounded-none border px-2 py-0.5 font-culinary-sans text-xs font-medium ${cls}`}>
       {label}
     </span>
   )
@@ -108,23 +108,25 @@ function QuoteDrawer({
   const isDraft = status === 'draft'
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex justify-end bg-culinary-navy/20" onClick={onClose}>
       <div
-        className="h-full w-full max-w-md overflow-y-auto border-l border-gray-100 bg-white shadow-xl"
+        className="h-full w-full max-w-md overflow-y-auto border-l border-culinary-outline bg-culinary-bone shadow-none"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-culinary-outline bg-culinary-bone px-gutter py-4">
           <div>
-            <p className="text-xs uppercase tracking-wider text-gray-400">Quote detail</p>
-            <p className="mt-0.5 text-sm font-medium text-gray-900">{quote.service_type}</p>
+            <p className="font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+              Quote detail
+            </p>
+            <p className="mt-0.5 font-culinary-sans text-sm font-medium text-culinary-ink">{quote.service_type}</p>
             {quote.quote_number?.trim() && (
-              <p className="mt-1 font-mono text-xs text-gray-500">{quote.quote_number}</p>
+              <p className="mt-1 font-mono text-xs text-culinary-text-muted">{quote.quote_number}</p>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded p-1 text-gray-400 hover:text-gray-600"
+            className="rounded-none p-1 text-culinary-text-muted transition-colors hover:text-culinary-ink"
             aria-label="Close"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -133,98 +135,102 @@ function QuoteDrawer({
           </button>
         </div>
 
-        <div className="space-y-6 px-6 py-5">
+        <div className="space-y-6 px-gutter py-5">
           <div className="flex flex-wrap items-center gap-2">
             <StatusBadge status={quote.quote_status} />
             {quote.confidence && <ConfidenceBadge level={quote.confidence} />}
             {quote.confidence_reason && (
-              <p className="mt-1 w-full text-xs text-gray-400">{quote.confidence_reason}</p>
+              <p className="mt-1 w-full font-culinary-sans text-xs text-culinary-text-muted">{quote.confidence_reason}</p>
             )}
           </div>
 
           {quote.booking && (
             <section>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Client</p>
-              <div className="space-y-1.5">
-                <p className="text-sm text-gray-900">{quote.booking.customer_name ?? '—'}</p>
-                <p className="text-sm text-gray-500">{quote.booking.customer_email ?? '—'}</p>
-                {quote.booking.location && <p className="text-sm text-gray-500">{quote.booking.location}</p>}
+              <p className="mb-2 font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+                Client
+              </p>
+              <div className="space-y-1.5 font-culinary-sans text-sm">
+                <p className="text-culinary-ink">{quote.booking.customer_name ?? '—'}</p>
+                <p className="text-culinary-text-muted">{quote.booking.customer_email ?? '—'}</p>
+                {quote.booking.location && <p className="text-culinary-text-muted">{quote.booking.location}</p>}
               </div>
             </section>
           )}
 
           {quote.booking && (
             <section>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Event</p>
-              <div className="grid grid-cols-2 gap-y-2 text-sm">
-                <span className="text-gray-500">Date</span>
-                <span className="text-right text-gray-900">{fmtDate(quote.booking.event_date)}</span>
-                <span className="text-gray-500">Guests</span>
-                <span className="text-right text-gray-900">{quote.booking.guest_count ?? '—'}</span>
-                <span className="text-gray-500">Type</span>
-                <span className="text-right text-gray-900">{quote.booking.service_type ?? '—'}</span>
+              <p className="mb-2 font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Event</p>
+              <div className="grid grid-cols-2 gap-y-2 font-culinary-sans text-sm">
+                <span className="text-culinary-text-muted">Date</span>
+                <span className="text-right text-culinary-ink">{fmtDate(quote.booking.event_date)}</span>
+                <span className="text-culinary-text-muted">Guests</span>
+                <span className="text-right text-culinary-ink">{quote.booking.guest_count ?? '—'}</span>
+                <span className="text-culinary-text-muted">Type</span>
+                <span className="text-right text-culinary-ink">{quote.booking.service_type ?? '—'}</span>
               </div>
             </section>
           )}
 
           <section>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Financials</p>
-            <div className="space-y-2 rounded-lg bg-gray-50 p-4">
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Total</span>
-                <span className="font-medium text-gray-900">{usd(quote.total_usd)}</span>
+            <p className="mb-2 font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
+              Financials
+            </p>
+            <div className="space-y-2 rounded-none border border-culinary-outline bg-culinary-surface-low p-4 font-culinary-sans text-sm">
+              <div className="flex justify-between">
+                <span className="text-culinary-text-muted">Total</span>
+                <span className="font-medium text-culinary-ink">{usd(quote.total_usd)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Deposit ({quote.deposit_percentage ?? 50}%)</span>
-                <span className="font-medium text-green-700">{usd(quote.deposit_amount_usd)}</span>
+              <div className="flex justify-between">
+                <span className="text-culinary-text-muted">Deposit ({quote.deposit_percentage ?? 50}%)</span>
+                <span className="font-medium text-culinary-forest">{usd(quote.deposit_amount_usd)}</span>
               </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Line items</span>
-                <span className="text-gray-900">{quote.item_count}</span>
+              <div className="flex justify-between">
+                <span className="text-culinary-text-muted">Line items</span>
+                <span className="text-culinary-ink">{quote.item_count}</span>
               </div>
             </div>
           </section>
 
           <section>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Timeline</p>
-            <div className="grid grid-cols-2 gap-y-2 text-sm">
-              <span className="text-gray-500">Created</span>
-              <span className="text-right text-gray-900">{fmtDateTime(quote.created_at)}</span>
-              <span className="text-gray-500">Sent</span>
-              <span className="text-right text-gray-900">{fmtDate(quote.sent_date)}</span>
-              <span className="text-gray-500">Expires</span>
+            <p className="mb-2 font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Timeline</p>
+            <div className="grid grid-cols-2 gap-y-2 font-culinary-sans text-sm">
+              <span className="text-culinary-text-muted">Created</span>
+              <span className="text-right text-culinary-ink">{fmtDateTime(quote.created_at)}</span>
+              <span className="text-culinary-text-muted">Sent</span>
+              <span className="text-right text-culinary-ink">{fmtDate(quote.sent_date)}</span>
+              <span className="text-culinary-text-muted">Expires</span>
               <span
                 className={`text-right font-medium ${
-                  quote.expires_date && new Date(quote.expires_date) < new Date()
-                    ? 'text-red-600'
-                    : 'text-gray-900'
+                  quote.expires_date && new Date(quote.expires_date) < new Date() ? 'text-red-700' : 'text-culinary-ink'
                 }`}
               >
                 {fmtDate(quote.expires_date)}
               </span>
-              <span className="text-gray-500">Accepted</span>
-              <span className="text-right text-gray-900">{fmtDate(quote.accepted_date)}</span>
+              <span className="text-culinary-text-muted">Accepted</span>
+              <span className="text-right text-culinary-ink">{fmtDate(quote.accepted_date)}</span>
             </div>
           </section>
 
           {quote.notes && (
             <section>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-gray-400">Notes</p>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-600">{quote.notes}</p>
+              <p className="mb-2 font-culinary-sans text-xs font-bold uppercase tracking-[0.12em] text-culinary-text-muted">Notes</p>
+              <p className="whitespace-pre-wrap font-culinary-sans text-sm leading-relaxed text-culinary-text-muted">
+                {quote.notes}
+              </p>
             </section>
           )}
 
-          <section className="space-y-2 border-t border-gray-100 pt-2">
+          <section className="space-y-2 border-t border-culinary-outline pt-2">
             {isDraft && (
               <div className="space-y-2">
                 <SendDraftQuoteButton
                   quoteId={quote.id}
                   disabled={!canSend}
                   onSuccess={onSent}
-                  className="block w-full rounded-lg bg-green-700 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-green-800 disabled:opacity-50"
+                  className="block w-full rounded-none border border-culinary-navy bg-culinary-navy px-4 py-2.5 text-center font-culinary-sans text-sm font-medium text-culinary-on-navy transition-colors duration-refined ease-refined hover:opacity-90 disabled:opacity-50"
                 />
                 {!canSend && (
-                  <p className="text-center text-xs text-amber-600">
+                  <p className="text-center font-culinary-sans text-xs text-amber-800">
                     {!quote.quote_number?.trim()
                       ? 'Quote reference missing — cannot send.'
                       : !quote.booking?.customer_email?.includes('@')
@@ -237,14 +243,14 @@ function QuoteDrawer({
             {quote.booking && (
               <Link
                 href={`/admin/bookings/${quote.booking.id}`}
-                className="block w-full rounded-lg bg-green-700 px-4 py-2.5 text-center text-sm font-medium text-white transition-colors hover:bg-green-800"
+                className="block w-full rounded-none border border-culinary-forest bg-culinary-forest px-4 py-2.5 text-center font-culinary-sans text-sm font-medium text-white transition-colors duration-refined ease-refined hover:opacity-90"
               >
                 View booking
               </Link>
             )}
             <Link
               href={`/admin/quotes/${quote.id}`}
-              className="block w-full rounded-lg bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+              className="block w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-center font-culinary-sans text-sm font-medium text-culinary-navy transition-colors duration-refined ease-refined hover:border-culinary-gold-line hover:bg-culinary-surface-low"
             >
               Full quote detail
             </Link>
@@ -314,12 +320,15 @@ export function QuotesTable() {
     setSelected(null)
   }, [fetchQuotes])
 
+  const inputBase =
+    'rounded-none border border-culinary-outline bg-culinary-bone px-3 py-2 font-culinary-sans text-sm text-culinary-ink focus:border-culinary-navy focus:outline-none focus:ring-1 focus:ring-culinary-navy/30'
+
   return (
     <>
       {(needsAttention > 0 || expiringSoon > 0) && (
         <div className="mb-5 flex flex-wrap gap-3">
           {needsAttention > 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-amber-100 bg-amber-50 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-none border border-amber-200/80 bg-amber-50/80 px-3 py-2">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path
                   d="M7 1L13 13H1L7 1Z"
@@ -331,13 +340,13 @@ export function QuotesTable() {
                 <path d="M7 5.5V8" stroke="#b45309" strokeWidth="1.2" strokeLinecap="round" />
                 <circle cx="7" cy="10" r="0.6" fill="#b45309" />
               </svg>
-              <span className="text-xs font-medium text-amber-700">
+              <span className="font-culinary-sans text-xs font-medium text-amber-900">
                 {needsAttention} quote{needsAttention > 1 ? 's' : ''} need review
               </span>
             </div>
           )}
           {expiringSoon > 0 && (
-            <div className="flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2">
+            <div className="flex items-center gap-2 rounded-none border border-red-200/80 bg-red-50/80 px-3 py-2">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <circle cx="7" cy="7" r="6" stroke="#dc2626" strokeWidth="1.2" fill="none" />
                 <path
@@ -348,9 +357,7 @@ export function QuotesTable() {
                   strokeLinejoin="round"
                 />
               </svg>
-              <span className="text-xs font-medium text-red-700">
-                {expiringSoon} expiring within 3 days
-              </span>
+              <span className="font-culinary-sans text-xs font-medium text-red-800">{expiringSoon} expiring within 3 days</span>
             </div>
           )}
         </div>
@@ -362,13 +369,9 @@ export function QuotesTable() {
           placeholder="Search by client name…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-56 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-green-600"
+          className={`w-56 ${inputBase}`}
         />
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-transparent focus:outline-none focus:ring-2 focus:ring-green-600"
-        >
+        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={inputBase}>
           <option value="">All statuses</option>
           <option value="draft">Draft</option>
           <option value="sent">Sent</option>
@@ -377,32 +380,32 @@ export function QuotesTable() {
           <option value="declined">Declined</option>
         </select>
         {pagination && (
-          <span className="ml-auto text-xs text-gray-400">
+          <span className="ml-auto font-culinary-sans text-xs text-culinary-text-muted">
             {pagination.total} quote{pagination.total !== 1 ? 's' : ''}
           </span>
         )}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-100">
-        <table className="w-full border-collapse text-sm">
+      <div className="overflow-hidden rounded-none border border-culinary-outline bg-culinary-bone shadow-none">
+        <table className="w-full border-collapse font-culinary-sans text-sm">
           <thead>
-            <tr className="border-b border-gray-100 bg-gray-50">
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+            <tr className="border-b border-culinary-outline bg-culinary-surface-low">
+              <th className="px-gutter py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Client
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-gutter py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Event
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-gutter py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Status
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-gutter py-3 text-left text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Confidence
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-gutter py-3 text-right text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Total
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-400">
+              <th className="px-gutter py-3 text-right text-xs font-medium uppercase tracking-wider text-culinary-text-muted">
                 Created
               </th>
             </tr>
@@ -410,10 +413,10 @@ export function QuotesTable() {
           <tbody>
             {loading &&
               Array.from({ length: 6 }).map((_, i) => (
-                <tr key={i} className="border-b border-gray-50">
+                <tr key={i} className="border-b border-culinary-outline">
                   {Array.from({ length: 6 }).map((_, j) => (
-                    <td key={j} className="px-4 py-4">
-                      <div className="h-3 w-3/4 animate-pulse rounded bg-gray-100" />
+                    <td key={j} className="px-gutter py-4">
+                      <div className="h-3 w-[70%] animate-pulse rounded-none bg-culinary-surface-high" />
                     </td>
                   ))}
                 </tr>
@@ -421,7 +424,7 @@ export function QuotesTable() {
 
             {!loading && error && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-sm text-red-500">
+                <td colSpan={6} className="px-gutter py-10 text-center font-culinary-sans text-sm text-red-700">
                   {error}
                 </td>
               </tr>
@@ -429,11 +432,11 @@ export function QuotesTable() {
 
             {!loading && !error && quotes.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-10 text-center text-sm text-gray-400">
+                <td colSpan={6} className="px-gutter py-10 text-center font-culinary-sans text-sm text-culinary-text-muted">
                   <p>No quotes found</p>
                   <Link
                     href="/admin/quotes/builder"
-                    className="mt-3 inline-block text-sm font-medium text-green-800 underline"
+                    className="mt-3 inline-block font-medium text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted"
                   >
                     Open manual quote builder
                   </Link>
@@ -459,43 +462,39 @@ export function QuotesTable() {
                   <tr
                     key={q.id}
                     onClick={() => setSelected(q)}
-                    className="cursor-pointer border-b border-gray-50 transition-colors hover:bg-gray-50"
+                    className="cursor-pointer border-b border-culinary-outline transition-colors duration-refined ease-refined hover:bg-culinary-surface-low"
                   >
-                    <td className="px-4 py-3.5">
-                      <p className="max-w-[160px] truncate font-medium text-gray-900">
-                        {q.booking?.customer_name ?? '—'}
-                      </p>
-                      <p className="max-w-[160px] truncate text-xs text-gray-400">
-                        {q.booking?.customer_email ?? ''}
-                      </p>
+                    <td className="px-gutter py-3.5">
+                      <p className="max-w-[160px] truncate font-medium text-culinary-ink">{q.booking?.customer_name ?? '—'}</p>
+                      <p className="max-w-[160px] truncate text-xs text-culinary-text-muted">{q.booking?.customer_email ?? ''}</p>
                     </td>
 
-                    <td className="px-4 py-3.5">
-                      <p className="max-w-[180px] truncate text-gray-900">{q.service_type}</p>
-                      <p className="text-xs text-gray-400">
+                    <td className="px-gutter py-3.5">
+                      <p className="max-w-[180px] truncate text-culinary-ink">{q.service_type}</p>
+                      <p className="text-xs text-culinary-text-muted">
                         {fmtDate(q.booking?.event_date ?? null)}
                         {q.booking?.guest_count ? ` · ${q.booking.guest_count} guests` : ''}
                       </p>
                     </td>
 
-                    <td className="px-4 py-3.5">
+                    <td className="px-gutter py-3.5">
                       <StatusBadge status={q.quote_status} />
                       {rowExpiringSoon && (
-                        <p className="mt-1 text-xs text-red-500">Expires {fmtDate(q.expires_date)}</p>
+                        <p className="mt-1 font-culinary-sans text-xs text-red-700">Expires {fmtDate(q.expires_date)}</p>
                       )}
                     </td>
 
-                    <td className="px-4 py-3.5">
+                    <td className="px-gutter py-3.5">
                       <ConfidenceBadge level={q.confidence} />
-                      {q.confidence === null && <span className="text-xs text-gray-300">—</span>}
+                      {q.confidence === null && <span className="font-culinary-sans text-xs text-culinary-outline-variant">—</span>}
                     </td>
 
-                    <td className="px-4 py-3.5 text-right">
-                      <p className="font-medium text-gray-900">{usd(q.total_usd)}</p>
-                      <p className="text-xs text-gray-400">{q.item_count} items</p>
+                    <td className="px-gutter py-3.5 text-right">
+                      <p className="font-medium text-culinary-ink">{usd(q.total_usd)}</p>
+                      <p className="text-xs text-culinary-text-muted">{q.item_count} items</p>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-3.5 text-right text-xs text-gray-400">
+                    <td className="whitespace-nowrap px-gutter py-3.5 text-right text-xs text-culinary-text-muted">
                       {fmtDateTime(q.created_at)}
                     </td>
                   </tr>
@@ -507,7 +506,7 @@ export function QuotesTable() {
 
       {pagination && pagination.total_pages > 1 && (
         <div className="mt-4 flex items-center justify-between">
-          <p className="text-xs text-gray-400">
+          <p className="font-culinary-sans text-xs text-culinary-text-muted">
             Page {pagination.page} of {pagination.total_pages}
           </p>
           <div className="flex gap-2">
@@ -515,7 +514,7 @@ export function QuotesTable() {
               type="button"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-40"
+              className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1.5 font-culinary-sans text-xs text-culinary-text-muted transition-colors duration-refined ease-refined hover:border-culinary-gold-line hover:bg-culinary-surface-low disabled:opacity-40"
             >
               Previous
             </button>
@@ -523,7 +522,7 @@ export function QuotesTable() {
               type="button"
               onClick={() => setPage((p) => Math.min(pagination.total_pages, p + 1))}
               disabled={page === pagination.total_pages}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-40"
+              className="rounded-none border border-culinary-outline bg-culinary-bone px-3 py-1.5 font-culinary-sans text-xs text-culinary-text-muted transition-colors duration-refined ease-refined hover:border-culinary-gold-line hover:bg-culinary-surface-low disabled:opacity-40"
             >
               Next
             </button>
@@ -531,9 +530,7 @@ export function QuotesTable() {
         </div>
       )}
 
-      {selected && (
-        <QuoteDrawer quote={selected} onClose={() => setSelected(null)} onSent={handleSent} />
-      )}
+      {selected && <QuoteDrawer quote={selected} onClose={() => setSelected(null)} onSent={handleSent} />}
     </>
   )
 }

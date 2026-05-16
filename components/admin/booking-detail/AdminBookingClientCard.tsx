@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { BookingInquiry } from '@/types/booking'
+import { CulinaryCard } from '@/components/culinary-os'
 
 export type ClientProfileSummary = {
   id: string
@@ -10,6 +11,9 @@ export type ClientProfileSummary = {
 
 type ClientBooking = Pick<BookingInquiry, 'name' | 'email' | 'phone' | 'createdAt' | 'dietary' | 'notes'>
 
+const labelClass = 'font-culinary-sans text-label-caps text-culinary-text-muted'
+const valueClass = 'mt-0.5 font-culinary-sans text-body-lg font-medium text-culinary-ink'
+
 export function AdminBookingClientCard({
   booking,
   clientProfile,
@@ -18,19 +22,19 @@ export function AdminBookingClientCard({
   clientProfile: ClientProfileSummary | null
 }) {
   return (
-    <div className="rounded-lg border border-stone-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+    <CulinaryCard>
+      <h2 className="mb-stack-md flex items-center gap-2 font-culinary-display text-title-md text-culinary-navy">
         <span aria-hidden>👤</span>
         Client details
       </h2>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-gutter sm:grid-cols-2">
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Name</p>
-          <p className="mt-0.5 text-base font-medium text-gray-900">{booking.name}</p>
+          <p className={labelClass}>Name</p>
+          <p className={valueClass}>{booking.name}</p>
         </div>
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Created</p>
-          <p className="mt-0.5 text-base text-gray-900">
+          <p className={labelClass}>Created</p>
+          <p className={`${valueClass} font-normal`}>
             {new Date(booking.createdAt).toLocaleString('en-US', {
               year: 'numeric',
               month: 'short',
@@ -41,10 +45,10 @@ export function AdminBookingClientCard({
           </p>
         </div>
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Email</p>
-          <p className="mt-0.5 text-base text-gray-900">
+          <p className={labelClass}>Email</p>
+          <p className={`${valueClass} font-normal`}>
             {booking.email ? (
-              <a href={`mailto:${booking.email}`} className="text-navy hover:underline">
+              <a href={`mailto:${booking.email}`} className="text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted">
                 {booking.email}
               </a>
             ) : (
@@ -53,10 +57,10 @@ export function AdminBookingClientCard({
           </p>
         </div>
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Phone</p>
-          <p className="mt-0.5 text-base text-gray-900">
+          <p className={labelClass}>Phone</p>
+          <p className={`${valueClass} font-normal`}>
             {booking.phone ? (
-              <a href={`tel:${booking.phone}`} className="text-navy hover:underline">
+              <a href={`tel:${booking.phone}`} className="text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted">
                 {booking.phone}
               </a>
             ) : (
@@ -67,44 +71,42 @@ export function AdminBookingClientCard({
       </div>
 
       {booking.dietary ? (
-        <div className="mt-6 border-t border-stone-100 pt-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">Allergies / dietary</p>
-          <p className="mt-1 text-sm text-gray-900">{booking.dietary}</p>
+        <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
+          <p className={labelClass}>Allergies / dietary</p>
+          <p className="mt-1 font-culinary-sans text-body-md text-culinary-ink">{booking.dietary}</p>
         </div>
       ) : null}
 
       {booking.notes ? (
-        <div className="mt-4 border-t border-stone-100 pt-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-            Kitchen notes & message (from inquiry)
-          </p>
-          <div className="mt-2 rounded-md border border-blue-100 bg-blue-50/80 p-3">
-            <p className="text-sm text-gray-900 whitespace-pre-wrap">{booking.notes}</p>
+        <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
+          <p className={labelClass}>Kitchen notes & message (from inquiry)</p>
+          <div className="mt-stack-sm rounded-none border border-culinary-outline bg-culinary-surface-low p-gutter">
+            <p className="whitespace-pre-wrap font-culinary-sans text-body-md text-culinary-ink">{booking.notes}</p>
           </div>
         </div>
       ) : null}
 
-      <div className="mt-6 border-t border-stone-100 pt-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-500 mb-2">Client profile</p>
+      <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
+        <p className={`${labelClass} mb-stack-sm`}>Client profile</p>
         {clientProfile ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-stack-sm">
             <div>
-              <p className="text-base font-semibold text-gray-900">{clientProfile.name}</p>
-              <p className="text-sm text-gray-600">
+              <p className="font-culinary-sans text-body-lg font-semibold text-culinary-ink">{clientProfile.name}</p>
+              <p className="font-culinary-sans text-body-md text-culinary-text-muted">
                 {clientProfile.phone || '—'} · {clientProfile.email || '—'}
               </p>
             </div>
             <Link
               href={`/admin/clients/${clientProfile.id}`}
-              className="inline-flex items-center rounded-lg border border-navy/20 px-4 py-2 text-sm font-semibold text-navy hover:bg-navy hover:text-white transition"
+              className="inline-flex items-center rounded-none border border-culinary-navy bg-culinary-bone px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:bg-culinary-navy hover:text-culinary-on-navy"
             >
               View client profile
             </Link>
           </div>
         ) : (
-          <p className="text-sm text-gray-500">No linked client profile.</p>
+          <p className="font-culinary-sans text-body-md text-culinary-text-muted">No linked client profile.</p>
         )}
       </div>
-    </div>
+    </CulinaryCard>
   )
 }

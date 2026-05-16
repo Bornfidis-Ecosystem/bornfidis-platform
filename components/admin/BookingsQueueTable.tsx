@@ -16,26 +16,36 @@ export type BookingsQueueRow = {
   createdAt: string
 }
 
-function getStatusBadgeColor(status: string) {
+function getStatusBadgeClass(status: string) {
   const s = status as BookingStatus
+  const base = 'inline-flex items-center rounded-none border px-2 py-1 text-xs font-semibold'
   switch (s) {
     case 'pending':
     case 'New':
-      return 'bg-blue-100 text-blue-800'
+    case 'new_inquiry':
+      return `${base} border-culinary-outline-variant bg-culinary-surface-high text-culinary-navy`
     case 'reviewed':
     case 'Contacted':
-      return 'bg-yellow-100 text-yellow-800'
+      return `${base} border-culinary-gold-line bg-culinary-bone text-culinary-navy`
     case 'quoted':
-      return 'bg-purple-100 text-purple-800'
+    case 'Quote Sent':
+    case 'quote_sent':
+      return `${base} border-culinary-outline bg-culinary-surface-low text-culinary-navy`
     case 'booked':
     case 'Confirmed':
+    case 'confirmed':
+    case 'in_prep':
     case 'Completed':
-      return 'bg-green-100 text-green-800'
+    case 'completed':
+      return `${base} border-culinary-forest/40 bg-culinary-bone text-culinary-forest`
     case 'declined':
     case 'Closed':
-      return 'bg-gray-100 text-gray-800'
+    case 'cancelled':
+    case 'Cancelled':
+    case 'Canceled':
+      return `${base} border-culinary-outline bg-culinary-surface-low text-culinary-text-muted`
     default:
-      return 'bg-gray-100 text-gray-800'
+      return `${base} border-culinary-outline bg-culinary-surface-low text-culinary-ink`
   }
 }
 
@@ -151,26 +161,29 @@ export default function BookingsQueueTable({ rows, bulkReminderType }: Props) {
 
   const bulkDisabled = selectedCount === 0 || !bulkReminderType
 
+  const btnBase =
+    'inline-flex items-center rounded-none border px-3 py-1.5 font-culinary-sans text-label-caps transition refined disabled:cursor-not-allowed disabled:opacity-40'
+
   return (
     <div className="overflow-hidden">
-      <div className="border-b border-stone-200 bg-stone-50 px-4 py-3 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3 text-sm text-stone-700">
+      <div className="space-y-stack-sm border-b border-culinary-outline bg-culinary-surface-low px-gutter py-stack-sm">
+        <div className="flex flex-wrap items-center justify-between gap-stack-sm">
+          <div className="flex flex-wrap items-center gap-stack-sm font-culinary-sans text-body-md text-culinary-ink">
             <span className="font-medium tabular-nums">
               {selectedCount} selected
-              <span className="text-stone-400 font-normal"> / {rows.length} in view</span>
+              <span className="font-normal text-culinary-text-muted"> / {rows.length} in view</span>
             </span>
             {!bulkReminderType && (
-              <span className="text-xs text-stone-500 max-w-xl">
+              <span className="max-w-xl text-xs text-culinary-text-muted">
                 Bulk reminder copy is available on queues like{' '}
-                <strong className="text-stone-700">Deposit pending</strong> or{' '}
-                <strong className="text-stone-700">Testimonial follow-up</strong> (also balance pending &amp; prep
+                <strong className="text-culinary-navy">Deposit pending</strong> or{' '}
+                <strong className="text-culinary-navy">Testimonial follow-up</strong> (also balance pending &amp; prep
                 incomplete).
               </span>
             )}
             {bulkReminderType && (
-              <span className="text-xs text-stone-600">
-                Template: <strong className="text-navy">{bulkReminderLabel(bulkReminderType)}</strong>
+              <span className="text-xs text-culinary-text-muted">
+                Template: <strong className="text-culinary-navy">{bulkReminderLabel(bulkReminderType)}</strong>
               </span>
             )}
           </div>
@@ -179,7 +192,7 @@ export default function BookingsQueueTable({ rows, bulkReminderType }: Props) {
               type="button"
               disabled={bulkDisabled}
               onClick={() => void copyBulk('whatsapp')}
-              className="inline-flex items-center rounded-lg bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className={`${btnBase} border-culinary-forest bg-culinary-forest text-white hover:bg-culinary-forest/90`}
             >
               Copy WhatsApp
             </button>
@@ -187,7 +200,7 @@ export default function BookingsQueueTable({ rows, bulkReminderType }: Props) {
               type="button"
               disabled={bulkDisabled}
               onClick={() => void copyBulk('email')}
-              className="inline-flex items-center rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs font-semibold text-stone-800 hover:bg-stone-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className={`${btnBase} border-culinary-outline bg-culinary-bone text-culinary-navy hover:bg-culinary-surface-high`}
             >
               Copy Email
             </button>
@@ -195,7 +208,7 @@ export default function BookingsQueueTable({ rows, bulkReminderType }: Props) {
               type="button"
               disabled={selectedCount === 0}
               onClick={exportCsv}
-              className="inline-flex items-center rounded-lg border border-navy/20 bg-white px-3 py-1.5 text-xs font-semibold text-navy hover:bg-navy hover:text-white disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className={`${btnBase} border-culinary-navy bg-culinary-bone text-culinary-navy hover:bg-culinary-navy hover:text-culinary-on-navy`}
             >
               Export CSV
             </button>
@@ -205,70 +218,70 @@ export default function BookingsQueueTable({ rows, bulkReminderType }: Props) {
 
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gray-50">
+          <thead className="border-b border-culinary-outline bg-culinary-surface-low">
             <tr>
-              <th className="pl-4 pr-2 py-3 w-10">
+              <th className="w-10 py-3 pl-gutter pr-2">
                 <input
                   type="checkbox"
                   checked={allSelected}
                   onChange={(e) => toggleAll(e.target.checked)}
-                  className="h-4 w-4 rounded border-stone-300 text-navy focus:ring-navy"
+                  className="h-4 w-4 rounded-none border-culinary-outline text-culinary-navy focus:ring-culinary-navy"
                   aria-label="Select all in this view"
                 />
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
                 Email
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Event Date
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
+                Event date
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Created At
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
+                Created at
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-gutter py-3 text-left font-culinary-sans text-label-caps text-culinary-text-muted">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="divide-y divide-culinary-outline bg-culinary-bone">
             {rows.map((booking) => (
-              <tr key={booking.id} className="hover:bg-gray-50 transition">
-                <td className="pl-4 pr-2 py-4">
+              <tr key={booking.id} className="transition refined hover:bg-culinary-surface-low">
+                <td className="py-4 pl-gutter pr-2">
                   <input
                     type="checkbox"
                     checked={selected.has(booking.id)}
                     onChange={(e) => toggleOne(booking.id, e.target.checked)}
-                    className="h-4 w-4 rounded border-stone-300 text-navy focus:ring-navy"
+                    className="h-4 w-4 rounded-none border-culinary-outline text-culinary-navy focus:ring-culinary-navy"
                     aria-label={`Select ${booking.name}`}
                   />
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{booking.name}</div>
+                <td className="whitespace-nowrap px-gutter py-4">
+                  <div className="font-culinary-sans text-body-md font-medium text-culinary-ink">{booking.name}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{booking.email || '—'}</div>
+                <td className="whitespace-nowrap px-gutter py-4">
+                  <div className="font-culinary-sans text-body-md text-culinary-ink">{booking.email || '—'}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{formatDate(booking.event_date)}</div>
+                <td className="whitespace-nowrap px-gutter py-4">
+                  <div className="font-culinary-sans text-body-md text-culinary-ink">{formatDate(booking.event_date)}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 py-1 text-xs font-semibold rounded ${getStatusBadgeColor(booking.status)}`}>
-                    {booking.status}
-                  </span>
+                <td className="whitespace-nowrap px-gutter py-4">
+                  <span className={getStatusBadgeClass(booking.status)}>{booking.status}</span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">{formatDateTime(booking.createdAt)}</div>
+                <td className="whitespace-nowrap px-gutter py-4">
+                  <div className="font-culinary-sans text-body-md text-culinary-text-muted">
+                    {formatDateTime(booking.createdAt)}
+                  </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <td className="whitespace-nowrap px-gutter py-4 font-culinary-sans text-body-md">
                   <Link
                     href={`/admin/bookings/${booking.id}`}
-                    className="px-3 py-1 bg-navy text-white rounded hover:bg-opacity-90 transition text-xs font-semibold"
+                    className="inline-flex items-center rounded-none border border-culinary-navy bg-culinary-navy px-3 py-1 font-culinary-sans text-label-caps text-culinary-on-navy transition refined hover:bg-culinary-navy/90"
                   >
                     View
                   </Link>

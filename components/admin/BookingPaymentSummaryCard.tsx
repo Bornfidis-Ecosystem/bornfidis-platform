@@ -3,6 +3,7 @@ import type { LastStripeActivityInfo } from '@/lib/admin-payment-health'
 import { formatUSD } from '@/lib/money'
 import ManualPaymentMarkButtons from './ManualPaymentMarkButtons'
 import PaymentSummaryActionButtons from './PaymentSummaryActionButtons'
+import { CulinaryCard } from '@/components/culinary-os'
 
 type Props = {
   booking: Pick<
@@ -25,6 +26,8 @@ type Props = {
   lastStripeActivity: LastStripeActivityInfo
   /** Quote saved with line items (required for deposit/quote emails). */
   hasSavedQuote: boolean
+  /** Manual mark-paid / dangerous reconciliation — founder_admin only. */
+  showFounderOnlyPaymentControls?: boolean
 }
 
 function fmtDate(iso: string | undefined) {
@@ -45,7 +48,12 @@ function fmtDate(iso: string | undefined) {
 /**
  * Payment truth-at-a-glance for admin booking detail (pairs with Stripe webhook updates).
  */
-export default function BookingPaymentSummaryCard({ booking, lastStripeActivity, hasSavedQuote }: Props) {
+export default function BookingPaymentSummaryCard({
+  booking,
+  lastStripeActivity,
+  hasSavedQuote,
+  showFounderOnlyPaymentControls = false,
+}: Props) {
   const depositPaid = !!booking.paid_at
   const balancePaid = !!(booking.balance_paid_at || booking.fully_paid_at)
 
@@ -60,63 +68,66 @@ export default function BookingPaymentSummaryCard({ booking, lastStripeActivity,
   if (balancePaid) {
     paymentBadge = {
       label: 'Fully paid',
-      className: 'bg-emerald-100 text-emerald-900 border border-emerald-200',
+      className: 'border-culinary-forest/50 bg-culinary-bone text-culinary-forest',
     }
   } else if (depositPaid && impliedBalance > 0) {
     paymentBadge = {
       label: 'Partially paid',
-      className: 'bg-amber-50 text-amber-900 border border-amber-200',
+      className: 'border-culinary-gold-line bg-culinary-bone text-culinary-navy',
     }
   } else if (depositPaid) {
     paymentBadge = {
       label: 'Deposit only',
-      className: 'bg-sky-50 text-sky-900 border border-sky-200',
+      className: 'border-culinary-outline bg-culinary-surface-low text-culinary-navy',
     }
   } else {
     paymentBadge = {
       label: 'No payment recorded',
-      className: 'bg-stone-100 text-stone-700 border border-stone-200',
+      className: 'border-culinary-outline bg-culinary-surface-low text-culinary-text-muted',
     }
   }
 
+  const miniPanel =
+    'rounded-none border border-culinary-outline bg-culinary-surface-low p-gutter'
+
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+    <CulinaryCard>
+      <div className="mb-stack-md flex flex-wrap items-start justify-between gap-stack-sm">
         <div>
-          <h2 className="text-sm font-semibold text-[#1A3C34] uppercase tracking-[0.15em]">Payment</h2>
-          <p className="text-xs text-stone-500 mt-0.5">Stripe + manual reconciliation</p>
+          <h2 className="font-culinary-sans text-label-caps text-culinary-navy">Payment</h2>
+          <p className="mt-0.5 font-culinary-sans text-body-md text-culinary-text-muted">
+            Stripe + manual reconciliation
+          </p>
         </div>
         <span
-          className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${paymentBadge.className}`}
+          className={`inline-flex items-center rounded-none border px-3 py-1 font-culinary-sans text-label-caps ${paymentBadge.className}`}
         >
           {paymentBadge.label}
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-        <div className="rounded-lg border border-stone-100 bg-stone-50/80 p-3">
-          <p className="text-[11px] font-medium text-stone-500 uppercase tracking-wider">Deposit</p>
-          <p className="mt-1 font-semibold text-[#1A3C34]">
+      <div className="grid grid-cols-1 gap-gutter text-body-md sm:grid-cols-2">
+        <div className={miniPanel}>
+          <p className="font-culinary-sans text-label-caps text-culinary-text-muted">Deposit</p>
+          <p className="mt-1 font-culinary-sans text-body-lg font-semibold text-culinary-ink">
             {depositPaid ? 'Paid' : 'Pending'}
             {depositCents > 0 && (
-              <span className="ml-2 font-normal text-stone-600">
-                ({formatUSD(depositCents)})
-              </span>
+              <span className="ml-2 font-normal text-culinary-text-muted">({formatUSD(depositCents)})</span>
             )}
           </p>
-          <p className="text-xs text-stone-600 mt-1 tabular-nums">{fmtDate(booking.paid_at)}</p>
+          <p className="mt-1 font-culinary-sans text-body-md tabular-nums text-culinary-text-muted">
+            {fmtDate(booking.paid_at)}
+          </p>
         </div>
-        <div className="rounded-lg border border-stone-100 bg-stone-50/80 p-3">
-          <p className="text-[11px] font-medium text-stone-500 uppercase tracking-wider">Full balance</p>
-          <p className="mt-1 font-semibold text-[#1A3C34]">
+        <div className={miniPanel}>
+          <p className="font-culinary-sans text-label-caps text-culinary-text-muted">Full balance</p>
+          <p className="mt-1 font-culinary-sans text-body-lg font-semibold text-culinary-ink">
             {balancePaid ? 'Paid' : 'Pending'}
             {!balancePaid && impliedBalance > 0 && (
-              <span className="ml-2 font-normal text-stone-600">
-                ({formatUSD(impliedBalance)} due)
-              </span>
+              <span className="ml-2 font-normal text-culinary-text-muted">({formatUSD(impliedBalance)} due)</span>
             )}
           </p>
-          <p className="text-xs text-stone-600 mt-1 tabular-nums">
+          <p className="mt-1 font-culinary-sans text-body-md tabular-nums text-culinary-text-muted">
             {fmtDate(booking.balance_paid_at || booking.fully_paid_at)}
           </p>
         </div>
@@ -134,26 +145,24 @@ export default function BookingPaymentSummaryCard({ booking, lastStripeActivity,
         hasBalanceDue={hasBalanceDue}
       />
 
-      <div className="mt-4 space-y-2 text-xs">
+      <div className="mt-stack-md space-y-stack-sm font-culinary-sans text-body-md">
         <div className="flex flex-wrap gap-x-4 gap-y-1">
-          <span className="text-stone-500 shrink-0">Deposit PI</span>
-          <code className="text-stone-800 break-all text-[11px]">
-            {booking.stripe_payment_intent_id || '—'}
-          </code>
+          <span className="shrink-0 text-culinary-text-muted">Deposit PI</span>
+          <code className="break-all text-[11px] text-culinary-ink">{booking.stripe_payment_intent_id || '—'}</code>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1">
-          <span className="text-stone-500 shrink-0">Balance PI</span>
-          <code className="text-stone-800 break-all text-[11px]">
+          <span className="shrink-0 text-culinary-text-muted">Balance PI</span>
+          <code className="break-all text-[11px] text-culinary-ink">
             {booking.balance_payment_intent_id || booking.stripe_balance_payment_intent_id || '—'}
           </code>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1">
-          <span className="text-stone-500 shrink-0">Last Stripe-linked activity</span>
-          <span className="text-stone-700">
+          <span className="shrink-0 text-culinary-text-muted">Last Stripe-linked activity</span>
+          <span className="text-culinary-ink">
             {lastStripeActivity ? (
               <>
                 <span className="font-mono text-[11px]">{lastStripeActivity.stripeEventId}</span>
-                <span className="text-stone-400 mx-1">·</span>
+                <span className="mx-1 text-culinary-outline-variant">·</span>
                 {fmtDate(lastStripeActivity.createdAt)}
               </>
             ) : (
@@ -163,16 +172,22 @@ export default function BookingPaymentSummaryCard({ booking, lastStripeActivity,
         </div>
       </div>
 
-      <div className="mt-5 pt-4 border-t border-stone-200">
-        <p className="text-[11px] font-medium text-stone-500 uppercase tracking-wider mb-2">
-          Manual reconciliation
+      {showFounderOnlyPaymentControls ? (
+        <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
+          <p className="mb-stack-sm font-culinary-sans text-label-caps text-culinary-text-muted">
+            Manual reconciliation
+          </p>
+          <ManualPaymentMarkButtons
+            bookingId={booking.id}
+            depositPaid={depositPaid}
+            balancePaid={balancePaid}
+          />
+        </div>
+      ) : (
+        <p className="mt-stack-md border-t border-culinary-outline pt-stack-md font-culinary-sans text-body-md text-culinary-text-muted">
+          Manual payment overrides are limited to founder admins.
         </p>
-        <ManualPaymentMarkButtons
-          bookingId={booking.id}
-          depositPaid={depositPaid}
-          balancePaid={balancePaid}
-        />
-      </div>
-    </div>
+      )}
+    </CulinaryCard>
   )
 }

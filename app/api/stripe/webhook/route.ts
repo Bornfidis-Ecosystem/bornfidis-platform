@@ -3,6 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { sendPrivateDiningBookingConfirmedEmail, sendInvoiceEmail } from '@/lib/email'
 import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import { sendEmail } from '@/lib/email'
+import { bookingNotificationRecipient } from '@/lib/platform-email'
 import { formatUSD } from '@/lib/money'
 import { tryPayoutForBooking } from '@/lib/payout-engine'
 import { tryPayoutsForBooking } from '@/lib/farmer-payout-engine'
@@ -120,9 +121,7 @@ export async function POST(request: NextRequest) {
         /** Consulting: no booking row — notify admin and exit */
         if (checkoutMode === 'consulting') {
             try {
-                const adminRaw =
-                    process.env.ADMIN_EMAIL?.split(',')[0]?.trim() ||
-                    process.env.ADMIN_EMAILS?.split(',')[0]?.trim()
+                const adminRaw = bookingNotificationRecipient()
                 const customer = session.customer_email || session.metadata?.customer_email || ''
                 const guest = session.metadata?.guest_name || ''
                 const amountTotal = session.amount_total != null ? formatUSD(session.amount_total) : '—'

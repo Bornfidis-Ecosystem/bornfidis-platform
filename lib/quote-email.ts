@@ -3,6 +3,7 @@ import { sendQuoteOfferEmail } from '@/lib/email'
 import { formatUSD, dollarsToCents } from '@/lib/money'
 import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import type { AgentQuote, EventInquiry } from '@/lib/anthropic-quote-agent'
+import { DEFAULT_PLATFORM_REPLY_TO } from '@/lib/platform-email'
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
@@ -11,7 +12,9 @@ const QUOTE_FROM_EMAIL =
     ? `Bornfidis Provisions <${process.env.RESEND_FROM_EMAIL}>`
     : 'Bornfidis Provisions <onboarding@resend.dev>'
 
-const QUOTE_REPLY_TO = process.env.RESEND_REPLY_TO?.trim() || 'hello@bornfidis.com'
+const QUOTE_REPLY_TO = process.env.RESEND_REPLY_TO?.trim()?.includes('@')
+  ? process.env.RESEND_REPLY_TO!.trim()
+  : DEFAULT_PLATFORM_REPLY_TO
 
 function escapeHtml(s: string): string {
   return s

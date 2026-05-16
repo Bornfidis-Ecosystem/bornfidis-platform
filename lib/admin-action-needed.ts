@@ -4,7 +4,8 @@ export type ActionNeededItem = {
   id: string
   name: string
   status: string
-  eventDate: Date
+  /** ISO string — safe to pass from Server Components into client components. */
+  eventDate: string
   eventType?: string | null
 }
 
@@ -68,7 +69,7 @@ export async function getAdminActionNeeded(): Promise<AdminActionNeeded> {
     id: b.id,
     name: b.name,
     status: b.status,
-    eventDate: b.eventDate,
+    eventDate: b.eventDate.toISOString(),
     eventType: b.eventType,
     paidAt: b.paidAt,
     balancePaidAt: b.balancePaidAt,

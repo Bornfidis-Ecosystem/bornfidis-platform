@@ -10,6 +10,7 @@ import {
   BOOKING_CHECKLIST_ITEM_TITLES,
   type BookingChecklistWritableKey,
 } from '@/lib/bookings/checklist'
+import { CulinaryCard } from '@/components/culinary-os'
 
 type Props = {
   booking: BookingInquiry
@@ -31,13 +32,14 @@ function writableKeyToBookingField(k: BookingChecklistWritableKey): keyof Bookin
 
 export default function ServiceChecklistSection({ booking, onActivity }: Props) {
   const [pendingKey, setPendingKey] = useState<BookingChecklistWritableKey | null>(null)
-  const [local, setLocal] = useState(() =>
-    Object.fromEntries(
-      BOOKING_CHECKLIST_WRITABLE_KEYS.map((k) => [
-        k,
-        Boolean(booking[writableKeyToBookingField(k)]),
-      ])
-    ) as Record<BookingChecklistWritableKey, boolean>
+  const [local, setLocal] = useState(
+    () =>
+      Object.fromEntries(
+        BOOKING_CHECKLIST_WRITABLE_KEYS.map((k) => [
+          k,
+          Boolean(booking[writableKeyToBookingField(k)]),
+        ])
+      ) as Record<BookingChecklistWritableKey, boolean>
   )
 
   useEffect(() => {
@@ -90,27 +92,27 @@ export default function ServiceChecklistSection({ booking, onActivity }: Props) 
   )
 
   return (
-    <div className="bg-white border border-stone-200 rounded-lg mb-6 shadow-sm">
-      <div className="px-5 py-4 border-b border-stone-100">
-        <h2 className="text-lg font-semibold text-navy">Service Checklist</h2>
-        <p className="text-xs text-stone-500 mt-1">
+    <CulinaryCard className="mb-stack-md">
+      <div className="border-b border-culinary-outline pb-stack-sm">
+        <h2 className="font-culinary-display text-title-md text-culinary-navy">Service Checklist</h2>
+        <p className="mt-1 font-culinary-sans text-body-md text-culinary-text-muted">
           Track prep and confirmations. Deposit, balance, and testimonial request reflect live booking data.
         </p>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-stone-700 tabular-nums">
+        <div className="mt-stack-sm flex flex-wrap items-center gap-stack-sm">
+          <span className="font-culinary-sans text-body-md font-medium tabular-nums text-culinary-ink">
             {done} / {total} complete
           </span>
-          <div className="flex-1 min-w-[120px] max-w-md h-2 rounded-full bg-stone-100 overflow-hidden border border-stone-200/80">
+          <div className="h-2 min-w-[120px] max-w-md flex-1 overflow-hidden rounded-none border border-culinary-outline bg-culinary-surface-high">
             <div
-              className="h-full rounded-full bg-[#1A3C34] transition-[width] duration-300 ease-out"
+              className="h-full rounded-none bg-culinary-forest transition-[width] duration-300 ease-out"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <span className="text-xs text-stone-500 tabular-nums">{pct}%</span>
+          <span className="font-culinary-sans text-label-caps tabular-nums text-culinary-text-muted">{pct}%</span>
         </div>
       </div>
 
-      <ul className="divide-y divide-stone-100 px-5 py-2">
+      <ul className="divide-y divide-culinary-outline py-2">
         {BOOKING_CHECKLIST_WRITABLE_KEYS.map((key) => (
           <li key={key} className="flex items-start gap-3 py-2.5">
             <input
@@ -119,11 +121,11 @@ export default function ServiceChecklistSection({ booking, onActivity }: Props) 
               checked={local[key]}
               disabled={pendingKey === key}
               onChange={(e) => void toggle(key, e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-stone-300 text-navy focus:ring-navy"
+              className="mt-0.5 h-4 w-4 rounded-none border-culinary-outline text-culinary-navy focus:ring-culinary-navy"
             />
             <label
               htmlFor={`checklist-${key}`}
-              className="text-sm text-stone-800 leading-snug cursor-pointer select-none"
+              className="cursor-pointer select-none font-culinary-sans text-body-md leading-snug text-culinary-ink"
             >
               {BOOKING_CHECKLIST_ITEM_TITLES[key]}
             </label>
@@ -137,12 +139,14 @@ export default function ServiceChecklistSection({ booking, onActivity }: Props) 
             readOnly
             disabled
             tabIndex={-1}
-            className="mt-0.5 h-4 w-4 rounded border-stone-300 text-stone-400"
+            className="mt-0.5 h-4 w-4 rounded-none border-culinary-outline text-culinary-text-muted"
             aria-readonly="true"
           />
-          <div className="text-sm leading-snug">
-            <span className="text-stone-800">{BOOKING_CHECKLIST_ITEM_TITLES.depositReceived}</span>
-            <span className="block text-[11px] text-stone-500 mt-0.5">From payment: deposit recorded (paid date)</span>
+          <div className="font-culinary-sans text-body-md leading-snug">
+            <span className="text-culinary-ink">{BOOKING_CHECKLIST_ITEM_TITLES.depositReceived}</span>
+            <span className="mt-0.5 block text-[11px] text-culinary-text-muted">
+              From payment: deposit recorded (paid date)
+            </span>
           </div>
         </li>
 
@@ -153,12 +157,14 @@ export default function ServiceChecklistSection({ booking, onActivity }: Props) 
             readOnly
             disabled
             tabIndex={-1}
-            className="mt-0.5 h-4 w-4 rounded border-stone-300 text-stone-400"
+            className="mt-0.5 h-4 w-4 rounded-none border-culinary-outline text-culinary-text-muted"
             aria-readonly="true"
           />
-          <div className="text-sm leading-snug">
-            <span className="text-stone-800">{BOOKING_CHECKLIST_ITEM_TITLES.finalBalanceCollected}</span>
-            <span className="block text-[11px] text-stone-500 mt-0.5">From payment: balance or full payment timestamp</span>
+          <div className="font-culinary-sans text-body-md leading-snug">
+            <span className="text-culinary-ink">{BOOKING_CHECKLIST_ITEM_TITLES.finalBalanceCollected}</span>
+            <span className="mt-0.5 block text-[11px] text-culinary-text-muted">
+              From payment: balance or full payment timestamp
+            </span>
           </div>
         </li>
 
@@ -169,15 +175,17 @@ export default function ServiceChecklistSection({ booking, onActivity }: Props) 
             readOnly
             disabled
             tabIndex={-1}
-            className="mt-0.5 h-4 w-4 rounded border-stone-300 text-stone-400"
+            className="mt-0.5 h-4 w-4 rounded-none border-culinary-outline text-culinary-text-muted"
             aria-readonly="true"
           />
-          <div className="text-sm leading-snug">
-            <span className="text-stone-800">{BOOKING_CHECKLIST_ITEM_TITLES.testimonialRequested}</span>
-            <span className="block text-[11px] text-stone-500 mt-0.5">From booking: testimonial requested timestamp</span>
+          <div className="font-culinary-sans text-body-md leading-snug">
+            <span className="text-culinary-ink">{BOOKING_CHECKLIST_ITEM_TITLES.testimonialRequested}</span>
+            <span className="mt-0.5 block text-[11px] text-culinary-text-muted">
+              From booking: testimonial requested timestamp
+            </span>
           </div>
         </li>
       </ul>
-    </div>
+    </CulinaryCard>
   )
 }

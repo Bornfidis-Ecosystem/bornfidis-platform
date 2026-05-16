@@ -28,6 +28,9 @@ function reminderTypeForBooking(p: Props): ReminderType {
   return 'prep'
 }
 
+const btn =
+  'inline-flex items-center justify-center rounded-none border px-3 py-2 font-culinary-sans text-label-caps transition refined disabled:opacity-50'
+
 export default function PaymentSummaryActionButtons(p: Props) {
   const [pending, startTransition] = useTransition()
   const hasEmail = !!p.email?.trim()
@@ -58,24 +61,22 @@ export default function PaymentSummaryActionButtons(p: Props) {
 
   if (!showSendQuote && !showSendDeposit && !showResendBalance && !whatsappUrl) {
     return (
-      <p className="text-xs text-stone-500">
+      <p className="font-culinary-sans text-body-md text-culinary-text-muted">
         Add a saved quote and client email to enable email actions. Add a phone number for WhatsApp.
       </p>
     )
   }
 
   return (
-    <div className="mt-4 space-y-2">
-      <p className="text-[11px] font-medium text-stone-500 uppercase tracking-wider">Quick actions</p>
+    <div className="mt-stack-md space-y-stack-sm">
+      <p className="font-culinary-sans text-label-caps text-culinary-text-muted">Quick actions</p>
       <div className="flex flex-wrap gap-2">
         {showSendQuote && (
           <button
             type="button"
             disabled={pending}
-            onClick={() =>
-              run('Quote email sent', () => sendQuoteEmail(p.bookingId))
-            }
-            className="inline-flex items-center justify-center rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-800 shadow-sm hover:bg-stone-50 disabled:opacity-50"
+            onClick={() => run('Quote email sent', () => sendQuoteEmail(p.bookingId))}
+            className={`${btn} border-culinary-outline bg-culinary-bone text-culinary-navy hover:bg-culinary-surface-high`}
           >
             Send quote email
           </button>
@@ -84,10 +85,8 @@ export default function PaymentSummaryActionButtons(p: Props) {
           <button
             type="button"
             disabled={pending}
-            onClick={() =>
-              run('Deposit request sent', () => sendDepositRequest(p.bookingId))
-            }
-            className="inline-flex items-center justify-center rounded-lg bg-[#1A3C34] px-3 py-2 text-xs font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-50"
+            onClick={() => run('Deposit request sent', () => sendDepositRequest(p.bookingId))}
+            className={`${btn} border-culinary-navy bg-culinary-navy text-culinary-on-navy hover:opacity-90`}
           >
             Send deposit request
           </button>
@@ -102,7 +101,7 @@ export default function PaymentSummaryActionButtons(p: Props) {
                 return { ...out, url: out.url }
               })
             }
-            className="inline-flex items-center justify-center rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-950 hover:bg-amber-100 disabled:opacity-50"
+            className={`${btn} border-culinary-gold-line bg-culinary-bone text-culinary-navy hover:bg-culinary-surface-high`}
           >
             Resend balance link
           </button>
@@ -112,7 +111,7 @@ export default function PaymentSummaryActionButtons(p: Props) {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg border border-emerald-600/40 bg-emerald-50 px-3 py-2 text-xs font-semibold text-emerald-900 hover:bg-emerald-100"
+            className={`${btn} border-culinary-forest/50 bg-culinary-bone text-culinary-forest hover:bg-culinary-surface-low`}
           >
             WhatsApp reminder
           </a>
