@@ -3,9 +3,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
+
+import {
+  academyBody,
+  academyBtnPrimary,
+  academyBtnSecondary,
+  academyCard,
+  academyHeadline,
+  academyPillActive,
+  academyPillInactive,
+} from '@/components/academy/academy-culinary-classes'
 import { ACADEMY_PILLARS, type AcademyProduct, type AcademyPillarSlug } from '@/lib/academy-products'
 
-/** Short tagline for homepage cards (by slug). */
 const CARD_TAGLINE: Record<string, string> = {
   'regenerative-enterprise-foundations': 'For All Entrepreneurs',
   'regenerative-farmer-blueprint': 'For Farmers',
@@ -16,7 +25,6 @@ const CARD_TAGLINE: Record<string, string> = {
 interface AcademyFeaturedGridProps {
   products: AcademyProduct[]
   totalPurchaseCount: number
-  /** Initial pillar filter from URL (e.g. /academy?pillar=food-systems) */
   initialPillar?: string
 }
 
@@ -28,9 +36,7 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
   )
 
   const filtered =
-    pillarFilter === 'all'
-      ? products
-      : products.filter((p) => p.pillar === pillarFilter)
+    pillarFilter === 'all' ? products : products.filter((p) => p.pillar === pillarFilter)
 
   const displayCount = Math.max(totalPurchaseCount, 100)
   const socialProofText = `Join ${displayCount}+ entrepreneurs, farmers, and chefs building sustainable enterprise`
@@ -39,19 +45,13 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
 
   return (
     <>
-      {/* Browse by pillar */}
-      <div className="mb-8">
-        <p className="text-center text-sm font-medium text-gray-600 mb-3">Browse by pillar</p>
+      <div className="mb-10">
+        <p className={`${academyBody} mb-3 text-center text-sm`}>Browse by pillar</p>
         <div className="flex flex-wrap justify-center gap-2">
           <button
-            key="all"
             type="button"
             onClick={() => setPillarFilter('all')}
-            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ease-in-out ${
-              pillarFilter === 'all'
-                ? 'bg-forest text-goldAccent'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
+            className={pillarFilter === 'all' ? academyPillActive : academyPillInactive}
           >
             All
           </button>
@@ -60,11 +60,7 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
               key={p.slug}
               type="button"
               onClick={() => setPillarFilter(p.slug)}
-              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ease-in-out ${
-                pillarFilter === p.slug
-                  ? 'bg-forest text-goldAccent'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
+              className={pillarFilter === p.slug ? academyPillActive : academyPillInactive}
             >
               {p.label}
             </button>
@@ -72,15 +68,11 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
         </div>
       </div>
 
-      {/* Product grid: 2x2 desktop, 1 col mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-14">
+      <div className="mb-14 grid grid-cols-1 gap-8 md:grid-cols-2">
         {filtered.map((product) => (
-          <article
-            key={product.slug}
-            className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden transition-all duration-200 ease-in-out hover:shadow-md"
-          >
-            <Link href={`/academy/${product.slug}`} className="block">
-              <div className="aspect-[3/4] md:aspect-[4/3] bg-card relative">
+          <article key={product.slug} className={academyCard}>
+            <Link href={`/academy/${product.slug}`} className="block no-underline">
+              <div className="relative aspect-[3/4] bg-[#2c2c2c]/5 md:aspect-[4/3]">
                 {product.image ? (
                   <Image
                     src={product.image}
@@ -90,32 +82,25 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-forest text-4xl font-bold opacity-30">
+                  <div className="flex h-full w-full items-center justify-center font-display text-4xl text-[#2c2c2c]/25">
                     {product.title.charAt(0)}
                   </div>
                 )}
-                <span className="absolute top-3 left-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-forest text-goldAccent">
+                <span className="absolute left-3 top-3 bg-[#1A3C34] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#fdf8f8]">
                   {pillarLabel(product.pillar)}
                 </span>
               </div>
-              <div className="p-6">
-                <p className="text-sm font-semibold text-forest/80 mb-1">
+              <div className="border-t border-[#C9A84C]/25 p-6">
+                <p className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
                   {CARD_TAGLINE[product.slug] ?? pillarLabel(product.pillar)}
                 </p>
-                <h2 className="text-xl font-bold text-forest mb-1">{product.title}</h2>
-                {product.subtitle && (
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {product.subtitle}
-                  </p>
-                )}
-                <p className="text-lg font-semibold text-forest mb-4">
-                  {product.priceDisplay}
-                </p>
-                <span className="inline-flex items-center gap-1.5 text-sm font-medium text-forest group-hover:underline">
-                  Get Access
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                <h2 className={`${academyHeadline} mt-2 text-xl`}>{product.title}</h2>
+                {product.subtitle ? (
+                  <p className={`${academyBody} mt-2 line-clamp-2 text-sm`}>{product.subtitle}</p>
+                ) : null}
+                <p className="mt-4 font-display text-lg text-[#2c2c2c]">{product.priceDisplay}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c]/70">
+                  Get access →
                 </span>
               </div>
             </Link>
@@ -123,29 +108,20 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
         ))}
       </div>
 
-      {/* Social proof */}
-      <p className="text-center text-lg text-forest font-medium mb-12">
-        {socialProofText}
-      </p>
+      <p className={`${academyBody} mb-12 text-center text-lg`}>{socialProofText}</p>
 
-      {/* CTA */}
-      <div className="text-center rounded-2xl border-2 border-forest/20 bg-forest/5 p-8">
-        <p className="text-gray-700 mb-4">
+      <div className="border border-[#C9A84C]/35 bg-[#fdf8f8] p-8 text-center">
+        <p className={`${academyBody} mb-6 text-sm`}>
           Start with the Foundations manual or choose the guide for your industry.
         </p>
-        <Link
-          href="/academy/regenerative-enterprise-foundations"
-          className="inline-flex items-center justify-center bg-forest text-goldAccent font-semibold px-8 py-3 rounded-xl hover:opacity-90 transition-all duration-200 ease-in-out"
-        >
-          Get Access — Foundations ($39)
-        </Link>
-        <span className="mx-3 text-gray-400">·</span>
-        <Link
-          href="/academy#featured"
-          className="inline-flex items-center justify-center border-2 border-forest text-forest font-semibold px-8 py-3 rounded-xl hover:bg-forest/10 transition-all duration-200 ease-in-out"
-        >
-          Browse all guides
-        </Link>
+        <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link href="/academy/regenerative-enterprise-foundations" className={academyBtnPrimary}>
+            Get access — Foundations ($39)
+          </Link>
+          <Link href="/academy#featured" className={academyBtnSecondary}>
+            Browse all guides
+          </Link>
+        </div>
       </div>
     </>
   )

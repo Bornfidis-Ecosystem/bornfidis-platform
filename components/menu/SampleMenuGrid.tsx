@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components/ui/PageContainer'
+import { bookSection } from '@/components/booking/book-culinary-classes'
 import { SampleMenuCard } from './SampleMenuCard'
 
 const CARDS = [
@@ -21,8 +22,8 @@ const CARDS = [
 
 export function SampleMenuGrid() {
   return (
-    <section className="py-16 md:py-20" style={{ background: '#0a1210' }}>
-      <PageContainer>
+    <section className={bookSection}>
+      <PageContainer wide>
         <div className="grid gap-8 md:grid-cols-3">
           {CARDS.map((c) => (
             <SampleMenuCard key={c.title} title={c.title} lines={[...c.lines]} note={c.note} />

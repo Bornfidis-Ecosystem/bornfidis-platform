@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import BrutalistBookingNav from '@/components/layout/BrutalistBookingNav'
+
 import { MenuHero } from '@/components/menu/MenuHero'
 import { SampleMenuGrid } from '@/components/menu/SampleMenuGrid'
 import { MenuCustomizationNote } from '@/components/menu/MenuCustomizationNote'
 import { MenuPageCta } from '@/components/menu/MenuPageCta'
+import { PublicMarketingShell } from '@/components/layout/PublicMarketingShell'
 
 export const metadata: Metadata = {
   title: 'Sample Menus | Bornfidis Provisions',
@@ -13,12 +14,11 @@ export const metadata: Metadata = {
 
 export default function MenuPage() {
   return (
-    <div className="home-brutalist-root min-h-screen bg-midnight text-cream">
-      <BrutalistBookingNav />
+    <PublicMarketingShell active="menu">
       <MenuHero />
       <SampleMenuGrid />
       <MenuCustomizationNote />
       <MenuPageCta />
-    </div>
+    </PublicMarketingShell>
   )
 }

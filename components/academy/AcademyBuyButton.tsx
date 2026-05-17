@@ -2,9 +2,11 @@
 
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import type { AcademyProduct } from '@/lib/academy-products'
+
+import { academyBtnPrimary } from '@/components/academy/academy-culinary-classes'
 import { Spinner } from '@/components/ui/Spinner'
 import { trackAcademyBuyClick } from '@/lib/academy-analytics'
+import type { AcademyProduct } from '@/lib/academy-products'
 
 interface AcademyBuyButtonProps {
   product: AcademyProduct
@@ -89,19 +91,15 @@ export default function AcademyBuyButton({
   }
 
   const sizeClass =
-    size === 'sm'
-      ? 'px-3 py-1.5 text-sm'
-      : size === 'lg'
-        ? 'px-8 py-3 text-lg'
-        : 'px-6 py-2.5'
+    size === 'sm' ? 'min-h-[40px] px-4 py-2 text-[11px]' : size === 'lg' ? 'min-h-[52px] px-10' : ''
 
   const buttonLabel = loading
-    ? 'Processing...'
+    ? 'Processing…'
     : isFree
       ? 'Get for free'
       : product.type === 'COURSE'
-        ? `Start Learning — ${product.priceDisplay}`
-        : `Get Access — ${product.priceDisplay}`
+        ? `Start learning — ${product.priceDisplay}`
+        : `Get access — ${product.priceDisplay}`
 
   return (
     <div className={className}>
@@ -109,16 +107,16 @@ export default function AcademyBuyButton({
         type="button"
         onClick={handleBuy}
         disabled={loading}
-        className={`inline-flex items-center justify-center gap-2 bg-forest text-goldAccent font-semibold rounded-xl hover:opacity-90 transition-all duration-200 ease-in-out disabled:opacity-60 disabled:cursor-not-allowed ${sizeClass}`}
+        className={`${academyBtnPrimary} inline-flex items-center gap-2 ${sizeClass}`}
       >
-        {loading && <Spinner size="sm" className="flex-shrink-0" />}
+        {loading ? <Spinner size="sm" className="flex-shrink-0" /> : null}
         {buttonLabel}
       </button>
-      {error && (
-        <p className="mt-2 text-sm text-red-600" role="alert">
+      {error ? (
+        <p className="mt-2 font-sans text-sm text-red-700" role="alert">
           {error}
         </p>
-      )}
+      ) : null}
     </div>
   )
 }

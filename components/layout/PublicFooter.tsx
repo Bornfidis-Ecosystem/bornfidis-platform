@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function PublicFooter() {
   return (
-    <footer className="bg-navy text-white w-full">
+    <footer className="w-full border-t border-[#C9A84C]/30 bg-[#fdf8f8] text-[#2c2c2c]">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* About */}
@@ -15,44 +15,44 @@ export default function PublicFooter() {
               height={40}
               className="h-10 w-10 object-contain mb-3"
             />
-            <h3 className="text-lg font-semibold mb-4 text-gold">About Bornfidis</h3>
-            <p className="text-green-100 text-sm mb-4">
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">About Bornfidis</h3>
+            <p className="mb-4 font-sans text-sm text-[#2c2c2c]/75">
               Regenerating land, people, and enterprise through faith-anchored food and fellowship.
             </p>
-            <div className="h-1 w-16 bg-gold"></div>
+            <div className="h-px w-16 bg-[#C9A84C]" />
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gold">Quick Links</h3>
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/story" className="text-green-100 hover:text-gold transition">
+                <Link href="/story" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Story
                 </Link>
               </li>
               <li>
-                <Link href="/book" className="text-green-100 hover:text-gold transition">
+                <Link href="/book" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Provisions
                 </Link>
               </li>
               <li>
-                <Link href="/marketplace" className="text-green-100 hover:text-gold transition">
+                <Link href="/marketplace" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Marketplace
                 </Link>
               </li>
               <li>
-                <Link href="/impact" className="text-green-100 hover:text-gold transition">
+                <Link href="/impact" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Impact
                 </Link>
               </li>
               <li>
-                <Link href="/sportswear" className="text-green-100 hover:text-gold transition">
+                <Link href="/sportswear" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Sportswear
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/library" className="text-green-100 hover:text-gold transition">
+                <Link href="/dashboard/library" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   My Library
                 </Link>
               </li>
@@ -61,30 +61,30 @@ export default function PublicFooter() {
 
           {/* Academy — all four products */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gold">Academy</h3>
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Academy</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/academy" className="text-green-100 hover:text-gold transition">
+                <Link href="/academy" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   All Academy
                 </Link>
               </li>
               <li>
-                <Link href="/academy/regenerative-enterprise-foundations" className="text-green-100 hover:text-gold transition">
+                <Link href="/academy/regenerative-enterprise-foundations" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Regenerative Enterprise Foundations
                 </Link>
               </li>
               <li>
-                <Link href="/academy/regenerative-farmer-blueprint" className="text-green-100 hover:text-gold transition">
+                <Link href="/academy/regenerative-farmer-blueprint" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Regenerative Farmer Blueprint
                 </Link>
               </li>
               <li>
-                <Link href="/academy/vermont-contractor-foundations" className="text-green-100 hover:text-gold transition">
+                <Link href="/academy/vermont-contractor-foundations" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Vermont Contractor Foundations
                 </Link>
               </li>
               <li>
-                <Link href="/academy/jamaican-chef-enterprise-system" className="text-green-100 hover:text-gold transition">
+                <Link href="/academy/jamaican-chef-enterprise-system" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Jamaican Chef Enterprise System
                 </Link>
               </li>
@@ -93,50 +93,50 @@ export default function PublicFooter() {
 
           {/* Explore */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gold">Explore</h3>
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Explore</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/chefs" className="text-green-100 hover:text-gold transition">
+                <Link href="/chefs" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Chefs
                 </Link>
               </li>
               <li>
-                <Link href="/farmers" className="text-green-100 hover:text-gold transition">
+                <Link href="/farmers" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Farmers
                 </Link>
               </li>
               <li>
-                <Link href="/stories" className="text-green-100 hover:text-gold transition">
+                <Link href="/stories" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Stories
                 </Link>
               </li>
               <li>
-                <Link href="/launch" className="text-green-100 hover:text-gold transition">
+                <Link href="/launch" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Launch
                 </Link>
               </li>
               <li>
-                <Link href="/cooperative" className="text-green-100 hover:text-gold transition">
+                <Link href="/cooperative" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Cooperative
                 </Link>
               </li>
               <li>
-                <Link href="/replicate" className="text-green-100 hover:text-gold transition">
+                <Link href="/replicate" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Replicate
                 </Link>
               </li>
               <li>
-                <Link href="/testament" className="text-green-100 hover:text-gold transition">
+                <Link href="/testament" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Testament
                 </Link>
               </li>
               <li>
-                <Link href="/housing" className="text-green-100 hover:text-gold transition">
+                <Link href="/housing" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Housing
                 </Link>
               </li>
               <li>
-                <Link href="/legacy" className="text-green-100 hover:text-gold transition">
+                <Link href="/legacy" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Legacy
                 </Link>
               </li>
@@ -145,25 +145,25 @@ export default function PublicFooter() {
 
           {/* Join */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gold">Join the Movement</h3>
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Join the Movement</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/replicate/apply-leader" className="text-green-100 hover:text-gold transition">
+                <Link href="/replicate/apply-leader" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Launch a Region
                 </Link>
               </li>
               <li>
-                <Link href="/replicate/invest" className="text-green-100 hover:text-gold transition">
+                <Link href="/replicate/invest" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Invest in Impact
                 </Link>
               </li>
               <li>
-                <Link href="/chef/apply" className="text-green-100 hover:text-gold transition">
+                <Link href="/chef/apply" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Become a Chef
                 </Link>
               </li>
               <li>
-                <Link href="/farm/apply" className="text-green-100 hover:text-gold transition">
+                <Link href="/farm/apply" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
                   Become a Farmer
                 </Link>
               </li>
@@ -172,16 +172,16 @@ export default function PublicFooter() {
 
           {/* Covenant */}
           <div>
-            <h3 className="text-lg font-semibold mb-4 text-gold">Our Covenant</h3>
-            <p className="text-green-100 text-sm italic mb-4">
+            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Our Covenant</h3>
+            <p className="mb-4 font-sans text-sm italic text-[#2c2c2c]/75">
               "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters."
             </p>
-            <p className="text-xs text-green-200">— Colossians 3:23</p>
+            <p className="font-sans text-xs text-[#2c2c2c]/55">— Colossians 3:23</p>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-navyLight mt-8 pt-8 text-center text-sm text-green-100">
+        <div className="mt-8 border-t border-[#C9A84C]/25 pt-8 text-center font-sans text-sm text-[#2c2c2c]/60">
           <p>&copy; {new Date().getFullYear()} Bornfidis Provisions. All rights reserved.</p>
           <p className="mt-2">Regenerating land, people, and enterprise through faith.</p>
         </div>

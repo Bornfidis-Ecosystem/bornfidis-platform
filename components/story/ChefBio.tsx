@@ -1,4 +1,11 @@
 import Image from 'next/image'
+
+import {
+  bookBody,
+  bookEyebrow,
+  bookHeadline,
+  bookSection,
+} from '@/components/booking/book-culinary-classes'
 import { chefBioPortrait } from '@/lib/book-marketing-images'
 
 const credentials = [
@@ -9,8 +16,86 @@ const credentials = [
   { label: 'Bornfidis Provisions', sub: 'Founder · Port Antonio, Jamaica' },
 ] as const
 
-/** Dark / gold / all-caps brutalist block — Story page, directly below hero */
-export function ChefBio() {
+type ChefBioProps = {
+  /** @default culinary */
+  theme?: 'culinary' | 'brutalist'
+}
+
+export function ChefBio({ theme = 'culinary' }: ChefBioProps) {
+  if (theme === 'brutalist') {
+    return <ChefBioBrutalist />
+  }
+
+  return (
+    <section id="chef-bio" className={bookSection}>
+      <div className="mx-auto max-w-[1440px] px-6 md:px-16">
+        <div className="grid grid-cols-1 items-start gap-14 lg:grid-cols-12 lg:gap-16">
+          <div className="lg:col-span-5">
+            <p className={bookEyebrow}>The Chef</p>
+            <h2 className={`${bookHeadline} mt-4 text-3xl md:text-4xl`}>
+              Brian
+              <br />
+              Maylor
+            </h2>
+
+            <figure className="relative mx-auto mt-8 aspect-[3/4] w-full max-w-md overflow-hidden lg:mx-0 lg:max-w-none">
+              <Image
+                src={chefBioPortrait}
+                alt="Chef Brian — kitchen line ready for service"
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </figure>
+
+            <div className="mt-10 space-y-3">
+              {credentials.map((c) => (
+                <div
+                  key={c.label}
+                  className="flex items-center gap-4 border-b border-[#C9A84C]/25 py-3"
+                >
+                  <div className="h-8 w-px flex-shrink-0 bg-[#C9A84C]" />
+                  <div>
+                    <p className="font-sans text-sm font-semibold text-[#2c2c2c]">{c.label}</p>
+                    <p className="mt-0.5 font-sans text-xs text-[#2c2c2c]/55">{c.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="lg:col-span-7 lg:pt-4">
+            <p className={bookEyebrow}>Origin</p>
+            <p className={`${bookBody} mt-4 text-lg`}>It started at sea.</p>
+            <p className={`${bookBody} mt-6`}>
+              As a chef aboard Royal Caribbean, I cooked for thousands of guests every single day —
+              multiple restaurants, multiple cuisines, zero margin for error. That pressure didn&apos;t
+              break the craft. It sharpened it.
+            </p>
+            <p className={`${bookBody} mt-4`}>
+              I learned that great food isn&apos;t about the size of the kitchen or the number of
+              covers. It&apos;s about intention — knowing exactly what you&apos;re serving, why it
+              matters, and who it&apos;s for. Every plate is a decision.
+            </p>
+            <p className={`${bookBody} mt-4`}>
+              Bornfidis was built on that foundation. We bring the discipline of a world-class galley
+              and the soul of Jamaican farm-to-table cooking into your home, villa, or event space. No
+              shortcuts. No compromise. Just an experience worth remembering.
+            </p>
+            <div className="mt-10 border-t border-[#C9A84C]/35 pt-8">
+              <p className={bookEyebrow}>Available in</p>
+              <p className={`${bookBody} mt-2 text-sm`}>
+                Port Antonio, Jamaica · Vermont, USA · Private travel on request
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ChefBioBrutalist() {
   return (
     <section id="chef-bio" className="bg-black px-6 py-24 text-white md:px-16">
       <div className="mx-auto max-w-6xl">
@@ -22,7 +107,6 @@ export function ChefBio() {
               <br />
               Maylor
             </h2>
-
             <figure className="relative mx-auto aspect-[3/4] w-full max-w-md overflow-hidden border border-[#C9A84C]/25 lg:mx-0 lg:max-w-none">
               <Image
                 src={chefBioPortrait}
@@ -36,7 +120,6 @@ export function ChefBio() {
                 aria-hidden
               />
             </figure>
-
             <div className="mt-12 space-y-3">
               {credentials.map((c) => (
                 <div
@@ -52,30 +135,24 @@ export function ChefBio() {
               ))}
             </div>
           </div>
-
           <div className="lg:col-span-7 lg:pt-4">
             <p className="mb-6 text-sm uppercase tracking-[0.15em] text-white/60">Origin</p>
-
             <p className="mb-6 text-lg leading-relaxed text-white/90">It started at sea.</p>
-
             <p className="mb-6 text-base leading-relaxed text-white/70">
               As a chef aboard Royal Caribbean, I cooked for thousands of guests every single day —
               multiple restaurants, multiple cuisines, zero margin for error. That pressure didn&apos;t
               break the craft. It sharpened it.
             </p>
-
             <p className="mb-6 text-base leading-relaxed text-white/70">
               I learned that great food isn&apos;t about the size of the kitchen or the number of
               covers. It&apos;s about intention — knowing exactly what you&apos;re serving, why it
               matters, and who it&apos;s for. Every plate is a decision.
             </p>
-
             <p className="mb-10 text-base leading-relaxed text-white/70">
               Bornfidis was built on that foundation. We bring the discipline of a world-class galley
               and the soul of Jamaican farm-to-table cooking into your home, villa, or event space. No
               shortcuts. No compromise. Just an experience worth remembering.
             </p>
-
             <div className="border-t border-[#C9A84C]/20 pt-8">
               <p className="mb-1 text-xs uppercase tracking-[0.2em] text-[#C9A84C]">Available in</p>
               <p className="text-sm text-white/60">

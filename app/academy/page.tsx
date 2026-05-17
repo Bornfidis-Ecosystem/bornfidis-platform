@@ -4,11 +4,20 @@
  */
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getAcademyProductsFromDb } from '@/lib/academy-products-public'
-import { AcademyFeaturedGrid } from '@/components/academy/AcademyFeaturedGrid'
+
 import { AcademyEmailCapture } from '@/components/academy/AcademyEmailCapture'
+import { AcademyFeaturedGrid } from '@/components/academy/AcademyFeaturedGrid'
 import { AcademyViewTracker } from '@/components/academy/AcademyViewTracker'
+import {
+  academyBody,
+  academyEyebrow,
+  academyHeadline,
+  academySection,
+} from '@/components/academy/academy-culinary-classes'
+import { PublicMarketingShell } from '@/components/layout/PublicMarketingShell'
+import { PageContainer } from '@/components/ui/PageContainer'
 import { TrustStrip } from '@/components/ui/TrustStrip'
+import { getAcademyProductsFromDb } from '@/lib/academy-products-public'
 import { getAcademyStats } from '@/lib/academy-stats'
 
 export const dynamic = 'force-dynamic'
@@ -48,7 +57,6 @@ export const metadata: Metadata = {
   },
 }
 
-/** Valid pillar slugs from URL for initial filter (docs/ACADEMY_KNOWLEDGE_MAP.md). */
 const VALID_PILLARS = ['food-systems', 'clothing-craft', 'housing-infrastructure', 'education-enterprise'] as const
 type UrlPillar = (typeof VALID_PILLARS)[number]
 function parsePillar(pillar: string | undefined): UrlPillar | undefined {
@@ -66,7 +74,7 @@ export default async function AcademyPage({ searchParams }: PageProps) {
   const pillarParam = typeof params?.pillar === 'string' ? params.pillar : undefined
   const initialPillar = parsePillar(pillarParam)
 
-  let products = await getAcademyProductsFromDb()
+  const products = await getAcademyProductsFromDb()
 
   let totalPurchaseCount = 0
   try {
@@ -77,68 +85,68 @@ export default async function AcademyPage({ searchParams }: PageProps) {
   }
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-16">
+    <PublicMarketingShell active="academy">
       <AcademyViewTracker />
-      {/* Hero */}
-      <header className="mb-14 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-forest mb-4">
-          Structured Operating Systems for Entrepreneurs, Farmers & Chefs
-        </h1>
-        <p className="text-gray-600 mb-1">
-          Get access to discipline-based manuals and templates. One-time purchase, lifetime access.
-        </p>
-        <p className="text-gray-600">
-          Build sustainable enterprise with clear systems and rhythms.
-        </p>
-        <TrustStrip className="mt-6 mb-2" />
-      </header>
-
-      {/* Products: category filter + grid + social proof + CTA (or empty state) */}
-      <section id="featured" className="mb-16">
-        <h2 className="sr-only">Academy products</h2>
-        {products.length === 0 ? (
-          <div className="rounded-2xl border border-gray-200 bg-white p-12 text-center">
-            <p className="text-lg font-medium text-forest mb-2">No products available yet</p>
-            <p className="text-gray-600 text-sm">
-              New guides and courses will appear here. Check back soon or browse the free guide below.
+      <section className={`${academySection} border-t-0 pt-28 md:pt-32`}>
+        <PageContainer wide>
+          <header className="mb-14 text-center">
+            <p className={academyEyebrow}>Bornfidis Academy</p>
+            <h1 className={`${academyHeadline} mx-auto mt-4 max-w-4xl text-[clamp(2rem,5vw,3.25rem)]`}>
+              Structured Operating Systems for Entrepreneurs, Farmers &amp; Chefs
+            </h1>
+            <p className={`${academyBody} mx-auto mt-6 max-w-2xl`}>
+              Discipline-based manuals and templates. One-time purchase, lifetime access. Build sustainable
+              enterprise with clear systems and rhythms.
             </p>
+            <TrustStrip variant="culinary" className="mt-8" />
+          </header>
+
+          <section id="featured" className="mb-16">
+            <h2 className="sr-only">Academy products</h2>
+            {products.length === 0 ? (
+              <div className="border border-[#C9A84C]/35 p-12 text-center">
+                <p className={`${academyHeadline} text-xl`}>No products available yet</p>
+                <p className={`${academyBody} mt-3 text-sm`}>
+                  New guides and courses will appear here. Check back soon or browse the free guide below.
+                </p>
+                <Link
+                  href="/guide/5-caribbean-sauces"
+                  className="mt-6 inline-block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+                >
+                  Get the free guide — 5 Caribbean Sauces →
+                </Link>
+              </div>
+            ) : (
+              <AcademyFeaturedGrid
+                products={products}
+                totalPurchaseCount={totalPurchaseCount}
+                initialPillar={initialPillar}
+              />
+            )}
+          </section>
+
+          <p className={`${academyBody} mb-8 text-center text-sm`}>
             <Link
               href="/guide/5-caribbean-sauces"
-              className="inline-block mt-4 text-forest font-semibold hover:underline"
+              className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
             >
-              Get the free guide — 5 Caribbean Sauces →
+              New: Get our free guide — 5 Caribbean Sauces
             </Link>
-          </div>
-        ) : (
-          <AcademyFeaturedGrid
-            products={products}
-            totalPurchaseCount={totalPurchaseCount}
-            initialPillar={initialPillar}
-          />
-        )}
+          </p>
+
+          <AcademyEmailCapture />
+
+          <p className={`${academyBody} mt-12 text-center text-sm`}>
+            <Link href="/dashboard/library" className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+              View your library
+            </Link>
+            {' · '}
+            <Link href="/payments" className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+              Payment &amp; participation
+            </Link>
+          </p>
+        </PageContainer>
       </section>
-
-      {/* Free guide CTA */}
-      <p className="text-center text-sm text-forest mb-4">
-        <Link href="/guide/5-caribbean-sauces" className="hover:underline font-medium">
-          New: Get our free guide — 5 Caribbean Sauces
-        </Link>
-      </p>
-
-      {/* Email capture */}
-      <section className="max-w-2xl mx-auto mt-14 mb-12">
-        <AcademyEmailCapture />
-      </section>
-
-      <p className="text-center text-sm text-gray-500 mt-12">
-        <Link href="/dashboard/library" className="text-forest hover:underline">
-          View your library
-        </Link>
-        {' · '}
-        <Link href="/payments" className="text-forest hover:underline">
-          Payment & participation
-        </Link>
-      </p>
-    </main>
+    </PublicMarketingShell>
   )
 }

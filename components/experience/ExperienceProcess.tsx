@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components/ui/PageContainer'
+import { bookBody, bookHeadline, bookSection } from '@/components/booking/book-culinary-classes'
 
 const STEPS = [
   { step: '1', title: 'Inquiry', body: 'Share your event details and vision.' },
@@ -8,15 +9,17 @@ const STEPS = [
 
 export function ExperienceProcess() {
   return (
-    <section className="border-t border-brass/15 py-16 md:py-20" style={{ backgroundColor: '#0f1814' }}>
-      <PageContainer>
-        <h2 className="font-display text-2xl text-cream md:text-3xl">The process</h2>
+    <section className={bookSection}>
+      <PageContainer wide>
+        <h2 className={`${bookHeadline} text-2xl md:text-3xl`}>The process</h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3">
           {STEPS.map((s) => (
-            <li key={s.step} className="border-l-2 border-brass/30 pl-6">
-              <span className="text-xs font-semibold uppercase tracking-wider text-brass">Step {s.step}</span>
-              <h3 className="mt-2 font-display text-xl text-cream">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-cream/70">{s.body}</p>
+            <li key={s.step} className="border-l-2 border-[#C9A84C]/50 pl-6">
+              <span className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
+                Step {s.step}
+              </span>
+              <h3 className={`${bookHeadline} mt-2 text-xl`}>{s.title}</h3>
+              <p className={`${bookBody} mt-2 text-sm`}>{s.body}</p>
             </li>
           ))}
         </ol>

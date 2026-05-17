@@ -6,7 +6,17 @@ import PublicFooter from '@/components/layout/PublicFooter'
 /** Hides the global footer on routes that ship their own footer (e.g. marketing home). */
 export default function ConditionalPublicFooter() {
   const pathname = usePathname()
-  if (pathname === '/' || pathname === '/book') return null
+  const marketingShell =
+    pathname === '/' ||
+    pathname === '/book' ||
+    pathname === '/experience' ||
+    pathname === '/menu' ||
+    pathname === '/story' ||
+    pathname === '/contact' ||
+    pathname === '/thanks' ||
+    pathname?.startsWith('/academy')
+
+  if (marketingShell) return null
   if (pathname?.startsWith('/admin')) return null
   return <PublicFooter />
 }

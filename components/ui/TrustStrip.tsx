@@ -10,7 +10,7 @@ interface TrustStripProps {
   items?: string[]
   className?: string
   /** Light text for use on dark backgrounds (e.g. forest hero) */
-  variant?: 'default' | 'light'
+  variant?: 'default' | 'light' | 'culinary'
 }
 
 export function TrustStrip({
@@ -18,8 +18,14 @@ export function TrustStrip({
   className = '',
   variant = 'default',
 }: TrustStripProps) {
-  const textClass = variant === 'light' ? 'text-white/80' : 'text-forest/80'
-  const checkClass = variant === 'light' ? 'text-gold' : 'text-goldAccent'
+  const textClass =
+    variant === 'light'
+      ? 'text-white/80'
+      : variant === 'culinary'
+        ? 'text-[#2c2c2c]/70'
+        : 'text-forest/80'
+  const checkClass =
+    variant === 'light' ? 'text-gold' : variant === 'culinary' ? 'text-[#C9A84C]' : 'text-goldAccent'
 
   return (
     <ul

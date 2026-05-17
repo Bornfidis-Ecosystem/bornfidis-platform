@@ -1,4 +1,5 @@
 import { PageContainer } from '@/components/ui/PageContainer'
+import { bookHeadline, bookSection } from '@/components/booking/book-culinary-classes'
 
 const ITEMS = [
   'Chef-Crafted Custom Menu',
@@ -10,17 +11,17 @@ const ITEMS = [
 
 export function ExperienceIncludes() {
   return (
-    <section className="py-16 md:py-20" style={{ background: '#0a1210' }}>
-      <PageContainer>
-        <h2 className="font-display text-2xl text-cream md:text-3xl">What&apos;s included</h2>
+    <section className={bookSection}>
+      <PageContainer wide>
+        <h2 className={`${bookHeadline} text-2xl md:text-3xl`}>What&apos;s included</h2>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {ITEMS.map((t) => (
             <li
               key={t}
-              className="rounded-sm border border-brass/20 bg-midnight/50 px-4 py-4 text-center text-sm font-medium text-cream/90"
+              className="rounded-none border border-[#C9A84C]/35 bg-[#fdf8f8] px-4 py-4 text-center font-sans text-sm text-[#2c2c2c] shadow-none"
             >
-              <span className="mb-2 block text-brass" aria-hidden>
-                ✦
+              <span className="mb-2 block text-[#C9A84C]" aria-hidden>
+                —
               </span>
               {t}
             </li>
