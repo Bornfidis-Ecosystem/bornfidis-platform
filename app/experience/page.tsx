@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { ExperienceHero } from '@/components/experience/ExperienceHero'
 import { ExperienceIncludes } from '@/components/experience/ExperienceIncludes'
+import { ExperienceSignatureMoment } from '@/components/experience/ExperienceSignatureMoment'
 import { ExperienceProcess } from '@/components/experience/ExperienceProcess'
 import { ExperienceTrustSection } from '@/components/experience/ExperienceTrustSection'
 import { ExperiencePageCta } from '@/components/experience/ExperiencePageCta'
@@ -17,6 +18,7 @@ export default function ExperiencePage() {
     <PublicMarketingShell active="experience">
       <ExperienceHero />
       <ExperienceIncludes />
+      <ExperienceSignatureMoment />
       <ExperienceProcess />
       <ExperienceTrustSection />
       <ExperiencePageCta />

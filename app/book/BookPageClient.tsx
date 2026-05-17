@@ -13,10 +13,10 @@ export default function BookPageClient() {
   return (
     <PublicMarketingShell active="book">
       <BookingHero />
-      <BookingTrustBar />
       <BookingPricingGuide />
       <BookingInquiryForm />
       <BookingFaq />
+      <BookingTrustBar />
       <BookingFinalCta />
     </PublicMarketingShell>
   )

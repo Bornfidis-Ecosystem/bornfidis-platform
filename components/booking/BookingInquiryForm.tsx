@@ -22,6 +22,15 @@ const budgetTiers = [
   { value: '250_300_plus', label: '$250–$300+ per person' },
 ]
 
+const experienceTypeOptions = [
+  { value: '', label: 'Select experience type' },
+  { value: 'Private Dinner', label: 'Private Dinner' },
+  { value: 'Weekend Retreat', label: 'Weekend Retreat' },
+  { value: 'Retreat & Events', label: 'Retreat & Events' },
+  { value: 'Gathering & Celebrations', label: 'Gathering & Celebrations' },
+  { value: 'Not sure yet — guide me', label: 'Not sure yet — guide me' },
+]
+
 const occasionOptions = [
   { value: '', label: 'Select occasion' },
   { value: 'Romantic Dinner', label: 'Romantic Dinner' },
@@ -55,6 +64,7 @@ export function BookingInquiryForm() {
     eventDate: '',
     location: '',
     guestCount: '',
+    experienceType: '',
     occasion: '',
     budgetTier: '',
     diningStyle: '',
@@ -245,10 +255,24 @@ export function BookingInquiryForm() {
                 <p className={bookEyebrow}>Event & preferences</p>
                 <SelectField
                   theme="culinary"
+                  label="Experience Type"
+                  id="experienceType"
+                  name="experienceType"
+                  required
+                  value={formData.experienceType}
+                  onChange={handleChange}
+                >
+                  {experienceTypeOptions.map((o) => (
+                    <option key={o.label} value={o.value} disabled={o.value === ''} className={optionClass}>
+                      {o.label}
+                    </option>
+                  ))}
+                </SelectField>
+                <SelectField
+                  theme="culinary"
                   label="Occasion"
                   id="occasion"
                   name="occasion"
-                  required
                   value={formData.occasion}
                   onChange={handleChange}
                 >

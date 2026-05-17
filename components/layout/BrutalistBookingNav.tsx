@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-import { cdnImages } from '@/lib/bornfidis-cdn-images'
+import { brandAssets } from '@/lib/brand-assets'
 
 const CREAM = '#F2EDE4'
 const GOLD = '#C9A84C'
@@ -43,11 +43,11 @@ export default function BrutalistBookingNav() {
     >
       <Link href="/" className="flex items-center gap-3 no-underline">
         <Image
-          src={cdnImages.iconGold}
-          alt=""
-          width={32}
-          height={32}
-          className="h-8 w-auto"
+          src={brandAssets.iconNavTlGold}
+          alt="Bornfidis Provisions"
+          width={40}
+          height={40}
+          className="h-9 w-9 object-contain"
         />
         <span
           className="font-display"

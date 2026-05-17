@@ -13,5 +13,7 @@ export const cdnImages = {
   servicePrivateDinner: `${BORNFIDIS_CDN_BASE}/bf_hero_plating-Q4siqWWiN2dJrsPg36aB9L.webp`,
   serviceRetreat: `${BORNFIDIS_CDN_BASE}/bf_table_atmosphere-bcEjpnGnjRAmyk6468tLiS.webp`,
   serviceWedding: `${BORNFIDIS_CDN_BASE}/bf_chef_action-9BXPzDRYxeQhLdMochL5QL.webp`,
-  iconGold: `${BORNFIDIS_CDN_BASE}/provisions_icon_gold_9f14d9ac.png`,
+  /** @deprecated Use brandAssets.iconNavTlGold (nav) or brandAssets.iconGold (favicon). */
+  iconGold: '/brand/icons/bornfidis_logo_icon_gold.png',
+  iconNavTlGold: '/brand/icons/bornfidis_logo_icon_tl__gold_.png',
 } as const

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Libre_Caslon_Text, Montserrat } from 'next/font/google'
 import './globals.css'
 import RootShell from '@/components/layout/RootShell'
+import { brandAssets } from '@/lib/brand-assets'
 
 /** Headlines — WordPress brief: Libre Caslon Text (wired to legacy --font-playfair for Tailwind). */
 const headline = Libre_Caslon_Text({
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
   description:
     'A regenerative ecosystem delivering food, clothing, and education designed to restore people, land, and purpose.',
   icons: {
-    icon: [{ url: '/brand/icons/icon-anchor-navy.png', type: 'image/png' }],
-    apple: '/brand/icons/icon-anchor-navy.png',
+    icon: [{ url: brandAssets.iconGold, type: 'image/png' }],
+    apple: brandAssets.iconGold,
   },
 }
 

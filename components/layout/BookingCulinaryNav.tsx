@@ -4,12 +4,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-import { cdnImages } from '@/lib/bornfidis-cdn-images'
+import { brandAssets } from '@/lib/brand-assets'
 import { wordpressAlignedBrand } from '@/lib/wp-platform-integration'
 
-const { bone, slate, gold, forestCta, ctaTextOnForest } = wordpressAlignedBrand
+const { bone, slate, gold } = wordpressAlignedBrand
 
-export type CulinaryNavActive = 'book' | 'experience' | 'menu' | 'academy' | 'story' | 'contact'
+export type CulinaryNavActive = 'book' | 'experience' | 'menu' | 'story'
+
+const NAV_ITEMS: { href: string; label: string; key: CulinaryNavActive }[] = [
+  { href: '/experience', label: 'Experience', key: 'experience' },
+  { href: '/menu', label: 'Menus', key: 'menu' },
+  { href: '/story', label: 'Story', key: 'story' },
+  { href: '/book', label: 'Book', key: 'book' },
+]
 
 function useScrollY() {
   const [y, setY] = useState(0)
@@ -25,7 +32,7 @@ type BookingCulinaryNavProps = {
   active?: CulinaryNavActive
 }
 
-/** Editorial nav — Culinary OS (Bone / Slate / Gold). Used across /book and marketing pages. */
+/** Guest-facing editorial nav — Experience · Menus · Story · Book only. */
 export default function BookingCulinaryNav({ active }: BookingCulinaryNavProps) {
   const scrollY = useScrollY()
   const navScrolled = scrollY > 48
@@ -46,7 +53,14 @@ export default function BookingCulinaryNav({ active }: BookingCulinaryNavProps) 
       }}
     >
       <Link href="/" className="flex items-center gap-3 no-underline">
-        <Image src={cdnImages.iconGold} alt="" width={32} height={32} className="h-8 w-auto" />
+        <Image
+          src={brandAssets.iconNavTlGold}
+          alt="Bornfidis Provisions"
+          width={40}
+          height={40}
+          className="h-9 w-9 object-contain"
+          priority
+        />
         <span
           className="font-display text-[1.15rem] font-normal tracking-[0.06em]"
           style={{ color: slate }}
@@ -56,37 +70,20 @@ export default function BookingCulinaryNav({ active }: BookingCulinaryNavProps) 
       </Link>
 
       <div className="hidden items-center gap-8 md:flex">
-        <Link href="/experience" className={linkClass('experience')}>
-          Experience
-        </Link>
-        <Link href="/menu" className={linkClass('menu')}>
-          Menus
-        </Link>
-        <Link href="/academy" className={linkClass('academy')}>
-          Academy
-        </Link>
-        <Link href="/story" className={linkClass('story')}>
-          Story
-        </Link>
-        <Link href="/contact" className={linkClass('contact')}>
-          Contact
-        </Link>
-        <Link
-          href="/book"
-          className="inline-flex min-h-[40px] items-center justify-center rounded-none px-5 py-2 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] no-underline shadow-none transition-colors duration-refined"
-          style={{
-            backgroundColor: active === 'book' ? forestCta : forestCta,
-            color: ctaTextOnForest,
-            border: `1px solid ${forestCta}`,
-          }}
-        >
-          Book Private Dining
-        </Link>
+        {NAV_ITEMS.map((item) => (
+          <Link key={item.href} href={item.href} className={linkClass(item.key)}>
+            {item.label}
+          </Link>
+        ))}
       </div>
 
-      <Link href="/book" className={`${linkClass('book')} md:hidden`}>
-        Book
-      </Link>
+      <div className="flex items-center gap-6 md:hidden">
+        {NAV_ITEMS.map((item) => (
+          <Link key={item.href} href={item.href} className={linkClass(item.key)}>
+            {item.label}
+          </Link>
+        ))}
+      </div>
     </nav>
   )
 }

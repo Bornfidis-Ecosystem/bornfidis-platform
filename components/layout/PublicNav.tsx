@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { brandAssets } from '@/lib/brand-assets'
 import { useState, useRef, useEffect } from 'react'
 
 const ACADEMY_DROPDOWN_LINKS = [
@@ -42,8 +43,17 @@ export default function PublicNav() {
   ]
   const isAcademyActive = pathname === '/academy' || pathname.startsWith('/academy/')
 
-  /* Marketing pages ship their own editorial nav */
-  if (pathname === '/' || pathname === '/book') return null
+  /* Guest marketing pages ship their own editorial nav + footer */
+  const guestMarketing =
+    pathname === '/' ||
+    pathname === '/book' ||
+    pathname === '/experience' ||
+    pathname === '/menu' ||
+    pathname === '/story' ||
+    pathname === '/contact' ||
+    pathname === '/thanks' ||
+    pathname?.startsWith('/academy')
+  if (guestMarketing) return null
 
   /* Platform admin uses Culinary OS shell — no marketing nav */
   if (pathname?.startsWith('/admin')) return null
@@ -52,7 +62,7 @@ export default function PublicNav() {
     <nav className="bg-navy text-white shadow-lg sticky top-0 z-50 w-full">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="flex items-center justify-between h-16">
-          {/* Logo: public/brand/icons/icon-anchor-gold.png or public/brand/logos (see docs/BRANDING_GUIDE.md) */}
+          {/* Logo: TL gold medallion (bornfidis_logo_icon_tl__gold_) */}
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             {navLogoError ? (
               <>
@@ -63,11 +73,11 @@ export default function PublicNav() {
             ) : (
               <>
                 <Image
-                  src="/brand/icons/icon-anchor-gold.png"
-                  alt=""
-                  width={36}
-                  height={36}
-                  className="h-9 w-9 object-contain flex-shrink-0"
+                  src={brandAssets.iconNavTlGold}
+                  alt="Bornfidis Provisions"
+                  width={40}
+                  height={40}
+                  className="h-9 w-9 flex-shrink-0 object-contain"
                   onError={() => setNavLogoError(true)}
                 />
                 <div className="text-xl md:text-2xl font-bold">Bornfidis</div>

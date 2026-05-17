@@ -9,7 +9,7 @@ import { PublicMarketingShell } from '@/components/layout/PublicMarketingShell'
 export const metadata: Metadata = {
   title: 'Sample Menus | Bornfidis Provisions',
   description:
-    'A glimpse of Bornfidis Provisions private dining — seasonal, customized, chef-led experiences.',
+    'A glimpse of the Bornfidis table — Caribbean-rooted dishes, seasonal Vermont ingredients, and menus written for your occasion.',
 }
 
 export default function MenuPage() {

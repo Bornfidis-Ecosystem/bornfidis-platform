@@ -6,7 +6,7 @@ import { PublicEditorialFooter } from '@/components/layout/PublicEditorialFooter
 type PublicMarketingShellProps = {
   children: ReactNode
   /** Highlight nav item: book | experience | menu | story | contact */
-  active?: 'book' | 'experience' | 'menu' | 'academy' | 'story' | 'contact'
+  active?: 'book' | 'experience' | 'menu' | 'story' | 'academy' | 'contact'
   /** Show minimal editorial footer (default true) */
   showFooter?: boolean
 }

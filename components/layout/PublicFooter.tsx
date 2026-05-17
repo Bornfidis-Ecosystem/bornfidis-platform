@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { brandAssets } from '@/lib/brand-assets'
 
 export default function PublicFooter() {
   return (
@@ -9,7 +10,7 @@ export default function PublicFooter() {
           {/* About */}
           <div>
             <Image
-              src="/brand/icons/icon-anchor-gold.png"
+              src={brandAssets.iconGold}
               alt="Bornfidis"
               width={40}
               height={40}

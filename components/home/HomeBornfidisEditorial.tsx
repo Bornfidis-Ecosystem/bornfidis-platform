@@ -14,6 +14,7 @@ import { BrandedCard } from '@/components/ui/BrandedCard'
 import { PageContainer } from '@/components/ui/PageContainer'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
+import { FEATURED_GUEST_TESTIMONIALS } from '@/lib/guest-testimonials'
 import { marketingImages } from '@/lib/marketing-images'
 
 const IMG_HERO = marketingImages.cateringHammeredLine
@@ -24,13 +25,13 @@ const SERVICES = [
   {
     title: 'Private Dinner',
     desc: 'A curated multi-course dinner in your home, villa, or retreat — from amuse-bouche to dessert.',
-    price: 'From $650',
+    price: 'From $1,200',
     href: '/book',
   },
   {
     title: 'Weekend Retreat',
     desc: 'Full culinary service for your getaway — breakfast, dinner, and a signature event night.',
-    price: 'From $1,200',
+    price: 'From $2,400',
     href: '/book',
   },
   {
@@ -38,6 +39,12 @@ const SERVICES = [
     desc: 'Bespoke menus for intimate celebrations — Caribbean, Italian, or fusion crafted for your story.',
     price: 'Custom quote',
     href: '/contact',
+  },
+  {
+    title: 'Gathering & Celebrations',
+    desc: 'Live-fire cooking, Caribbean abundance, and family-style service for groups of 20–60. The opening night done right.',
+    href: '/book',
+    cta: 'Start here →',
   },
 ] as const
 
@@ -64,26 +71,7 @@ const SAMPLE_MENU = [
   },
 ] as const
 
-const TESTIMONIALS = [
-  {
-    quote:
-      'Chef Brian turned our weekend retreat into the most memorable dining experience we have ever had. Every course was a conversation starter.',
-    name: 'Sarah & James',
-    detail: 'Private Retreat, Okemo Valley',
-  },
-  {
-    quote:
-      'We asked for Italian with a twist. What we got was a four-day culinary journey that our guests are still talking about.',
-    name: 'Fevy & Rian',
-    detail: 'Wedding Celebration, Maine',
-  },
-  {
-    quote:
-      'Professional, warm, and genuinely talented. Bornfidis brings five-star resort service — right to your table.',
-    name: 'Michael T.',
-    detail: 'Private Villa, Vermont',
-  },
-] as const
+const TESTIMONIALS = FEATURED_GUEST_TESTIMONIALS
 
 export default function HomeBornfidisEditorial() {
   return (
@@ -163,19 +151,21 @@ export default function HomeBornfidisEditorial() {
         <PageContainer wide>
           <p className={`${bookEyebrow} text-center`}>Services</p>
           <h2 className={`${bookHeadline} mt-4 text-center`}>Crafted for Your Occasion</h2>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((s) => (
               <BrandedCard key={s.title} theme="culinary" className="flex h-full flex-col">
                 <h3 className="font-display text-xl text-[#2c2c2c]">{s.title}</h3>
                 <p className={`${bookBody} mt-4 flex-1 text-sm`}>{s.desc}</p>
-                <p className="mt-6 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
-                  {s.price}
-                </p>
+                {'price' in s ? (
+                  <p className="mt-6 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
+                    {s.price}
+                  </p>
+                ) : null}
                 <Link
                   href={s.href}
                   className="mt-4 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c]/70 no-underline hover:text-[#C9A84C]"
                 >
-                  Learn more →
+                  {'cta' in s && s.cta ? s.cta : 'Learn more →'}
                 </Link>
               </BrandedCard>
             ))}
@@ -241,7 +231,7 @@ export default function HomeBornfidisEditorial() {
         <PageContainer wide>
           <p className={`${bookEyebrow} text-center`}>At the table</p>
           <h2 className={`${bookHeadline} mt-4 text-center`}>What Guests Say</h2>
-          <div className="mt-12 grid gap-10 md:grid-cols-3">
+          <div className="mt-12 grid gap-10 md:grid-cols-2">
             {TESTIMONIALS.map((t) => (
               <blockquote key={t.name} className="border-t border-[#C9A84C]/35 pt-8">
                 <p className={`${bookBody} text-base italic`}>&ldquo;{t.quote}&rdquo;</p>
