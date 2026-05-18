@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Link from 'next/link'
 import { HomepageBrandImage } from '@/components/home/HomepageBrandImage'
 import { PublicMarketingShell } from '@/components/layout/PublicMarketingShell'
 import { ChefBio } from '@/components/story/ChefBio'
@@ -23,6 +24,7 @@ const ecosystemCards = [
     title: 'Food — Provisions & Experiences',
     description:
       'Private chef services, curated dining, and small-batch products rooted in Caribbean excellence.',
+    href: '/book',
   },
   {
     title: 'Clothing — Sportswear',
@@ -36,6 +38,7 @@ const ecosystemCards = [
     title: 'Education — Academy',
     description:
       'Digital tools, field guides, and knowledge systems to empower individuals and entrepreneurs.',
+    href: '/academy',
   },
 ] as const
 
@@ -167,12 +170,30 @@ export function StoryPageContent() {
             four key pillars:
           </p>
           <div className="mt-12 grid gap-6 sm:grid-cols-2">
-            {ecosystemCards.map((card) => (
-              <BrandedCard key={card.title} theme="culinary">
-                <h3 className="font-display text-xl text-[#2c2c2c]">{card.title}</h3>
-                <p className={`${bookBody} mt-4 text-sm`}>{card.description}</p>
-              </BrandedCard>
-            ))}
+            {ecosystemCards.map((card) => {
+              const content = (
+                <BrandedCard theme="culinary" className="h-full">
+                  <h3 className="font-display text-xl text-[#2c2c2c]">{card.title}</h3>
+                  <p className={`${bookBody} mt-4 text-sm`}>{card.description}</p>
+                </BrandedCard>
+              )
+              if ('href' in card && card.href) {
+                return (
+                  <Link
+                    key={card.title}
+                    href={card.href}
+                    className="block h-full no-underline transition-opacity hover:opacity-95"
+                  >
+                    {content}
+                  </Link>
+                )
+              }
+              return (
+                <div key={card.title} className="h-full">
+                  {content}
+                </div>
+              )
+            })}
           </div>
         </PageContainer>
       </section>
@@ -228,7 +249,7 @@ export function StoryPageContent() {
             <PrimaryButton theme="culinary" href="/book">
               Book an experience
             </PrimaryButton>
-            <SecondaryButton theme="culinary" href="/contact">
+            <SecondaryButton theme="culinary" href="/cooperative/join">
               Join the ecosystem
             </SecondaryButton>
           </div>

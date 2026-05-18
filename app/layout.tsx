@@ -27,7 +27,7 @@ const culinaryUi = Inter({
 export const metadata: Metadata = {
   title: 'Bornfidis',
   description:
-    'A regenerative ecosystem delivering food, clothing, and education designed to restore people, land, and purpose.',
+    'Bornfidis Provisions — Private chef experiences in Vermont and Jamaica. Caribbean fine dining, live-fire cooking, and intimate hospitality crafted by Chef Brian Maylor.',
   icons: {
     icon: [{ url: brandAssets.iconGold, type: 'image/png' }],
     apple: brandAssets.iconGold,
