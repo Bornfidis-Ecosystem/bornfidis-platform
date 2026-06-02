@@ -32,6 +32,12 @@ const nextConfig = {
       exclude: ['error', 'warn'], // Keep errors and warnings
     } : false,
   },
+  async redirects() {
+    return [
+      // /story content now lives at /our-story; keep old links working.
+      { source: '/story', destination: '/our-story', permanent: true },
+    ]
+  },
 }
 
 module.exports = nextConfig

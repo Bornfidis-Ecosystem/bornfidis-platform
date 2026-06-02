@@ -3,20 +3,12 @@
 import { usePathname } from 'next/navigation'
 import PublicFooter from '@/components/layout/PublicFooter'
 
-/** Hides the global footer on routes that ship their own footer (e.g. marketing home). */
+/**
+ * Renders the single global public footer on every public route.
+ * The /admin/* area uses the Culinary OS shell and ships its own chrome, so it is excluded.
+ */
 export default function ConditionalPublicFooter() {
   const pathname = usePathname()
-  const marketingShell =
-    pathname === '/' ||
-    pathname === '/book' ||
-    pathname === '/experience' ||
-    pathname === '/menu' ||
-    pathname === '/story' ||
-    pathname === '/contact' ||
-    pathname === '/thanks' ||
-    pathname?.startsWith('/academy')
-
-  if (marketingShell) return null
   if (pathname?.startsWith('/admin')) return null
   return <PublicFooter />
 }

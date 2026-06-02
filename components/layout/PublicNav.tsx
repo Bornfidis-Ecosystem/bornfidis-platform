@@ -1,249 +1,107 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { brandAssets } from '@/lib/brand-assets'
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-const ACADEMY_DROPDOWN_LINKS = [
-  { href: '/guide/5-caribbean-sauces', label: 'Free Guide: 5 Sauces' },
-  { href: '/academy', label: 'All Academy' },
-  { href: '/academy?category=Foundations', label: 'Foundations' },
-  { href: '/academy?category=Farming', label: 'For Farmers' },
-  { href: '/academy?category=Culinary', label: 'For Chefs' },
-  { href: '/academy?category=Contracting', label: 'For Contractors' },
-]
+import { PHASE1_CTA, PHASE1_NAV_LINKS } from '@/lib/phase1-marketing'
 
+/**
+ * Bornfidis — Phase 1 public navigation.
+ * Home · Private Dining · Provisions · Our Story · Journal · Contact + BOOK NOW.
+ */
 export default function PublicNav() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [academyDropdownOpen, setAcademyDropdownOpen] = useState(false)
-  const [navLogoError, setNavLogoError] = useState(false)
-  const academyRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (academyRef.current && !academyRef.current.contains(e.target as Node)) {
-        setAcademyDropdownOpen(false)
-      }
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false)
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [mobileMenuOpen])
 
-  // Target order: Home, Academy, Provisions, Marketplace, Sportswear, Farmers, Story (Impact in footer only)
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/book', label: 'Provisions' },
-    { href: '/marketplace', label: 'Marketplace' },
-    { href: '/sportswear', label: 'Sportswear' },
-    { href: '/farmers', label: 'Farmers' },
-    { href: '/story', label: 'Story' },
-  ]
-  const isAcademyActive = pathname === '/academy' || pathname.startsWith('/academy/')
-
-  /* Guest marketing pages ship their own editorial nav + footer */
-  const guestMarketing =
-    pathname === '/' ||
-    pathname === '/book' ||
-    pathname === '/experience' ||
-    pathname === '/menu' ||
-    pathname === '/story' ||
-    pathname === '/contact' ||
-    pathname === '/thanks' ||
-    pathname?.startsWith('/academy')
-  if (guestMarketing) return null
-
-  /* Platform admin uses Culinary OS shell — no marketing nav */
   if (pathname?.startsWith('/admin')) return null
 
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname?.startsWith(`${href}/`)
+  }
+
+  const linkClass = (href: string) =>
+    [
+      'font-sans text-[0.75rem] font-semibold uppercase tracking-[0.18em] no-underline transition-colors duration-200',
+      isActive(href) ? 'text-[#FAF6F0]' : 'text-[#FAF6F0]/70 hover:text-[#FAF6F0]',
+    ].join(' ')
+
+  const ctaClass =
+    'inline-flex items-center justify-center bg-[#C9A84C] px-5 py-2.5 font-sans text-[0.75rem] font-semibold tracking-[0.15em] text-[#1A3C34] no-underline transition-opacity duration-200 hover:opacity-90'
+
   return (
-    <nav className="bg-navy text-white shadow-lg sticky top-0 z-50 w-full">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo: TL gold medallion (bornfidis_logo_icon_tl__gold_) */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            {navLogoError ? (
-              <>
-                <div className="text-xl md:text-2xl font-bold">Bornfidis</div>
-                <div className="h-6 md:h-8 w-1 bg-gold"></div>
-                <div className="text-xs md:text-sm text-white">Provisions</div>
-              </>
-            ) : (
-              <>
-                <Image
-                  src={brandAssets.iconNavTlGold}
-                  alt="Bornfidis Provisions"
-                  width={40}
-                  height={40}
-                  className="h-9 w-9 flex-shrink-0 object-contain"
-                  onError={() => setNavLogoError(true)}
-                />
-                <div className="text-xl md:text-2xl font-bold">Bornfidis</div>
-                <div className="h-6 md:h-8 w-1 bg-gold"></div>
-                <div className="text-xs md:text-sm text-white">Provisions</div>
-              </>
-            )}
+    <>
+      <header className="fixed inset-x-0 top-0 z-[100] h-[72px] border-b border-[#C9A84C]/20 bg-[#1A3C34]">
+        <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+          <Link
+            href="/"
+            className="font-display text-[1.5rem] font-normal leading-none text-[#FAF6F0] no-underline"
+          >
+            Bornfidis
           </Link>
 
-          {/* Desktop Navigation: Home, Academy, Provisions, Marketplace, Sportswear, Farmers, Story, My Library, Login */}
-          <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-            <Link
-              href="/"
-              className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
-                pathname === '/' ? 'bg-gold text-navy' : 'text-white hover:bg-navyLight hover:text-white'
-              }`}
-            >
-              Home
-            </Link>
-            {/* Academy with dropdown */}
-            <div
-              ref={academyRef}
-              className="relative"
-              onMouseEnter={() => setAcademyDropdownOpen(true)}
-              onMouseLeave={() => setAcademyDropdownOpen(false)}
-            >
-              <Link
-                href="/academy"
-                className={`inline-flex items-center gap-0.5 px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
-                  isAcademyActive
-                    ? 'bg-gold text-navy'
-                    : 'text-white hover:bg-navyLight hover:text-white'
-                }`}
-              >
-                Academy
-                <span
-                  aria-hidden
-                  className="ml-0.5 inline-block align-middle text-[11px] leading-none"
-                  style={{ width: 10, textAlign: 'center' }}
-                >
-                  ▾
-                </span>
-              </Link>
-              {academyDropdownOpen && (
-                <div className="absolute left-0 top-full pt-1 z-50 min-w-[180px]">
-                  <div className="rounded-lg border border-navyLight bg-navy shadow-xl py-2">
-                    {ACADEMY_DROPDOWN_LINKS.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        className="block px-4 py-2 text-sm text-white hover:bg-navyLight hover:text-gold transition"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            {navLinks.slice(1).map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap ${
-                  pathname === link.href
-                    ? 'bg-gold text-navy'
-                    : 'text-white hover:bg-navyLight hover:text-white'
-                }`}
-              >
+          <div className="hidden items-center gap-8 lg:flex">
+            {PHASE1_NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={linkClass(link.href)}>
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/dashboard/library"
-              className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap text-white hover:bg-navyLight hover:text-white"
-            >
-              My Library
-            </Link>
-            <Link
-              href="/admin/login"
-              className="px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition-all duration-200 ease-in-out whitespace-nowrap bg-gold text-navy hover:bg-goldDark ml-1"
-            >
-              Login
-            </Link>
           </div>
 
-          {/* Mobile Menu Button */}
+          <Link href={PHASE1_CTA.bookNow.href} className={`hidden lg:inline-flex ${ctaClass}`}>
+            {PHASE1_CTA.bookNow.label}
+          </Link>
+
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-gold rounded"
+            type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            className="-mr-2 p-2 text-[#FAF6F0] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] lg:hidden"
           >
             {mobileMenuOpen ? (
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
           </button>
-        </div>
+        </nav>
+      </header>
 
-        {/* Mobile Menu — same order as desktop */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-navyLight py-4">
-            <div className="flex flex-col space-y-2">
-              <Link
-                href="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out ${
-                  pathname === '/' ? 'bg-gold text-navy' : 'text-white hover:bg-navyLight hover:text-white'
-                }`}
-              >
-                Home
+      <div aria-hidden className="h-[72px]" />
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 top-[72px] z-[100] border-b border-[#C9A84C]/20 bg-[#1A3C34] lg:hidden">
+          <div className="mx-auto flex max-w-7xl flex-col px-6 py-4">
+            {PHASE1_NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={`${linkClass(link.href)} py-3`}>
+                {link.label}
               </Link>
-              <div className="pt-2">
-                <p className="px-4 py-1 text-xs font-semibold text-gold uppercase tracking-wider">Academy</p>
-                {ACADEMY_DROPDOWN_LINKS.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block px-6 py-2 text-sm font-medium transition-all duration-200 ease-in-out ${
-                      item.href === '/academy' && pathname === '/academy'
-                        ? 'bg-gold/20 text-gold'
-                        : 'text-green-100 hover:bg-navyLight hover:text-white'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-              {navLinks.slice(1).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out ${
-                    pathname === link.href
-                      ? 'bg-gold text-navy'
-                      : 'text-white hover:bg-navyLight hover:text-white'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href="/dashboard/library"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ease-in-out text-white hover:bg-navyLight"
-              >
-                My Library
-              </Link>
-              <Link
-                href="/admin/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-2 rounded-md text-sm font-medium bg-gold text-forest"
-              >
-                Login
-              </Link>
-            </div>
+            ))}
+            <Link href={PHASE1_CTA.bookNow.href} className={`mt-3 px-5 py-3 ${ctaClass}`}>
+              {PHASE1_CTA.bookNow.label}
+            </Link>
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      )}
+    </>
   )
 }

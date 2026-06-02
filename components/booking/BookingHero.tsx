@@ -3,50 +3,56 @@ import { PageContainer } from '@/components/ui/PageContainer'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
 import { bookBody, bookEyebrow, bookHeadline } from '@/components/booking/book-culinary-classes'
-import { bookImages } from '@/lib/book-images'
 
 export function BookingHero() {
   return (
-    <section className="relative isolate overflow-hidden border-b border-[#C9A84C]/35 pt-24 md:pt-28">
-      <div className="absolute inset-0 z-0">
-        <Image
-          src={bookImages.hero}
-          alt=""
-          fill
-          priority
-          className="object-cover object-[center_30%]"
-          sizes="100vw"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(to bottom, rgba(253,248,248,0.92) 0%, rgba(253,248,248,0.75) 45%, rgba(253,248,248,0.97) 100%)',
-          }}
-        />
-      </div>
-      <PageContainer wide as="div" className="relative z-[1] pb-16 pt-12 text-center md:pb-20 md:pt-16">
-        <p className={bookEyebrow}>Bornfidis Provisions</p>
-        <h1 className={`${bookHeadline} mx-auto max-w-4xl text-[clamp(2rem,5vw,3.25rem)]`}>
-          Book Your Private Dining Experience
-        </h1>
-        <p className={`${bookBody} mx-auto mt-6 max-w-2xl`}>
-          Chef-led private dining designed for intimate celebrations, elegant gatherings, and unforgettable
-          evenings.
-        </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-          <PrimaryButton theme="culinary" href="#booking-form" className="w-full min-w-[200px] sm:w-auto">
-            Request Your Experience
-          </PrimaryButton>
-          <SecondaryButton
-            theme="culinary"
-            href="https://wa.me/18027335348?text=Hi%20Brian%2C%20I%27d%20like%20to%20discuss%20a%20private%20dining%20experience."
-            className="w-full sm:w-auto"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            WhatsApp
-          </SecondaryButton>
+    <section className="border-b border-[#C9A84C]/35 pt-24 md:pt-28">
+      <PageContainer wide as="div" className="pb-16 pt-12 md:pb-20 md:pt-16">
+        <div className="grid items-stretch gap-10 lg:grid-cols-2 lg:gap-16">
+          {/* Left — copy */}
+          <div className="flex flex-col justify-center text-center lg:text-left">
+            <p className={bookEyebrow}>Bornfidis Provisions</p>
+            <h1 className={`${bookHeadline} mx-auto max-w-xl text-[clamp(2rem,5vw,3.25rem)] lg:mx-0`}>
+              Book Your Private Dining Experience
+            </h1>
+            <p className={`${bookBody} mx-auto mt-6 max-w-xl lg:mx-0`}>
+              Chef-led private dining designed for intimate celebrations, elegant gatherings, and unforgettable
+              evenings.
+            </p>
+            <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start">
+              <PrimaryButton theme="culinary" href="#booking-form" className="w-full min-w-[200px] sm:w-auto">
+                Book Private Dining
+              </PrimaryButton>
+              <SecondaryButton
+                theme="culinary"
+                href="https://wa.me/18027335348?text=Hi%20Brian%2C%20I%27d%20like%20to%20discuss%20a%20private%20dining%20experience."
+                className="w-full sm:w-auto"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                WhatsApp
+              </SecondaryButton>
+            </div>
+          </div>
+          {/* Right — Vermont table photo panel */}
+          <div className="relative min-h-[360px] w-full overflow-hidden lg:min-h-[520px]">
+            <Image
+              src="/images/bornfidis-table/vermont-table-cabin.jpg"
+              alt="Private dining table set in a Vermont log cabin, Bornfidis"
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+            <div
+              className="absolute inset-0"
+              aria-hidden
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(26,60,52,0.15), rgba(26,60,52,0.65))',
+              }}
+            />
+          </div>
         </div>
       </PageContainer>
     </section>

@@ -14,7 +14,7 @@ export function BookingFinalCta() {
         </p>
         <div className="mt-8 flex justify-center">
           <PrimaryButton theme="culinary" href="#booking-form" className="min-w-[220px]">
-            Submit Your Inquiry
+            Book Private Dining
           </PrimaryButton>
         </div>
       </PageContainer>

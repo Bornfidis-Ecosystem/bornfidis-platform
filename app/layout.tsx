@@ -4,17 +4,17 @@ import './globals.css'
 import RootShell from '@/components/layout/RootShell'
 import { brandAssets } from '@/lib/brand-assets'
 
-/** Headlines — WordPress brief: Libre Caslon Text (wired to legacy --font-playfair for Tailwind). */
+/** Headlines — WordPress brief: Libre Caslon Text (exposed as --font-serif for Tailwind `font-display`). */
 const headline = Libre_Caslon_Text({
   subsets: ['latin'],
   weight: ['400', '700'],
-  variable: '--font-playfair',
+  variable: '--font-serif',
 })
 
-/** UI / body — WordPress brief: Montserrat (wired to legacy --font-inter for Tailwind). */
+/** UI / body — WordPress brief: Montserrat (exposed as --font-sans for Tailwind `font-sans`). */
 const ui = Montserrat({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-sans',
 })
 
 /** Culinary OS / admin operational UI — DESIGN.md (Inter). */
@@ -38,9 +38,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
+    <html lang="en">
       <body
-        className={`${headline.variable} ${ui.variable} ${culinaryUi.variable} font-sans overflow-x-hidden`}
+        className={`${headline.variable} ${ui.variable} ${culinaryUi.variable} font-sans`}
       >
         <RootShell>{children}</RootShell>
       </body>

@@ -1,0 +1,1255 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Bornfidis — Our Story page styles.
+   Scoped under `.bf-story` so nothing leaks into the rest of the platform (admin,
+   other public pages) or fights Tailwind's preflight. Local design vars map onto
+   the canonical palette (app/globals.css --color-*) and font variables.
+   The site nav + footer are global (RootShell), so the design's inline nav/footer
+   styles are intentionally omitted here. Keyframes are namespaced (story*) to avoid
+   colliding with other scoped pages.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.bf-story {
+  --green: var(--color-green);
+  --gold: var(--color-gold);
+  --bone: var(--color-bone);
+  --slate: var(--color-slate);
+  --muted: var(--color-muted);
+  --light: var(--color-light);
+  --mid: var(--color-mid);
+  --serif: var(--font-serif), Georgia, serif;
+  --sans: var(--font-sans), sans-serif;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  font-family: var(--serif);
+  background: var(--bone);
+  color: var(--slate);
+  line-height: 1;
+  position: relative;
+}
+
+.bf-story a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.bf-story .label {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Opening hero — full bleed, cinematic ─────────────────── */
+.bf-story .story-hero {
+  /* Pull the slate hero up under the global fixed 72px nav (+ its spacer). */
+  margin-top: -72px;
+  padding-top: 72px;
+  background: var(--slate);
+  min-height: 90vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-story .story-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 30% 60%, rgba(26, 60, 52, 0.4) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.bf-story .hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 5rem;
+  position: relative;
+  z-index: 1;
+  animation: storyFadeUp 1s 0.3s var(--ease) both;
+}
+
+@keyframes storyFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bf-story .breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.bf-story .breadcrumb a {
+  color: rgba(250, 246, 240, 0.35);
+  transition: color 0.2s;
+}
+.bf-story .breadcrumb a:hover {
+  color: var(--gold);
+}
+.bf-story .breadcrumb span {
+  color: rgba(201, 168, 76, 0.4);
+}
+.bf-story .breadcrumb-current {
+  color: var(--gold);
+}
+
+.bf-story .hero-opening {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.45);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  max-width: 36ch;
+}
+
+.bf-story .hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5.5rem);
+  font-weight: 400;
+  line-height: 1.03;
+  color: var(--bone);
+  margin-bottom: 2rem;
+}
+
+.bf-story .hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.bf-story .hero-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.bf-story .hero-sub {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: rgba(250, 246, 240, 0.6);
+  max-width: 40ch;
+}
+
+.bf-story .hero-right {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: storyFadeIn 1.2s 0.5s var(--ease) both;
+}
+
+@keyframes storyFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Founder portrait fills the hero-right column; the gradient overlay below it
+   keeps the credential card legible. */
+.bf-story .hero-photo-img {
+  object-fit: cover;
+  object-position: center 25%;
+  z-index: 0;
+}
+
+.bf-story .hero-photo-area {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(160deg, rgba(44, 44, 44, 0.3) 0%, rgba(26, 60, 52, 0.6) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bf-story .hero-photo-placeholder {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.3);
+  text-align: center;
+  line-height: 1.8;
+}
+
+.bf-story .hero-credential {
+  position: relative;
+  z-index: 1;
+  margin: 2.5rem;
+  padding: 2rem;
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  background: rgba(26, 60, 52, 0.6);
+  backdrop-filter: blur(12px);
+}
+
+.bf-story .hero-credential-name {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  color: var(--bone);
+  margin-bottom: 0.25rem;
+}
+
+.bf-story .hero-credential-title {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.bf-story .hero-credential-stats {
+  display: flex;
+  gap: 2.5rem;
+  border-top: 1px solid rgba(201, 168, 76, 0.15);
+  padding-top: 1rem;
+}
+
+.bf-story .cred-stat-num {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.bf-story .cred-stat-label {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.35);
+  margin-top: 4px;
+}
+
+/* ── Chapter navigation ───────────────────────────────────── */
+.bf-story .chapter-nav {
+  background: var(--bone);
+  border-bottom: 1px solid var(--mid);
+  padding: 0 5rem;
+  display: flex;
+  position: sticky;
+  top: 72px;
+  z-index: 90;
+}
+
+.bf-story .chapter-tab {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1.25rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.bf-story .chapter-tab:hover {
+  color: var(--slate);
+}
+.bf-story .chapter-tab.active {
+  color: var(--green);
+  border-bottom-color: var(--gold);
+}
+
+/* Anchor offset so the sticky chapter-nav (72px nav + ~57px bar) doesn't cover headings. */
+.bf-story [id] {
+  scroll-margin-top: 140px;
+}
+
+/* ── Story sections ───────────────────────────────────────── */
+
+/* Opening statement */
+.bf-story .story-opening {
+  padding: 8rem 5rem;
+  background: var(--bone);
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.bf-story .opening-label-col {
+  position: sticky;
+  top: 140px;
+}
+
+.bf-story .opening-chapter-num {
+  font-family: var(--serif);
+  font-size: 8rem;
+  font-weight: 400;
+  color: rgba(26, 60, 52, 0.07);
+  line-height: 1;
+  margin-bottom: -1rem;
+}
+
+.bf-story .opening-chapter-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.bf-story .opening-chapter-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.3;
+}
+
+.bf-story .story-h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.2;
+  margin-bottom: 2rem;
+}
+
+.bf-story .story-body {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+
+.bf-story .story-body strong {
+  color: var(--slate);
+  font-weight: 400;
+}
+.bf-story .story-body em {
+  color: var(--green);
+  font-style: italic;
+}
+
+.bf-story .story-pullquote {
+  border-left: 3px solid var(--gold);
+  padding: 1.5rem 0 1.5rem 2rem;
+  margin: 2.5rem 0;
+}
+
+.bf-story .story-pullquote p {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--green);
+  line-height: 1.6;
+}
+
+/* ── Timeline section ─────────────────────────────────────── */
+.bf-story .timeline-section {
+  background: var(--green);
+  padding: 8rem 5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-story .timeline-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 79px,
+    rgba(201, 168, 76, 0.04) 79px,
+    rgba(201, 168, 76, 0.04) 80px
+  );
+  pointer-events: none;
+}
+
+.bf-story .timeline-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  margin-bottom: 5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .timeline-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.15;
+}
+
+.bf-story .timeline-title em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.bf-story .timeline-intro {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(250, 246, 240, 0.55);
+  display: flex;
+  align-items: center;
+}
+
+.bf-story .timeline {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .timeline-line {
+  position: absolute;
+  left: 5.5rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(201, 168, 76, 0.2);
+}
+
+.bf-story .timeline-entry {
+  display: grid;
+  grid-template-columns: 5.5rem 1.5rem 1fr;
+  gap: 0 2rem;
+  margin-bottom: 3.5rem;
+  align-items: start;
+}
+
+.bf-story .timeline-year {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  text-align: right;
+  padding-top: 3px;
+}
+
+.bf-story .timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--green);
+  margin-top: 3px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .timeline-dot.major {
+  width: 14px;
+  height: 14px;
+  background: var(--gold);
+  margin-top: 1px;
+}
+
+.bf-story .timeline-role {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  color: var(--bone);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+
+.bf-story .timeline-ship {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.bf-story .timeline-note {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.4);
+  line-height: 1.6;
+}
+
+/* Early kitchen years portrait sits beside the 2006–2008 timeline entries. */
+.bf-story .timeline-layout {
+  display: grid;
+  grid-template-columns: 1fr min(22rem, 38%);
+  gap: 3rem 4rem;
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .timeline-photo {
+  position: relative;
+  min-height: 28rem;
+  overflow: hidden;
+  align-self: start;
+}
+
+.bf-story .timeline-photo-img {
+  object-fit: cover;
+  object-position: center 15%;
+  z-index: 0;
+}
+
+/* ── The crossing — split narrative ──────────────────────── */
+.bf-story .crossing-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 70vh;
+}
+
+.bf-story .crossing-left {
+  background: var(--light);
+  padding: 7rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bf-story .crossing-right {
+  background: var(--slate);
+  padding: 7rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-story .crossing-right::before {
+  content: '2013';
+  position: absolute;
+  bottom: -0.15em;
+  right: -0.05em;
+  font-family: var(--serif);
+  font-size: 18rem;
+  font-weight: 700;
+  color: rgba(250, 246, 240, 0.03);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bf-story .crossing-heading {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+}
+
+.bf-story .crossing-left .crossing-heading {
+  color: var(--slate);
+}
+.bf-story .crossing-right .crossing-heading {
+  color: var(--bone);
+}
+.bf-story .crossing-right .crossing-heading em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.bf-story .crossing-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  margin-bottom: 1.25rem;
+}
+
+.bf-story .crossing-left .crossing-body {
+  color: var(--muted);
+}
+.bf-story .crossing-right .crossing-body {
+  color: rgba(250, 246, 240, 0.55);
+  position: relative;
+  z-index: 1;
+}
+.bf-story .crossing-right .crossing-body strong {
+  color: rgba(250, 246, 240, 0.85);
+  font-weight: 400;
+}
+
+.bf-story .crossing-stat {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(201, 168, 76, 0.2);
+  padding-top: 2rem;
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.bf-story .cstat-num {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.bf-story .cstat-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.35);
+  line-height: 1.5;
+}
+
+.bf-story .crossing-break {
+  grid-column: 1 / -1;
+  position: relative;
+  min-height: 55vh;
+  overflow: hidden;
+}
+
+.bf-story .crossing-break-photo {
+  object-fit: cover;
+  object-position: center 35%;
+  z-index: 0;
+}
+
+/* ── Vermont chapter ──────────────────────────────────────── */
+.bf-story .vermont-section {
+  background: var(--bone);
+  padding: 8rem 5rem;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.bf-story .vermont-label-col {
+  position: sticky;
+  top: 140px;
+}
+
+/* ── The name section ─────────────────────────────────────── */
+.bf-story .name-section {
+  background: var(--green);
+  padding: 9rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-story .name-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201, 168, 76, 0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.bf-story .name-eyebrow {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.bf-story .name-word {
+  font-family: var(--serif);
+  font-size: clamp(4rem, 10vw, 9rem);
+  font-weight: 400;
+  color: var(--bone);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .name-pronunciation {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.35);
+  margin-bottom: 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .name-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .name-meaning {
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.5;
+  max-width: 56ch;
+  margin: 0 auto 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .name-meaning em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.bf-story .name-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(250, 246, 240, 0.55);
+  max-width: 52ch;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Mission / values ─────────────────────────────────────── */
+.bf-story .mission-section {
+  background: var(--light);
+  border-top: 1px solid var(--mid);
+  border-bottom: 1px solid var(--mid);
+  padding: 8rem 5rem;
+}
+
+.bf-story .mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: start;
+}
+
+.bf-story .mission-statement {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--green);
+  line-height: 1.45;
+  margin-bottom: 2rem;
+  border-left: 3px solid var(--gold);
+  padding-left: 2rem;
+}
+
+.bf-story .mission-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.bf-story .mission-body em {
+  color: var(--green);
+  font-style: italic;
+}
+
+.bf-story .values-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--mid);
+}
+
+.bf-story .value-box {
+  background: var(--bone);
+  padding: 2.25rem 2rem;
+  transition: background 0.3s;
+}
+
+.bf-story .value-box:hover {
+  background: var(--light);
+}
+
+.bf-story .value-num {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.bf-story .value-name {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: var(--slate);
+  margin-bottom: 0.625rem;
+}
+
+.bf-story .value-desc {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Two worlds strip ─────────────────────────────────────── */
+.bf-story .two-worlds {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 55vh;
+}
+
+.bf-story .world-panel {
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+}
+
+.bf-story .world-panel.vermont {
+  background: var(--bone);
+}
+.bf-story .world-panel.jamaica {
+  background: var(--slate);
+}
+
+/* Place/Provenance photography sits behind each panel; the tint preserves the
+   original light-on-dark (Jamaica) / dark-on-light (Vermont) text contrast. */
+.bf-story .world-photo {
+  object-fit: cover;
+  z-index: 0;
+}
+.bf-story .world-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.bf-story .vermont-tint {
+  background: linear-gradient(to top, rgba(253, 248, 248, 0.93) 0%, rgba(253, 248, 248, 0.62) 100%);
+}
+.bf-story .jamaica-tint {
+  background: linear-gradient(to top, rgba(26, 60, 52, 0.72) 0%, rgba(44, 44, 44, 0.78) 100%);
+}
+
+.bf-story .world-bg {
+  position: absolute;
+  bottom: -0.1em;
+  right: -0.05em;
+  font-family: var(--serif);
+  font-size: 16rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bf-story .vermont .world-bg {
+  color: rgba(44, 44, 44, 0.03);
+}
+.bf-story .jamaica .world-bg {
+  color: rgba(250, 246, 240, 0.03);
+}
+
+.bf-story .world-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-story .world-name {
+  font-family: var(--serif);
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.bf-story .vermont .world-name {
+  color: var(--slate);
+}
+.bf-story .jamaica .world-name {
+  color: var(--bone);
+}
+
+.bf-story .world-desc {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  max-width: 36ch;
+}
+
+.bf-story .vermont .world-desc {
+  color: var(--muted);
+}
+.bf-story .jamaica .world-desc {
+  color: rgba(250, 246, 240, 0.55);
+}
+
+.bf-story .world-detail {
+  position: relative;
+  z-index: 1;
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.bf-story .vermont .world-detail {
+  color: var(--muted);
+}
+.bf-story .jamaica .world-detail {
+  color: rgba(201, 168, 76, 0.6);
+}
+
+/* ── Credentials wall ─────────────────────────────────────── */
+.bf-story .credentials {
+  background: var(--green);
+  padding: 7rem 5rem;
+}
+
+.bf-story .cred-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  margin-bottom: 4rem;
+}
+
+.bf-story .cred-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.15;
+}
+
+.bf-story .cred-title em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.bf-story .cred-body {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  color: rgba(250, 246, 240, 0.5);
+  display: flex;
+  align-items: center;
+}
+
+.bf-story .cred-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: rgba(201, 168, 76, 0.1);
+  margin-bottom: 1px;
+}
+
+.bf-story .cred-card {
+  background: rgba(26, 60, 52, 0.6);
+  padding: 2.5rem 2rem;
+  transition: background 0.3s;
+}
+
+.bf-story .cred-card:hover {
+  background: rgba(26, 60, 52, 0.9);
+}
+
+.bf-story .cred-number {
+  font-family: var(--serif);
+  font-size: 2.75rem;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.bf-story .cred-number sup {
+  font-size: 1rem;
+  color: rgba(201, 168, 76, 0.6);
+  vertical-align: super;
+}
+
+.bf-story .cred-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.35);
+  line-height: 1.5;
+}
+
+.bf-story .cred-ships {
+  background: rgba(26, 60, 52, 0.4);
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: center;
+}
+
+.bf-story .ship-name {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  color: rgba(250, 246, 240, 0.45);
+  font-style: italic;
+}
+
+.bf-story .ship-divider {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.3);
+}
+
+/* ── Final CTA ────────────────────────────────────────────── */
+.bf-story .story-cta {
+  background: var(--bone);
+  padding: 8rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.bf-story .cta-heading {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--slate);
+  margin-bottom: 1.5rem;
+}
+
+.bf-story .cta-heading em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.bf-story .cta-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+
+.bf-story .cta-actions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bf-story .btn-primary {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--gold);
+  padding: 1rem 2rem;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+.bf-story .btn-primary:hover {
+  opacity: 0.85;
+}
+
+.bf-story .btn-outline {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  border: 1px solid var(--green);
+  padding: 1rem 2rem;
+  display: inline-block;
+  transition: background 0.2s, color 0.2s;
+}
+.bf-story .btn-outline:hover {
+  background: var(--green);
+  color: var(--bone);
+}
+
+.bf-story .cta-quote {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-style: italic;
+  color: var(--green);
+  line-height: 1.65;
+  border-left: 2px solid var(--gold);
+  padding-left: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.bf-story .cta-quote-attr {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-left: 1.75rem;
+}
+
+/* ── Scroll reveal ────────────────────────────────────────── */
+.bf-story .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+.bf-story .reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.bf-story .reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.bf-story .reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.bf-story .reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .bf-story .story-hero {
+    grid-template-columns: 1fr;
+  }
+  .bf-story .hero-right {
+    display: none;
+  }
+  .bf-story .chapter-nav {
+    padding: 0 1.5rem;
+    overflow-x: auto;
+  }
+  .bf-story .story-opening {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .bf-story .opening-label-col {
+    position: static;
+  }
+  .bf-story .timeline-header {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .bf-story .timeline-layout {
+    grid-template-columns: 1fr;
+  }
+  .bf-story .timeline-photo {
+    min-height: 22rem;
+    order: -1;
+  }
+  .bf-story .crossing-section {
+    grid-template-columns: 1fr;
+  }
+  .bf-story .vermont-section {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .bf-story .vermont-label-col {
+    position: static;
+  }
+  .bf-story .mission-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .bf-story .two-worlds {
+    grid-template-columns: 1fr;
+  }
+  .bf-story .cred-header {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .bf-story .cred-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-story .story-cta {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .bf-story .hero-left {
+    padding: 3.5rem 1.5rem;
+  }
+  .bf-story .chapter-nav {
+    padding: 0 1rem;
+  }
+  .bf-story .chapter-tab {
+    padding: 1.25rem 1rem;
+  }
+  .bf-story .story-opening,
+  .bf-story .timeline-section,
+  .bf-story .vermont-section,
+  .bf-story .mission-section,
+  .bf-story .credentials,
+  .bf-story .story-cta {
+    padding: 5rem 1.5rem;
+  }
+  .bf-story .crossing-left,
+  .bf-story .crossing-right {
+    padding: 4rem 1.5rem;
+  }
+  .bf-story .crossing-break {
+    min-height: 40vh;
+  }
+  .bf-story .name-section {
+    padding: 6rem 1.5rem;
+  }
+  .bf-story .two-worlds .world-panel {
+    padding: 3.5rem 1.5rem;
+    min-height: auto;
+  }
+  .bf-story .values-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-story .cred-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-story .cta-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

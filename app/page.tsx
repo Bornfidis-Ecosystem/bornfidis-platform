@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 
-import HomeBornfidisEditorial from '@/components/home/HomeBornfidisEditorial'
+import HomeEditorial from '@/components/home/HomeEditorial'
+import '@/components/home/home-editorial.css'
 
 export const metadata: Metadata = {
-  title: 'Bornfidis Provisions | Private Chef Vermont',
+  title: 'Bornfidis — Caribbean Heart. Vermont Hands.',
   description:
-    'Bornfidis Provisions — Private chef experiences in Vermont and Jamaica. Caribbean fine dining, live-fire cooking, and intimate hospitality crafted by Chef Brian Maylor.',
+    'Bornfidis is a private dining and provisions company rooted in Caribbean culinary identity and Vermont craft. Born for this. Made for your table.',
 }
 
 export default function HomePage() {
-  return <HomeBornfidisEditorial />
+  return <HomeEditorial />
 }

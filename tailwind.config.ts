@@ -9,10 +9,10 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
-        display: ['var(--font-playfair)', 'ui-serif', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['var(--font-serif)', 'ui-serif', 'Georgia', 'serif'],
         /** Bornfidis Culinary OS — DESIGN.md */
-        'culinary-display': ['var(--font-playfair)', 'ui-serif', 'Georgia', 'serif'],
+        'culinary-display': ['var(--font-serif)', 'ui-serif', 'Georgia', 'serif'],
         'culinary-sans': ['var(--font-culinary-ui)', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       spacing: {
@@ -43,26 +43,32 @@ const config: Config = {
           ink: '#1b1b1d',
           'on-navy': '#f3f0f2',
         },
-        // Bornfidis Provisions — April 2026 (see app/globals.css)
-        midnight: 'var(--color-midnight)',
-        harbour: 'var(--color-harbour)',
-        brass: 'var(--color-brass)',
+        // Bornfidis canonical palette — June 2026 (see app/globals.css)
+        gold: 'var(--color-gold)',
+        bone: 'var(--color-bone)',
+        light: 'var(--color-light)',
+        mid: 'var(--color-mid)',
         muted: 'var(--color-muted)',
         faint: 'var(--color-faint)',
         rule: 'var(--color-rule)',
         scripture: 'var(--color-scripture)',
         nature: 'var(--color-nature)',
-        greenLight: 'var(--color-green-light)',
-        // Legacy names (wired to same tokens)
+        // Brand "green" (#1A3C34) and "slate" (#2C2C2C) live as CSS vars and are
+        // exposed via `forest` / `charcoal` below — naming them `green`/`slate` here
+        // would clobber Tailwind's built-in green-*/slate-* scales used across the app.
+        // Legacy names — aliased to the canonical palette (kept so existing components don't break)
+        midnight: 'var(--color-green)',
+        harbour: 'var(--color-green)',
+        brass: 'var(--color-gold)',
+        cream: 'var(--color-bone)',
+        greenLight: 'var(--color-green)',
         navy: 'var(--color-navy)',
         navyLight: 'var(--color-navy-light)',
-        gold: 'var(--color-gold)',
         goldAccent: 'var(--color-gold-accent)',
         goldDark: 'var(--color-gold-dark)',
         forest: 'var(--color-forest)',
         forestDark: 'var(--color-forest-dark)',
         forestDarker: 'var(--color-forest-darker)',
-        cream: 'var(--color-cream)',
         card: 'var(--color-card)',
         charcoal: 'var(--color-charcoal)',
         grayMedium: 'var(--color-gray-medium)',

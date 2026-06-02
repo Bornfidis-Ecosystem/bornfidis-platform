@@ -24,10 +24,10 @@ import { marketingImages } from '@/lib/marketing-images'
 
 const serviceOptions = [
   'Private Chef Dining',
-  'Retreat / Group Catering',
+  'Cooking Class',
+  'Product / Gourmet Inquiry',
   'Custom Menu Request',
   'Villa Guest Hospitality',
-  'Product / Gourmet Inquiry',
   'General Inquiry',
 ] as const
 
@@ -35,8 +35,8 @@ const eventTypes = [
   'Anniversary',
   'Birthday',
   'Private Dinner',
+  'Cooking Class',
   'Family Gathering',
-  'Retreat',
   'Villa Stay',
   'Corporate / Team Event',
   'Other',
@@ -95,20 +95,19 @@ export default function ContactPageContent() {
                 <span className="text-[#C9A84C]">Clarity and Care</span>
               </h1>
               <p className={`${bookBody} mt-6`}>
-                Whether you are planning an intimate dinner, a villa stay, a retreat, or a custom hospitality
-                request, Bornfidis is here to guide the next step with professionalism and warmth.
+                Private dining, cooking classes, and small-batch provisions — Caribbean-inspired,
+                Vermont-crafted. Tell us what you need and we will guide the next step with
+                professionalism and warmth.
               </p>
-              <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <PrimaryButton theme="culinary" href="#contact-form">
-                  Start your inquiry
+                  Contact Bornfidis
                 </PrimaryButton>
-                <SecondaryButton
-                  theme="culinary"
-                  href="https://wa.me/18027335348?text=Hi%20Brian%2C%20I%27m%20interested%20in%20a%20Bornfidis%20experience."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  WhatsApp
+                <SecondaryButton theme="culinary" href="/book">
+                  Book Private Dining
+                </SecondaryButton>
+                <SecondaryButton theme="culinary" href="/provisions">
+                  Request a Product
                 </SecondaryButton>
               </div>
             </div>

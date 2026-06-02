@@ -3,66 +3,63 @@
 @tailwind utilities;
 
 :root {
-  /* Bornfidis Provisions — Brand tokens (April 2026)
-     Palette: Midnight Ocean · Burnished Gold · Jamaica Green */
+  /* Bornfidis — Brand tokens (June 2026)
+     Palette: Forest Green · Burnished Gold · Bone · Slate */
   color-scheme: light;
 
-  /* ── Primary palette ─────────────────────────────────────────── */
-  --color-midnight: #0d1f2d;
-  --color-harbour: #1a3a4a;
-  --color-gold: #c8963e;
-  --color-brass: #e8c97a;
-  --color-cream: #f0ead6;
-  --color-green: #2e6b4f;
-  --color-green-light: #4a9470;
+  /* ── Canonical palette ───────────────────────────────────────── */
+  --color-green: #1A3C34;
+  --color-gold: #C9A84C;
+  --color-bone: #FAF6F0;
+  --color-slate: #2C2C2C;
+  --color-muted: #747878;
+  --color-light: #F1EDEC;
+  --color-mid: #E0DDD8;
 
-  /* ── Neutral scale ───────────────────────────────────────────── */
-  --color-muted: #8a9bac;
-  --color-faint: #607080;
-  --color-rule: #1e3040;
+  /* ── Semantic (resolve to the canonical palette) ─────────────── */
+  --color-faint: var(--color-muted);
+  --color-rule: var(--color-mid);
+  --color-text-primary: var(--color-slate);
+  --color-text-secondary: var(--color-green);
+  --color-text-muted: var(--color-muted);
+  --color-bg-primary: var(--color-bone);
+  --color-bg-surface: var(--color-light);
+  --color-accent: var(--color-gold);
+  --color-accent-hover: #b8963f;
+  --color-nature: var(--color-green);
+  --color-scripture: var(--color-gold);
 
-  /* ── Semantic ───────────────────────────────────────────────── */
-  --color-text-primary: #f0ead6;
-  --color-text-secondary: #e8c97a;
-  --color-text-muted: #8a9bac;
-  --color-bg-primary: #0d1f2d;
-  --color-bg-surface: #1a3a4a;
-  --color-accent: #c8963e;
-  --color-accent-hover: #d4a850;
-  --color-nature: #2e6b4f;
-  --color-scripture: #7a6a3a;
-
-  /* Legacy / Tailwind bridge — map old names to new palette */
-  --color-navy: var(--color-midnight);
-  --color-navy-light: var(--color-harbour);
+  /* Legacy / Tailwind bridge — old names now resolve to the canonical palette */
+  --color-navy: var(--color-green);
+  --color-navy-light: var(--color-green);
   --color-forest: var(--color-green);
   --color-forest-dark: var(--color-green);
-  --color-forest-darker: #23533d;
+  --color-forest-darker: var(--color-green);
   --color-gold-dark: var(--color-accent-hover);
-  --color-gold-accent: var(--color-brass);
-  --color-charcoal: #2c2c2c;
-  --color-gray-medium: #6b7280;
-  --color-gray-light: #f3f4f6;
+  --color-gold-accent: var(--color-gold);
+  --color-charcoal: var(--color-slate);
+  --color-gray-medium: var(--color-muted);
+  --color-gray-light: var(--color-light);
   --color-white: #ffffff;
-  --color-card: var(--color-cream);
+  --color-card: var(--color-bone);
 
-  --navy: var(--color-navy);
+  --navy: var(--color-green);
   --gold: var(--color-gold);
   --white: var(--color-white);
-  --bornfidis-green: var(--color-forest-dark);
+  --bornfidis-green: var(--color-green);
   --bornfidis-gold: var(--color-gold);
-  --bornfidis-dark-green: var(--color-forest-darker);
-  --bornfidis-forest: var(--color-forest);
-  --bornfidis-gold-accent: var(--color-gold-accent);
-  --bornfidis-light-green: #f0fdf4;
-  --gold-dark: var(--color-gold-dark);
+  --bornfidis-dark-green: var(--color-green);
+  --bornfidis-forest: var(--color-green);
+  --bornfidis-gold-accent: var(--color-gold);
+  --bornfidis-light-green: var(--color-light);
+  --gold-dark: var(--color-accent-hover);
 
-  /* WordPress-aligned bridge tokens (Bone / Slate / Gold / Forest CTA) — use on public booking/marketing parity surfaces */
-  --wp-bone: #fdf8f8;
-  --wp-slate: #2c2c2c;
-  --wp-gold: #c9a84c;
-  --wp-forest-cta: #1a3c34;
-  --wp-cta-text: #fdf8f8;
+  /* WordPress-aligned tokens — now identical to the canonical palette */
+  --wp-bone: var(--color-bone);
+  --wp-slate: var(--color-slate);
+  --wp-gold: var(--color-gold);
+  --wp-forest-cta: var(--color-green);
+  --wp-cta-text: var(--color-bone);
 
   /* Spacing scale (8px base): 4, 8, 16, 24, 32, 48, 64px */
   --space-1: 0.25rem; /* 4px */
@@ -85,16 +82,18 @@
 }
 
 html {
-  overflow-x: hidden;
+  /* `clip` (not `hidden`) prevents horizontal scroll without creating a
+     scroll container, so `position: sticky` keeps working site-wide. */
+  overflow-x: clip;
   width: 100%;
   scroll-behavior: smooth;
 }
 
 body {
-  color: var(--color-charcoal);
-  background: var(--white);
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
+  color: var(--color-slate);
+  background: var(--color-bone);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: clip;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -106,13 +105,14 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-playfair), serif;
+  font-family: var(--font-serif), serif;
 }
 
-/* Prevent horizontal scrolling */
+/* Prevent horizontal scrolling. Use `clip` so these wrappers don't become
+   scroll containers (which would disable `position: sticky` for descendants). */
 #__next,
 [data-nextjs-scroll-focus-boundary] {
-  overflow-x: hidden;
+  overflow-x: clip;
   width: 100%;
 }
 
@@ -120,7 +120,7 @@ h6 {
 @layer utilities {
   /* WordPress brief: Montserrat UI labels — uppercase + tracked */
   .text-ui-label {
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-sans), system-ui, sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-weight: 600;
@@ -183,7 +183,7 @@ h6 {
 
 /* Public marketing — Culinary OS / WordPress editorial (Bone / Slate / Gold) */
 .public-editorial-root {
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   color: var(--wp-slate);
   background: var(--wp-bone);
 }
@@ -191,6 +191,6 @@ h6 {
 .public-editorial-root h1,
 .public-editorial-root h2,
 .public-editorial-root h3 {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: var(--font-serif), Georgia, serif;
   font-weight: 400;
 }

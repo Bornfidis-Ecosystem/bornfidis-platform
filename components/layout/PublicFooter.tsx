@@ -1,190 +1,117 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { brandAssets } from '@/lib/brand-assets'
+
+import { PHASE1_CTA, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
+
+/**
+ * Global public footer — Phase 1 revenue focus.
+ */
+
+const EXPERIENCE_LINKS = [
+  { href: '/private-dining', label: 'Private Dining' },
+  { href: PHASE1_CTA.bookCookingClass.href, label: PHASE1_CTA.bookCookingClass.label },
+  { href: PHASE1_CTA.bookNow.href, label: PHASE1_CTA.bookNow.label },
+] as const
+
+const BORNFIDIS_LINKS = [
+  { href: '/our-story', label: 'Our Story' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/contact', label: 'Contact' },
+] as const
+
+const linkClass =
+  'font-display text-[0.9375rem] text-white/45 no-underline transition-colors duration-200 hover:text-[#FAF6F0]'
+const colTitleClass =
+  'mb-6 font-sans text-[0.5625rem] font-semibold uppercase tracking-[0.2em] text-[#C9A84C]'
 
 export default function PublicFooter() {
   return (
-    <footer className="w-full border-t border-[#C9A84C]/30 bg-[#fdf8f8] text-[#2c2c2c]">
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
-          {/* About */}
+    <footer className="w-full bg-[#2C2C2C] px-6 py-20 md:px-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 grid grid-cols-1 gap-12 border-b border-white/10 pb-16 md:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr] lg:gap-16">
           <div>
-            <Image
-              src={brandAssets.iconGold}
-              alt="Bornfidis"
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain mb-3"
-            />
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">About Bornfidis</h3>
-            <p className="mb-4 font-sans text-sm text-[#2c2c2c]/75">
-              Regenerating land, people, and enterprise through faith-anchored food and fellowship.
+            <div className="font-display text-[1.75rem] font-normal text-[#FAF6F0]">Bornfidis</div>
+            <div className="mt-2 mb-6 font-display text-sm italic text-[#C9A84C]">
+              Caribbean Heart. Vermont Hands.
+            </div>
+            <p className="max-w-sm font-display text-sm leading-relaxed text-white/35">
+              Caribbean-inspired private dining, cooking classes, and small-batch provisions rooted
+              in Jamaica and Vermont. Born for this. Made for your table.
             </p>
-            <div className="h-px w-16 bg-[#C9A84C]" />
           </div>
 
-          {/* Quick Links */}
           <div>
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/story" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Story
-                </Link>
-              </li>
-              <li>
-                <Link href="/book" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Provisions
-                </Link>
-              </li>
-              <li>
-                <Link href="/marketplace" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Marketplace
-                </Link>
-              </li>
-              <li>
-                <Link href="/impact" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Impact
-                </Link>
-              </li>
-              <li>
-                <Link href="/sportswear" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Sportswear
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/library" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  My Library
-                </Link>
-              </li>
+            <p className={colTitleClass}>Experience</p>
+            <ul className="flex flex-col gap-3">
+              {EXPERIENCE_LINKS.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className={linkClass}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Academy — all four products */}
           <div>
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Academy</h3>
-            <ul className="space-y-2 text-sm">
+            <p className={colTitleClass}>Provisions</p>
+            <ul className="flex flex-col gap-3">
               <li>
-                <Link href="/academy" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  All Academy
+                <Link href="/provisions" className={linkClass}>
+                  Request a Product
                 </Link>
               </li>
-              <li>
-                <Link href="/academy/regenerative-enterprise-foundations" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Regenerative Enterprise Foundations
-                </Link>
-              </li>
-              <li>
-                <Link href="/academy/regenerative-farmer-blueprint" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Regenerative Farmer Blueprint
-                </Link>
-              </li>
-              <li>
-                <Link href="/academy/vermont-contractor-foundations" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Vermont Contractor Foundations
-                </Link>
-              </li>
-              <li>
-                <Link href="/academy/jamaican-chef-enterprise-system" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Jamaican Chef Enterprise System
-                </Link>
-              </li>
+              {PHASE1_PRIMARY_PRODUCTS.map((p) => (
+                <li key={p.id}>
+                  <Link href={p.href} className={linkClass}>
+                    {p.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Explore */}
           <div>
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Explore</h3>
-            <ul className="space-y-2 text-sm">
+            <p className={colTitleClass}>Bornfidis</p>
+            <ul className="flex flex-col gap-3">
+              {BORNFIDIS_LINKS.map((l) => (
+                <li key={l.label}>
+                  <Link href={l.href} className={linkClass}>
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
               <li>
-                <Link href="/chefs" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Chefs
-                </Link>
-              </li>
-              <li>
-                <Link href="/farmers" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Farmers
-                </Link>
-              </li>
-              <li>
-                <Link href="/stories" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Stories
-                </Link>
-              </li>
-              <li>
-                <Link href="/launch" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Launch
-                </Link>
-              </li>
-              <li>
-                <Link href="/cooperative" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Cooperative
-                </Link>
-              </li>
-              <li>
-                <Link href="/replicate" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Replicate
-                </Link>
-              </li>
-              <li>
-                <Link href="/testament" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Testament
-                </Link>
-              </li>
-              <li>
-                <Link href="/housing" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Housing
-                </Link>
-              </li>
-              <li>
-                <Link href="/legacy" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Legacy
-                </Link>
+                <a href="mailto:hello@bornfidis.com" className={linkClass}>
+                  hello@bornfidis.com
+                </a>
               </li>
             </ul>
-          </div>
-
-          {/* Join */}
-          <div>
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Join the Movement</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/replicate/apply-leader" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Launch a Region
-                </Link>
-              </li>
-              <li>
-                <Link href="/replicate/invest" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Invest in Impact
-                </Link>
-              </li>
-              <li>
-                <Link href="/chef/apply" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Become a Chef
-                </Link>
-              </li>
-              <li>
-                <Link href="/farm/apply" className="font-sans text-[#2c2c2c]/70 transition hover:text-[#C9A84C]">
-                  Become a Farmer
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Covenant */}
-          <div>
-            <h3 className="mb-4 font-display text-lg font-normal text-[#2c2c2c]">Our Covenant</h3>
-            <p className="mb-4 font-sans text-sm italic text-[#2c2c2c]/75">
-              "Whatever you do, work at it with all your heart, as working for the Lord, not for human masters."
-            </p>
-            <p className="font-sans text-xs text-[#2c2c2c]/55">— Colossians 3:23</p>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-8 border-t border-[#C9A84C]/25 pt-8 text-center font-sans text-sm text-[#2c2c2c]/60">
-          <p>&copy; {new Date().getFullYear()} Bornfidis Provisions. All rights reserved.</p>
-          <p className="mt-2">Regenerating land, people, and enterprise through faith.</p>
+        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+          <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/20">
+            &copy; {new Date().getFullYear()} Bornfidis LLC &middot; Cavendish, Vermont &middot; Port
+            Antonio, Jamaica
+          </p>
+          <div className="flex gap-8">
+            <a
+              href="https://bornfidis.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/20 no-underline transition-colors hover:text-white/50"
+            >
+              Privacy
+            </a>
+            <a
+              href="https://bornfidis.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/20 no-underline transition-colors hover:text-white/50"
+            >
+              Terms
+            </a>
+          </div>
         </div>
       </div>
     </footer>

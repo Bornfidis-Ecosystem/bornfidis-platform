@@ -1,0 +1,1065 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Bornfidis — Journal page styles.
+   Scoped under `.bf-journal` so nothing leaks into the rest of the platform
+   (admin, other public pages) or fights Tailwind's preflight. Local design vars
+   map onto the canonical palette (app/globals.css --color-*) and font variables.
+   The site nav + footer are global (RootShell), so the design's inline nav/footer
+   styles are intentionally omitted here. Keyframes are namespaced (journal*) to
+   avoid colliding with other scoped pages.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.bf-journal {
+  --green: var(--color-green);
+  --gold: var(--color-gold);
+  --bone: var(--color-bone);
+  --slate: var(--color-slate);
+  --muted: var(--color-muted);
+  --light: var(--color-light);
+  --mid: var(--color-mid);
+  --serif: var(--font-serif), Georgia, serif;
+  --sans: var(--font-sans), sans-serif;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  font-family: var(--serif);
+  background: var(--bone);
+  color: var(--slate);
+  line-height: 1;
+  position: relative;
+}
+
+.bf-journal a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@keyframes journalFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Page hero — editorial newspaper masthead ────────────── */
+.bf-journal .journal-hero {
+  background: var(--bone);
+  border-bottom: 2px solid var(--slate);
+}
+
+.bf-journal .journal-header {
+  padding: 3.5rem 5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 2rem;
+  border-bottom: 1px solid var(--mid);
+  animation: journalFadeUp 0.8s 0.2s var(--ease) both;
+}
+
+.bf-journal .journal-meta-left {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-bottom: 0.5rem;
+}
+
+.bf-journal .journal-wordmark {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 7vw, 6.5rem);
+  font-weight: 400;
+  color: var(--slate);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: center;
+}
+
+.bf-journal .journal-meta-right {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: right;
+  padding-bottom: 0.5rem;
+}
+
+.bf-journal .journal-tagline-row {
+  padding: 1.25rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--mid);
+  animation: journalFadeUp 0.8s 0.3s var(--ease) both;
+}
+
+.bf-journal .journal-tagline {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.bf-journal .journal-issue {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Category filter ──────────────────────────────────────── */
+.bf-journal .category-bar {
+  padding: 0 5rem;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-bottom: 1px solid var(--mid);
+  position: sticky;
+  top: 72px;
+  background: var(--bone);
+  z-index: 90;
+}
+
+.bf-journal .cat-btn {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 1rem 1.25rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+
+.bf-journal .cat-btn:hover {
+  color: var(--slate);
+}
+
+.bf-journal .cat-btn.active {
+  color: var(--green);
+  border-bottom-color: var(--gold);
+}
+
+/* ── Featured post (hero article) ────────────────────────── */
+.bf-journal .featured-post {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--mid);
+  animation: journalFadeUp 0.9s 0.4s var(--ease) both;
+}
+
+.bf-journal .featured-image {
+  background: var(--green);
+  min-height: 520px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Real photography sits beneath the decorative gradient + scanline overlays. */
+.bf-journal .featured-photo {
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bf-journal .featured-image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(160deg, rgba(26, 60, 52, 0.2) 0%, rgba(26, 60, 52, 0.7) 100%);
+}
+
+.bf-journal .featured-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 59px,
+    rgba(201, 168, 76, 0.03) 59px,
+    rgba(201, 168, 76, 0.03) 60px
+  );
+}
+
+.bf-journal .featured-image-label {
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.35);
+}
+
+.bf-journal .featured-content {
+  padding: 3.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid var(--mid);
+}
+
+.bf-journal .featured-kicker {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.25rem;
+}
+
+.bf-journal .featured-title {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.bf-journal .featured-excerpt {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  flex: 1;
+}
+
+.bf-journal .featured-footer {
+  border-top: 1px solid var(--mid);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bf-journal .article-date {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bf-journal .read-link {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap 0.2s, color 0.2s;
+}
+
+.bf-journal .read-link:hover {
+  gap: 0.875rem;
+  color: var(--gold);
+}
+
+.bf-journal .read-link-arrow {
+  color: var(--gold);
+}
+
+/* ── Main grid ────────────────────────────────────────────── */
+.bf-journal .journal-grid {
+  padding: 0 5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--mid);
+}
+
+/* ── Post cards ───────────────────────────────────────────── */
+.bf-journal .posts-column {
+  border-right: 1px solid var(--mid);
+}
+
+.bf-journal .post-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--mid);
+  transition: background 0.3s var(--ease);
+  position: relative;
+}
+
+.bf-journal .post-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+  z-index: 1;
+}
+
+.bf-journal .post-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bf-journal .post-card:hover {
+  background: var(--light);
+}
+
+.bf-journal .post-image {
+  aspect-ratio: 4/3;
+  background: var(--slate);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+.bf-journal .post-photo {
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bf-journal .post-image-monogram {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 4rem;
+  font-weight: 400;
+  color: rgba(250, 246, 240, 0.12);
+  z-index: 1;
+  user-select: none;
+}
+
+.bf-journal .post-image.green {
+  background: var(--green);
+}
+
+.bf-journal .post-image.light-bg {
+  background: var(--light);
+  border-right: 1px solid var(--mid);
+}
+
+.bf-journal .post-image-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.5);
+  z-index: 1;
+}
+
+.bf-journal .post-image.light-bg .post-image-tag {
+  color: var(--muted);
+}
+
+.bf-journal .post-content {
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.bf-journal .post-category {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.875rem;
+}
+
+.bf-journal .post-title {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
+}
+
+.bf-journal .post-excerpt {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted);
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.bf-journal .post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--mid);
+  padding-top: 1rem;
+}
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.bf-journal .sidebar {
+  padding: 0;
+}
+
+.bf-journal .sidebar-section {
+  border-bottom: 1px solid var(--mid);
+  padding: 2.5rem;
+}
+
+.bf-journal .sidebar-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+/* Provisions sidebar */
+.bf-journal .sidebar-provision {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--mid);
+  align-items: start;
+}
+
+.bf-journal .sidebar-provision:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.bf-journal .sidebar-provision-swatch {
+  width: 42px;
+  height: 42px;
+  background: var(--green);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bf-journal .swatch-letter {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: rgba(250, 246, 240, 0.5);
+}
+
+.bf-journal .sidebar-provision-name {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  color: var(--slate);
+  margin-bottom: 0.2rem;
+}
+
+.bf-journal .sidebar-provision-price {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+}
+
+.bf-journal .sidebar-link {
+  display: block;
+  margin-top: 1.25rem;
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 2px;
+  width: fit-content;
+  transition: color 0.2s;
+}
+
+.bf-journal .sidebar-link:hover {
+  color: var(--gold);
+}
+
+/* Reading list sidebar */
+.bf-journal .reading-item {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-journal .reading-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.bf-journal .reading-num {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: rgba(26, 60, 52, 0.12);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.bf-journal .reading-title {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  color: var(--slate);
+  line-height: 1.3;
+  margin-bottom: 0.25rem;
+}
+
+.bf-journal .reading-category {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Booking sidebar */
+.bf-journal .booking-sidebar {
+  background: var(--green);
+  padding: 2.5rem;
+}
+
+.bf-journal .booking-sidebar .sidebar-label {
+  color: rgba(201, 168, 76, 0.7);
+}
+
+.bf-journal .booking-sidebar-title {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  color: var(--bone);
+  line-height: 1.3;
+  margin-bottom: 1rem;
+}
+
+.bf-journal .booking-sidebar-body {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: rgba(250, 246, 240, 0.55);
+  margin-bottom: 1.5rem;
+}
+
+.bf-journal .btn-sidebar {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--gold);
+  border: none;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: block;
+  text-align: center;
+}
+
+.bf-journal .btn-sidebar:hover {
+  opacity: 0.85;
+}
+
+/* Newsletter sidebar */
+.bf-journal .newsletter-sidebar input {
+  width: 100%;
+  background: var(--light);
+  border: 1px solid var(--mid);
+  padding: 0.75rem 1rem;
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  color: var(--slate);
+  outline: none;
+  margin-bottom: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.bf-journal .newsletter-sidebar input::placeholder {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.bf-journal .newsletter-sidebar input:focus {
+  border-color: var(--gold);
+}
+
+.bf-journal .newsletter-sidebar button {
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--green);
+  border: none;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.bf-journal .newsletter-sidebar button:hover {
+  opacity: 0.85;
+}
+
+.bf-journal .newsletter-intro {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.bf-journal .newsletter-note {
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--muted);
+  margin-top: 0.75rem;
+  line-height: 1.5;
+}
+
+/* ── Full article preview ─────────────────────────────────── */
+.bf-journal .long-read {
+  border-top: 2px solid var(--slate);
+  border-bottom: 1px solid var(--mid);
+  padding: 5rem;
+  background: var(--bone);
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 5rem;
+}
+
+.bf-journal .long-read-badge {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bone);
+  background: var(--green);
+  padding: 0.35rem 0.875rem;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.bf-journal .long-read-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.bf-journal .long-read-num {
+  font-family: var(--serif);
+  font-size: 5rem;
+  color: rgba(26, 60, 52, 0.08);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.bf-journal .long-read-title {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  color: var(--slate);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.bf-journal .long-read-date {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.bf-journal .long-read-heading {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.2;
+  margin-bottom: 1.75rem;
+}
+
+.bf-journal .long-read-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.bf-journal .long-read-body em {
+  color: var(--green);
+  font-style: italic;
+}
+
+.bf-journal .long-read-body strong {
+  color: var(--slate);
+  font-weight: 400;
+}
+
+.bf-journal .long-read-pullquote {
+  border-left: 3px solid var(--gold);
+  padding: 1.25rem 0 1.25rem 1.75rem;
+  margin: 2rem 0;
+}
+
+.bf-journal .long-read-pullquote p {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  font-style: italic;
+  color: var(--green);
+  line-height: 1.6;
+}
+
+.bf-journal .long-read-footer {
+  border-top: 1px solid var(--mid);
+  padding-top: 1.5rem;
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── More posts row ───────────────────────────────────────── */
+.bf-journal .more-posts {
+  padding: 5rem;
+  background: var(--light);
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-journal .more-posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 3rem;
+}
+
+.bf-journal .more-posts-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--slate);
+}
+
+.bf-journal .more-posts-link {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+
+.bf-journal .more-posts-link:hover {
+  color: var(--gold);
+}
+
+.bf-journal .more-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--mid);
+}
+
+.bf-journal .mini-card {
+  background: var(--bone);
+  padding: 2rem;
+  transition: background 0.3s;
+  position: relative;
+}
+
+.bf-journal .mini-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+}
+
+.bf-journal .mini-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bf-journal .mini-card:hover {
+  background: var(--light);
+}
+
+.bf-journal .mini-card-image {
+  aspect-ratio: 16/9;
+  background: var(--green);
+  margin-bottom: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(201, 168, 76, 0.3);
+}
+
+.bf-journal .mini-photo {
+  object-fit: cover;
+}
+
+.bf-journal .mini-card-image.slate {
+  background: var(--slate);
+}
+
+.bf-journal .mini-card-image.light {
+  background: var(--light);
+  color: var(--muted);
+}
+
+.bf-journal .mini-category {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.625rem;
+}
+
+.bf-journal .mini-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--slate);
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
+}
+
+.bf-journal .mini-date {
+  font-family: var(--sans);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── Archive strip ────────────────────────────────────────── */
+.bf-journal .archive-strip {
+  background: var(--green);
+  padding: 4rem 5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4rem;
+}
+
+.bf-journal .archive-title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  color: var(--bone);
+  margin-bottom: 0.5rem;
+}
+
+.bf-journal .archive-sub {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.5);
+}
+
+.bf-journal .archive-categories {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.bf-journal .archive-cat {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.5);
+  border: 1px solid rgba(250, 246, 240, 0.15);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+  background: none;
+}
+
+.bf-journal .archive-cat:hover {
+  color: var(--green);
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+/* ── Scroll reveal ────────────────────────────────────────── */
+.bf-journal .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.bf-journal .reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bf-journal .reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.bf-journal .reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.bf-journal .reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .bf-journal .journal-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-journal .sidebar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-journal .booking-sidebar {
+    grid-column: span 2;
+  }
+  .bf-journal .long-read {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .bf-journal .more-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-journal .archive-strip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bf-journal .journal-header {
+    padding: 2.5rem 1.5rem 0;
+  }
+  .bf-journal .journal-tagline-row {
+    padding: 1rem 1.5rem;
+  }
+  .bf-journal .category-bar {
+    padding: 0 1rem;
+    overflow-x: auto;
+  }
+  .bf-journal .featured-post {
+    grid-template-columns: 1fr;
+  }
+  .bf-journal .featured-image {
+    min-height: 280px;
+  }
+  .bf-journal .featured-content {
+    border-left: none;
+    border-top: 1px solid var(--mid);
+  }
+  .bf-journal .journal-grid {
+    padding: 0 1.5rem;
+  }
+  .bf-journal .post-card {
+    grid-template-columns: 1fr;
+  }
+  .bf-journal .post-image {
+    aspect-ratio: 16/9;
+  }
+  .bf-journal .sidebar {
+    display: block;
+  }
+  .bf-journal .long-read {
+    padding: 3.5rem 1.5rem;
+    gap: 2rem;
+  }
+  .bf-journal .more-posts {
+    padding: 3.5rem 1.5rem;
+  }
+  .bf-journal .more-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-journal .archive-strip {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .bf-journal .journal-wordmark {
+    font-size: 2.5rem;
+  }
+  .bf-journal .journal-meta-left,
+  .bf-journal .journal-meta-right {
+    display: none;
+  }
+  .bf-journal .journal-header {
+    grid-template-columns: 1fr;
+  }
+  .bf-journal .featured-content {
+    padding: 2rem 1.5rem;
+  }
+  .bf-journal .post-content {
+    padding: 1.5rem;
+  }
+}

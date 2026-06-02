@@ -28,7 +28,7 @@ function ProvisionsProductCard({ product }: { product: ProvisionsProduct }) {
   }
 
   const statusClass =
-    product.status === 'Small Batch'
+    product.status === 'Pre-Order'
       ? 'bg-gold/20 text-forest border border-gold/40'
       : 'bg-gray-100 text-gray-700'
 
@@ -63,7 +63,7 @@ function ProvisionsProductCard({ product }: { product: ProvisionsProduct }) {
           disabled={loading}
           className="w-full inline-flex justify-center items-center bg-forest text-goldAccent font-semibold px-4 py-2.5 rounded-xl hover:opacity-90 transition disabled:opacity-60"
         >
-          {loading ? 'Sending…' : 'Notify Me'}
+          {loading ? 'Sending…' : 'Request a Product'}
         </button>
       </div>
     </article>

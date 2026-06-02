@@ -1,0 +1,1044 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Bornfidis editorial homepage — scoped styles.
+   Everything is namespaced under `.bf-home` so it never leaks into the rest of
+   the platform (admin, other public pages) or fights Tailwind's preflight.
+   The design's local custom properties are mapped onto the canonical palette
+   defined in app/globals.css (--color-*) and the font variables (--font-*).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+.bf-home {
+  --green: var(--color-green);
+  --gold: var(--color-gold);
+  --bone: var(--color-bone);
+  --slate: var(--color-slate);
+  --muted: var(--color-muted);
+  --light: var(--color-light);
+  --mid: var(--color-mid);
+  --serif: var(--font-serif), Georgia, serif;
+  --sans: var(--font-sans), sans-serif;
+  --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  font-family: var(--serif);
+  background: var(--bone);
+  color: var(--slate);
+  line-height: 1;
+  position: relative;
+}
+
+.bf-home a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.bf-home img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Typography helper ──────────────────────────────────────── */
+.bf-home .label {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Hero ───────────────────────────────────────────────────── */
+.bf-home .hero {
+  /* The global PublicNav renders a fixed 72px bar plus a 72px spacer above
+     <main>. Pull the forest hero up over that spacer so it sits flush under
+     the nav, then re-pad the content so nothing hides beneath the bar. */
+  margin-top: -72px;
+  padding-top: 72px;
+  min-height: 100vh;
+  background: var(--green);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+  position: relative;
+}
+
+.bf-home .hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 79px,
+    rgba(201, 168, 76, 0.04) 79px,
+    rgba(201, 168, 76, 0.04) 80px
+  );
+  pointer-events: none;
+}
+
+.bf-home .hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5rem 4rem 5rem 5rem;
+  position: relative;
+  z-index: 1;
+  animation: bfFadeUp 1s 0.3s var(--ease) both;
+}
+
+.bf-home .hero-eyebrow {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.75rem;
+}
+
+.bf-home .hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  font-weight: 400;
+  line-height: 1.06;
+  color: var(--bone);
+  margin-bottom: 0.5rem;
+}
+
+.bf-home .hero-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.bf-home .hero-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+  margin: 2rem 0;
+}
+
+.bf-home .hero-body {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: rgba(250, 246, 240, 0.72);
+  max-width: 36ch;
+  margin-bottom: 3rem;
+}
+
+.bf-home .hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.bf-home .btn-primary {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--gold);
+  padding: 1rem 2rem;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.bf-home .btn-primary:hover {
+  opacity: 0.85;
+}
+
+.bf-home .btn-ghost {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.6);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.4);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.bf-home .btn-ghost:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
+.bf-home .hero-right {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 3rem;
+  min-height: 600px;
+  animation: bfFadeIn 1.2s 0.5s var(--ease) both;
+}
+
+/* Real photography fills the panel (next/image fill sets position:absolute). */
+.bf-home .hero-photo {
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.bf-home .hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(26, 60, 52, 0.15),
+    rgba(26, 60, 52, 0.65)
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bf-home .hero-caption {
+  width: 100%;
+  border-top: 1px solid rgba(201, 168, 76, 0.3);
+  padding-top: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: relative;
+  z-index: 2;
+}
+
+.bf-home .hero-caption-text {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  font-style: italic;
+  color: rgba(250, 246, 240, 0.78);
+  line-height: 1.5;
+}
+
+.bf-home .hero-score {
+  text-align: right;
+}
+
+.bf-home .hero-score-num {
+  font-family: var(--serif);
+  font-size: 1.75rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.bf-home .hero-score-num span {
+  font-size: 1.125rem;
+}
+
+.bf-home .hero-score-label {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.55);
+  margin-top: 4px;
+}
+
+/* ── Marquee strip ──────────────────────────────────────────── */
+.bf-home .marquee-strip {
+  background: var(--gold);
+  padding: 0.875rem 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.bf-home .marquee-track {
+  display: inline-flex;
+  animation: bfMarquee 24s linear infinite;
+}
+
+.bf-home .marquee-item {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-right: 3.5rem;
+}
+
+.bf-home .marquee-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(26, 60, 52, 0.4);
+  vertical-align: middle;
+  margin-right: 3.5rem;
+}
+
+/* ── Intro section ──────────────────────────────────────────── */
+.bf-home .intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 80vh;
+}
+
+.bf-home .intro-left {
+  background: var(--bone);
+  padding: 6rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bf-home .intro-right {
+  background: var(--slate);
+  padding: 6rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-home .intro-right::before {
+  content: 'B';
+  position: absolute;
+  right: -0.1em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--serif);
+  font-size: 22rem;
+  color: rgba(250, 246, 240, 0.025);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bf-home .intro-heading {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--slate);
+  margin-bottom: 2rem;
+}
+
+.bf-home .intro-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 1.25rem;
+}
+
+.bf-home .intro-body strong {
+  color: var(--slate);
+  font-weight: 400;
+}
+
+.bf-home .intro-body em {
+  font-style: italic;
+}
+
+.bf-home .intro-link {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  border-bottom: 1px solid var(--gold);
+  padding-bottom: 2px;
+  display: inline-block;
+  margin-top: 1.5rem;
+  transition: color 0.2s;
+}
+
+.bf-home .intro-link:hover {
+  color: var(--gold);
+}
+
+.bf-home .values-list {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .value-item {
+  border-top: 1px solid rgba(201, 168, 76, 0.2);
+  padding: 1.5rem 0;
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.bf-home .value-item:last-child {
+  border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+}
+
+.bf-home .value-num {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  margin-top: 4px;
+}
+
+.bf-home .value-name {
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  font-weight: 400;
+  color: var(--bone);
+  margin-bottom: 0.4rem;
+}
+
+.bf-home .value-desc {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: rgba(250, 246, 240, 0.45);
+  font-weight: 400;
+}
+
+/* ── Services section ───────────────────────────────────────── */
+.bf-home .services {
+  background: var(--bone);
+  padding: 8rem 5rem;
+}
+
+.bf-home .services-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  margin-bottom: 5rem;
+  align-items: end;
+}
+
+.bf-home .services-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--slate);
+}
+
+.bf-home .services-desc {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+.bf-home .services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--mid);
+}
+
+.bf-home .service-card {
+  background: var(--bone);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-home .service-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+}
+
+.bf-home .service-card:hover::before {
+  transform: scaleX(1);
+}
+
+.bf-home .service-card:hover {
+  background: var(--light);
+}
+
+.bf-home .service-number {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.bf-home .service-name {
+  font-family: var(--serif);
+  font-size: 1.625rem;
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.2;
+  margin-bottom: 1.25rem;
+}
+
+.bf-home .service-desc {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--muted);
+  flex: 1;
+  margin-bottom: 2rem;
+}
+
+.bf-home .service-action {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: gap 0.2s;
+}
+
+.bf-home .service-card:hover .service-action {
+  gap: 0.875rem;
+}
+
+.bf-home .service-arrow {
+  color: var(--gold);
+}
+
+/* ── Provisions showcase ────────────────────────────────────── */
+.bf-home .provisions {
+  background: var(--green);
+  padding: 8rem 5rem;
+}
+
+.bf-home .provisions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+
+.bf-home .provisions-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.1;
+}
+
+.bf-home .provisions-link {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(201, 168, 76, 0.4);
+  padding-bottom: 2px;
+  transition: border-color 0.2s;
+}
+
+.bf-home .provisions-link:hover {
+  border-color: var(--gold);
+}
+
+.bf-home .provisions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: rgba(201, 168, 76, 0.15);
+}
+
+.bf-home .provision-card {
+  background: rgba(26, 60, 52, 0.6);
+  padding: 2.5rem;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.bf-home .provision-card:hover {
+  background: rgba(26, 60, 52, 0.9);
+}
+
+.bf-home .provision-tag {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.bf-home .provision-name {
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.bf-home .provision-desc {
+  font-family: var(--serif);
+  font-size: 0.875rem;
+  line-height: 1.7;
+  color: rgba(250, 246, 240, 0.55);
+  margin-bottom: 2rem;
+}
+
+.bf-home .provision-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(201, 168, 76, 0.2);
+  padding-top: 1.25rem;
+}
+
+.bf-home .provision-price {
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  color: var(--gold);
+}
+
+.bf-home .provision-stock {
+  font-family: var(--sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.3);
+}
+
+/* ── Credentials strip ──────────────────────────────────────── */
+.bf-home .credentials {
+  background: var(--light);
+  padding: 4.5rem 5rem;
+  border-top: 1px solid var(--mid);
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-home .credentials-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.bf-home .cred-item {
+  padding: 0 3rem;
+  border-right: 1px solid var(--mid);
+  display: flex;
+  flex-direction: column;
+}
+
+.bf-home .cred-item:first-child {
+  padding-left: 0;
+}
+
+.bf-home .cred-item:last-child {
+  border-right: none;
+}
+
+.bf-home .cred-number {
+  font-family: var(--serif);
+  font-size: 2.75rem;
+  font-weight: 400;
+  color: var(--green);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.bf-home .cred-number span {
+  font-size: 1.25rem;
+  color: var(--gold);
+}
+
+.bf-home .cred-label {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── Philosophy pullquote ───────────────────────────────────── */
+.bf-home .philosophy {
+  background: var(--slate);
+  padding: 10rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.bf-home .philosophy-label {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bf-home .philosophy-rule {
+  width: 48px;
+  height: 1px;
+  background: var(--gold);
+}
+
+.bf-home .philosophy-quote {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--bone);
+}
+
+.bf-home .philosophy-quote em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.bf-home .philosophy-attribution {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(250, 246, 240, 0.35);
+  margin-top: 2.5rem;
+}
+
+/* ── Locations ──────────────────────────────────────────────── */
+.bf-home .locations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 60vh;
+}
+
+.bf-home .location-panel {
+  padding: 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-height: 500px;
+}
+
+.bf-home .location-panel.vermont {
+  background: var(--bone);
+}
+
+.bf-home .location-panel.jamaica {
+  background: var(--green);
+}
+
+.bf-home .location-photo {
+  object-fit: cover;
+  z-index: 0;
+}
+
+.bf-home .location-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bf-home .vermont-tint {
+  background: linear-gradient(to top, rgba(253, 248, 248, 0.93) 0%, rgba(253, 248, 248, 0.62) 100%);
+}
+
+.bf-home .jamaica-tint {
+  background: linear-gradient(to top, rgba(26, 60, 52, 0.72) 0%, rgba(44, 44, 44, 0.78) 100%);
+}
+
+.bf-home .location-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .location-detail {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .location-bg-text {
+  position: absolute;
+  bottom: -0.15em;
+  right: -0.05em;
+  font-family: var(--serif);
+  font-size: 14rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.bf-home .vermont .location-bg-text {
+  color: rgba(44, 44, 44, 0.04);
+}
+
+.bf-home .jamaica .location-bg-text {
+  color: rgba(250, 246, 240, 0.04);
+}
+
+.bf-home .location-content {
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .location-name {
+  font-family: var(--serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.bf-home .vermont .location-name {
+  color: var(--slate);
+}
+
+.bf-home .jamaica .location-name {
+  color: var(--bone);
+}
+
+.bf-home .location-desc {
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  max-width: 36ch;
+}
+
+.bf-home .vermont .location-desc {
+  color: var(--muted);
+}
+
+.bf-home .jamaica .location-desc {
+  color: rgba(250, 246, 240, 0.6);
+}
+
+.bf-home .location-detail {
+  position: relative;
+  z-index: 1;
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.bf-home .vermont .location-detail {
+  color: var(--muted);
+}
+
+.bf-home .jamaica .location-detail {
+  color: rgba(201, 168, 76, 0.7);
+}
+
+/* ── CTA section ────────────────────────────────────────────── */
+.bf-home .cta-section {
+  background: var(--green);
+  padding: 8rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bf-home .cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 50%,
+    rgba(201, 168, 76, 0.07) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.bf-home .cta-eyebrow {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+}
+
+.bf-home .cta-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  color: var(--bone);
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .cta-body {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(250, 246, 240, 0.6);
+  max-width: 50ch;
+  margin: 0 auto 3rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .cta-actions {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.bf-home .btn-bone {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--bone);
+  padding: 1rem 2rem;
+  display: inline-block;
+  transition: opacity 0.2s;
+}
+
+.bf-home .btn-bone:hover {
+  opacity: 0.85;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────── */
+.bf-home .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.bf-home .reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bf-home .reveal-delay-1 {
+  transition-delay: 0.1s;
+}
+.bf-home .reveal-delay-2 {
+  transition-delay: 0.2s;
+}
+.bf-home .reveal-delay-3 {
+  transition-delay: 0.3s;
+}
+
+/* ── Keyframes (namespaced) ─────────────────────────────────── */
+@keyframes bfFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bfFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bfMarquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .bf-home .hero {
+    grid-template-columns: 1fr;
+  }
+  .bf-home .hero-right {
+    display: none;
+  }
+  .bf-home .intro {
+    grid-template-columns: 1fr;
+  }
+  .bf-home .services-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-home .provisions-grid {
+    grid-template-columns: 1fr;
+  }
+  .bf-home .credentials-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .bf-home .cred-item {
+    border-right: none;
+    padding: 0;
+  }
+  .bf-home .philosophy {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+  .bf-home .locations {
+    grid-template-columns: 1fr;
+  }
+  .bf-home .services-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .bf-home .hero-left {
+    padding: 4rem 1.5rem;
+  }
+  .bf-home .services {
+    padding: 5rem 1.5rem;
+  }
+  .bf-home .provisions {
+    padding: 5rem 1.5rem;
+  }
+  .bf-home .credentials {
+    padding: 3rem 1.5rem;
+  }
+  .bf-home .philosophy {
+    padding: 6rem 1.5rem;
+  }
+  .bf-home .location-panel {
+    padding: 3.5rem 1.5rem;
+  }
+  .bf-home .cta-section {
+    padding: 6rem 1.5rem;
+  }
+  .bf-home .credentials-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .bf-home .cta-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
