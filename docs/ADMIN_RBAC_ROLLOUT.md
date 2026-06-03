@@ -2,11 +2,12 @@
 
 ## What shipped
 
-- Prisma enum `AppRole` and table `admin_user_roles` (`AdminUserRole`), migration `20260411120000_admin_user_roles`.
-- Resolution order for platform role: **active row in `admin_user_roles`** (email lowercased) → **`ADMIN_EMAILS` env** (treated as `founder_admin`) → **Prisma `User.role` in admin-area roles** (`ADMIN`, `STAFF`, `COORDINATOR`) as `founder_admin` for rollout safety → else no platform role.
-- Helpers: `lib/admin-rbac.ts`, re-exports in `lib/authz.ts` (platform role aliases include `getCurrentUserRole` / `getCurrentUserRoleWithFallback`).
-- `requireManagerOrFounderPageAccess()` on manager routes (bookings list, clients, calendar, testimonials, provisions pipeline); staff users are redirected to `/admin?notice=operational-only`.
-- Founder-only: manual mark-paid server actions, founder-only payment UI on booking detail, founder-only strips on `/admin`, and selected API routes (`requireFounderAdminApi`).
+- Prisma enum `AppRole` and table `admin_user_roles` (`AdminUserRole`), migrations `20260411120000_admin_user_roles` and `20260603120000_app_role_operations_coordinator`.
+- Roles: `founder_admin`, `manager`, `operations_coordinator`, `staff`.
+- Resolution order: **active `admin_user_roles` row** → **`ADMIN_EMAILS`** → Prisma default (`ADMIN`→founder, `COORDINATOR`→operations_coordinator, `STAFF`→manager).
+- `requireHospitalityOpsPageAccess()` on bookings, calendar, clients, etc.; `staff` → `/admin?notice=operational-only`.
+- `guardFinancialPath()` in admin layout blocks financial URLs for `operations_coordinator`.
+- See **`docs/PHASE1_1_OPS_COORDINATOR.md`** for Caryll onboarding.
 
 ## Production (Vercel)
 

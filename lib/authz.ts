@@ -121,9 +121,20 @@ export {
   requireManagerOrAdmin,
   hasRoleAccess,
   requireManagerOrFounderPageAccess,
+  requireHospitalityOpsPageAccess,
+  requireFinancialPageAccess,
+  guardFinancialPath,
   isFounderAdminRole,
   isManagerOrFounder,
 } from '@/lib/admin-rbac'
+
+export {
+  canViewPlatformFinancials,
+  isFinancialAdminPath,
+  isHospitalityOpsPlatformRole,
+  platformRoleLabel,
+  FINANCIAL_ADMIN_PATH_PREFIXES,
+} from '@/lib/ops-coordinator-access'
 
 /** Spec-friendly alias — avoids clashing with `getCurrentUserRole` in `get-user-role.ts`. */
 export { resolveAdminPlatformRole as getCurrentUserAdminPlatformRole } from '@/lib/admin-rbac'

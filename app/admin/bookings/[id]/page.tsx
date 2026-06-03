@@ -2,10 +2,11 @@ import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { getBookingActivities, getBookingWithQuote, getClientProfileSummaryForBooking } from '../actions'
 import {
-  requireManagerOrFounderPageAccess,
+  requireHospitalityOpsPageAccess,
   resolveAdminPlatformRole,
   isFounderAdminRole,
 } from '@/lib/admin-rbac'
+import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
 import { getLastStripeActivityForBooking } from '@/lib/admin-payment-health'
 import { AdminBookingHeader } from '@/components/admin/booking-detail/AdminBookingHeader'
 import { AdminBookingSummaryCard } from '@/components/admin/booking-detail/AdminBookingSummaryCard'
@@ -31,8 +32,10 @@ import { CulinaryCard } from '@/components/culinary-os'
  * TODO: Phase 2B - Add authentication middleware here
  */
 export default async function BookingDetailPage({ params }: { params: { id: string } }) {
-  await requireManagerOrFounderPageAccess()
-  const showFounderOnlyPaymentControls = isFounderAdminRole(await resolveAdminPlatformRole())
+  await requireHospitalityOpsPageAccess()
+  const platformRole = await resolveAdminPlatformRole()
+  const showFinancials = canViewPlatformFinancials(platformRole)
+  const showFounderOnlyPaymentControls = isFounderAdminRole(platformRole)
 
   const result = await getBookingWithQuote(params.id)
 
@@ -42,7 +45,9 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
 
   const booking = result.booking
   const aiInsights = await getInsightsForBooking(booking.id)
-  const lastStripeActivity = await getLastStripeActivityForBooking(booking.id)
+  const lastStripeActivity = showFinancials
+    ? await getLastStripeActivityForBooking(booking.id)
+    : null
 
   const activitiesResult = await getBookingActivities(booking.id)
   const activities = activitiesResult.success ? activitiesResult.activities : []
@@ -103,12 +108,14 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             <SlaSection booking={booking} />
             <AiInsightsBlock insights={aiInsights} />
 
-            <AdminBookingQuoteCard
-              booking={booking}
-              lastStripeActivity={lastStripeActivity}
-              hasSavedQuote={hasSavedQuote}
-              showFounderOnlyPaymentControls={showFounderOnlyPaymentControls}
-            />
+            {showFinancials ? (
+              <AdminBookingQuoteCard
+                booking={booking}
+                lastStripeActivity={lastStripeActivity}
+                hasSavedQuote={hasSavedQuote}
+                showFounderOnlyPaymentControls={showFounderOnlyPaymentControls}
+              />
+            ) : null}
 
             <div className="grid gap-gutter lg:grid-cols-2">
               <AdminBookingSummaryCard booking={booking} />
@@ -150,23 +157,25 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
               </section>
             )}
 
-            {booking.chef_payout_amount_cents != null && booking.chef_payout_amount_cents > 0 && (
-              <section className="border-t border-culinary-outline pt-stack-lg">
-                <ChefPayoutBonusSection
-                  bookingId={booking.id}
-                  chefPayoutAmountCents={booking.chef_payout_amount_cents}
-                  chefPayoutBaseCents={booking.chef_payout_base_cents}
-                  chefPayoutBonusCents={booking.chef_payout_bonus_cents}
-                  chefPayoutBonusBreakdown={booking.chef_payout_bonus_breakdown}
-                  chefPayoutBonusOverride={booking.chef_payout_bonus_override}
-                  chefPayoutStatus={booking.chef_payout_status}
-                  chefTierSnapshot={booking.chef_tier_snapshot}
-                  chefRateMultiplier={booking.chef_rate_multiplier}
-                />
-              </section>
-            )}
+            {showFinancials &&
+              booking.chef_payout_amount_cents != null &&
+              booking.chef_payout_amount_cents > 0 && (
+                <section className="border-t border-culinary-outline pt-stack-lg">
+                  <ChefPayoutBonusSection
+                    bookingId={booking.id}
+                    chefPayoutAmountCents={booking.chef_payout_amount_cents}
+                    chefPayoutBaseCents={booking.chef_payout_base_cents}
+                    chefPayoutBonusCents={booking.chef_payout_bonus_cents}
+                    chefPayoutBonusBreakdown={booking.chef_payout_bonus_breakdown}
+                    chefPayoutBonusOverride={booking.chef_payout_bonus_override}
+                    chefPayoutStatus={booking.chef_payout_status}
+                    chefTierSnapshot={booking.chef_tier_snapshot}
+                    chefRateMultiplier={booking.chef_rate_multiplier}
+                  />
+                </section>
+              )}
 
-            {showPostConfirmOps && (
+            {showFinancials && showPostConfirmOps && (
               <section className="border-t border-culinary-outline pt-stack-lg">
                 <ErrorBoundary>
                   <Suspense fallback={suspenseFallback('Loading payouts...')}>

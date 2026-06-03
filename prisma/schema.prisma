@@ -1361,6 +1361,7 @@ enum UserRole {
 enum AppRole {
   founder_admin
   manager
+  operations_coordinator
   staff
 
   @@schema("public")

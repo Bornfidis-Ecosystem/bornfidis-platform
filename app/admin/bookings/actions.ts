@@ -4,6 +4,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { requireAuth } from '@/lib/auth'
 import { requireAdminUser } from '@/lib/requireAdmin'
 import { requireFounderAdmin, resolveAdminPlatformRole } from '@/lib/admin-rbac'
+import { isHospitalityOpsPlatformRole } from '@/lib/ops-coordinator-access'
 import { db } from '@/lib/db'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { quoteLineItemSchema, updateQuoteSummarySchema } from '@/lib/validation'
@@ -40,10 +41,10 @@ export async function getAllBookings(): Promise<{ success: boolean; bookings?: B
     }
 
     const platformRole = await resolveAdminPlatformRole()
-    if (!platformRole || platformRole === 'staff') {
+    if (!isHospitalityOpsPlatformRole(platformRole)) {
       return {
         success: false,
-        error: 'Access denied: Manager or founder admin required',
+        error: 'Access denied: Hospitality operations role required',
       }
     }
 
@@ -645,8 +646,8 @@ export async function sendInquiryReminderForBooking(
     return { success: false, error: e?.message ?? 'Authentication required' }
   }
   const platformRole = await resolveAdminPlatformRole()
-  if (!platformRole || platformRole === 'staff') {
-    return { success: false, error: 'Access denied: Manager or founder admin required' }
+  if (!isHospitalityOpsPlatformRole(platformRole)) {
+    return { success: false, error: 'Access denied: Hospitality operations role required' }
   }
   try {
     const b = await db.bookingInquiry.findUnique({ where: { id: bookingId } })
@@ -874,8 +875,8 @@ export async function getBookingWithQuote(
     return { success: false, error: e?.message ?? 'Authentication required' }
   }
   const platformRole = await resolveAdminPlatformRole()
-  if (!platformRole || platformRole === 'staff') {
-    return { success: false, error: 'Access denied: Manager or founder admin required' }
+  if (!isHospitalityOpsPlatformRole(platformRole)) {
+    return { success: false, error: 'Access denied: Hospitality operations role required' }
   }
 
   try {

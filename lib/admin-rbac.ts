@@ -9,8 +9,14 @@ import { createServerSupabaseClient } from '@/lib/auth'
 import { getCurrentUserRole } from '@/lib/get-user-role'
 import { ADMIN_AREA_ROLES, hasRole } from '@/lib/require-role'
 import { db } from '@/lib/db'
+import {
+  canViewPlatformFinancials,
+  isFinancialAdminPath,
+  isHospitalityOpsPlatformRole,
+  type AdminPlatformRole,
+} from '@/lib/ops-coordinator-access'
 
-export type AdminPlatformRole = 'founder_admin' | 'manager' | 'staff'
+export type { AdminPlatformRole }
 
 /** Spec alias */
 export type Role = AdminPlatformRole
@@ -18,12 +24,23 @@ export type Role = AdminPlatformRole
 function prismaAppRoleToPlatform(r: AppRole): AdminPlatformRole {
   if (r === AppRole.founder_admin) return 'founder_admin'
   if (r === AppRole.manager) return 'manager'
+  if (r === AppRole.operations_coordinator) return 'operations_coordinator'
   return 'staff'
+}
+
+/** Prisma admin-area role → default platform role when no admin_user_roles row exists. */
+function defaultPlatformRoleForPrismaRole(pr: UserRole | null): AdminPlatformRole | null {
+  if (!pr || !hasRole(pr, ADMIN_AREA_ROLES)) return null
+  const normalized = String(pr).toUpperCase()
+  if (normalized === 'ADMIN') return 'founder_admin'
+  if (normalized === 'COORDINATOR') return 'operations_coordinator'
+  if (normalized === 'STAFF') return 'manager'
+  return 'manager'
 }
 
 /**
  * Resolve platform role: `admin_user_roles` row (active) wins, then legacy allowlist → founder_admin,
- * then Prisma admin-area roles → founder_admin (rollout safety).
+ * then Prisma admin-area default (COORDINATOR → operations_coordinator, not founder).
  */
 export async function resolveAdminPlatformRoleForEmail(
   email: string | null | undefined,
@@ -39,7 +56,6 @@ export async function resolveAdminPlatformRoleForEmail(
       return prismaAppRoleToPlatform(row.role)
     }
   } catch (err) {
-    // Table missing / pool timeout — fall through to ADMIN_EMAILS + Prisma role.
     console.error('[admin-rbac] admin_user_roles lookup failed:', err)
   }
 
@@ -49,11 +65,7 @@ export async function resolveAdminPlatformRoleForEmail(
   }
 
   const pr = prismaRoleHint !== undefined ? prismaRoleHint : await getCurrentUserRole()
-  if (hasRole(pr, ADMIN_AREA_ROLES)) {
-    return 'founder_admin'
-  }
-
-  return null
+  return defaultPlatformRoleForPrismaRole(pr)
 }
 
 /** Logged-in user’s platform role, or null. */
@@ -86,7 +98,7 @@ export function isFounderAdminRole(role: AdminPlatformRole | null): boolean {
   return role === 'founder_admin'
 }
 
-/** Manager or founder (excludes staff). */
+/** Manager or founder (excludes staff and operations coordinator). */
 export function isManagerOrFounder(role: AdminPlatformRole | null): boolean {
   return role === 'founder_admin' || role === 'manager'
 }
@@ -105,7 +117,7 @@ export async function requireFounderAdmin(): Promise<void> {
   }
 }
 
-/** Spec name: manager or founder (not staff). */
+/** Spec name: manager or founder (not staff / operations coordinator). */
 export async function requireManagerOrAdmin(): Promise<void> {
   const r = await resolveAdminPlatformRole()
   if (!isManagerOrFounder(r)) {
@@ -113,19 +125,40 @@ export async function requireManagerOrAdmin(): Promise<void> {
   }
 }
 
-/** Page guard: redirect staff away from manager-only routes. */
-export async function requireManagerOrFounderPageAccess(): Promise<void> {
+/**
+ * Hospitality ops pages: bookings, calendar, clients, prep, timeline, logistics.
+ * Blocks legacy `staff` (dashboard-only).
+ */
+export async function requireHospitalityOpsPageAccess(): Promise<void> {
   let r: AdminPlatformRole | null = null
   try {
     r = await resolveAdminPlatformRole()
   } catch (err) {
-    console.error('[admin-rbac] requireManagerOrFounderPageAccess failed:', err)
+    console.error('[admin-rbac] requireHospitalityOpsPageAccess failed:', err)
     redirect('/admin/login')
   }
   if (!r) {
     redirect('/admin/login')
   }
-  if (r === 'staff') {
+  if (!isHospitalityOpsPlatformRole(r)) {
     redirect('/admin?notice=operational-only')
   }
+}
+
+/** @deprecated Use requireHospitalityOpsPageAccess */
+export const requireManagerOrFounderPageAccess = requireHospitalityOpsPageAccess
+
+/** Block financial reporting / payment admin routes for operations coordinators. */
+export async function requireFinancialPageAccess(): Promise<void> {
+  await requireHospitalityOpsPageAccess()
+  const r = await resolveAdminPlatformRole()
+  if (!canViewPlatformFinancials(r)) {
+    redirect('/admin?notice=hospitality-ops-only')
+  }
+}
+
+/** Call from admin layout children wrapper or individual financial pages. */
+export async function guardFinancialPath(pathname: string): Promise<void> {
+  if (!isFinancialAdminPath(pathname)) return
+  await requireFinancialPageAccess()
 }

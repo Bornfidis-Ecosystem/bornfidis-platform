@@ -3,10 +3,13 @@
  */
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import { UserRole } from '@prisma/client'
 import { checkAdminAccess } from '@/lib/requireAdmin'
 import { CulinaryAdminChrome } from '@/components/culinary-os'
-import { getNavForRole } from '@/lib/filter-nav'
+import { getNavForPlatformUser } from '@/lib/filter-nav'
+import { guardFinancialPath } from '@/lib/admin-rbac'
+import { canViewPlatformFinancials, platformRoleLabel } from '@/lib/ops-coordinator-access'
 import { ADMIN_AREA_ROLES, hasRole } from '@/lib/require-role'
 
 const ADMIN_LOAD_ERROR = 'ADMIN_LOAD_ERROR'
@@ -109,12 +112,19 @@ export default async function AdminLayout({
     }
 
     const navRole = effectiveAdminNavRole(result.role, result.isAdmin)
+    const pathname = (await headers()).get('x-pathname') ?? ''
+    await guardFinancialPath(pathname)
+
+    const platformRole = result.platformRole
+    const roleBadge =
+      platformRole != null ? platformRoleLabel(platformRole) : String(navRole ?? 'USER')
 
     return (
       <CulinaryAdminChrome
-        navItems={getNavForRole(navRole)}
+        navItems={getNavForPlatformUser(navRole, platformRole)}
         user={result.user}
-        role={navRole}
+        role={roleBadge}
+        showFinancialShortcuts={canViewPlatformFinancials(platformRole)}
       >
         {children}
       </CulinaryAdminChrome>
