@@ -2,7 +2,8 @@
 
 **Status:** Operational — public website live  
 **Launch date:** 2026-06-02  
-**Commit:** `88279a7` — *Phase 1 public website launch pass*  
+**Latest production commit:** `700c45b` — *Add Bornfidis Difference homepage section* (merged to `main` as `098c4c1`)  
+**Initial launch commit:** `88279a7` — *Phase 1 public website launch pass*  
 **Production URL:** https://bornfidis.com
 
 ---
@@ -11,10 +12,11 @@
 
 | Item | Result |
 |------|--------|
-| Git push | `master` pushed to `origin/master` (`bbfb725..88279a7`) |
-| Vercel build | Production serving on Vercel (`server: Vercel`, region `iad1`) |
+| Git push (initial) | `master` pushed to `origin/master` (`bbfb725..88279a7`) |
+| Git push (optimization) | `700c45b` → `origin/master`; merged to `origin/main` as `098c4c1` |
+| Vercel build | Production redeployed successfully after `main` merge (`server: Vercel`, region `iad1`) |
 | Health check | `GET /api/health` → `200`, database + Supabase connected |
-| Founder QA | Completed before push (forms, booking, nav, mobile) |
+| Founder QA | Completed before initial launch (forms, booking, nav, mobile) |
 
 ### Route verification (production)
 
@@ -29,6 +31,55 @@ All Phase 1 public routes returned **HTTP 200**:
 - `/journal`
 
 Phase 1 markers confirmed in production HTML: hero photography (`brian-kitchen-black-coat`), **BOOK NOW** nav CTA, four primary SKUs in footer.
+
+Post-optimization markers (2026-06-03): **The Bornfidis Difference** section, **Hospitality Credibility** block, `ConversionCtaBand` on key pages, hero names **Brian Maylor**, new photography assets under `public/images/bornfidis-*`.
+
+---
+
+## Final Phase 1 homepage optimization pass (2026-06-03)
+
+**Commit:** `700c45b` on `master` → merged to `main` (`098c4c1`) for Vercel production deploy.
+
+### Homepage conversion improvements
+
+- Hero copy names **Brian Maylor** and states the 15-second value proposition (who, what, trust, how to book).
+- **`ConversionCtaBand`** on Home final CTA — one primary action (Book Private Dining) plus three secondary paths (Request Product, Cooking Class, Contact).
+- Shared conversion band added across Story, Journal, Provisions, Private Dining, and Book — no dead-end pages.
+- Contact form pre-fills **service type** from URL params (`?service=product`, `?service=cooking-class`); footer **Request a Product** deep-links to `/contact?service=product`.
+- Journal `#` placeholders replaced with book/contact links.
+
+### Bornfidis Difference section
+
+- New **`lib/bornfidis-difference.ts`** + **`HomeEditorial.tsx`** / **`home-editorial.css`**.
+- Four-card bridge between founder story and service offers: **Jamaican Roots**, **World-Class Hospitality**, **Vermont Craft**, **Personal Service**.
+- Placed after intro/values, before the three-way services grid.
+
+### Trust / credibility additions
+
+- New **`HospitalityCredibility`** component (`components/marketing/`) replaces the old Home credentials strip.
+- Stats, Royal Caribbean milestones, guest testimonials, and RC appraisal quote from **`lib/hospitality-credibility.ts`**.
+- Also deployed on **Private Dining** (after gallery, before occasion tiers).
+
+### Photography improvements
+
+- Centralized paths in **`lib/bornfidis-photos.ts`**; RC legacy imagery confined to story/credibility sections (not service heroes).
+- New assets live in production (all **HTTP 200**): `brian-kitchen-chef-cap.png`, `seasonal-salad-watermelon-radish.png`, `portland-parish-valley.png`, RC credibility gallery (`brian-rc-guests-dining.png`, etc.).
+- Our Story hero switched from RC vest to kitchen portrait; audit documented in **`docs/PHASE1_PHOTOGRAPHY_AUDIT.md`**.
+
+### Production verification (2026-06-03)
+
+| Check | Result |
+|-------|--------|
+| Vercel deploy after `main` merge | ✅ Live — cache age refreshed; new HTML markers present |
+| Home — Bornfidis Difference | ✅ Four cards render (`bornfidis-difference` region) |
+| Home + Private Dining — Hospitality Credibility | ✅ Stats, milestones, testimonials render |
+| Photography assets | ✅ New `bornfidis-*` images return 200 |
+| Mobile @ 390×844 — Home | ✅ Hamburger nav (Home, Private Dining, Provisions, Our Story, Journal, Contact, BOOK NOW) |
+| Mobile — Private Dining | ✅ Hero, inquiry form, credibility block, conversion band |
+| Mobile — Provisions | ✅ SKU filters, Request CTAs, conversion band |
+| Mobile — Contact | ✅ Hero, inquiry form, service-type selector |
+
+**Note:** Vercel **Production Branch** is **`main`**. Pushes to `master` alone do not deploy until merged to `main` (or branch setting changed). See `DEPLOY_STATUS.md`.
 
 ---
 
@@ -83,7 +134,7 @@ None identified at launch. Site is operational for Phase 1 conversion paths.
 5. **No dedicated `/cooking-classes` page** — flows through Contact form.
 6. **Academy / Sportswear / Experience** — routes exist but excluded from public nav (correct for Phase 1).
 7. **`platform.bornfidis.com` DNS** — not live; update env vars and DNS when subdomain is needed.
-8. **Git branch drift** — `origin/main` is many commits behind `origin/master`. Confirm Vercel **Production Branch** is `master` (or merge master → main) before future deploys. See `DEPLOY_STATUS.md`.
+8. **Git branch drift** — resolved for this pass via `master` → `main` merge (`098c4c1`). For future deploys, merge to **`main`** or set Vercel Production Branch to **`master`**. See `DEPLOY_STATUS.md`.
 
 ### Repo hygiene (local, unstaged)
 
@@ -108,4 +159,4 @@ None identified at launch. Site is operational for Phase 1 conversion paths.
 
 ## Sign-off
 
-Phase 1 public website is **live and operational** at https://bornfidis.com. Focus shifts to revenue activity: outreach, discovery calls, proposals, and bookings.
+Phase 1 public website is **live and operational** at https://bornfidis.com. The **final Phase 1 homepage optimization pass** (`700c45b`) is deployed to production. Focus shifts to revenue activity: outreach, discovery calls, proposals, and bookings — not further site expansion.
