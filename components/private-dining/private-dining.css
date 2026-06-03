@@ -790,6 +790,31 @@
   flex-shrink: 0;
 }
 
+.bf-pd .pricing-inquire {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--green);
+  border-bottom: 1px solid rgba(26, 60, 52, 0.25);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.bf-pd .pricing-card.featured .pricing-inquire {
+  color: var(--gold);
+  border-bottom-color: rgba(201, 168, 76, 0.35);
+}
+
+.bf-pd .pricing-inquire:hover {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
 /* ── Booking form ───────────────────────────────────────────── */
 .bf-pd .booking-section {
   background: var(--green);

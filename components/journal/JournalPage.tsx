@@ -4,6 +4,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
+import { bornfidisPhotos } from '@/lib/bornfidis-photos'
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
+
 /**
  * Bornfidis — Journal (editorial / newspaper layout).
  *
@@ -68,8 +72,8 @@ const POSTS: Post[] = [
     category: 'sourcing',
     imageClass: 'light-bg',
     imageTag: 'Replace with Vermont farm photography',
-    src: '/images/bornfidis-table/vermont-table-cabin.jpg',
-    alt: 'Forest visible through the windows of a Vermont log cabin — Bornfidis maple sourcing country',
+    src: bornfidisPhotos.food.seasonalSalad,
+    alt: 'Seasonal salad with watermelon radish, berries, and goat cheese — Bornfidis Vermont sourcing',
     label: 'Sourcing',
     title: 'The Sugar Maple That Takes Forty Years Before Its First Tap.',
     excerpt:
@@ -80,7 +84,7 @@ const POSTS: Post[] = [
   {
     category: 'table',
     imageTag: 'Replace with table photography',
-    src: '/images/bornfidis-food/grilled-fish-orchid.png',
+    src: bornfidisPhotos.food.grilledFishOrchid,
     alt: 'A finished Bornfidis course — grilled fish with an orchid garnish, plated for service',
     label: 'The Table',
     title: 'The Silence at the Table. What It Means When a Guest Stops Talking.',
@@ -92,8 +96,8 @@ const POSTS: Post[] = [
     category: 'jamaica',
     imageClass: 'green',
     imageTag: 'Replace with Portland Parish photography',
-    src: '/images/bornfidis-jamaica/desire-valley-road.png',
-    alt: 'A country road winding through the green hills of Portland Parish, Jamaica — Bornfidis sourcing country',
+    src: bornfidisPhotos.jamaica.portlandParishValley,
+    alt: 'Green hills and valley in Portland Parish, Jamaica — Bornfidis Caribbean sourcing country',
     label: 'Jamaica',
     title: 'Why Scotch Bonnet Is Not About the Heat. A Defense of the Most Misunderstood Pepper.',
     excerpt:
@@ -105,7 +109,7 @@ const POSTS: Post[] = [
     category: 'vermont',
     imageClass: 'light-bg',
     imageTag: 'Replace with Vermont winter photography',
-    src: '/images/bornfidis-table/vermont-table-cabin.jpg',
+    src: bornfidisPhotos.table.vermontCabin,
     alt: 'A Bornfidis private dining table set inside a Vermont log cabin',
     label: 'Vermont',
     title: 'Cold-Smoking Salt in a Vermont Winter. Notes on 18 Hours and What Patience Tastes Like.',
@@ -132,7 +136,7 @@ const MOST_READ = [
 const MINI_CARDS = [
   {
     imageClass: '',
-    src: '/images/bornfidis-food/creme-brulee.png',
+    src: bornfidisPhotos.food.cremeBrulee,
     alt: 'Bornfidis crème brûlée plated with berries and mint for a private dining course',
     category: 'The Table',
     title: 'What a Private Dining Guest Actually Wants. And What They Are Afraid to Ask For.',
@@ -140,7 +144,7 @@ const MINI_CARDS = [
   },
   {
     imageClass: 'slate',
-    src: '/images/bornfidis-jamaica/clarendon-valley-mist.png',
+    src: bornfidisPhotos.jamaica.clarendonMist,
     alt: 'Misty green hills above Port Antonio, Jamaica — Bornfidis Caribbean roots',
     category: 'Jamaica',
     title: 'Port Antonio Is Not a Destination. It Is a Kitchen with a View.',
@@ -149,7 +153,7 @@ const MINI_CARDS = [
   },
   {
     imageClass: 'light',
-    src: '/images/bornfidis-food/oysters-on-ice.png',
+    src: bornfidisPhotos.food.oystersOnIce,
     alt: 'Freshly shucked oysters on ice with dipping sauces, sourced for a Bornfidis menu',
     category: 'Sourcing',
     title: 'Why We Reduce Production Rather Than Substitute and Mislabel.',
@@ -167,7 +171,19 @@ const ARCHIVE_CATS = [
   'Jamaica',
   'Private Dining',
   'Recipe Notes',
-]
+] as const
+
+function journalNextStepHref(category: Post['category']): string {
+  if (category === 'provisions') return PHASE1_CTA.requestProduct.href
+  if (category === 'table' || category === 'kitchen') return PHASE1_CTA.bookPrivateDining.href
+  return PHASE1_CTA.contactBornfidis.href
+}
+
+function journalNextStepLabel(category: Post['category']): string {
+  if (category === 'provisions') return 'Request a product'
+  if (category === 'table' || category === 'kitchen') return 'Book private dining'
+  return 'Start an inquiry'
+}
 
 export default function JournalPage() {
   const [activeCategory, setActiveCategory] = useState<CategoryId>('all')
@@ -263,7 +279,7 @@ export default function JournalPage() {
       <article className="featured-post" style={{ display: isHidden('kitchen') ? 'none' : undefined }}>
         <div className="featured-image">
           <Image
-            src="/images/bornfidis-events/plates-service-row.png"
+            src={bornfidisPhotos.events.platesServiceRow}
             alt="A row of plated Bornfidis courses lined up and ready for service"
             fill
             priority
@@ -286,9 +302,10 @@ export default function JournalPage() {
           </div>
           <div className="featured-footer">
             <span className="article-date">November 2025</span>
-            <a href="#" className="read-link">
-              Read the piece <span className="read-link-arrow">&rarr;</span>
-            </a>
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="read-link">
+              {PHASE1_CTA.bookPrivateDining.shortLabel}{' '}
+              <span className="read-link-arrow">&rarr;</span>
+            </Link>
           </div>
         </div>
       </article>
@@ -327,9 +344,10 @@ export default function JournalPage() {
                 </div>
                 <div className="post-footer">
                   <span className="article-date">{p.date}</span>
-                  <a href="#" className="read-link">
-                    Read <span className="read-link-arrow">&rarr;</span>
-                  </a>
+                  <Link href={journalNextStepHref(p.category)} className="read-link">
+                    {journalNextStepLabel(p.category)}{' '}
+                    <span className="read-link-arrow">&rarr;</span>
+                  </Link>
                 </div>
               </div>
             </article>
@@ -351,8 +369,8 @@ export default function JournalPage() {
                 </div>
               </div>
             ))}
-            <Link href="/contact" className="sidebar-link">
-              Request a product &rarr;
+            <Link href={PHASE1_CTA.requestProduct.href} className="sidebar-link">
+              {PHASE1_CTA.requestProduct.label} &rarr;
             </Link>
           </div>
 
@@ -373,8 +391,11 @@ export default function JournalPage() {
             <p className="booking-sidebar-body">
               Private dining from $150 per person. We come to you. Vermont and New Jersey.
             </p>
-            <Link href="/book" className="btn-sidebar">
-              Book Private Dining
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="btn-sidebar">
+              {PHASE1_CTA.bookPrivateDining.shortLabel}
+            </Link>
+            <Link href={PHASE1_CTA.bookCookingClass.href} className="sidebar-link" style={{ marginTop: '0.75rem', display: 'block' }}>
+              {PHASE1_CTA.bookCookingClass.label} &rarr;
             </Link>
           </div>
 
@@ -384,10 +405,11 @@ export default function JournalPage() {
               The Journal arrives by email before it publishes here. Seasonal notes. First access to
               new batches.
             </p>
-            <input type="email" placeholder="your@email.com" aria-label="Email address" />
-            <button type="button">Join the community</button>
+            <Link href={PHASE1_CTA.contactBornfidis.href} className="btn-sidebar" style={{ marginTop: '0.75rem', display: 'inline-block' }}>
+              {PHASE1_CTA.contactBornfidis.label}
+            </Link>
             <p className="newsletter-note">
-              No frequency commitment. We write when we have something worth saying.
+              Prefer email updates later? Start with an inquiry — we&apos;ll add you when batches open.
             </p>
           </div>
         </aside>
@@ -443,9 +465,10 @@ export default function JournalPage() {
           </p>
           <div className="long-read-footer">
             <span className="article-date">November 2025</span>
-            <a href="#" className="read-link">
-              Continue reading <span className="read-link-arrow">&rarr;</span>
-            </a>
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="read-link">
+              {PHASE1_CTA.bookPrivateDining.shortLabel}{' '}
+              <span className="read-link-arrow">&rarr;</span>
+            </Link>
           </div>
         </div>
       </div>
@@ -454,9 +477,9 @@ export default function JournalPage() {
       <section className="more-posts">
         <div className="more-posts-header">
           <h2 className="more-posts-title">More from the journal</h2>
-          <a href="#" className="more-posts-link">
-            View all &rarr;
-          </a>
+          <Link href={PHASE1_CTA.contactBornfidis.href} className="more-posts-link">
+            {PHASE1_CTA.contactBornfidis.label} &rarr;
+          </Link>
         </div>
         <div className="more-grid">
           {MINI_CARDS.map((m) => (
@@ -488,12 +511,18 @@ export default function JournalPage() {
         </div>
         <div className="archive-categories">
           {ARCHIVE_CATS.map((c) => (
-            <button key={c} type="button" className="archive-cat">
+            <Link key={c} href={PHASE1_CTA.contactBornfidis.href} className="archive-cat">
               {c}
-            </button>
+            </Link>
           ))}
         </div>
       </div>
+
+      <ConversionCtaBand
+        compact
+        title="Inspired by what you read?"
+        body="Private dining, provisions, and cooking classes all start with a conversation."
+      />
     </div>
   )
 }

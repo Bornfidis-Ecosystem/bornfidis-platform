@@ -4,6 +4,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect } from 'react'
 
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+import { HospitalityCredibility } from '@/components/marketing/HospitalityCredibility'
+import { bornfidisPhotos } from '@/lib/bornfidis-photos'
+import { BORNFIDIS_DIFFERENCE } from '@/lib/bornfidis-difference'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
+
 /**
  * Bornfidis — editorial homepage ("Caribbean Heart. Vermont Hands.").
  *
@@ -68,21 +74,22 @@ export default function HomeEditorial() {
           </h1>
           <div className="hero-rule" />
           <p className="hero-body">
-            Private dining and small-batch provisions rooted in Jamaican culinary tradition and
-            Vermont craft. Thirteen years of luxury hospitality. One table at a time.
+            Founded by chef <strong>Brian Maylor</strong> — private dining and small-batch provisions
+            rooted in Jamaican culinary tradition and Vermont craft. Thirteen years of luxury
+            hospitality. One table at a time.
           </p>
           <div className="hero-actions">
-            <Link href="/book" className="btn-primary">
-              Book Private Dining
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="btn-primary">
+              {PHASE1_CTA.bookPrivateDining.shortLabel}
             </Link>
-            <Link href="/provisions" className="btn-ghost">
-              Request a Product
+            <Link href={PHASE1_CTA.requestProduct.href} className="btn-ghost">
+              {PHASE1_CTA.requestProduct.label}
             </Link>
           </div>
         </div>
         <div className="hero-right">
           <Image
-            src="/images/bornfidis-founder/brian-kitchen-black-coat.jpg"
+            src={bornfidisPhotos.founder.kitchenHero}
             alt="Brian Maylor, Private Chef & Founder of Bornfidis, in the kitchen"
             fill
             priority
@@ -186,6 +193,43 @@ export default function HomeEditorial() {
         </div>
       </section>
 
+      {/* ── The Bornfidis Difference (story → offer) ─────────── */}
+      <section className="difference" aria-labelledby="bornfidis-difference-title">
+        <div className="difference-header">
+          <p className="label reveal">What makes us different</p>
+          <h2 id="bornfidis-difference-title" className="difference-title reveal reveal-delay-1">
+            The Bornfidis Difference
+          </h2>
+          <p className="difference-lead reveal reveal-delay-2">
+            Caribbean flavor memory. Vermont seasonal discipline. Luxury-ship training. A table built
+            entirely for you — not a preset package.
+          </p>
+        </div>
+        <div className="difference-grid">
+          {BORNFIDIS_DIFFERENCE.map((item, i) => (
+            <div
+              key={item.title}
+              className={`difference-card reveal${i ? ` reveal-delay-${Math.min(i, 3)}` : ''}`}
+            >
+              <span className="difference-num">{item.num}</span>
+              <h3 className="difference-name">{item.title}</h3>
+              <p className="difference-desc">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className="difference-cta reveal reveal-delay-3">
+          <Link href={PHASE1_CTA.bookPrivateDining.href} className="difference-cta-primary">
+            {PHASE1_CTA.bookPrivateDining.label}
+          </Link>
+          <span className="difference-cta-divider" aria-hidden>
+            ·
+          </span>
+          <Link href="/our-story" className="difference-cta-link">
+            Brian&apos;s full story &rarr;
+          </Link>
+        </div>
+      </section>
+
       {/* ── Services ────────────────────────────────────────── */}
       <section className="services">
         <div className="services-header">
@@ -213,8 +257,8 @@ export default function HomeEditorial() {
               Seasonal. Built around your guests and your occasion. We arrive, we cook, we serve, we
               leave the kitchen as we found it.
             </p>
-            <Link href="/book" className="service-action">
-              Inquire about a dinner <span className="service-arrow">&rarr;</span>
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="service-action">
+              {PHASE1_CTA.bookPrivateDining.shortLabel} <span className="service-arrow">&rarr;</span>
             </Link>
           </div>
           <div className="service-card reveal reveal-delay-1">
@@ -225,8 +269,8 @@ export default function HomeEditorial() {
               Maple Jerk Rub. Jerk Marinade. Sorrel Gastrique. Green Seasoning. Request your batch
               — we produce when demand aligns.
             </p>
-            <Link href="/contact" className="service-action">
-              Request a product <span className="service-arrow">&rarr;</span>
+            <Link href={PHASE1_CTA.requestProduct.href} className="service-action">
+              {PHASE1_CTA.requestProduct.label} <span className="service-arrow">&rarr;</span>
             </Link>
           </div>
           <div className="service-card reveal reveal-delay-2">
@@ -236,8 +280,8 @@ export default function HomeEditorial() {
               Hands-on sessions rooted in Caribbean technique and Vermont craft. Learn the marinades,
               the rubs, and the table philosophy behind every Bornfidis dinner — in your kitchen or ours.
             </p>
-            <Link href="/contact" className="service-action">
-              Book a cooking class <span className="service-arrow">&rarr;</span>
+            <Link href={PHASE1_CTA.bookCookingClass.href} className="service-action">
+              {PHASE1_CTA.bookCookingClass.label} <span className="service-arrow">&rarr;</span>
             </Link>
           </div>
         </div>
@@ -312,47 +356,7 @@ export default function HomeEditorial() {
         </div>
       </section>
 
-      {/* ── Credentials ─────────────────────────────────────── */}
-      <section className="credentials">
-        <div className="credentials-grid">
-          <div className="cred-item reveal">
-            <div className="cred-number">
-              13<span>yrs</span>
-            </div>
-            <div className="cred-label">
-              Royal Caribbean
-              <br />
-              luxury hospitality
-            </div>
-          </div>
-          <div className="cred-item reveal reveal-delay-1">
-            <div className="cred-number">
-              97<span>.80</span>
-            </div>
-            <div className="cred-label">
-              Guest satisfaction
-              <br />
-              average score
-            </div>
-          </div>
-          <div className="cred-item reveal reveal-delay-2">
-            <div className="cred-number">7</div>
-            <div className="cred-label">
-              Ships served — galley
-              <br />
-              and dining room
-            </div>
-          </div>
-          <div className="cred-item reveal reveal-delay-3">
-            <div className="cred-number">2</div>
-            <div className="cred-label">
-              Countries. One
-              <br />
-              culinary identity.
-            </div>
-          </div>
-        </div>
-      </section>
+      <HospitalityCredibility context="home" className="reveal" />
 
       {/* ── Philosophy ──────────────────────────────────────── */}
       <section className="philosophy">
@@ -376,7 +380,7 @@ export default function HomeEditorial() {
       <section className="locations">
         <div className="location-panel vermont">
           <Image
-            src="/images/bornfidis-table/vermont-table-cabin.jpg"
+            src={bornfidisPhotos.table.vermontCabin}
             alt="A Bornfidis private dining table set inside a Vermont log cabin"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -404,7 +408,7 @@ export default function HomeEditorial() {
         </div>
         <div className="location-panel jamaica">
           <Image
-            src="/images/bornfidis-jamaica/clarendon-valley-mist.png"
+            src={bornfidisPhotos.jamaica.clarendonMist}
             alt="Misty green hills above Port Antonio, Jamaica — the Caribbean roots of Bornfidis"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -432,26 +436,13 @@ export default function HomeEditorial() {
         </div>
       </section>
 
-      {/* ── CTA ─────────────────────────────────────────────── */}
-      <section className="cta-section">
-        <p className="cta-eyebrow reveal">The table is ready</p>
-        <h2 className="cta-title reveal reveal-delay-1">
-          Your table is waiting.
-          <br />
-          Let&apos;s begin.
-        </h2>
-        <p className="cta-body reveal reveal-delay-2">
-          Private dining from $150 per person. We come to you. We bring everything. You sit down.
-        </p>
-        <div className="cta-actions reveal reveal-delay-3">
-          <Link href="/book" className="btn-primary">
-            Book Private Dining
-          </Link>
-          <Link href="/contact" className="btn-bone">
-            Contact Bornfidis
-          </Link>
-        </div>
-      </section>
+      <ConversionCtaBand
+        variant="forest"
+        eyebrow="The table is ready"
+        title="Your table is waiting. Let's begin."
+        body="Private dining from $150 per person. We come to you. We bring everything. You sit down."
+        className="reveal"
+      />
     </div>
   )
 }

@@ -56,8 +56,8 @@ export default function PublicFooter() {
             <p className={colTitleClass}>Provisions</p>
             <ul className="flex flex-col gap-3">
               <li>
-                <Link href="/provisions" className={linkClass}>
-                  Request a Product
+                <Link href={PHASE1_CTA.requestProduct.href} className={linkClass}>
+                  {PHASE1_CTA.requestProduct.label}
                 </Link>
               </li>
               {PHASE1_PRIMARY_PRODUCTS.map((p) => (

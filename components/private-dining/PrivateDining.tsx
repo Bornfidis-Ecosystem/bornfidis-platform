@@ -1,6 +1,11 @@
 'use client'
 
 import Image from 'next/image'
+
+import { bornfidisPhotos } from '@/lib/bornfidis-photos'
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+import { HospitalityCredibility } from '@/components/marketing/HospitalityCredibility'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -240,12 +245,12 @@ export default function PrivateDining() {
             menus. No performance. A meal made entirely for the people at your table.
           </p>
           <a href="#book" className="btn-primary">
-            Book Private Dining
+            {PHASE1_CTA.bookPrivateDining.shortLabel}
           </a>
         </div>
         <div className="page-hero-right">
           <Image
-            src="/images/bornfidis-events/brian-service-plating.png"
+            src={bornfidisPhotos.events.servicePlating}
             alt="Chef Brian Maylor plating a course at a Bornfidis private dining event"
             fill
             priority
@@ -456,7 +461,7 @@ export default function PrivateDining() {
         <div className="gallery-grid">
           <div className="gallery-item large">
             <Image
-              src="/images/bornfidis-events/plates-service-row.png"
+              src={bornfidisPhotos.events.platesServiceRow}
               alt="A row of plated Bornfidis courses lined up for service at a private event"
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -474,7 +479,7 @@ export default function PrivateDining() {
           </div>
           <div className="gallery-item">
             <Image
-              src="/images/bornfidis-food/grilled-fish-orchid.png"
+              src={bornfidisPhotos.food.grilledFishOrchid}
               alt="A finished Bornfidis course — grilled fish with an orchid garnish"
               fill
               sizes="(max-width: 768px) 100vw, 25vw"
@@ -487,7 +492,7 @@ export default function PrivateDining() {
           </div>
           <div className="gallery-item">
             <Image
-              src="/images/bornfidis-food/creme-brulee.png"
+              src={bornfidisPhotos.food.cremeBrulee}
               alt="Bornfidis crème brûlée dessert course served at a private dining table"
               fill
               sizes="(max-width: 768px) 100vw, 25vw"
@@ -496,6 +501,8 @@ export default function PrivateDining() {
           </div>
         </div>
       </section>
+
+      <HospitalityCredibility context="private-dining" className="reveal" />
 
       {/* ── Occasions ───────────────────────────────────────── */}
       <section className="occasions">
@@ -577,6 +584,9 @@ export default function PrivateDining() {
               <li>Complete kitchen cleanup</li>
               <li>Dietary accommodations</li>
             </ul>
+            <a href="#book" className="pricing-inquire">
+              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
+            </a>
           </div>
           <div className="pricing-card featured reveal reveal-delay-1">
             <div className="pricing-tier">The Reserve</div>
@@ -595,6 +605,9 @@ export default function PrivateDining() {
               <li>Provisions parting gift</li>
               <li>All of The Gathering inclusions</li>
             </ul>
+            <a href="#book" className="pricing-inquire">
+              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
+            </a>
           </div>
           <div className="pricing-card reveal reveal-delay-2">
             <div className="pricing-tier">The Retreat</div>
@@ -613,6 +626,9 @@ export default function PrivateDining() {
               <li>Full setup and cleanup</li>
               <li>Dietary accommodations</li>
             </ul>
+            <a href="#book" className="pricing-inquire">
+              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
+            </a>
           </div>
         </div>
       </section>
@@ -829,17 +845,11 @@ export default function PrivateDining() {
         </div>
       </section>
 
-      {/* ── Testimonial ─────────────────────────────────────── */}
-      <section className="testimonial">
-        <div className="testimonial-quote reveal">
-          &ldquo;The lamb drew a silence from the table that I will remember for a long time. That
-          silence is the highest compliment a cook can receive.&rdquo;
-        </div>
-        <div className="testimonial-rule reveal reveal-delay-1" />
-        <p className="testimonial-attribution reveal reveal-delay-2">
-          Brian Maylor — Founder, Bornfidis · On the Jerk-Spiced Lamb Shoulder
-        </p>
-      </section>
+      <ConversionCtaBand
+        compact
+        title="Not ready to pick a tier?"
+        body="Cooking classes and provision requests go through the same team — we'll guide you to the right experience."
+      />
     </div>
   )
 }

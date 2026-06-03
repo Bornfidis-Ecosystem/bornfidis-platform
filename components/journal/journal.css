@@ -940,6 +940,8 @@
   cursor: pointer;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
   background: none;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .bf-journal .archive-cat:hover {

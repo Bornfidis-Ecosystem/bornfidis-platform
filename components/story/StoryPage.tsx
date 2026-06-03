@@ -4,14 +4,16 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState, type ReactNode } from 'react'
 
+import { bornfidisPhotos, rcCredibilityGallery } from '@/lib/bornfidis-photos'
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+
 /**
  * Bornfidis — Our Story page.
  *
  * Integration notes:
  * - Nav + footer are the global PublicNav / PublicFooter (RootShell); this page ships neither.
  *   The slate hero is pulled up under the fixed 72px bar in CSS (.bf-story .story-hero).
- * - The hero portrait is a styled placeholder until brand photography of Brian Maylor is supplied;
- *   swap `.hero-photo-area` for a next/image when the asset is ready.
+ * - Hero uses premium kitchen portrait; Royal Caribbean photography lives in `.rc-credibility` only.
  * - All visual styling is scoped under `.bf-story` (components/story/our-story.css).
  */
 
@@ -245,8 +247,8 @@ export default function StoryPage() {
         </div>
         <div className="hero-right">
           <Image
-            src="/images/bornfidis-founder/brian-azamara-vest.png"
-            alt="Brian Maylor, founder of Bornfidis, in his Royal Caribbean Azamara service vest"
+            src={bornfidisPhotos.founder.kitchenHero}
+            alt="Brian Maylor, founder of Bornfidis, in the kitchen — private chef and culinary director"
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -369,7 +371,7 @@ export default function StoryPage() {
           </div>
           <div className="timeline-photo reveal">
             <Image
-              src="/images/bornfidis-founder/brian-rcl-whites-2007.png"
+              src={bornfidisPhotos.founder.rclWhites2007}
               alt="Brian Maylor in Royal Caribbean chef's whites, 2007 — Bornfidis founder"
               fill
               sizes="(max-width: 1024px) 100vw, 22rem"
@@ -452,7 +454,7 @@ export default function StoryPage() {
         </div>
         <div className="crossing-break reveal">
           <Image
-            src="/images/bornfidis-founder/brian-rome-colosseum.png"
+            src={bornfidisPhotos.founder.romeColosseum}
             alt="Brian Maylor in Rome between European ports — Bornfidis"
             fill
             sizes="100vw"
@@ -566,7 +568,7 @@ export default function StoryPage() {
       <section className="two-worlds">
         <div className="world-panel vermont">
           <Image
-            src="/images/bornfidis-table/vermont-table-cabin.jpg"
+            src={bornfidisPhotos.table.vermontCabin}
             alt="A Bornfidis private dining table set inside a Vermont log cabin"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -595,7 +597,7 @@ export default function StoryPage() {
         </div>
         <div className="world-panel jamaica">
           <Image
-            src="/images/bornfidis-jamaica/clarendon-valley-mist.png"
+            src={bornfidisPhotos.jamaica.clarendonMist}
             alt="Misty green hills above Port Antonio, Jamaica — the Caribbean roots of Bornfidis"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
@@ -621,6 +623,35 @@ export default function StoryPage() {
             Provisions · Yacht Catering · Villa Dining · Advance Booking
           </p>
           <div className="world-bg">JA</div>
+        </div>
+      </section>
+
+      {/* ── Royal Caribbean credibility (legacy — not hero marketing) ─ */}
+      <section className="rc-credibility" aria-labelledby="rc-credibility-heading">
+        <div className="rc-credibility-header">
+          <p className="label reveal" style={{ color: 'rgba(201, 168, 76, 0.7)', marginBottom: '1.25rem' }}>
+            The verified years
+          </p>
+          <h2 id="rc-credibility-heading" className="rc-credibility-title reveal reveal-delay-1">
+            Thirteen years aboard
+            <br />
+            <em>the world&rsquo;s largest luxury vessels.</em>
+          </h2>
+          <p className="rc-credibility-body reveal reveal-delay-2">
+            These photographs are from the Royal Caribbean years — galley, dining room, and guest
+            tables at sea. They document the training behind Bornfidis; they are not the brand we
+            sell today. The private dining table is.
+          </p>
+        </div>
+        <div className="rc-credibility-grid">
+          {rcCredibilityGallery.map((item, i) => (
+            <div
+              key={item.src}
+              className={`rc-credibility-item reveal${i ? ` reveal-delay-${Math.min(i, 3)}` : ''}`}
+            >
+              <Image src={item.src} alt={item.alt} fill sizes="(max-width: 768px) 50vw, 25vw" className="rc-credibility-img" />
+            </div>
+          ))}
         </div>
       </section>
 
@@ -664,40 +695,12 @@ export default function StoryPage() {
         </div>
       </section>
 
-      {/* ── Final CTA ───────────────────────────────────────────── */}
-      <section className="story-cta">
-        <div className="cta-left">
-          <p className="label reveal" style={{ marginBottom: '1.25rem' }}>
-            What comes next
-          </p>
-          <h2 className="cta-heading reveal reveal-delay-1">
-            The table is built.
-            <br />
-            <em>Come sit at it.</em>
-          </h2>
-          <p className="cta-body reveal reveal-delay-2">
-            Thirteen years of preparation. Two countries. One culinary identity. The private dining
-            table is the most direct expression of everything in this story — and it is available to
-            book now, across southern Vermont and New Jersey.
-          </p>
-          <div className="cta-actions reveal reveal-delay-3">
-            <Link href="/book" className="btn-primary">
-              Book Private Dining
-            </Link>
-            <Link href="/contact" className="btn-outline">
-              Request a Product
-            </Link>
-          </div>
-        </div>
-        <div className="cta-right">
-          <div className="cta-quote reveal reveal-delay-1">
-            &ldquo;I am not building a business. I am building a table large enough for the
-            generations that come after me to sit at. Everything I make today is a place setting for
-            that future.&rdquo;
-          </div>
-          <p className="cta-quote-attr reveal reveal-delay-2">Brian Maylor — Founder, Bornfidis</p>
-        </div>
-      </section>
+      <ConversionCtaBand
+        variant="forest"
+        eyebrow="What comes next"
+        title="The table is built. Come sit at it."
+        body="Thirteen years of preparation. Two countries. One culinary identity. Book private dining across southern Vermont and New Jersey — or start with provisions and classes."
+      />
     </div>
   )
 }

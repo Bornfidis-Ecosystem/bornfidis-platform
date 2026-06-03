@@ -398,6 +398,149 @@
   font-weight: 400;
 }
 
+/* ── The Bornfidis Difference ───────────────────────────────── */
+.bf-home .difference {
+  background: var(--bone);
+  padding: 6rem 5rem;
+  border-top: 1px solid var(--mid);
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-home .difference-header {
+  max-width: 40rem;
+  margin-bottom: 3.5rem;
+}
+
+.bf-home .difference-title {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--slate);
+  margin-top: 0.75rem;
+}
+
+.bf-home .difference-lead {
+  margin-top: 1.25rem;
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.bf-home .difference-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--mid);
+}
+
+.bf-home .difference-card {
+  background: var(--bone);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: background 0.3s var(--ease);
+  position: relative;
+}
+
+.bf-home .difference-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 2rem;
+  right: 2rem;
+  height: 2px;
+  background: var(--green);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease);
+}
+
+.bf-home .difference-card:hover {
+  background: var(--light);
+}
+
+.bf-home .difference-card:hover::after {
+  transform: scaleX(1);
+}
+
+.bf-home .difference-num {
+  font-family: var(--sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+
+.bf-home .difference-name {
+  font-family: var(--serif);
+  font-size: 1.375rem;
+  font-weight: 400;
+  color: var(--green);
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.bf-home .difference-desc {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.bf-home .difference-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--mid);
+}
+
+.bf-home .difference-cta-primary {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--bone);
+  background: var(--green);
+  padding: 0.875rem 1.75rem;
+  transition: background 0.2s;
+}
+
+.bf-home .difference-cta-primary:hover {
+  background: #143028;
+}
+
+.bf-home .difference-cta-divider {
+  color: var(--gold);
+  opacity: 0.5;
+}
+
+.bf-home .difference-cta-link {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--slate);
+  border-bottom: 1px solid rgba(26, 60, 52, 0.25);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.bf-home .difference-cta-link:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+
 /* ── Services section ───────────────────────────────────────── */
 .bf-home .services {
   background: var(--bone);
@@ -986,6 +1129,9 @@
   .bf-home .intro {
     grid-template-columns: 1fr;
   }
+  .bf-home .difference-grid {
+    grid-template-columns: 1fr 1fr;
+  }
   .bf-home .services-grid {
     grid-template-columns: 1fr;
   }
@@ -1018,6 +1164,12 @@
   }
   .bf-home .services {
     padding: 5rem 1.5rem;
+  }
+  .bf-home .difference {
+    padding: 5rem 1.5rem;
+  }
+  .bf-home .difference-grid {
+    grid-template-columns: 1fr;
   }
   .bf-home .provisions {
     padding: 5rem 1.5rem;

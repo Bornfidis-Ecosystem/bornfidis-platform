@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 
 import { toast } from '@/components/ui/Toast'
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
 
 /**
  * Bornfidis — Provisions page.
@@ -265,6 +267,14 @@ export default function Provisions() {
               Every provision is made by hand in small quantities. Request your batch — we produce
               when demand aligns, then deliver. Request → Produce → Deliver.
             </p>
+            <div className="hero-actions">
+              <Link href={PHASE1_CTA.requestProduct.href} className="btn-primary">
+                {PHASE1_CTA.requestProduct.label}
+              </Link>
+              <Link href={PHASE1_CTA.bookPrivateDining.href} className="btn-outline">
+                {PHASE1_CTA.bookPrivateDining.shortLabel}
+              </Link>
+            </div>
           </div>
           <div className="hero-right">
             <div className="hero-philosophy">
@@ -341,8 +351,8 @@ export default function Provisions() {
                   <div className="product-details">{p.details}</div>
                   <div className="product-footer">
                     <span className="product-price">{p.price}</span>
-                    <button type="button" className="product-add" onClick={() => router.push('/contact')}>
-                      Request a Product
+                    <button type="button" className="product-add" onClick={() => router.push(PHASE1_CTA.requestProduct.href)}>
+                      {PHASE1_CTA.requestProduct.label}
                     </button>
                   </div>
                 </div>
@@ -491,8 +501,8 @@ export default function Provisions() {
             </ul>
             <div className="gift-footer">
               <span className="gift-price">From $38</span>
-              <button type="button" className="btn-add" onClick={() => router.push('/contact')}>
-                Request a Product
+              <button type="button" className="btn-add" onClick={() => router.push(PHASE1_CTA.requestProduct.href)}>
+                {PHASE1_CTA.requestProduct.label}
               </button>
             </div>
           </div>
@@ -508,13 +518,18 @@ export default function Provisions() {
             </ul>
             <div className="gift-footer">
               <span className="gift-price">From $68</span>
-              <button type="button" className="btn-add" onClick={() => router.push('/contact')}>
-                Request a Product
+              <button type="button" className="btn-add" onClick={() => router.push(PHASE1_CTA.requestProduct.href)}>
+                {PHASE1_CTA.requestProduct.label}
               </button>
             </div>
           </div>
         </div>
       </section>
+
+      <ConversionCtaBand
+        title="Need help choosing a provision?"
+        body="Tell us what you're cooking for — we'll recommend a batch and confirm availability."
+      />
 
       {/* ── Community / Newsletter ────────────────────────────── */}
       <section className="community">
@@ -577,7 +592,11 @@ export default function Provisions() {
                 {joining ? 'Joining…' : 'Join the Community'}
               </button>
               <p className="form-note">
-                No frequency commitment. No noise. We write when we have something worth saying.
+                No frequency commitment. No noise. We write when we have something worth saying.{' '}
+                <Link href={PHASE1_CTA.contactBornfidis.href} className="underline">
+                  Or contact us directly
+                </Link>
+                .
               </p>
             </form>
           )}

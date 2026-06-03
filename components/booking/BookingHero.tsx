@@ -1,4 +1,7 @@
 import Image from 'next/image'
+
+import { bornfidisPhotos } from '@/lib/bornfidis-photos'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
 import { PageContainer } from '@/components/ui/PageContainer'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
@@ -21,7 +24,7 @@ export function BookingHero() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start">
               <PrimaryButton theme="culinary" href="#booking-form" className="w-full min-w-[200px] sm:w-auto">
-                Book Private Dining
+                {PHASE1_CTA.bookPrivateDining.label}
               </PrimaryButton>
               <SecondaryButton
                 theme="culinary"
@@ -37,7 +40,7 @@ export function BookingHero() {
           {/* Right — Vermont table photo panel */}
           <div className="relative min-h-[360px] w-full overflow-hidden lg:min-h-[520px]">
             <Image
-              src="/images/bornfidis-table/vermont-table-cabin.jpg"
+              src={bornfidisPhotos.table.vermontCabin}
               alt="Private dining table set in a Vermont log cabin, Bornfidis"
               fill
               priority

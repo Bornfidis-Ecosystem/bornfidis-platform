@@ -937,6 +937,57 @@
   color: rgba(201, 168, 76, 0.6);
 }
 
+/* ── Royal Caribbean credibility gallery ──────────────────── */
+.bf-story .rc-credibility {
+  background: var(--bone);
+  padding: 6rem 5rem;
+  border-top: 1px solid rgba(26, 60, 52, 0.08);
+}
+
+.bf-story .rc-credibility-header {
+  max-width: 42rem;
+  margin-bottom: 3rem;
+}
+
+.bf-story .rc-credibility-title {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 400;
+  color: var(--slate);
+  line-height: 1.2;
+}
+
+.bf-story .rc-credibility-title em {
+  color: var(--green);
+  font-style: italic;
+}
+
+.bf-story .rc-credibility-body {
+  margin-top: 1.25rem;
+  font-family: var(--serif);
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.bf-story .rc-credibility-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.bf-story .rc-credibility-item {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--slate);
+}
+
+.bf-story .rc-credibility-img {
+  object-fit: cover;
+  filter: saturate(0.92) contrast(1.02);
+}
+
 /* ── Credentials wall ─────────────────────────────────────── */
 .bf-story .credentials {
   background: var(--green);
@@ -1197,6 +1248,12 @@
   .bf-story .two-worlds {
     grid-template-columns: 1fr;
   }
+  .bf-story .rc-credibility {
+    padding: 5rem 2rem;
+  }
+  .bf-story .rc-credibility-grid {
+    grid-template-columns: 1fr 1fr;
+  }
   .bf-story .cred-header {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -1224,9 +1281,13 @@
   .bf-story .timeline-section,
   .bf-story .vermont-section,
   .bf-story .mission-section,
+  .bf-story .rc-credibility,
   .bf-story .credentials,
   .bf-story .story-cta {
     padding: 5rem 1.5rem;
+  }
+  .bf-story .rc-credibility-grid {
+    grid-template-columns: 1fr;
   }
   .bf-story .crossing-left,
   .bf-story .crossing-right {

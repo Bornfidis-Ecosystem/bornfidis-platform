@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 
 import ContactPageContent from '@/components/contact/ContactPageContent'
 
@@ -9,5 +10,9 @@ export const metadata: Metadata = {
 }
 
 export default function ContactPage() {
-  return <ContactPageContent />
+  return (
+    <Suspense fallback={null}>
+      <ContactPageContent />
+    </Suspense>
+  )
 }

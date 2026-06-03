@@ -1,9 +1,10 @@
 'use client'
 
 import type { FormEvent, ReactNode } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 
 import {
   bookBody,
@@ -19,8 +20,9 @@ import { BrandedCard } from '@/components/ui/BrandedCard'
 import { PageContainer } from '@/components/ui/PageContainer'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
-import { brandPhotos } from '@/lib/brand-photos'
-import { marketingImages } from '@/lib/marketing-images'
+import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
+import { bornfidisPhotos } from '@/lib/bornfidis-photos'
+import { PHASE1_CONTACT_SERVICE_PARAM, PHASE1_CTA } from '@/lib/phase1-marketing'
 
 const serviceOptions = [
   'Private Chef Dining',
@@ -43,10 +45,10 @@ const eventTypes = [
 ] as const
 
 const MOSAIC = [
-  { src: marketingImages.chefPresentation, alt: 'Chef presenting courses' },
-  { src: marketingImages.cateringHammeredLine, alt: 'Polished service at the table' },
-  { src: marketingImages.cateringBuffetRustic, alt: 'Warm buffet hospitality' },
-  { src: marketingImages.cateringCharcuterie, alt: 'Curated provisions board' },
+  { src: bornfidisPhotos.events.platesServiceRow, alt: 'Plated Bornfidis courses ready for service' },
+  { src: bornfidisPhotos.food.grilledFishOrchid, alt: 'Finished Bornfidis course — grilled fish with orchid garnish' },
+  { src: bornfidisPhotos.food.seasonalSalad, alt: 'Seasonal salad with Vermont ingredients — Bornfidis kitchen' },
+  { src: bornfidisPhotos.food.cremeBrulee, alt: 'Crème brûlée dessert course at a Bornfidis private dinner' },
 ] as const
 
 function SectionEyebrow({ children }: { children: ReactNode }) {
@@ -54,9 +56,21 @@ function SectionEyebrow({ children }: { children: ReactNode }) {
 }
 
 export default function ContactPageContent() {
+  const searchParams = useSearchParams()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const minDate = useMemo(() => new Date().toISOString().split('T')[0], [])
+
+  const presetService = useMemo(() => {
+    const key = searchParams.get('service')?.toLowerCase() ?? ''
+    return PHASE1_CONTACT_SERVICE_PARAM[key] ?? ''
+  }, [searchParams])
+
+  useEffect(() => {
+    if (presetService) {
+      document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [presetService])
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -101,19 +115,23 @@ export default function ContactPageContent() {
               </p>
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <PrimaryButton theme="culinary" href="#contact-form">
-                  Contact Bornfidis
+                  {PHASE1_CTA.contactBornfidis.label}
                 </PrimaryButton>
-                <SecondaryButton theme="culinary" href="/book">
-                  Book Private Dining
-                </SecondaryButton>
-                <SecondaryButton theme="culinary" href="/provisions">
-                  Request a Product
+                <SecondaryButton theme="culinary" href={PHASE1_CTA.bookPrivateDining.href}>
+                  {PHASE1_CTA.bookPrivateDining.shortLabel}
                 </SecondaryButton>
               </div>
+              <p className={`${bookBody} mt-4 text-sm`}>
+                Planning a dinner?{' '}
+                <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#1A3C34] underline">
+                  {PHASE1_CTA.bookPrivateDining.label}
+                </Link>
+                . Provisions or a class? Use the inquiry form below.
+              </p>
             </div>
             <HomepageBrandImage
-              src={brandPhotos.hospitalityDining}
-              alt="Warm hospitality — service around the table"
+              src={bornfidisPhotos.events.servicePlating}
+              alt="Chef Brian Maylor plating a course — Bornfidis private dining"
               variant="hero"
               priority
               className="min-h-[min(380px,50vh)] w-full"
@@ -264,7 +282,13 @@ export default function ContactPageContent() {
                   <label htmlFor="serviceType" className={bookLabelClass}>
                     Service type
                   </label>
-                  <select id="serviceType" name="serviceType" defaultValue="" className={bookFieldClass}>
+                  <select
+                    id="serviceType"
+                    name="serviceType"
+                    defaultValue={presetService}
+                    key={presetService}
+                    className={bookFieldClass}
+                  >
                     <option value="" disabled>
                       Select a service
                     </option>
@@ -378,8 +402,8 @@ export default function ContactPageContent() {
 
           <p className={`${bookBody} mt-8 text-center text-sm`}>
             Prefer the full booking flow?{' '}
-            <Link href="/book" className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
-              Book private dining →
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+              {PHASE1_CTA.bookPrivateDining.label} →
             </Link>
           </p>
         </PageContainer>
