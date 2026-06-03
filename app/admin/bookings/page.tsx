@@ -1,5 +1,7 @@
 import Link from 'next/link'
-import { requireManagerOrFounderPageAccess } from '@/lib/admin-rbac'
+import { redirect } from 'next/navigation'
+import { requireHospitalityOpsPageAccess, resolveAdminPlatformRole } from '@/lib/admin-rbac'
+import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
 import { getAllBookings } from './actions'
 import SignOutButton from '@/components/admin/SignOutButton'
 import BookingsQueueTable from '@/components/admin/BookingsQueueTable'
@@ -32,9 +34,13 @@ function hasActiveQuery(q: ParsedBookingsQuery): boolean {
 }
 
 export default async function AdminBookingsPage({ searchParams }: { searchParams: BookingsSearchParams }) {
-  await requireManagerOrFounderPageAccess()
+  await requireHospitalityOpsPageAccess()
+  const showFinancials = canViewPlatformFinancials(await resolveAdminPlatformRole())
   const raw = await searchParams
   const query = parseBookingsQuery(raw)
+  if (!showFinancials && (query.deposit || query.balance)) {
+    redirect('/admin/bookings')
+  }
 
   let result: Awaited<ReturnType<typeof getAllBookings>>
   try {
@@ -73,7 +79,9 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
 
   const headerDescription = filterActive
     ? 'Filtered queue — active filters are listed below.'
-    : 'Track inquiries, quotes, deposits, and confirmed events.'
+    : showFinancials
+      ? 'Track inquiries, quotes, deposits, and confirmed events.'
+      : 'Track inquiries, prep, timelines, and confirmed events.'
 
   return (
     <div className="space-y-stack-lg">
@@ -119,7 +127,7 @@ export default async function AdminBookingsPage({ searchParams }: { searchParams
         )}
       </div>
 
-      <AdminBookingsFilters />
+      <AdminBookingsFilters showFinancialQueues={showFinancials} />
 
       <main className="container mx-auto px-4 pb-stack-lg">
         <CulinaryCard padded={false} className="overflow-hidden shadow-none">

@@ -6,10 +6,17 @@ type AdminBookingHeaderProps = {
   bookingId: string
   bookingName: string
   quotesHref: string
+  showQuoteActions?: boolean
   actions?: ReactNode
 }
 
-export function AdminBookingHeader({ bookingId, bookingName, quotesHref, actions }: AdminBookingHeaderProps) {
+export function AdminBookingHeader({
+  bookingId,
+  bookingName,
+  quotesHref,
+  showQuoteActions = true,
+  actions,
+}: AdminBookingHeaderProps) {
   return (
     <div className="container mx-auto space-y-stack-md px-4 pt-stack-md">
       <nav className="flex flex-wrap gap-x-4 gap-y-1 font-culinary-sans text-label-caps text-culinary-navy">
@@ -30,15 +37,21 @@ export function AdminBookingHeader({ bookingId, bookingName, quotesHref, actions
       <CulinaryPageHeader
         className="border-0 pb-0"
         title={bookingName}
-        description="Booking details — quotes, payments, timeline, and prep."
+        description={
+          showQuoteActions
+            ? 'Booking details — quotes, payments, timeline, and prep.'
+            : 'Booking details — timeline, prep, logistics, and client notes.'
+        }
         actions={
           <>
-            <Link
-              href={quotesHref}
-              className="inline-flex items-center justify-center rounded-none border border-culinary-gold-line bg-culinary-gold px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:opacity-90"
-            >
-              Create quote from booking
-            </Link>
+            {showQuoteActions ? (
+              <Link
+                href={quotesHref}
+                className="inline-flex items-center justify-center rounded-none border border-culinary-gold-line bg-culinary-gold px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:opacity-90"
+              >
+                Create quote from booking
+              </Link>
+            ) : null}
             {actions}
           </>
         }

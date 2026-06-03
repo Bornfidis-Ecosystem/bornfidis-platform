@@ -17,6 +17,8 @@ type CulinaryAdminChromeProps = {
   navItems: NavItem[]
   user: { email?: string | null }
   role: string | null
+  /** Hide Operations Hub / System links for hospitality-only roles (Phase 1.1). */
+  showFinancialShortcuts?: boolean
 }
 
 function SidebarNavLinks({
@@ -128,20 +130,24 @@ export function CulinaryAdminChrome({ children, navItems, user, role }: Culinary
         </nav>
 
         <div className="mt-auto flex flex-col gap-stack-sm border-t border-culinary-outline-variant px-4 pt-stack-md">
-          <Link
-            href="/admin/ops"
-            onClick={closeMobile}
-            className="block rounded-none bg-culinary-navy px-4 py-3 text-center font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold focus-visible:ring-offset-2 focus-visible:ring-offset-culinary-surface-low"
-          >
-            Operations Hub
-          </Link>
-          <Link
-            href="/admin/system"
-            onClick={closeMobile}
-            className="flex items-center gap-3 py-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-text-muted hover:text-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
-          >
-            Settings
-          </Link>
+          {showFinancialShortcuts ? (
+            <>
+              <Link
+                href="/admin/ops"
+                onClick={closeMobile}
+                className="block rounded-none bg-culinary-navy px-4 py-3 text-center font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold focus-visible:ring-offset-2 focus-visible:ring-offset-culinary-surface-low"
+              >
+                Operations Hub
+              </Link>
+              <Link
+                href="/admin/system"
+                onClick={closeMobile}
+                className="flex items-center gap-3 py-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-text-muted hover:text-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
+              >
+                Settings
+              </Link>
+            </>
+          ) : null}
           <Link
             href="/contact"
             onClick={closeMobile}

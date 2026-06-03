@@ -16,6 +16,7 @@ import { getAdminActivityFeedItems } from '@/lib/admin-activity-data'
 import { getAdminPaymentHealth } from '@/lib/admin-payment-health'
 import PaymentHealthSection from '@/components/admin/PaymentHealthSection'
 import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
+import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
 
 export const dynamic = 'force-dynamic'
 
@@ -94,6 +95,7 @@ export default async function AdminPage() {
     console.error('[admin/page] resolveAdminPlatformRole', e)
   }
   const showFounderOnly = isFounderAdminRole(platformRole)
+  const showFinancials = canViewPlatformFinancials(platformRole)
 
   let metrics: Metrics | null = null
   let divisions: Divisions | null = null
@@ -167,11 +169,15 @@ export default async function AdminPage() {
   return (
     <div className="min-h-screen space-y-stack-xl bg-culinary-bone">
       <CulinaryPageHeader
-        title={showFounderOnly ? 'Command View' : 'Operations'}
+        title={
+          showFounderOnly ? 'Command View' : showFinancials ? 'Operations' : 'Event Operations'
+        }
         description={
           showFounderOnly
             ? 'A unified operational perspective for Bornfidis executive culinary management.'
-            : 'Pipeline, bookings, and calendar for day-to-day culinary operations.'
+            : showFinancials
+              ? 'Pipeline, bookings, and calendar for day-to-day culinary operations.'
+              : 'Upcoming events, prep readiness, and hospitality logistics — no financial data.'
         }
         actions={
           <div className="flex flex-wrap items-center gap-3">
@@ -184,21 +190,24 @@ export default async function AdminPage() {
             <span className="rounded-none border border-culinary-outline bg-culinary-surface-low px-2 py-1 font-culinary-sans text-[10px] font-bold uppercase tracking-[0.12em] text-culinary-navy">
               Phase 1
             </span>
-            <Link
-              href="/admin/quotes"
-              className="hidden sm:inline-flex items-center justify-center rounded-none bg-culinary-navy px-5 py-2.5 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
-            >
-              Quote Builder
-            </Link>
+            {showFinancials ? (
+              <Link
+                href="/admin/quotes"
+                className="hidden sm:inline-flex items-center justify-center rounded-none bg-culinary-navy px-5 py-2.5 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
+              >
+                Quote Builder
+              </Link>
+            ) : null}
           </div>
         }
       />
         {!showFounderOnly && (
           <div className="rounded-none border border-amber-200/80 bg-amber-50/90 px-4 py-3 text-sm text-amber-950">
-            <p className="font-medium">Operations view</p>
+            <p className="font-medium">{showFinancials ? 'Operations view' : 'Operations Coordinator view'}</p>
             <p className="mt-1 text-amber-900/90">
-              Company-wide revenue, payment health, and founder activity tools are hidden. Use Bookings, Calendar, and
-              Pipeline for day-to-day work.
+              {showFinancials
+                ? 'Company-wide revenue, payment health, and founder activity tools are hidden. Use Bookings, Calendar, and Pipeline for day-to-day work.'
+                : 'Hospitality execution only: bookings, calendar, prep, timelines, and client notes. Revenue, deposits, Stripe, payouts, and cost dashboards are not available on this role.'}
             </p>
           </div>
         )}
@@ -298,7 +307,9 @@ export default async function AdminPage() {
             {[
               { label: 'Bookings Created This Week', value: dashboardMetrics?.weekly.bookingsCreated },
               { label: 'Quotes Created This Week', value: dashboardMetrics?.weekly.quotesCreated },
-              { label: 'Deposits Received This Week', value: dashboardMetrics?.weekly.depositsReceived },
+              ...(showFinancials
+                ? [{ label: 'Deposits Received This Week', value: dashboardMetrics?.weekly.depositsReceived }]
+                : []),
             ].map((item) => (
               <CulinaryCard key={item.label}>
                 <p className="font-culinary-sans text-[11px] font-bold uppercase tracking-[0.12em] text-culinary-text-muted">
@@ -355,7 +366,8 @@ export default async function AdminPage() {
         {/* Zone 1.36 — Prep execution readiness (checklist gates, next 7 days) */}
         <PrepAttentionSection rows={prepAttention} />
 
-        {/* Zone 1.5 — Provisions Quote Builder quick launch */}
+        {/* Zone 1.5 — Provisions Quote Builder quick launch (financial roles only) */}
+        {showFinancials ? (
         <section className="min-w-0">
           <h2 className={sectionHeading}>Provisions Quote Builder</h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -383,6 +395,7 @@ export default async function AdminPage() {
             </CulinaryCard>
           </div>
         </section>
+        ) : null}
 
         {/* Zone 2 — Revenue Trend (founder_admin only) */}
         {showFounderOnly && (
@@ -428,7 +441,8 @@ export default async function AdminPage() {
           </section>
         )}
 
-        {/* Zone 3 — Divisions: colored accent, subtle depth */}
+        {/* Zone 3 — Divisions (financial roles only — includes revenue) */}
+        {showFinancials ? (
         <section className="min-w-0">
           <h2 className={sectionHeading}>Divisions</h2>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -494,6 +508,7 @@ export default async function AdminPage() {
             )}
           </div>
         </section>
+        ) : null}
 
         {/* Zone 4 — Provisions funnel summary */}
         <section className="min-w-0">
