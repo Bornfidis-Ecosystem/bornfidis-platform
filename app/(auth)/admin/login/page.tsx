@@ -17,7 +17,17 @@ function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
-  
+  const [logoError, setLogoError] = useState(false)
+  const [logoSrc, setLogoSrc] = useState('/brand/logos/logo-lockup-navy-on-white.png')
+
+  const handleLogoError = () => {
+    if (logoSrc === '/brand/logos/logo-lockup-navy-on-white.png') {
+      setLogoSrc('/logo.png')
+    } else {
+      setLogoError(true)
+    }
+  }
+
   // Safety: Force show login form after 3 seconds no matter what
   useEffect(() => {
     const safetyTimeout = setTimeout(() => {
@@ -89,11 +99,12 @@ function AdminLoginForm() {
             if (data.user) {
               // Clean up URL hash
               window.history.replaceState({}, document.title, window.location.pathname)
-              
-              // CRITICAL FIX: Use full page reload instead of router.push
-              // This ensures middleware runs and syncs localStorage session to cookies
-              // before the server-side auth check happens
-              window.location.href = '/admin/bookings'
+              const next = searchParams.get('next')
+              const redirectTo =
+                next && next.startsWith('/') && !next.startsWith('//')
+                  ? next
+                  : '/admin'
+              window.location.href = redirectTo
               return
             }
           } catch (clientError: any) {
@@ -114,8 +125,12 @@ function AdminLoginForm() {
           if (!isMounted) return
           
           if (user) {
-            // Force full page reload to ensure server gets the cookies
-            window.location.href = '/admin/bookings'
+            const next = searchParams.get('next')
+            const redirectTo =
+              next && next.startsWith('/') && !next.startsWith('//')
+                ? next
+                : '/admin'
+            window.location.href = redirectTo
           } else {
             setIsCheckingAuth(false)
           }
@@ -152,10 +167,17 @@ function AdminLoginForm() {
       const supabase = createClientSupabaseClient()
       
       // Send magic link email
+      const next = searchParams.get('next')
+      const redirectTo =
+        next && next.startsWith('/') ? encodeURIComponent(next) : ''
+      const emailRedirectTo =
+        redirectTo
+          ? `${window.location.origin}/admin/login?next=${redirectTo}`
+          : `${window.location.origin}/admin/login`
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: `${window.location.origin}/admin/login`,
+          emailRedirectTo,
         },
       })
 
@@ -198,6 +220,20 @@ function AdminLoginForm() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-sm p-8 max-w-md w-full">
         <div className="mb-6 text-center">
+          {/* Brand logo: public/brand/logos/logo-lockup-navy-on-white.png or public/logo.png (see docs/BRANDING_GUIDE.md) */}
+          <div className="flex justify-center mb-4 min-h-[3.5rem] items-center">
+            {logoError ? (
+              <span className="text-xl font-bold text-navy">Bornfidis</span>
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                src={logoSrc}
+                alt="Bornfidis"
+                className="h-14 w-auto object-contain"
+                onError={handleLogoError}
+              />
+            )}
+          </div>
           <h1 className="text-3xl font-bold text-navy mb-2">Admin Login</h1>
           <p className="text-gray-600 text-sm">
             Enter your email to receive a magic link
@@ -227,7 +263,7 @@ function AdminLoginForm() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="admin@bornfidis.com"
+              placeholder="bornfidisprovisions@gmail.com"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy focus:border-transparent"
               disabled={isLoading}
             />
@@ -270,3 +306,5 @@ export default function AdminLoginPage() {
     </Suspense>
   )
 }
+
+

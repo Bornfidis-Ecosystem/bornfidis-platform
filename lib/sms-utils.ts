@@ -25,8 +25,19 @@ export async function sendSubmissionConfirmationSMS(
   submissionType: string,
   submissionData?: Record<string, any>
 ): Promise<{ success: boolean; error?: string; messageSid?: string }> {
-  // Format confirmation message
-  const message = `Hi ${name}, we've received your ${submissionType} submission. A Bornfidis coordinator will reach out within 48 hours. Blessings, Bornfidis 🌱`
+  // Booking inquiries: Phase 2 copy (Brian / “WhatsApp-style” reassurance on SMS).
+  // True outbound WhatsApp to the client requires WhatsApp Business API; SMS uses the same voice.
+  const first = name.trim().split(/\s+/)[0] || name.trim()
+  const message =
+    submissionType === 'booking'
+      ? `Hi ${first}, this is Brian from Bornfidis.
+
+I just received your booking request — thank you 🙏
+
+I'll review your details and get back to you shortly with a customized experience.
+
+If there's anything urgent, feel free to message me here anytime.`
+      : `Hi ${name}, we've received your ${submissionType} submission. A Bornfidis coordinator will reach out within 48 hours. Blessings, Bornfidis 🌱`
 
   // Send SMS with retry logic and rate limiting
   // This is non-blocking and will never throw errors

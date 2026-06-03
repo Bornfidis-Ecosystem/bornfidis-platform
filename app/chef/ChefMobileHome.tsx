@@ -33,7 +33,7 @@ export function ChefMobileHome({
     <div className="space-y-4 md:max-w-xl">
       {/* Next booking + primary action — no scroll required on mobile */}
       {nextBooking ? (
-        <section className="rounded-xl border-2 border-[#1a5f3f]/20 bg-white p-4 shadow-sm">
+        <section className="rounded-xl border-2 border-forestDark/20 bg-white p-4 shadow-sm">
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Next booking</p>
           <p className="mt-1 font-semibold text-gray-900">{nextBooking.name}</p>
           <p className="text-sm text-gray-600">
@@ -50,7 +50,7 @@ export function ChefMobileHome({
               <button
                 type="button"
                 onClick={() => handleStatus(nextBooking.assignmentId, 'CONFIRMED')}
-                className="min-h-[44px] min-w-[44px] px-5 py-3 rounded-lg bg-[#1a5f3f] text-white font-semibold touch-manipulation"
+                className="min-h-[44px] min-w-[44px] px-5 py-3 rounded-lg bg-forestDark text-white font-semibold touch-manipulation"
               >
                 Confirm
               </button>
@@ -86,7 +86,7 @@ export function ChefMobileHome({
           <p className="text-sm text-gray-500">No upcoming bookings.</p>
           <Link
             href="/chef/bookings"
-            className="mt-2 inline-block text-sm font-medium text-[#1a5f3f] hover:underline"
+            className="mt-2 inline-block text-sm font-medium text-forestDark hover:underline"
           >
             View all bookings
           </Link>
@@ -101,7 +101,7 @@ export function ChefMobileHome({
         </p>
         <Link
           href="/chef/payouts"
-          className="mt-1 inline-block text-sm font-medium text-[#1a5f3f] hover:underline"
+          className="mt-1 inline-block text-sm font-medium text-forestDark hover:underline"
         >
           View payouts
         </Link>
@@ -113,10 +113,10 @@ export function ChefMobileHome({
           <span className="text-xs font-medium text-gray-500 shrink-0">Badges:</span>
           <div className="flex gap-1" aria-label={`${badgeCount} badges earned`}>
             {Array.from({ length: Math.min(badgeCount, 8) }).map((_, i) => (
-              <span key={i} className="w-8 h-8 rounded-full bg-[#1a5f3f]/20 flex items-center justify-center text-sm" aria-hidden>✓</span>
+              <span key={i} className="w-8 h-8 rounded-full bg-forestDark/20 flex items-center justify-center text-sm" aria-hidden>✓</span>
             ))}
           </div>
-          <Link href="/chef" className="shrink-0 text-xs text-[#1a5f3f] font-medium">All</Link>
+          <Link href="/chef" className="shrink-0 text-xs text-forestDark font-medium">All</Link>
         </section>
       )}
       {performanceLine && (
@@ -137,3 +137,4 @@ export function ChefMobileHome({
     </div>
   )
 }
+

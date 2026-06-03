@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Story } from '@/types/launch'
@@ -101,7 +102,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-lg font-medium transition ${
               filter === f
-                ? 'bg-[#1a5f3f] text-white'
+                ? 'bg-forestDark text-white'
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
@@ -111,8 +112,8 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
       </div>
 
       {/* Stories List */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4 pb-2 border-b border-[#FFBC00]">
+      <CulinaryCard>
+        <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
           Stories
         </h2>
         {filteredStories.length === 0 ? (
@@ -123,7 +124,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
               <div key={story.id} className="border border-gray-200 rounded-lg p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-[#1a5f3f] mb-2">{story.title}</h3>
+                    <h3 className="text-lg font-semibold text-forestDark mb-2">{story.title}</h3>
                     <p className="text-sm text-gray-600 mb-2">
                       By {story.author_name}
                       {story.author_region && ` • ${story.author_region}`}
@@ -141,7 +142,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
                         {story.category}
                       </span>
                       {story.is_featured && (
-                        <span className="px-2 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-full text-xs font-semibold">
+                        <span className="px-2 py-1 bg-gold text-forestDark rounded-full text-xs font-semibold">
                           Featured
                         </span>
                       )}
@@ -174,7 +175,7 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
                         className={`px-4 py-2 rounded-lg text-sm font-semibold transition ${
                           story.is_featured
                             ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            : 'bg-[#FFBC00] text-[#1a5f3f] hover:bg-gold-dark'
+                            : 'bg-gold text-forestDark hover:bg-gold-dark'
                         }`}
                       >
                         {story.is_featured ? 'Unfeature' : 'Feature'}
@@ -196,7 +197,8 @@ export default function StoriesDashboardClient({ initialData }: StoriesDashboard
             ))}
           </div>
         )}
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

@@ -84,7 +84,7 @@ export default async function ChefAvailabilityPage({
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto">
-      <Link href="/chef" className="text-sm text-[#1a5f3f] hover:underline mb-4 inline-block">
+      <Link href="/chef" className="text-sm text-forestDark hover:underline mb-4 inline-block">
         ← Chef Dashboard
       </Link>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">My Availability</h1>

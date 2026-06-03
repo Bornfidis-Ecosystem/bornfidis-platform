@@ -12,15 +12,31 @@ export const bookingSchema = z.object({
   }, 'Event date must be today or in the future'),
   eventTime: z.string().optional(),
   location: z.string().min(10, 'Location must be at least 10 characters'),
-  guests: z.string().optional().transform((val) => val ? parseInt(val, 10) : undefined),
+  guests: z.string().optional().transform((val) => (val ? parseInt(val, 10) : undefined)),
   budgetRange: z.string().optional(),
   dietaryRestrictions: z.string().optional(),
+  experienceType: z.string().optional(),
+  menuPreference: z.string().optional(),
   notes: z.string().optional(),
   // Honeypot field - should be empty
   website_url: z.string().max(0, 'Spam detected').optional(),
 })
 
 export type BookingFormData = z.infer<typeof bookingSchema>
+
+/** Collapse experience/menu + freeform notes into a single DB notes field. */
+export function mergeBookingNotesFields(data: {
+  notes?: string | null
+  experienceType?: string | null
+  menuPreference?: string | null
+}): string | null {
+  const parts = [
+    data.notes?.trim(),
+    data.experienceType ? `Experience type: ${data.experienceType}` : null,
+    data.menuPreference ? `Menu preference: ${data.menuPreference}` : null,
+  ].filter(Boolean) as string[]
+  return parts.length ? parts.join('\n\n') : null
+}
 
 /**
  * Phase 3A: Quote validation schemas

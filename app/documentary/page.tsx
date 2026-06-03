@@ -37,10 +37,10 @@ export default async function DocumentaryPage() {
   return (
     <div className="bg-white">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white py-16">
+      <header className="bg-forestDark text-white py-16">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-5xl font-bold mb-4">The Bornfidis Documentary</h1>
-          <div className="h-1 w-32 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-32 bg-gold mx-auto mb-6"></div>
           <p className="text-green-100 text-lg max-w-2xl mx-auto">
             Watch the story of Bornfidis come to life through video testimonies and documentaries.
           </p>
@@ -64,7 +64,7 @@ export default async function DocumentaryPage() {
 
               return (
                 <div key={story.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-                  <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-4">{story.title}</h2>
+                  <h2 className="text-2xl font-semibold text-forestDark mb-4">{story.title}</h2>
                   <div className="w-full mb-4 rounded-lg overflow-hidden" style={{ paddingBottom: '56.25%', position: 'relative', height: 0 }}>
                     <iframe
                       src={embedUrl}
@@ -88,3 +88,4 @@ export default async function DocumentaryPage() {
     </div>
   )
 }
+

@@ -2,23 +2,24 @@ import React from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type { ChefMonthStatement } from '@/lib/chef-statements'
 import { formatUSD } from '@/lib/money'
+import { colors } from '@/lib/design-tokens'
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   header: {
     marginBottom: 24,
-    borderBottom: '3 solid #1a5f3f',
+    borderBottom: `3 solid ${colors.forestDark}`,
     paddingBottom: 12,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#1a5f3f',
+    color: colors.forestDark,
     marginBottom: 4,
   },
   subtitle: {
@@ -31,9 +32,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#1a5f3f',
+    color: colors.forestDark,
     marginBottom: 8,
-    borderBottom: '1 solid #FFBC00',
+    borderBottom: `1 solid ${colors.gold}`,
     paddingBottom: 4,
   },
   table: {
@@ -41,8 +42,8 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#1a5f3f',
-    color: '#FFFFFF',
+    backgroundColor: colors.forestDark,
+    color: colors.white,
     padding: 6,
     fontWeight: 'bold',
     fontSize: 9,
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: '#1a5f3f',
-    color: '#FFFFFF',
+    backgroundColor: colors.forestDark,
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 8,
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 10,
     backgroundColor: '#f0f9f4',
-    borderLeft: '3 solid #1a5f3f',
+    borderLeft: `3 solid ${colors.forestDark}`,
     fontSize: 10,
     color: '#333333',
   },

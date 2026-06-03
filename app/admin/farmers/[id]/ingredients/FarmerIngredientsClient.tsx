@@ -117,7 +117,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
       {/* Assigned Ingredients */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-[#1a5f3f]">Assigned Ingredients ({farmerIngredients.length})</h2>
+          <h2 className="text-xl font-semibold text-forestDark">Assigned Ingredients ({farmerIngredients.length})</h2>
         </div>
         {farmerIngredients.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
@@ -146,7 +146,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                     <td className="py-3 px-6">
                       <span className="text-xs text-gray-600 capitalize">{fi.ingredient?.category}</span>
                     </td>
-                    <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">
+                    <td className="py-3 px-6 text-right font-semibold text-forestDark">
                       {formatUSD(fi.price_cents)}
                     </td>
                     <td className="py-3 px-6 text-center">
@@ -154,7 +154,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                     </td>
                     <td className="py-3 px-6 text-center">
                       {fi.certified ? (
-                        <span className="px-2 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded text-xs font-semibold">✓ Certified</span>
+                        <span className="px-2 py-1 bg-gold text-forestDark rounded text-xs font-semibold">✓ Certified</span>
                       ) : (
                         <span className="text-gray-400">—</span>
                       )}
@@ -178,10 +178,10 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
       {/* Add Ingredient Form */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-[#1a5f3f]">Add Ingredient</h2>
+          <h2 className="text-xl font-semibold text-forestDark">Add Ingredient</h2>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className="px-4 py-1.5 bg-[#1a5f3f] text-white rounded-lg text-sm font-semibold hover:bg-[#154a32] transition"
+            className="px-4 py-1.5 bg-forestDark text-white rounded-lg text-sm font-semibold hover:bg-forestDarker transition"
           >
             {showAddForm ? 'Cancel' : '+ Add Ingredient'}
           </button>
@@ -195,7 +195,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 >
                   <option value="all">All Categories</option>
                   <option value="produce">Produce</option>
@@ -212,7 +212,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                 <select
                   name="ingredient_id"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 >
                   <option value="">-- Select ingredient --</option>
                   {filteredAvailable.map(ingredient => (
@@ -238,7 +238,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                     min="0"
                     required
                     placeholder="0.00"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                   />
                 </div>
                 <div>
@@ -246,7 +246,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                   <select
                     name="availability"
                     required
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                   >
                     <option value="in_stock">In Stock</option>
                     <option value="limited">Limited</option>
@@ -260,7 +260,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                   <input
                     type="checkbox"
                     name="certified"
-                    className="w-4 h-4 text-[#1a5f3f] rounded focus:ring-[#1a5f3f]"
+                    className="w-4 h-4 text-forestDark rounded focus:ring-forestDark"
                   />
                   <span className="text-sm text-gray-700">Certified (Organic, Fair Trade, etc.)</span>
                 </label>
@@ -272,7 +272,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                   name="regenerative_practices"
                   rows={2}
                   placeholder="Describe regenerative practices for this ingredient..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
                 />
               </div>
 
@@ -282,7 +282,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                   name="notes"
                   rows={2}
                   placeholder="Additional notes..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
                 />
               </div>
 
@@ -290,7 +290,7 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
                 <button
                   type="submit"
                   disabled={isAdding}
-                  className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+                  className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
                 >
                   {isAdding ? 'Adding...' : 'Add Ingredient'}
                 </button>
@@ -309,3 +309,4 @@ export default function FarmerIngredientsClient({ farmer, ingredients: allIngred
     </div>
   )
 }
+

@@ -1,60 +1,196 @@
-import Link from 'next/link'
+import { SuccessAlert } from '@/components/ui/SuccessAlert'
+import { PrimaryButton } from '@/components/ui/PrimaryButton'
+import { SecondaryButton } from '@/components/ui/SecondaryButton'
+import { ThanksActionButtons } from '@/components/thanks/ThanksActionButtons'
+import { ThanksMessage } from '@/components/thanks/ThanksMessage'
+import { ThanksPageShell } from '@/components/thanks/ThanksPageShell'
+import { bookBody } from '@/components/booking/book-culinary-classes'
 
-export default function ThanksPage() {
-  return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="container mx-auto px-4 max-w-2xl text-center">
-        <div className="bg-white p-12 rounded-lg shadow-sm">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-gold rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h1 className="text-4xl font-bold text-navy mb-4">Thank You!</h1>
-            <p className="text-xl text-gray-700 mb-6">
-              We&apos;ve received your booking request.
-            </p>
-          </div>
+type Search = {
+  type?: string | string[]
+  checkout?: string | string[]
+  session_id?: string | string[]
+  booking_id?: string | string[]
+}
 
-          <div className="prose text-left max-w-none mb-8">
-            <h2 className="text-2xl font-semibold text-navy mb-4">What Happens Next?</h2>
-            <ol className="space-y-3 text-gray-700">
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">1.</span>
-                <span>We&apos;ll review your request and check availability</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">2.</span>
-                <span>You&apos;ll receive a detailed quote within 48 hours</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">3.</span>
-                <span>Once you approve, we&apos;ll send a deposit invoice to secure your date</span>
-              </li>
-              <li className="flex items-start">
-                <span className="font-semibold mr-2">4.</span>
-                <span>When your chef is assigned, you&apos;ll see their profile and verified credentials in your booking portal.</span>
-              </li>
+function first(param?: string | string[]): string | undefined {
+  if (Array.isArray(param)) return param[0]
+  return param
+}
+
+const alertClass =
+  'mb-6 !rounded-none !border-[#C9A84C]/35 !bg-[#fdf8f8] !text-[#2c2c2c] [&_svg]:text-[#1A3C34]'
+
+const refClass = 'text-center font-sans text-sm text-[#2c2c2c]/60'
+const monoRef = 'font-mono font-medium text-[#2c2c2c]'
+
+export default async function ThanksPage({ searchParams }: { searchParams: Promise<Search> }) {
+  const params = await searchParams
+  const type = (first(params.type) || '').toLowerCase()
+  const checkout = (first(params.checkout) || '').toLowerCase()
+  const sessionId = first(params.session_id)
+  const bookingId = first(params.booking_id)
+
+  if (type === 'deposit') {
+    return (
+      <ThanksPageShell>
+        <SuccessAlert
+          title="Your booking is confirmed"
+          message="Your date is now secured. We'll be in touch with final details as your experience approaches."
+          className={alertClass}
+        />
+        {bookingId ? (
+          <p className={refClass}>
+            Reference: <span className={monoRef}>{bookingId.slice(0, 8)}…</span>
+          </p>
+        ) : null}
+        {sessionId ? (
+          <p className="mb-8 break-all text-center font-mono text-xs text-[#2c2c2c]/45">
+            Session: {sessionId}
+          </p>
+        ) : null}
+        <ThanksActionButtons />
+      </ThanksPageShell>
+    )
+  }
+
+  if (type === 'balance') {
+    return (
+      <ThanksPageShell>
+        <SuccessAlert
+          title="Your experience is fully paid"
+          message="Everything is in place. We look forward to serving you."
+          className={alertClass}
+        />
+        {bookingId ? (
+          <p className={refClass}>
+            Reference: <span className={monoRef}>{bookingId.slice(0, 8)}…</span>
+          </p>
+        ) : null}
+        {sessionId ? (
+          <p className="mb-8 break-all text-center font-mono text-xs text-[#2c2c2c]/45">
+            Session: {sessionId}
+          </p>
+        ) : null}
+        <ThanksActionButtons />
+      </ThanksPageShell>
+    )
+  }
+
+  if (checkout === 'consulting' || type === 'consulting') {
+    return (
+      <ThanksPageShell>
+        <div className="text-center">
+          <SuccessAlert
+            title="Thank you"
+            message="Your consulting session payment went through. We will reach out shortly with next steps."
+            className={alertClass}
+          />
+          {sessionId ? (
+            <p className="mb-8 break-all font-mono text-xs text-[#2c2c2c]/45">Session: {sessionId}</p>
+          ) : null}
+          <PrimaryButton theme="culinary" href="/">
+            Back to home
+          </PrimaryButton>
+        </div>
+      </ThanksPageShell>
+    )
+  }
+
+  if (type === 'inquiry' || type === 'booking') {
+    return (
+      <ThanksPageShell>
+        <SuccessAlert
+          title="Your inquiry has been received"
+          message="Thank you for reaching out. We're reviewing your event details and will follow up shortly with your custom proposal."
+          className={alertClass}
+        />
+        {bookingId ? (
+          <p className={`${refClass} mt-4`}>
+            Reference: <span className={monoRef}>{bookingId.slice(0, 8)}…</span>
+          </p>
+        ) : null}
+        <div className="mt-8 border-t border-[#C9A84C]/25 pt-8">
+          <ThanksMessage title="What happens next">
+            <ol className="mt-3 list-decimal space-y-2 pl-5">
+              <li>We review your request and availability</li>
+              <li>You receive a tailored quote — typically within 24 hours</li>
+              <li>When you are ready, a deposit secures your date</li>
             </ol>
-          </div>
+          </ThanksMessage>
+        </div>
+        <p className={`${bookBody} mt-8 text-center text-sm`}>
+          Questions?{' '}
+          <a
+            href="mailto:brian@bornfidis.com"
+            className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+          >
+            brian@bornfidis.com
+          </a>
+        </p>
+        <div className="mt-8">
+          <ThanksActionButtons />
+        </div>
+      </ThanksPageShell>
+    )
+  }
 
-          <div className="pt-6 border-t border-gray-200">
-            <p className="text-gray-600 mb-6">
-              Questions? Reach us at{' '}
-              <a href="mailto:brian@bornfidis.com" className="text-navy font-semibold hover:underline">
-                brian@bornfidis.com
-              </a>
-            </p>
-            <Link
-              href="/"
-              className="inline-block px-6 py-3 bg-navy text-white rounded-lg font-semibold hover:bg-opacity-90 transition"
-            >
-              Return to Home
-            </Link>
-          </div>
+  return (
+    <ThanksPageShell>
+      <SuccessAlert
+        title="Thank you"
+        message="We've received your message. We'll be in touch within 48 hours."
+        className={alertClass}
+      />
+
+      <div className="mt-8 max-w-none">
+        <h2 className="font-display text-2xl font-normal text-[#2c2c2c]">What happens next?</h2>
+        <ol className={`${bookBody} mt-4 space-y-3 text-sm`}>
+          <li className="flex items-start gap-2">
+            <span className="font-semibold text-[#C9A84C]">1.</span>
+            <span>We&apos;ll review your request and check availability</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="font-semibold text-[#C9A84C]">2.</span>
+            <span>You&apos;ll receive a detailed quote within 48 hours</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="font-semibold text-[#C9A84C]">3.</span>
+            <span>Once you approve, we&apos;ll send a deposit invoice to secure your date</span>
+          </li>
+          <li className="flex items-start gap-2">
+            <span className="font-semibold text-[#C9A84C]">4.</span>
+            <span>
+              When your chef is assigned, you&apos;ll see their profile and verified credentials in your
+              booking portal.
+            </span>
+          </li>
+        </ol>
+      </div>
+
+      <div className="mt-8 border-t border-[#C9A84C]/25 pt-8">
+        <p className={`${bookBody} text-center text-sm`}>
+          Questions?{' '}
+          <a
+            href="mailto:brian@bornfidis.com"
+            className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+          >
+            brian@bornfidis.com
+          </a>
+        </p>
+
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+          <PrimaryButton theme="culinary" href="/">
+            Back to home
+          </PrimaryButton>
+          <SecondaryButton theme="culinary" href="/menu">
+            View sample menus
+          </SecondaryButton>
+          <SecondaryButton theme="culinary" href="/story">
+            Read our story
+          </SecondaryButton>
         </div>
       </div>
-    </div>
+    </ThanksPageShell>
   )
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { CulinaryCard } from '@/components/culinary-os'
 
 interface Submission {
   id: string
@@ -40,7 +41,7 @@ export default function AdminSubmissionsPage() {
   // Edit state
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editStatus, setEditStatus] = useState('')
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<{ id: string; type: string } | null>(null)
 
   useEffect(() => {
     loadSubmissions()
@@ -109,7 +110,7 @@ export default function AdminSubmissionsPage() {
 
       const data = await response.json()
       if (data.success) {
-        setDeleteConfirmId(null)
+        setDeleteTarget(null)
         loadSubmissions()
       } else {
         alert('Failed to delete: ' + data.error)
@@ -162,7 +163,7 @@ export default function AdminSubmissionsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6 flex justify-between items-center">
           <div>
@@ -172,14 +173,14 @@ export default function AdminSubmissionsPage() {
           <button
             onClick={loadSubmissions}
             disabled={isLoading}
-            className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-forestDark text-white rounded-lg hover:bg-opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? 'Loading...' : 'Refresh'}
           </button>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+        <CulinaryCard className="mb-6 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {/* Search */}
             <div className="lg:col-span-2">
@@ -194,7 +195,7 @@ export default function AdminSubmissionsPage() {
                   handleFilterChange()
                 }}
                 placeholder="Name, email, or phone..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
               />
             </div>
 
@@ -209,7 +210,7 @@ export default function AdminSubmissionsPage() {
                   setTypeFilter(e.target.value)
                   handleFilterChange()
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
               >
                 <option value="all">All Types</option>
                 <option value="booking">Booking</option>
@@ -230,7 +231,7 @@ export default function AdminSubmissionsPage() {
                   setStatusFilter(e.target.value)
                   handleFilterChange()
                 }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
               >
                 <option value="all">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -253,7 +254,7 @@ export default function AdminSubmissionsPage() {
                     setStartDate(e.target.value)
                     handleFilterChange()
                   }}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-forestDark focus:border-transparent"
                 />
                 <input
                   type="date"
@@ -262,7 +263,7 @@ export default function AdminSubmissionsPage() {
                     setEndDate(e.target.value)
                     handleFilterChange()
                   }}
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-forestDark focus:border-transparent"
                 />
               </div>
             </div>
@@ -280,21 +281,21 @@ export default function AdminSubmissionsPage() {
                   setEndDate('')
                   handleFilterChange()
                 }}
-                className="text-sm text-[#1a5f3f] hover:underline"
+                className="text-sm text-forestDark hover:underline"
               >
                 Clear all filters
               </button>
             </div>
           )}
-        </div>
+        </CulinaryCard>
 
         {/* Table */}
         {isLoading ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+          <CulinaryCard className="p-12 text-center">
             <div className="text-gray-600">Loading submissions...</div>
-          </div>
+          </CulinaryCard>
         ) : submissions.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+          <CulinaryCard className="p-12 text-center">
             <div className="text-gray-400 text-lg mb-2">📭</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No submissions found</h3>
             <p className="text-gray-600">
@@ -302,10 +303,10 @@ export default function AdminSubmissionsPage() {
                 ? 'Try adjusting your filters to see more results.'
                 : 'Submissions will appear here once users start submitting forms.'}
             </p>
-          </div>
+          </CulinaryCard>
         ) : (
           <>
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <CulinaryCard padded={false} className="overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gray-50">
@@ -337,7 +338,7 @@ export default function AdminSubmissionsPage() {
                     {submissions.map((submission) => (
                       <tr key={`${submission.type}-${submission.id}`} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs font-semibold rounded bg-[#1a5f3f] text-white">
+                          <span className="px-2 py-1 text-xs font-semibold rounded bg-forestDark text-white">
                             {getTypeLabel(submission.type)}
                           </span>
                         </td>
@@ -358,7 +359,7 @@ export default function AdminSubmissionsPage() {
                             <select
                               value={editStatus}
                               onChange={(e) => setEditStatus(e.target.value)}
-                              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+                              className="text-sm border border-gray-300 rounded px-2 py-1 focus:ring-2 focus:ring-forestDark focus:border-transparent"
                             >
                               <option value="pending">Pending</option>
                               <option value="new">New</option>
@@ -402,12 +403,12 @@ export default function AdminSubmissionsPage() {
                                   setEditingId(submission.id)
                                   setEditStatus(submission.status)
                                 }}
-                                className="px-3 py-1 bg-[#1a5f3f] text-white text-xs rounded hover:bg-opacity-90 transition"
+                                className="px-3 py-1 bg-forestDark text-white text-xs rounded hover:bg-opacity-90 transition"
                               >
                                 Edit
                               </button>
                               <button
-                                onClick={() => setDeleteConfirm({ id: submission.id, type: submission.type })}
+                                onClick={() => setDeleteTarget({ id: submission.id, type: submission.type })}
                                 className="px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700 transition"
                               >
                                 Delete
@@ -420,7 +421,7 @@ export default function AdminSubmissionsPage() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </CulinaryCard>
 
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
@@ -456,32 +457,33 @@ export default function AdminSubmissionsPage() {
       </div>
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
+      {deleteTarget && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <CulinaryCard className="max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Confirm Delete</h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this {getTypeLabel(deleteConfirm.type).toLowerCase()} submission? This action cannot be undone.
+              Are you sure you want to delete this {getTypeLabel(deleteTarget.type).toLowerCase()} submission? This action cannot be undone.
             </p>
             <div className="flex gap-3 justify-end">
               <button
-                onClick={() => setDeleteConfirm(null)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                onClick={() => setDeleteTarget(null)}
+                className="px-4 py-2 border border-culinary-outline rounded-none text-sm font-medium text-gray-700 shadow-none hover:bg-culinary-surface-low transition"
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
-                  handleDelete(deleteConfirm.id, deleteConfirm.type)
+                  handleDelete(deleteTarget.id, deleteTarget.type)
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition"
+                className="px-4 py-2 bg-red-600 text-white rounded-none text-sm font-medium shadow-none hover:bg-red-700 transition"
               >
                 Delete
               </button>
             </div>
-          </div>
+          </CulinaryCard>
         </div>
       )}
     </div>
   )
 }
+

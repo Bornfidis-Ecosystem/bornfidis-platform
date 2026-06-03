@@ -55,7 +55,7 @@ export default function RegionLeaderApplicationForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Region Information
         </h3>
 
@@ -68,7 +68,7 @@ export default function RegionLeaderApplicationForm() {
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="e.g., Bornfidis Kingston"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             required
           />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -83,7 +83,7 @@ export default function RegionLeaderApplicationForm() {
               type="text"
               value={formData.country || ''}
               onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
               required
             />
             {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
@@ -94,7 +94,7 @@ export default function RegionLeaderApplicationForm() {
               type="text"
               value={formData.city || ''}
               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
         </div>
@@ -106,13 +106,13 @@ export default function RegionLeaderApplicationForm() {
             onChange={(e) => setFormData({ ...formData, region_description: e.target.value })}
             rows={3}
             placeholder="Describe your region and community..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
           />
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Leader Information
         </h3>
 
@@ -124,7 +124,7 @@ export default function RegionLeaderApplicationForm() {
             type="text"
             value={formData.leader_name || ''}
             onChange={(e) => setFormData({ ...formData, leader_name: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             required
           />
           {errors.leader_name && <p className="text-red-500 text-xs mt-1">{errors.leader_name}</p>}
@@ -139,7 +139,7 @@ export default function RegionLeaderApplicationForm() {
               type="email"
               value={formData.leader_email || ''}
               onChange={(e) => setFormData({ ...formData, leader_email: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
               required
             />
             {errors.leader_email && <p className="text-red-500 text-xs mt-1">{errors.leader_email}</p>}
@@ -150,7 +150,7 @@ export default function RegionLeaderApplicationForm() {
               type="tel"
               value={formData.leader_phone || ''}
               onChange={(e) => setFormData({ ...formData, leader_phone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
         </div>
@@ -162,7 +162,7 @@ export default function RegionLeaderApplicationForm() {
             onChange={(e) => setFormData({ ...formData, leader_bio: e.target.value })}
             rows={3}
             placeholder="Tell us about yourself..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
           />
         </div>
 
@@ -173,13 +173,13 @@ export default function RegionLeaderApplicationForm() {
             onChange={(e) => setFormData({ ...formData, leader_experience: e.target.value })}
             rows={3}
             placeholder="Describe your experience with food systems, community organizing, regenerative agriculture, etc."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
           />
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Vision & Goals
         </h3>
 
@@ -190,7 +190,7 @@ export default function RegionLeaderApplicationForm() {
             onChange={(e) => setFormData({ ...formData, impact_goal: e.target.value })}
             rows={4}
             placeholder="What impact do you hope to create in your region? What communities will you serve?"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
           />
         </div>
 
@@ -202,7 +202,7 @@ export default function RegionLeaderApplicationForm() {
               min="0"
               value={formData.expected_farmers || 0}
               onChange={(e) => setFormData({ ...formData, expected_farmers: parseInt(e.target.value) || 0 })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
           <div>
@@ -212,7 +212,7 @@ export default function RegionLeaderApplicationForm() {
               min="0"
               value={formData.expected_chefs || 0}
               onChange={(e) => setFormData({ ...formData, expected_chefs: parseInt(e.target.value) || 0 })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
         </div>
@@ -229,7 +229,7 @@ export default function RegionLeaderApplicationForm() {
               setFormData({ ...formData, capital_needed_cents: Math.round(dollars * 100) })
             }}
             placeholder="0.00"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           />
         </div>
       </div>
@@ -243,7 +243,7 @@ export default function RegionLeaderApplicationForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+        className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
       >
         {isSubmitting ? 'Submitting...' : 'Submit Application'}
       </button>

@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 import { checkAdminAccess } from '@/lib/requireAdmin'
+import { resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { createServerSupabaseClient } from '@/lib/auth'
 
 /**
@@ -14,8 +15,21 @@ export async function GET() {
   try {
     const supabase = await createServerSupabaseClient()
     const { data: { user }, error: authError } = await supabase.auth.getUser()
-    
+
     const adminCheck = await checkAdminAccess()
+    if (!adminCheck.user || !adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: 'Access denied: Admin session required' },
+        { status: 403 }
+      )
+    }
+    const platformRole = await resolveAdminPlatformRole()
+    if (platformRole !== 'founder_admin') {
+      return NextResponse.json(
+        { error: 'Access denied: Founder admin only' },
+        { status: 403 }
+      )
+    }
 
     return NextResponse.json({
       authenticated: !!user,

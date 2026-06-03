@@ -4,6 +4,7 @@ import { getFeaturedChefIdsForDisplay } from '@/lib/featured-chefs'
 import { ChefStatus } from '@/types/chef'
 import SignOutButton from '@/components/admin/SignOutButton'
 import ChefListClient from './ChefListClient'
+import { CulinaryCard } from '@/components/culinary-os'
 
 /**
  * Phase 5A: Admin Chefs Management Page
@@ -14,9 +15,9 @@ export default async function AdminChefsPage() {
 
   if (!result.success) {
     return (
-      <div className="min-h-screen bg-gray-50 p-8">
+      <div className="min-h-screen bg-culinary-bone p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+          <div className="rounded-none border border-red-200 bg-red-50 px-4 py-3 text-red-700 shadow-none">
             <p className="font-semibold">Error loading chefs</p>
             <p className="text-sm mt-1">{result.error}</p>
           </div>
@@ -54,7 +55,7 @@ export default async function AdminChefsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       {/* Header */}
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
@@ -76,7 +77,7 @@ export default async function AdminChefsPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <CulinaryCard padded={false} className="overflow-hidden">
           <>
             <div className="px-6 py-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -102,8 +103,9 @@ export default async function AdminChefsPage() {
               <ChefListClient chefs={chefs} />
             )}
           </>
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )
 }
+

@@ -1,9 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from 'next/server'
-import { requireAuth } from '@/lib/auth'
+import { requireFounderAdminApi } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { parseFarmerMessage, type ParsedFarmerMessage } from '@/lib/intakeParser'
+import { logActivity } from '@/lib/activity-log'
 
 /**
  * Phase 11G.2: Reprocess Farmer Intake
@@ -21,8 +22,8 @@ import { parseFarmerMessage, type ParsedFarmerMessage } from '@/lib/intakeParser
  */
 export async function POST(request: NextRequest) {
   try {
-    // Require admin authentication
-    await requireAuth()
+    const authError = await requireFounderAdminApi(request)
+    if (authError) return authError
 
     const body = await request.json()
     const { intakeId } = body
@@ -107,11 +108,19 @@ export async function POST(request: NextRequest) {
           phone,
           name: parsed.name || 'Unknown Farmer',
           parish: parsed.parish || null,
-          acres: parsed.acres || null,
-          language: 'en',
+          farm_size_acres: parsed.acres != null ? parsed.acres : null,
+          crops_available: [],
+          tags: [],
         },
       })
       console.log('✅ Created new Farmer:', farmer.id, { name: farmer.name })
+      logActivity({
+        type: 'FARMER_SIGNUP',
+        title: 'Farmer joined',
+        description: `${farmer.name}${farmer.parish ? ` from ${farmer.parish}` : ''}`,
+        division: 'PROJU',
+        metadata: { farmerId: farmer.id },
+      }).catch(() => {})
     }
 
     const farmerId = farmer.id

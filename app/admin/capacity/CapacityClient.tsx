@@ -71,7 +71,7 @@ export default function CapacityClient({ initialPlan, initialConfig }: Props) {
             type="button"
             onClick={() => changeHorizon(h)}
             className={`rounded px-3 py-1.5 text-sm font-medium ${
-              horizon === h ? 'bg-[#1a5f3f] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+              horizon === h ? 'bg-forestDark text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
             }`}
           >
             {h} months
@@ -83,7 +83,7 @@ export default function CapacityClient({ initialPlan, initialConfig }: Props) {
         <button
           type="button"
           onClick={() => setShowConfig(!showConfig)}
-          className="text-sm text-[#1a5f3f] hover:underline"
+          className="text-sm text-forestDark hover:underline"
         >
           {showConfig ? 'Hide' : 'Edit'} inputs
         </button>
@@ -184,11 +184,12 @@ export default function CapacityClient({ initialPlan, initialConfig }: Props) {
       <div className="rounded-lg border border-gray-200 bg-white p-4">
         <h2 className="text-sm font-semibold text-gray-700 mb-2">Actions</h2>
         <ul className="text-sm text-gray-600 space-y-1">
-          <li><Link href="/admin/chefs" className="text-[#1a5f3f] hover:underline">Trigger chef recruitment</Link></li>
-          <li><Link href="/admin/okrs" className="text-[#1a5f3f] hover:underline">Adjust incentives / OKRs</Link></li>
-          <li><Link href="/admin/region-pricing" className="text-[#1a5f3f] hover:underline">Shift regional focus (pricing)</Link></li>
+          <li><Link href="/admin/chefs" className="text-forestDark hover:underline">Trigger chef recruitment</Link></li>
+          <li><Link href="/admin/okrs" className="text-forestDark hover:underline">Adjust incentives / OKRs</Link></li>
+          <li><Link href="/admin/region-pricing" className="text-forestDark hover:underline">Shift regional focus (pricing)</Link></li>
         </ul>
       </div>
     </div>
   )
 }
+

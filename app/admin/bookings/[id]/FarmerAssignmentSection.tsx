@@ -290,3 +290,4 @@ export default function FarmerAssignmentSection({ bookingId, eventDate }: Farmer
     </div>
   )
 }
+

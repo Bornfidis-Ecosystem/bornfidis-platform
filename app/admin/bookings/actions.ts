@@ -1,7 +1,9 @@
 'use server'
 
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAuth } from '@/lib/auth'
 import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireFounderAdmin, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { db } from '@/lib/db'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { quoteLineItemSchema, updateQuoteSummarySchema } from '@/lib/validation'
@@ -15,6 +17,13 @@ import { getTierSnapshotForChef, getRateMultiplier } from '@/lib/chef-tier'
 import { getPricingForRegion, applyRegionToBaseCents } from '@/lib/region-pricing'
 import { getSurgeMultiplier, applySurgeToCents, SURGE_LABEL_CLIENT } from '@/lib/surge-pricing'
 import { checkMargin } from '@/lib/margin-guardrails'
+import { z } from 'zod'
+import { logActivity } from '@/lib/activity-log'
+import {
+  bookingChecklistWritableKeySchema,
+  BOOKING_CHECKLIST_ITEM_TITLES,
+  type BookingChecklistWritableKey,
+} from '@/lib/bookings/checklist'
 
 /**
  * Fetch all booking inquiries for admin dashboard
@@ -24,24 +33,20 @@ import { checkMargin } from '@/lib/margin-guardrails'
  */
 export async function getAllBookings(): Promise<{ success: boolean; bookings?: BookingInquiry[]; error?: string }> {
   try {
-    // Require admin (allowlist or Prisma role) — same as layout
-    await requireAdminUser()
-  } catch (e: any) {
-    return { success: false, error: e?.message ?? 'Authentication required' }
-  }
+    try {
+      await requireAdminUser()
+    } catch (e: any) {
+      return { success: false, error: e?.message ?? 'Authentication required' }
+    }
 
-  // Phase 4: Check if user can manage bookings
-  let userRole: Awaited<ReturnType<typeof getCurrentUserRole>>
-  try {
-    userRole = await getCurrentUserRole()
-  } catch (e: any) {
-    return { success: false, error: e?.message ?? 'Could not verify permissions' }
-  }
-  if (!canManageBookings(userRole)) {
-    return { success: false, error: 'Access denied: Insufficient permissions' }
-  }
+    const platformRole = await resolveAdminPlatformRole()
+    if (!platformRole || platformRole === 'staff') {
+      return {
+        success: false,
+        error: 'Access denied: Manager or founder admin required',
+      }
+    }
 
-  try {
     const bookings = await db.bookingInquiry.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -61,11 +66,16 @@ export async function getAllBookings(): Promise<{ success: boolean; bookings?: B
       location: booking.location,
       guests: booking.guests || undefined,
       budget_range: booking.budgetRange || undefined,
-      dietary: booking.dietary || undefined,
+      dietary: booking.dietary || booking.dietaryRestrictions || undefined,
       notes: booking.notes || undefined,
+      event_type: booking.eventType || undefined,
+      dining_style: booking.diningStyle || undefined,
+      upsell_interests: booking.upsellInterests?.length ? [...booking.upsellInterests] : undefined,
       status: booking.status as BookingStatus,
       follow_up_date: booking.followUpDate?.toISOString().split('T')[0] || undefined,
       admin_notes: booking.adminNotes || undefined,
+      deposit_paid_at: booking.paidAt?.toISOString() || undefined,
+      reminder_sent_at: booking.inquiryReminderSentAt?.toISOString() || undefined,
       // Include all other fields that might be needed
       quote_currency: booking.quoteCurrency || undefined,
       quote_subtotal_cents: booking.quoteSubtotalCents || undefined,
@@ -128,6 +138,17 @@ export async function getAllBookings(): Promise<{ success: boolean; bookings?: B
       payout_hold: booking.payoutHold || undefined,
       payout_hold_reason: booking.payoutHoldReason || undefined,
       payout_released_at: booking.payoutReleasedAt?.toISOString() || undefined,
+      testimonial_requested_at: booking.testimonialRequestedAt?.toISOString() || undefined,
+      testimonial_received_at: booking.testimonialReceivedAt?.toISOString() || undefined,
+      testimonial_text: booking.testimonialText ?? undefined,
+      testimonial_approved: booking.testimonialApproved ?? false,
+      menu_confirmed: booking.menuConfirmed ?? false,
+      dietary_confirmed: booking.dietaryConfirmed ?? false,
+      guest_count_confirmed: booking.guestCountConfirmed ?? false,
+      arrival_time_confirmed: booking.arrivalTimeConfirmed ?? false,
+      location_confirmed: booking.locationConfirmed ?? false,
+      ingredients_sourced: booking.ingredientsSourced ?? false,
+      equipment_packed: booking.equipmentPacked ?? false,
     }))
 
     return { success: true, bookings: formattedBookings }
@@ -168,11 +189,16 @@ export async function getBookingById(id: string): Promise<{ success: boolean; bo
       location: booking.location,
       guests: booking.guests || undefined,
       budget_range: booking.budgetRange || undefined,
-      dietary: booking.dietary || undefined,
+      dietary: booking.dietary || booking.dietaryRestrictions || undefined,
       notes: booking.notes || undefined,
+      event_type: booking.eventType || undefined,
+      dining_style: booking.diningStyle || undefined,
+      upsell_interests: booking.upsellInterests?.length ? [...booking.upsellInterests] : undefined,
       status: booking.status as BookingStatus,
       follow_up_date: booking.followUpDate?.toISOString().split('T')[0] || undefined,
       admin_notes: booking.adminNotes || undefined,
+      deposit_paid_at: booking.paidAt?.toISOString() || undefined,
+      reminder_sent_at: booking.inquiryReminderSentAt?.toISOString() || undefined,
       // Include all other fields
       quote_currency: booking.quoteCurrency || undefined,
       quote_subtotal_cents: booking.quoteSubtotalCents || undefined,
@@ -248,6 +274,17 @@ export async function getBookingById(id: string): Promise<{ success: boolean; bo
       surge_multiplier_snapshot: (booking as any).surgeMultiplierSnapshot ?? undefined,
       surge_applied_at: (booking as any).surgeAppliedAt?.toISOString?.() ?? undefined,
       surge_label: (booking as any).surgeLabel ?? undefined,
+      testimonial_requested_at: booking.testimonialRequestedAt?.toISOString() || undefined,
+      testimonial_received_at: booking.testimonialReceivedAt?.toISOString() || undefined,
+      testimonial_text: booking.testimonialText ?? undefined,
+      testimonial_approved: booking.testimonialApproved ?? false,
+      menu_confirmed: booking.menuConfirmed ?? false,
+      dietary_confirmed: booking.dietaryConfirmed ?? false,
+      guest_count_confirmed: booking.guestCountConfirmed ?? false,
+      arrival_time_confirmed: booking.arrivalTimeConfirmed ?? false,
+      location_confirmed: booking.locationConfirmed ?? false,
+      ingredients_sourced: booking.ingredientsSourced ?? false,
+      equipment_packed: booking.equipmentPacked ?? false,
     }
 
     return { success: true, booking: formattedBooking }
@@ -326,7 +363,7 @@ export async function updateBooking(
       const { sendSMS } = await import('@/lib/twilio')
       const { bookingApprovedSMS, bookingDeclinedSMS } = await import('@/lib/sms-templates')
       
-      if (updates.status === 'Confirmed') {
+      if (updates.status === 'Confirmed' || updates.status === 'confirmed') {
         // Send email (if email provided)
         if (currentBooking.email) {
           sendBookingApprovedEmail(
@@ -444,6 +481,15 @@ export async function updateBooking(
           })
         }
       }
+
+      // Provisions pipeline: log stage change for activity feed
+      logActivity({
+        type: 'ADMIN_LOG',
+        title: 'Booking stage updated',
+        description: `${currentBooking.name} → ${updates.status}`,
+        division: 'PROVISIONS',
+        metadata: { bookingId: id, previousStatus: currentBooking.status, newStatus: updates.status },
+      }).catch(() => {})
     }
 
     // Convert Prisma model to BookingInquiry type format
@@ -521,12 +567,121 @@ export async function updateBooking(
       payout_hold: updatedBooking.payoutHold || undefined,
       payout_hold_reason: updatedBooking.payoutHoldReason || undefined,
       payout_released_at: updatedBooking.payoutReleasedAt?.toISOString() || undefined,
+      testimonial_requested_at: updatedBooking.testimonialRequestedAt?.toISOString() || undefined,
+      testimonial_received_at: updatedBooking.testimonialReceivedAt?.toISOString() || undefined,
+      testimonial_text: updatedBooking.testimonialText ?? undefined,
+      testimonial_approved: updatedBooking.testimonialApproved ?? false,
     }
 
     return { success: true, booking: formattedBooking }
   } catch (error: any) {
     console.error('Error in updateBooking:', error)
     return { success: false, error: error.message || 'Failed to update booking' }
+  }
+}
+
+/**
+ * Set status to `confirmed` without the standard approval email, SMS, timeline, or prep autogenerate.
+ * For verbal / off-Stripe holds or internal pipeline moves.
+ */
+export async function markBookingConfirmedSilently(
+  id: string
+): Promise<{ success: boolean; error?: string }> {
+  await requireAuth()
+  const userRole = await getCurrentUserRole()
+  if (!canManageBookings(userRole)) {
+    return { success: false, error: 'Access denied: Insufficient permissions' }
+  }
+  try {
+    const current = await db.bookingInquiry.findUnique({ where: { id } })
+    if (!current) {
+      return { success: false, error: 'Booking not found' }
+    }
+    const s = (current.status || '').toLowerCase()
+    if (
+      ['confirmed', 'in_prep', 'completed', 'cancelled', 'canceled', 'declined', 'closed'].includes(s)
+    ) {
+      return {
+        success: false,
+        error: 'Booking is already confirmed, in prep, completed, cancelled, or declined',
+      }
+    }
+    await db.bookingInquiry.update({
+      where: { id },
+      data: { status: 'confirmed', statusUpdatedAt: new Date() },
+    })
+    await db.bookingActivity.create({
+      data: {
+        bookingId: id,
+        type: 'status_changed',
+        title: 'Confirmed (no auto-notification)',
+        description:
+          'Status set to confirmed by admin without sending the standard approval email/SMS or auto-timeline.',
+        actorName: 'Admin',
+      },
+    })
+    logActivity({
+      type: 'ADMIN_LOG',
+      title: 'Booking marked confirmed (silent)',
+      description: current.name,
+      division: 'PROVISIONS',
+      metadata: { bookingId: id },
+    }).catch(() => {})
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error?.message || 'Failed to update booking' }
+  }
+}
+
+/**
+ * “Still reviewing” email — sets `inquiryReminderSentAt` for audit.
+ */
+export async function sendInquiryReminderForBooking(
+  bookingId: string
+): Promise<{ success: boolean; error?: string; sentAt?: string }> {
+  try {
+    await requireAdminUser()
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Authentication required' }
+  }
+  const platformRole = await resolveAdminPlatformRole()
+  if (!platformRole || platformRole === 'staff') {
+    return { success: false, error: 'Access denied: Manager or founder admin required' }
+  }
+  try {
+    const b = await db.bookingInquiry.findUnique({ where: { id: bookingId } })
+    if (!b) {
+      return { success: false, error: 'Booking not found' }
+    }
+    const em = b.email?.trim()
+    if (!em) {
+      return { success: false, error: 'Add a client email on this booking first' }
+    }
+    const { sendInquiryStalenessReminderEmail } = await import('@/lib/email')
+    const r = await sendInquiryStalenessReminderEmail(em, b.name, {
+      eventDate: b.eventDate,
+      eventLocation: b.location,
+    })
+    if (!r.success) {
+      return { success: false, error: r.error || 'Failed to send email' }
+    }
+    const now = new Date()
+    await db.bookingInquiry.update({
+      where: { id: bookingId },
+      data: { inquiryReminderSentAt: now },
+    })
+    await db.bookingActivity.create({
+      data: {
+        bookingId,
+        type: 'inquiry_reminder_sent',
+        title: 'Inquiry reminder email sent',
+        description: 'Client nudged (still under review).',
+        actorName: 'Admin',
+      },
+    })
+    return { success: true, sentAt: now.toISOString() }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed' }
   }
 }
 
@@ -713,7 +868,15 @@ export async function updateQuoteSummary(
 export async function getBookingWithQuote(
   bookingId: string
 ): Promise<{ success: boolean; booking?: BookingInquiry; items?: QuoteLineItem[]; error?: string }> {
-  await requireAuth()
+  try {
+    await requireAdminUser()
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Authentication required' }
+  }
+  const platformRole = await resolveAdminPlatformRole()
+  if (!platformRole || platformRole === 'staff') {
+    return { success: false, error: 'Access denied: Manager or founder admin required' }
+  }
 
   try {
     // Fetch booking
@@ -1061,6 +1224,533 @@ export async function getBookingTimeline(
     }
     console.error('Error in getBookingTimeline:', error)
     return { success: false, error: error.message || 'Failed to fetch timeline' }
+  }
+}
+
+/**
+ * Phase 8A: Booking activity log
+ * Stores lightweight sales/ops actions for the admin booking detail page.
+ */
+export async function addBookingActivity(
+  bookingId: string,
+  payload: {
+    type: string
+    title: string
+    description?: string
+    actorName?: string
+  }
+): Promise<
+  | {
+      success: true
+      activity: {
+        id: string
+        bookingId: string
+        type: string
+        title: string
+        description?: string | null
+        actorName?: string | null
+        createdAt: string
+      }
+    }
+  | { success: false; error: string }
+> {
+  const user = await requireAdminUser()
+
+  try {
+    if (!('bookingActivity' in db)) {
+      return { success: false, error: 'Activity log not available. Run migrations.' }
+    }
+    const activity = await db.bookingActivity.create({
+      data: {
+        bookingId,
+        type: payload.type,
+        title: payload.title,
+        description: payload.description ?? null,
+        actorName: payload.actorName ?? user.email ?? null,
+      },
+      select: {
+        id: true,
+        bookingId: true,
+        type: true,
+        title: true,
+        description: true,
+        actorName: true,
+        createdAt: true,
+      },
+    })
+
+    return {
+      success: true,
+      activity: {
+        id: activity.id,
+        bookingId: activity.bookingId,
+        type: activity.type,
+        title: activity.title,
+        description: activity.description,
+        actorName: activity.actorName,
+        createdAt: activity.createdAt.toISOString(),
+      },
+    }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to add booking activity' }
+  }
+}
+
+/**
+ * Admin reconciliation: mark deposit received without Stripe (offline, metadata mismatch, etc.).
+ */
+export async function markDepositPaidManually(
+  bookingId: string,
+  note?: string
+): Promise<{ success: boolean; error?: string; alreadyApplied?: boolean }> {
+  try {
+    await requireAdminUser()
+    await requireFounderAdmin()
+    const booking = await db.bookingInquiry.findUnique({
+      where: { id: bookingId },
+      select: { paidAt: true },
+    })
+    if (!booking) return { success: false, error: 'Booking not found' }
+    if (booking.paidAt) {
+      return { success: true, alreadyApplied: true }
+    }
+    const now = new Date()
+    await db.bookingInquiry.update({
+      where: { id: bookingId },
+      data: {
+        paidAt: now,
+        status: 'booked',
+      },
+    })
+    const act = await addBookingActivity(bookingId, {
+      type: 'manual_deposit_paid',
+      title: 'Deposit marked paid (manual)',
+      description: note?.trim() || 'Recorded by admin outside Stripe or for reconciliation.',
+    })
+    if (!act.success) console.warn('markDepositPaidManually activity:', act.error)
+    return { success: true }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed to mark deposit paid' }
+  }
+}
+
+/**
+ * Admin reconciliation: mark final balance received without Stripe.
+ */
+export async function markBalancePaidManually(
+  bookingId: string,
+  note?: string
+): Promise<{ success: boolean; error?: string; alreadyApplied?: boolean }> {
+  try {
+    await requireAdminUser()
+    await requireFounderAdmin()
+    const booking = await db.bookingInquiry.findUnique({
+      where: { id: bookingId },
+      select: { balancePaidAt: true },
+    })
+    if (!booking) return { success: false, error: 'Booking not found' }
+    if (booking.balancePaidAt) {
+      return { success: true, alreadyApplied: true }
+    }
+    const now = new Date()
+    await db.bookingInquiry.update({
+      where: { id: bookingId },
+      data: {
+        balancePaidAt: now,
+        fullyPaidAt: now,
+        paidAt: now,
+      },
+    })
+    const act = await addBookingActivity(bookingId, {
+      type: 'manual_balance_paid',
+      title: 'Balance marked paid (manual)',
+      description: note?.trim() || 'Recorded by admin outside Stripe or for reconciliation.',
+    })
+    if (!act.success) console.warn('markBalancePaidManually activity:', act.error)
+    return { success: true }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed to mark balance paid' }
+  }
+}
+
+/**
+ * Payment card: send deposit request email (delegates to outreach + activity log).
+ */
+export async function sendDepositRequest(
+  bookingId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    const { sendBookingDepositRequestEmail } = await import('./outreach-email-actions')
+    const result = await sendBookingDepositRequestEmail(bookingId)
+    if (!result.success) {
+      return { success: false, error: result.error }
+    }
+    return { success: true }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed to send deposit request' }
+  }
+}
+
+/**
+ * Payment card: send quote offer email (delegates to outreach + activity log).
+ */
+export async function sendQuoteEmail(
+  bookingId: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    const { sendBookingQuoteOfferEmail } = await import('./outreach-email-actions')
+    const result = await sendBookingQuoteOfferEmail(bookingId)
+    if (!result.success) {
+      return { success: false, error: result.error }
+    }
+    return { success: true }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed to send quote email' }
+  }
+}
+
+/**
+ * Payment card: create a fresh Stripe balance checkout session and return URL (client may open tab).
+ */
+export async function resendBalanceLink(
+  bookingId: string
+): Promise<{ success: boolean; url?: string; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    const { createBalanceCheckoutSessionForBooking } = await import('@/lib/stripe-balance-checkout')
+    const session = await createBalanceCheckoutSessionForBooking(bookingId)
+    if (!session.success) {
+      return { success: false, error: session.error }
+    }
+
+    const act = await addBookingActivity(bookingId, {
+      type: 'balance_link_sent',
+      title: 'Balance payment link generated',
+      description: 'New Stripe checkout session for remaining balance.',
+    })
+    if (!act.success) {
+      console.warn('resendBalanceLink activity:', act.error)
+    }
+
+    return { success: true, url: session.url }
+  } catch (e: any) {
+    return { success: false, error: e?.message ?? 'Failed to create balance link' }
+  }
+}
+
+const checklistUpdatePayloadSchema = z.object({
+  bookingId: z.string().uuid(),
+  key: bookingChecklistWritableKeySchema,
+  value: z.boolean(),
+})
+
+function buildChecklistPrismaUpdate(key: BookingChecklistWritableKey, value: boolean) {
+  switch (key) {
+    case 'menuConfirmed':
+      return { menuConfirmed: value }
+    case 'dietaryConfirmed':
+      return { dietaryConfirmed: value }
+    case 'guestCountConfirmed':
+      return { guestCountConfirmed: value }
+    case 'arrivalTimeConfirmed':
+      return { arrivalTimeConfirmed: value }
+    case 'locationConfirmed':
+      return { locationConfirmed: value }
+    case 'ingredientsSourced':
+      return { ingredientsSourced: value }
+    case 'equipmentPacked':
+      return { equipmentPacked: value }
+    default: {
+      const _exhaustive: never = key
+      return _exhaustive
+    }
+  }
+}
+
+export type BookingChecklistState = {
+  menuConfirmed: boolean
+  dietaryConfirmed: boolean
+  guestCountConfirmed: boolean
+  arrivalTimeConfirmed: boolean
+  locationConfirmed: boolean
+  ingredientsSourced: boolean
+  equipmentPacked: boolean
+}
+
+/**
+ * Toggle a single service checklist field; logs checklist_updated activity when value changes.
+ */
+export async function updateBookingChecklistItem(payload: {
+  bookingId: string
+  key: string
+  value: boolean
+}): Promise<
+  | {
+      success: true
+      checklist: BookingChecklistState
+      activity?: {
+        id: string
+        bookingId: string
+        type: string
+        title: string
+        description?: string | null
+        actorName?: string | null
+        createdAt: string
+      }
+    }
+  | { success: false; error: string }
+> {
+  await requireAuth()
+  const userRole = await getCurrentUserRole()
+  if (!canManageBookings(userRole)) {
+    return { success: false, error: 'Access denied: Insufficient permissions' }
+  }
+
+  const parsed = checklistUpdatePayloadSchema.safeParse(payload)
+  if (!parsed.success) {
+    return { success: false, error: 'Invalid checklist update' }
+  }
+
+  const { bookingId, key, value } = parsed.data
+
+  const checklistSelect = {
+    menuConfirmed: true,
+    dietaryConfirmed: true,
+    guestCountConfirmed: true,
+    arrivalTimeConfirmed: true,
+    locationConfirmed: true,
+    ingredientsSourced: true,
+    equipmentPacked: true,
+  } as const
+
+  const existing = await db.bookingInquiry.findUnique({
+    where: { id: bookingId },
+    select: checklistSelect,
+  })
+  if (!existing) {
+    return { success: false, error: 'Booking not found' }
+  }
+
+  if (existing[key] === value) {
+    return {
+      success: true,
+      checklist: { ...existing },
+    }
+  }
+
+  const updated = await db.bookingInquiry.update({
+    where: { id: bookingId },
+    data: buildChecklistPrismaUpdate(key, value),
+    select: checklistSelect,
+  })
+
+  const actResult = await addBookingActivity(bookingId, {
+    type: 'checklist_updated',
+    title: BOOKING_CHECKLIST_ITEM_TITLES[key],
+    description: value ? 'Marked complete' : 'Marked incomplete',
+  })
+
+  return {
+    success: true,
+    checklist: { ...updated },
+    activity: actResult.success ? actResult.activity : undefined,
+  }
+}
+
+export async function getBookingActivities(
+  bookingId: string
+): Promise<
+  | {
+      success: true
+      activities: Array<{
+        id: string
+        bookingId: string
+        type: string
+        title: string
+        description?: string | null
+        actorName?: string | null
+        createdAt: string
+      }>
+    }
+  | { success: false; error: string }
+> {
+  await requireAdminUser()
+
+  try {
+    if (!('bookingActivity' in db)) {
+      return { success: true, activities: [] }
+    }
+    const activities = await db.bookingActivity.findMany({
+      where: { bookingId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        bookingId: true,
+        type: true,
+        title: true,
+        description: true,
+        actorName: true,
+        createdAt: true,
+      },
+    })
+
+    return {
+      success: true,
+      activities: activities.map((a) => ({
+        id: a.id,
+        bookingId: a.bookingId,
+        type: a.type,
+        title: a.title,
+        description: a.description,
+        actorName: a.actorName,
+        createdAt: a.createdAt.toISOString(),
+      })),
+    }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to fetch booking activities' }
+  }
+}
+
+export async function getClientProfileSummaryForBooking(
+  bookingId: string
+): Promise<
+  | {
+      success: true
+      clientProfile: {
+        id: string
+        name: string
+        email?: string | null
+        phone?: string | null
+      } | null
+    }
+  | { success: false; error: string }
+> {
+  await requireAdminUser()
+
+  try {
+    const booking = await db.bookingInquiry.findUnique({
+      where: { id: bookingId },
+      select: {
+        clientProfile: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true,
+          },
+        },
+      },
+    })
+
+    return {
+      success: true,
+      clientProfile: booking?.clientProfile
+        ? {
+            id: booking.clientProfile.id,
+            name: booking.clientProfile.name,
+            email: booking.clientProfile.email,
+            phone: booking.clientProfile.phone,
+          }
+        : null,
+    }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to fetch client profile' }
+  }
+}
+
+export async function markTestimonialRequested(bookingId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    await db.bookingInquiry.update({
+      where: { id: bookingId },
+      data: { testimonialRequestedAt: new Date() },
+    })
+    const act = await addBookingActivity(bookingId, {
+      type: 'testimonial_requested',
+      title: 'Testimonial request recorded',
+      description: 'Testimonial follow-up marked as requested.',
+    })
+    if (!act.success) console.warn('markTestimonialRequested activity:', act.error)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to mark testimonial requested' }
+  }
+}
+
+export async function saveTestimonialReceived(payload: {
+  bookingId: string
+  testimonialText: string
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    const text = payload.testimonialText.trim()
+    await db.bookingInquiry.update({
+      where: { id: payload.bookingId },
+      data: {
+        testimonialText: text || null,
+        testimonialReceivedAt: text ? new Date() : null,
+      },
+    })
+    if (text) {
+      const preview = text.length > 280 ? `${text.slice(0, 280)}…` : text
+      const act = await addBookingActivity(payload.bookingId, {
+        type: 'testimonial_received',
+        title: 'Testimonial saved',
+        description: preview,
+      })
+      if (!act.success) console.warn('saveTestimonialReceived activity:', act.error)
+    }
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to save testimonial' }
+  }
+}
+
+export async function setTestimonialApproved(payload: {
+  bookingId: string
+  approved: boolean
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    await requireAdminUser()
+    const userRole = await getCurrentUserRole()
+    if (!canManageBookings(userRole)) {
+      return { success: false, error: 'Access denied' }
+    }
+    await db.bookingInquiry.update({
+      where: { id: payload.bookingId },
+      data: { testimonialApproved: payload.approved },
+    })
+    const act = await addBookingActivity(payload.bookingId, {
+      type: payload.approved ? 'testimonial_approved' : 'testimonial_unapproved',
+      title: payload.approved ? 'Testimonial approved for use' : 'Testimonial approval removed',
+      description: payload.approved ? 'Marked safe to use on site or marketing.' : 'No longer marked for public use.',
+    })
+    if (!act.success) console.warn('setTestimonialApproved activity:', act.error)
+    return { success: true }
+  } catch (error: any) {
+    return { success: false, error: error?.message ?? 'Failed to update approval' }
   }
 }
 

@@ -109,3 +109,27 @@ export function getUserRole(user: any): UserRole | null {
 
   return null
 }
+
+/** Platform ops roles (admin_user_roles + legacy fallbacks). Not Prisma `UserRole`. */
+export type { AdminPlatformRole, Role } from '@/lib/admin-rbac'
+export {
+  resolveAdminPlatformRole,
+  resolveAdminPlatformRoleForEmail,
+  getCurrentUserRoleWithFallback,
+  requireRole,
+  requireFounderAdmin,
+  requireManagerOrAdmin,
+  hasRoleAccess,
+  requireManagerOrFounderPageAccess,
+  isFounderAdminRole,
+  isManagerOrFounder,
+} from '@/lib/admin-rbac'
+
+/** Spec-friendly alias — avoids clashing with `getCurrentUserRole` in `get-user-role.ts`. */
+export { resolveAdminPlatformRole as getCurrentUserAdminPlatformRole } from '@/lib/admin-rbac'
+
+/**
+ * Platform ops role (`admin_user_roles` + `ADMIN_EMAILS` + admin-area Prisma role fallback).
+ * For Prisma `User.role`, use `getCurrentUserRole` from `@/lib/get-user-role`.
+ */
+export { resolveAdminPlatformRole as getCurrentUserRole } from '@/lib/admin-rbac'

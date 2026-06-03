@@ -67,7 +67,7 @@ export function AvailabilityWeekStrip({ chefId, days }: Props) {
                 aria-label={d.available ? 'Set unavailable' : 'Set available'}
                 className={`mt-2 min-h-[44px] min-w-[44px] rounded-lg px-3 py-2 text-sm font-medium touch-manipulation ${
                   d.available
-                    ? 'bg-[#1a5f3f] text-white'
+                    ? 'bg-forestDark text-white'
                     : 'bg-gray-200 text-gray-700'
                 }`}
               >
@@ -80,3 +80,4 @@ export function AvailabilityWeekStrip({ chefId, days }: Props) {
     </div>
   )
 }
+

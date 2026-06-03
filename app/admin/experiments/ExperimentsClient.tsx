@@ -107,7 +107,7 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
         <button
           type="button"
           onClick={() => setShowForm(true)}
-          className="rounded px-3 py-1.5 bg-[#1a5f3f] text-white text-sm hover:bg-[#144a30]"
+          className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-forestDarker"
         >
           New experiment
         </button>
@@ -219,7 +219,7 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
                     <button
                       type="button"
                       onClick={() => loadResults(exp.id)}
-                      className="text-xs text-[#1a5f3f] hover:underline"
+                      className="text-xs text-forestDark hover:underline"
                     >
                       Results
                     </button>
@@ -281,8 +281,8 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
                 )}
                 {(exp?.status === 'COMPLETE' || exp?.status === 'STOPPED') && (exp?.winnerVariant || summary.winner !== 'tie') && (
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <button type="button" onClick={() => handlePromote('A')} className="text-xs rounded px-2 py-1 bg-[#1a5f3f] text-white hover:bg-[#144a30]">Promote A</button>
-                    <button type="button" onClick={() => handlePromote('B')} className="text-xs rounded px-2 py-1 bg-[#1a5f3f] text-white hover:bg-[#144a30]">Promote B</button>
+                    <button type="button" onClick={() => handlePromote('A')} className="text-xs rounded px-2 py-1 bg-forestDark text-white hover:bg-forestDarker">Promote A</button>
+                    <button type="button" onClick={() => handlePromote('B')} className="text-xs rounded px-2 py-1 bg-forestDark text-white hover:bg-forestDarker">Promote B</button>
                   </div>
                 )}
               </div>
@@ -293,3 +293,4 @@ export default function ExperimentsClient({ initialExperiments }: Props) {
     </div>
   )
 }
+

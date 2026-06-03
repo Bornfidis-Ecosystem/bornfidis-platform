@@ -47,7 +47,7 @@ export default function SignOutButton() {
     <button
       onClick={handleSignOut}
       disabled={isSigningOut}
-      className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition disabled:opacity-50 text-sm font-semibold"
+      className="rounded-none border border-culinary-outline bg-white px-4 py-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-ink transition-colors hover:border-culinary-gold-line hover:bg-culinary-bone disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold focus-visible:ring-offset-2 focus-visible:ring-offset-culinary-surface-low"
     >
       {isSigningOut ? 'Signing out...' : 'Sign Out'}
     </button>

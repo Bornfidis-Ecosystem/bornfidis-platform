@@ -61,7 +61,7 @@ export default function ChefFeaturedSection({
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="px-3 py-1.5 bg-[#1a5f3f] text-white rounded text-sm hover:bg-[#154a32] disabled:opacity-50"
+          className="px-3 py-1.5 bg-forestDark text-white rounded text-sm hover:bg-forestDarker disabled:opacity-50"
         >
           {saving ? 'Saving…' : 'Save'}
         </button>

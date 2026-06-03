@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { isAuthorizedCronRequest } from '@/lib/cron-auth'
 import { upsertRate } from '@/lib/currency'
 import { BASE_CURRENCY, SUPPORTED_CURRENCIES } from '@/lib/currency'
 
@@ -10,9 +11,7 @@ export const maxDuration = 60
  * Set CRON_SECRET. Optional: EXCHANGE_RATE_API_KEY for live rates; else uses fallback defaults.
  */
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  if (!isAuthorizedCronRequest(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 

@@ -52,10 +52,10 @@ export default async function PublicImpactPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white py-16">
+      <header className="bg-forestDark text-white py-16">
         <div className="container mx-auto px-4 max-w-4xl text-center">
           <h1 className="text-5xl font-bold mb-4">Global Harvest & Kingdom Impact</h1>
-          <div className="h-1 w-32 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-32 bg-gold mx-auto mb-6"></div>
           <p className="text-green-100 text-lg max-w-2xl mx-auto">
             Every meal tells a story of faith, community, and regeneration.
             See how your support is transforming lives and healing the land.
@@ -78,3 +78,4 @@ export default async function PublicImpactPage() {
     </div>
   )
 }
+

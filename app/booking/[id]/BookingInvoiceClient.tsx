@@ -369,3 +369,4 @@ export default function BookingInvoiceClient({ booking, lineItems }: BookingInvo
     </div>
   )
 }
+

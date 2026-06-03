@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { CulinaryCard } from '@/components/culinary-os'
 
 interface FarmerApplication {
   id: string
@@ -263,7 +264,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
       )}
 
       {/* Application Details */}
-      <div className="bg-white rounded-lg shadow-sm p-6 space-y-4">
+      <CulinaryCard className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-500 mb-1">Name</label>
           <p className="text-lg font-semibold text-gray-900">{application.name}</p>
@@ -272,7 +273,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
         <div>
           <label className="block text-sm font-medium text-gray-500 mb-1">Phone</label>
           <p className="text-lg text-gray-900">
-            <a href={`tel:${application.phone}`} className="text-[#1a5f3f] hover:underline">
+            <a href={`tel:${application.phone}`} className="text-forestDark hover:underline">
               {application.phone}
             </a>
           </p>
@@ -305,7 +306,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
             <label className="block text-sm font-medium text-gray-500 mb-1">
               🎙️ Voice Intake
             </label>
-            <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-[#FFBC00] text-[#1a5f3f]">
+            <span className="px-3 py-1 inline-flex text-sm font-semibold rounded-full bg-gold text-forestDark">
               Voice Ready
             </span>
           </div>
@@ -331,13 +332,13 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
             </p>
           </div>
         )}
-      </div>
+      </CulinaryCard>
 
       {/* Call & WhatsApp Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Call Farmer Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-2 border-[#1a5f3f]">
-          <h2 className="text-xl font-bold text-[#1a5f3f] mb-4">Call Farmer</h2>
+        <CulinaryCard className="border-2 border-forestDark space-y-4">
+          <h2 className="text-xl font-bold text-forestDark mb-4">Call Farmer</h2>
           <div className="space-y-4">
             <div>
               <label htmlFor="coordinator_phone" className="block text-sm font-medium text-gray-700 mb-2">
@@ -349,7 +350,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                 value={coordinatorPhone}
                 onChange={(e) => setCoordinatorPhone(e.target.value)}
                 placeholder="+1XXXXXXXXXX"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Leave blank to play greeting only. Enter your number to connect the call to you.
@@ -358,15 +359,15 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
             <button
               onClick={handleInitiateCall}
               disabled={isCalling}
-              className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-bold hover:bg-[#154a32] transition disabled:opacity-50 min-h-[48px]"
+              className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-bold hover:bg-forestDarker transition disabled:opacity-50 min-h-[48px]"
             >
               {isCalling ? 'Initiating Call...' : '📞 Call Farmer'}
             </button>
           </div>
-        </div>
+        </CulinaryCard>
 
         {/* WhatsApp Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 border-2 border-green-600">
+        <CulinaryCard className="border-2 border-green-600 space-y-4">
           <h2 className="text-xl font-bold text-green-700 mb-4">Send WhatsApp</h2>
           <div className="space-y-4">
             <button
@@ -383,14 +384,14 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
               Send a WhatsApp message to the farmer. You can customize the message before sending.
             </p>
           </div>
-        </div>
+        </CulinaryCard>
       </div>
 
       {/* WhatsApp Modal */}
       {showWhatsAppModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-green-600 text-white p-6 rounded-t-xl">
+          <CulinaryCard className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-0">
+            <div className="bg-green-600 text-white p-6 rounded-none">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Send WhatsApp Message</h2>
                 <button
@@ -475,14 +476,14 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                 </button>
               </div>
             </form>
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Call History */}
       {callLogs.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-bold text-[#1a5f3f] mb-4">Call History</h2>
+        <CulinaryCard className="space-y-4">
+          <h2 className="text-xl font-bold text-forestDark mb-4">Call History</h2>
           <div className="space-y-3">
             {callLogs.map((log) => (
               <div key={log.id} className="border border-gray-200 rounded-lg p-4">
@@ -502,7 +503,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   </div>
                   <button
                     onClick={() => handleOpenCallSummary(log)}
-                    className="px-3 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-lg text-sm font-semibold hover:bg-gold-dark"
+                    className="px-3 py-1 bg-gold text-forestDark rounded-lg text-sm font-semibold hover:bg-gold-dark"
                   >
                     {log.interest_level ? 'Edit Summary' : 'Add Summary'}
                   </button>
@@ -516,14 +517,14 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
               </div>
             ))}
           </div>
-        </div>
+        </CulinaryCard>
       )}
 
       {/* Call Summary Modal */}
       {showCallSummary && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="bg-[#1a5f3f] text-white p-6 rounded-t-xl">
+          <CulinaryCard className="max-w-2xl w-full max-h-[90vh] overflow-y-auto p-0">
+            <div className="bg-forestDark text-white p-6 rounded-none">
               <div className="flex justify-between items-center">
                 <h2 className="text-2xl font-bold">Call Summary</h2>
                 <button
@@ -531,7 +532,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                     setShowCallSummary(false)
                     setActiveCallLogId(null)
                   }}
-                  className="text-white hover:text-[#FFBC00] text-2xl font-bold"
+                  className="text-white hover:text-gold text-2xl font-bold"
                 >
                   ×
                 </button>
@@ -554,7 +555,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   value={callSummary.call_outcome}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, call_outcome: e.target.value }))}
                   required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 >
                   <option value="">Select outcome...</option>
                   <option value="connected">Connected</option>
@@ -573,7 +574,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   id="interest_level"
                   value={callSummary.interest_level}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, interest_level: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                 >
                   <option value="">Select level...</option>
                   <option value="high">High</option>
@@ -592,7 +593,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   id="crops_confirmed"
                   value={callSummary.crops_confirmed}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, crops_confirmed: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                   placeholder="What crops did they confirm?"
                 />
               </div>
@@ -606,7 +607,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   id="volume_estimate"
                   value={callSummary.volume_estimate}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, volume_estimate: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                   placeholder="Estimated volume or quantity"
                 />
               </div>
@@ -620,7 +621,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   id="preferred_contact_time"
                   value={callSummary.preferred_contact_time}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, preferred_contact_time: e.target.value }))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                   placeholder="e.g., Mornings, Afternoons, Weekends"
                 />
               </div>
@@ -634,7 +635,7 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                   value={callSummary.notes}
                   onChange={(e) => setCallSummary(prev => ({ ...prev, notes: e.target.value }))}
                   rows={4}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
                   placeholder="Additional notes about the call..."
                 />
               </div>
@@ -653,18 +654,18 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
                 <button
                   type="submit"
                   disabled={isUpdating}
-                  className="flex-1 px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-bold hover:bg-[#154a32] transition disabled:opacity-50"
+                  className="flex-1 px-6 py-3 bg-forestDark text-white rounded-lg font-bold hover:bg-forestDarker transition disabled:opacity-50"
                 >
                   {isUpdating ? 'Saving...' : 'Save Summary'}
                 </button>
               </div>
             </form>
-          </div>
+          </CulinaryCard>
         </div>
       )}
 
       {/* Status Update */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border-t">
+      <CulinaryCard className="border-t border-culinary-outline space-y-3">
         <label className="block text-sm font-medium text-gray-700 mb-3">Status</label>
         <div className="flex gap-2 flex-wrap">
           {['new', 'reviewed', 'approved', 'declined'].map((status) => (
@@ -682,10 +683,10 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
             </button>
           ))}
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Notes */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border-t">
+      <CulinaryCard className="border-t border-culinary-outline space-y-2">
         <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">
           Notes
         </label>
@@ -695,11 +696,12 @@ export default function FarmerDetailClient({ initialApplication }: FarmerDetailC
           onChange={(e) => setApplication(prev => ({ ...prev, notes: e.target.value }))}
           onBlur={(e) => handleNotesUpdate(e.target.value)}
           rows={6}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
           placeholder="Add notes about this application..."
         />
         <p className="text-xs text-gray-500 mt-1">Notes are saved automatically when you click away.</p>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

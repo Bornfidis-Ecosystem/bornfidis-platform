@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 
 /**
- * Prisma Client Singleton
- * Prevents multiple instances in development
- * 
+ * Prisma Client Singleton — single instance for the entire app.
+ * Prevents multiple instances in development (hot reload) and production.
+ *
  * Note: Prisma automatically loads DATABASE_URL from environment variables.
  * Next.js automatically loads .env.local in development and production.
  */
@@ -85,14 +85,19 @@ function createPrismaClient() {
         url: dbUrl,
       },
     },
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    // Query logs are noisy in dev; set PRISMA_LOG_QUERIES=1 when you need SQL tracing.
+    log:
+      process.env.NODE_ENV === 'development'
+        ? process.env.PRISMA_LOG_QUERIES === '1'
+          ? (['query', 'error', 'warn'] as const)
+          : (['error', 'warn'] as const)
+        : ['error'],
     // Disable prepared statements when using PGBouncer (pooled connections)
     // This prevents "prepared statement already exists" errors (PostgresError 42P05)
     // Prisma will automatically detect pgbouncer=true in the connection string
   })
 }
 
-export const db =
-  globalForPrisma.prisma ?? createPrismaClient()
-
+// Singleton: reuse existing client or create once
+export const db = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db

@@ -62,8 +62,8 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
   }
 
   return (
-    <div className="bg-white border-2 border-[#1a5f3f] rounded-lg p-8">
-      <h3 className="text-2xl font-semibold text-[#1a5f3f] mb-6">Share Your Story</h3>
+    <div className="bg-white border-2 border-forestDark rounded-lg p-8">
+      <h3 className="text-2xl font-semibold text-forestDark mb-6">Share Your Story</h3>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -75,7 +75,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
             required
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
           />
         </div>
 
@@ -90,7 +90,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               value={formData.author_name}
               onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
               required
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
           <div>
@@ -102,7 +102,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               id="author_email"
               value={formData.author_email || ''}
               onChange={(e) => setFormData({ ...formData, author_email: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               id="author_role"
               value={formData.author_role || ''}
               onChange={(e) => setFormData({ ...formData, author_role: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
           <div>
@@ -129,7 +129,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               id="author_region"
               value={formData.author_region || ''}
               onChange={(e) => setFormData({ ...formData, author_region: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
             id="category"
             value={formData.category}
             onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
           >
             <option value="testimony">Testimony</option>
             <option value="impact">Impact</option>
@@ -163,7 +163,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
             onChange={(e) => setFormData({ ...formData, story_text: e.target.value })}
             required
             rows={8}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             placeholder="Tell us your story... (minimum 50 characters)"
           />
         </div>
@@ -179,7 +179,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               value={formData.video_url || ''}
               onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
               placeholder="YouTube or Vimeo URL"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
           <div>
@@ -192,7 +192,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
               value={formData.image_url || ''}
               onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
               placeholder="Image URL"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
             />
           </div>
         </div>
@@ -200,7 +200,7 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+          className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
         >
           {isSubmitting ? 'Submitting...' : 'Submit Story'}
         </button>
@@ -208,3 +208,4 @@ export default function StorySubmissionForm({ onSuccess, onError }: StorySubmiss
     </div>
   )
 }
+

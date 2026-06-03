@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -160,8 +161,8 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-        <h2 className="text-xl font-semibold text-[#1a5f3f] mb-4">Filters</h2>
+      <CulinaryCard>
+        <h2 className="text-xl font-semibold text-forestDark mb-4">Filters</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
           <div>
@@ -171,7 +172,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Name, phone, crops..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
             />
           </div>
 
@@ -181,7 +182,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
             <select
               value={selectedParish}
               onChange={(e) => setSelectedParish(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
             >
               <option value="all">All Parishes</option>
               {initialData.parishes.map(parish => (
@@ -196,7 +197,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
             <select
               value={selectedCrop}
               onChange={(e) => setSelectedCrop(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
             >
               <option value="all">All Crops</option>
               {initialData.crops.map(crop => (
@@ -211,7 +212,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-forestDark focus:border-forestDark"
             >
               <option value="all">All Statuses</option>
               <option value="new">New</option>
@@ -226,10 +227,10 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
         <div className="mt-4 text-sm text-gray-600">
           Showing {filteredFarmers.length} of {farmers.length} farmers
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Farmers List */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -267,11 +268,11 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900">{farmer.name}</div>
                       {farmer.voice_ready && (
-                        <span className="text-xs text-[#FFBC00]">🎙️ Voice Ready</span>
+                        <span className="text-xs text-gold">🎙️ Voice Ready</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <a href={`tel:${farmer.phone}`} className="text-[#1a5f3f] hover:underline">
+                      <a href={`tel:${farmer.phone}`} className="text-forestDark hover:underline">
                         {farmer.phone}
                       </a>
                     </td>
@@ -290,7 +291,7 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
                       <div className="flex gap-2">
                         <Link
                           href={`/admin/farmers/${farmer.id}`}
-                          className="px-3 py-1 bg-[#1a5f3f] text-white rounded-lg hover:bg-[#154a32] transition text-xs"
+                          className="px-3 py-1 bg-forestDark text-white rounded-lg hover:bg-forestDarker transition text-xs"
                         >
                           View
                         </Link>
@@ -316,7 +317,8 @@ export default function CoordinatorDashboardClient({ initialData }: CoordinatorD
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

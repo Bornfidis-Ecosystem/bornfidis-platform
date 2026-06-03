@@ -1,38 +1,48 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import { Toaster } from 'react-hot-toast'
+import { Inter, Libre_Caslon_Text, Montserrat } from 'next/font/google'
 import './globals.css'
-import PublicNav from '@/components/layout/PublicNav'
-import PublicFooter from '@/components/layout/PublicFooter'
-import { ToastContainer } from '@/components/ui/Toast'
-import { SyncButton } from '@/components/ui/SyncButton'
-import { OfflineSyncProvider } from '@/components/ui/OfflineSyncProvider'
+import RootShell from '@/components/layout/RootShell'
+import { brandAssets } from '@/lib/brand-assets'
 
-const inter = Inter({ subsets: ['latin'] })
+/** Headlines — WordPress brief: Libre Caslon Text (exposed as --font-serif for Tailwind `font-display`). */
+const headline = Libre_Caslon_Text({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-serif',
+})
+
+/** UI / body — WordPress brief: Montserrat (exposed as --font-sans for Tailwind `font-sans`). */
+const ui = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-sans',
+})
+
+/** Culinary OS / admin operational UI — DESIGN.md (Inter). */
+const culinaryUi = Inter({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-culinary-ui',
+})
 
 export const metadata: Metadata = {
-  title: 'Bornfidis Provisions | Regenerating Land, People & Enterprise',
-  description: 'Faith-anchored food and fellowship regenerating communities through regenerative agriculture, fair trade, and generational wealth building.',
+  title: 'Bornfidis',
+  description:
+    'Bornfidis Provisions — Private chef experiences in Vermont and Jamaica. Caribbean fine dining, live-fire cooking, and intimate hospitality crafted by Chef Brian Maylor.',
+  icons: {
+    icon: [{ url: brandAssets.iconGold, type: 'image/png' }],
+    apple: brandAssets.iconGold,
+  },
 }
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="overflow-x-hidden">
-      <body className={`${inter.className} overflow-x-hidden`}>
-        <div className="min-h-screen flex flex-col">
-          <OfflineSyncProvider>
-            <PublicNav />
-            <main className="flex-1 w-full">{children}</main>
-            <PublicFooter />
-            <ToastContainer />
-            <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
-            <SyncButton />
-          </OfflineSyncProvider>
-        </div>
+    <html lang="en">
+      <body
+        className={`${headline.variable} ${ui.variable} ${culinaryUi.variable} font-sans`}
+      >
+        <RootShell>{children}</RootShell>
       </body>
     </html>
   )

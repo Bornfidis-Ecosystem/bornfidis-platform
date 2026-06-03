@@ -1,0 +1,131 @@
+/* Shared conversion band — works on any public marketing page */
+.bf-conversion-cta {
+  --cta-bone: #faf6f0;
+  --cta-slate: #2c2c2c;
+  --cta-green: #1a3c34;
+  --cta-gold: #c9a84c;
+  --cta-muted: rgba(44, 44, 44, 0.65);
+  padding: 4rem 1.5rem;
+  border-top: 1px solid rgba(26, 60, 52, 0.1);
+}
+
+.bf-conversion-cta--forest {
+  background: var(--cta-green);
+  border-top-color: rgba(201, 168, 76, 0.25);
+  --cta-muted: rgba(250, 246, 240, 0.65);
+}
+
+.bf-conversion-cta--bone {
+  background: var(--cta-bone);
+}
+
+.bf-conversion-cta__inner {
+  max-width: 56rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bf-conversion-cta__eyebrow {
+  font-family: var(--font-sans), Montserrat, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cta-gold);
+  margin-bottom: 0.75rem;
+}
+
+.bf-conversion-cta--forest .bf-conversion-cta__eyebrow {
+  color: rgba(201, 168, 76, 0.85);
+}
+
+.bf-conversion-cta__title {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--cta-slate);
+  margin-bottom: 0.75rem;
+}
+
+.bf-conversion-cta--forest .bf-conversion-cta__title {
+  color: var(--cta-bone);
+}
+
+.bf-conversion-cta__body {
+  font-family: var(--font-sans), Montserrat, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--cta-muted);
+  max-width: 36rem;
+  margin: 0 auto 1.75rem;
+}
+
+.bf-conversion-cta__primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.875rem 2rem;
+  background: var(--cta-green);
+  color: var(--cta-bone);
+  font-family: var(--font-sans), Montserrat, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.bf-conversion-cta--forest .bf-conversion-cta__primary {
+  background: var(--cta-bone);
+  color: var(--cta-green);
+}
+
+.bf-conversion-cta__primary:hover {
+  background: #143028;
+}
+
+.bf-conversion-cta--forest .bf-conversion-cta__primary:hover {
+  background: #fff;
+}
+
+.bf-conversion-cta__secondary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  margin-top: 1.25rem;
+}
+
+.bf-conversion-cta__link {
+  font-family: var(--font-sans), Montserrat, sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cta-green);
+  border-bottom: 1px solid rgba(26, 60, 52, 0.25);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.bf-conversion-cta--forest .bf-conversion-cta__link {
+  color: var(--cta-bone);
+  border-bottom-color: rgba(250, 246, 240, 0.35);
+}
+
+.bf-conversion-cta__link:hover {
+  color: var(--cta-gold);
+  border-bottom-color: var(--cta-gold);
+}
+
+.bf-conversion-cta--compact {
+  padding: 2.5rem 1.5rem;
+}
+
+.bf-conversion-cta--compact .bf-conversion-cta__title {
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}

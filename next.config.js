@@ -1,6 +1,24 @@
+const path = require('path')
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd2xsxph8kpxj0f.cloudfront.net',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        pathname: '/**',
+      },
+    ],
+  },
+  // Use this directory as the workspace root for file tracing (avoids picking up parent pnpm-lock.yaml).
+  outputFileTracingRoot: path.join(__dirname),
   // Disable ESLint during builds to allow deployment despite warnings
   eslint: {
     ignoreDuringBuilds: true,
@@ -13,6 +31,12 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn'], // Keep errors and warnings
     } : false,
+  },
+  async redirects() {
+    return [
+      // /story content now lives at /our-story; keep old links working.
+      { source: '/story', destination: '/our-story', permanent: true },
+    ]
   },
 }
 

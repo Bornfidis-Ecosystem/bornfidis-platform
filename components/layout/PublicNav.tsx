@@ -2,96 +2,106 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { PHASE1_CTA, PHASE1_NAV_LINKS } from '@/lib/phase1-marketing'
+
+/**
+ * Bornfidis — Phase 1 public navigation.
+ * Home · Private Dining · Provisions · Our Story · Journal · Contact + BOOK NOW.
+ */
 export default function PublicNav() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const navLinks = [
-    { href: '/', label: 'Home' },
-    { href: '/story', label: 'Our Story' },
-    { href: '/launch', label: 'Launch' },
-    { href: '/stories', label: 'Stories' },
-    { href: '/book', label: 'Book Event' },
-    { href: '/chefs', label: 'Chefs' },
-    { href: '/farmers', label: 'Farmers' },
-    { href: '/cooperative', label: 'Cooperative' },
-    { href: '/replicate', label: 'Replicate' },
-    { href: '/impact', label: 'Impact' },
-    { href: '/testament', label: 'Testament' },
-    { href: '/housing', label: 'Housing' },
-    { href: '/legacy', label: 'Legacy' },
-  ]
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [mobileMenuOpen])
+
+  if (pathname?.startsWith('/admin')) return null
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    return pathname === href || pathname?.startsWith(`${href}/`)
+  }
+
+  const linkClass = (href: string) =>
+    [
+      'font-sans text-[0.75rem] font-semibold uppercase tracking-[0.18em] no-underline transition-colors duration-200',
+      isActive(href) ? 'text-[#FAF6F0]' : 'text-[#FAF6F0]/70 hover:text-[#FAF6F0]',
+    ].join(' ')
+
+  const ctaClass =
+    'inline-flex items-center justify-center bg-[#C9A84C] px-5 py-2.5 font-sans text-[0.75rem] font-semibold tracking-[0.15em] text-[#1A3C34] no-underline transition-opacity duration-200 hover:opacity-90'
 
   return (
-    <nav className="bg-[#1a5f3f] text-white shadow-lg sticky top-0 z-50 w-full">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
-            <div className="text-xl md:text-2xl font-bold">Bornfidis</div>
-            <div className="h-6 md:h-8 w-1 bg-[#FFBC00]"></div>
-            <div className="text-xs md:text-sm text-green-100">Provisions</div>
+    <>
+      <header className="fixed inset-x-0 top-0 z-[100] h-[72px] border-b border-[#C9A84C]/20 bg-[#1A3C34]">
+        <nav className="mx-auto flex h-full max-w-7xl items-center justify-between px-6">
+          <Link
+            href="/"
+            className="font-display text-[1.5rem] font-normal leading-none text-[#FAF6F0] no-underline"
+          >
+            Bornfidis
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2 xl:space-x-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-2 xl:px-3 py-2 rounded-md text-xs xl:text-sm font-medium transition whitespace-nowrap ${
-                  pathname === link.href
-                    ? 'bg-[#FFBC00] text-[#1a5f3f]'
-                    : 'text-green-100 hover:bg-[#154a32] hover:text-white'
-                }`}
-              >
+          <div className="hidden items-center gap-8 lg:flex">
+            {PHASE1_NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={linkClass(link.href)}>
                 {link.label}
               </Link>
             ))}
           </div>
 
-          {/* Mobile Menu Button */}
+          <Link href={PHASE1_CTA.bookNow.href} className={`hidden lg:inline-flex ${ctaClass}`}>
+            {PHASE1_CTA.bookNow.label}
+          </Link>
+
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#FFBC00] rounded"
+            type="button"
+            onClick={() => setMobileMenuOpen((open) => !open)}
             aria-label="Toggle menu"
+            aria-expanded={mobileMenuOpen}
+            className="-mr-2 p-2 text-[#FAF6F0] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] lg:hidden"
           >
             {mobileMenuOpen ? (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             )}
           </button>
-        </div>
+        </nav>
+      </header>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-[#154a32] py-4">
-            <div className="flex flex-col space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium transition ${
-                    pathname === link.href
-                      ? 'bg-[#FFBC00] text-[#1a5f3f]'
-                      : 'text-green-100 hover:bg-[#154a32] hover:text-white'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+      <div aria-hidden className="h-[72px]" />
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-x-0 top-[72px] z-[100] border-b border-[#C9A84C]/20 bg-[#1A3C34] lg:hidden">
+          <div className="mx-auto flex max-w-7xl flex-col px-6 py-4">
+            {PHASE1_NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href} className={`${linkClass(link.href)} py-3`}>
+                {link.label}
+              </Link>
+            ))}
+            <Link href={PHASE1_CTA.bookNow.href} className={`mt-3 px-5 py-3 ${ctaClass}`}>
+              {PHASE1_CTA.bookNow.label}
+            </Link>
           </div>
-        )}
-      </div>
-    </nav>
+        </div>
+      )}
+    </>
   )
 }

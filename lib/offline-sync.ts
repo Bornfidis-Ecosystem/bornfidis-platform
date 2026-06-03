@@ -132,7 +132,8 @@ export async function syncPendingSubmissions(): Promise<{ synced: number; failed
 }
 
 /**
- * Initialize auto-sync on online event
+ * Initialize auto-sync on online event.
+ * Safe to import from the client bundle: no IndexedDB or window access at module load — only here + API calls.
  */
 export function initAutoSync() {
   if (typeof window === 'undefined') return
@@ -161,7 +162,13 @@ export function initAutoSync() {
 export async function submitWithOfflineFallback(
   payload: Record<string, any>,
   endpoint: string
-): Promise<{ success: boolean; offline?: boolean; id?: string; error?: string }> {
+): Promise<{
+  success: boolean
+  offline?: boolean
+  id?: string
+  bookingId?: string
+  error?: string
+}> {
   // Try to submit online first
   if (isOnline()) {
     try {
@@ -176,7 +183,7 @@ export async function submitWithOfflineFallback(
       const data = await response.json()
 
       if (response.ok && data.success) {
-        return { success: true }
+        return { success: true, bookingId: typeof data.bookingId === 'string' ? data.bookingId : undefined }
       } else {
         // Server error - save offline
         const id = await saveOfflineSubmission(payload, endpoint)

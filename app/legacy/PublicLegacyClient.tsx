@@ -76,7 +76,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
 
       {/* Vision Story */}
       <section>
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6 text-center">Our Vision</h2>
+        <h2 className="text-3xl font-bold text-forestDark mb-6 text-center">Our Vision</h2>
         {visionDocuments.length === 0 ? (
           <div className="bg-[#f0fdf4] p-8 rounded-lg shadow-md border border-[#d1fae5]">
             <p className="text-gray-700 leading-relaxed text-lg">
@@ -99,7 +99,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
           <div className="space-y-4">
             {visionDocuments.map((doc) => (
               <div key={doc.id} className="bg-[#f0fdf4] p-6 rounded-lg shadow-md border border-[#d1fae5]">
-                <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{doc.title}</h3>
+                <h3 className="text-xl font-semibold text-forestDark mb-2">{doc.title}</h3>
                 {doc.summary && <p className="text-gray-700 mb-4">{doc.summary}</p>}
                 <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">{doc.content}</div>
               </div>
@@ -109,9 +109,9 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
       </section>
 
       {/* Generational Covenant */}
-      <section className="bg-[#1a5f3f] text-white p-8 rounded-lg shadow-md">
+      <section className="bg-forestDark text-white p-8 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center">Generational Covenant</h2>
-        <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+        <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed max-w-3xl mx-auto">
           <p>
             We commit to building Bornfidis as a legacy that will thrive for 100+ years, passing on not just a business,
@@ -140,11 +140,11 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
       {/* Doctrine Documents */}
       {doctrineDocuments.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-6 text-center">Our Foundation</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-6 text-center">Our Foundation</h2>
           <div className="space-y-4">
             {doctrineDocuments.map((doc) => (
               <div key={doc.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{doc.title}</h3>
+                <h3 className="text-xl font-semibold text-forestDark mb-2">{doc.title}</h3>
                 {doc.summary && <p className="text-gray-700 mb-4">{doc.summary}</p>}
                 <div className="prose max-w-none text-gray-700 whitespace-pre-wrap">{doc.content}</div>
               </div>
@@ -156,10 +156,10 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
       {/* Prayer Wall */}
       <section>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-[#1a5f3f]">Prayer Wall</h2>
+          <h2 className="text-3xl font-bold text-forestDark">Prayer Wall</h2>
           <button
             onClick={() => setShowPrayerForm(!showPrayerForm)}
-            className="px-6 py-2 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="px-6 py-2 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             {showPrayerForm ? 'Cancel' : 'Submit Prayer Request'}
           </button>
@@ -167,7 +167,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
 
         {showPrayerForm && (
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mb-6">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-4">Submit a Prayer Request</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-4">Submit a Prayer Request</h3>
             <form onSubmit={handleSubmitPrayer} className="space-y-4">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -178,7 +178,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   id="name"
                   name="name"
                   required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -189,7 +189,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   type="email"
                   id="email"
                   name="email"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -200,7 +200,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   type="text"
                   id="region"
                   name="region"
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 />
               </div>
               <div>
@@ -212,13 +212,13 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
                   name="request"
                   required
                   rows={5}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 ></textarea>
               </div>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-6 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+                className="w-full px-6 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Prayer Request'}
               </button>
@@ -229,7 +229,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
         {/* Unanswered Prayers */}
         {unansweredPrayers.length > 0 && (
           <div className="mb-8">
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-4">Prayer Requests</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-4">Prayer Requests</h3>
             <div className="space-y-4">
               {unansweredPrayers.map((prayer) => (
                 <div key={prayer.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -253,7 +253,7 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
         {/* Answered Prayers */}
         {answeredPrayers.length > 0 && (
           <div>
-            <h3 className="text-xl font-semibold text-[#1a5f3f] mb-4">Answered Prayers</h3>
+            <h3 className="text-xl font-semibold text-forestDark mb-4">Answered Prayers</h3>
             <div className="space-y-4">
               {answeredPrayers.map((prayer) => (
                 <div key={prayer.id} className="bg-green-50 p-6 rounded-lg shadow-sm border border-green-200">
@@ -286,3 +286,4 @@ export default function PublicLegacyClient({ legacyData }: PublicLegacyClientPro
     </div>
   )
 }
+

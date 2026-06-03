@@ -86,7 +86,11 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (dbError) {
-      console.error('Error saving farmer application:', dbError)
+      console.error('Error saving farmer application:', {
+        code: dbError.code,
+        message: dbError.message,
+        details: dbError.details,
+      })
       return NextResponse.json(
         { success: false, error: 'Failed to save application. Please try again.' },
         { status: 500 }

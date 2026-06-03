@@ -144,7 +144,7 @@ export default function CoachingListClient({ cases: initialCases, coachOptions }
                         type="button"
                         onClick={() => handleSave(c.id)}
                         disabled={saving}
-                        className="text-xs px-2 py-1 bg-[#1a5f3f] text-white rounded"
+                        className="text-xs px-2 py-1 bg-forestDark text-white rounded"
                       >
                         Save
                       </button>
@@ -212,3 +212,4 @@ export default function CoachingListClient({ cases: initialCases, coachOptions }
     </div>
   )
 }
+

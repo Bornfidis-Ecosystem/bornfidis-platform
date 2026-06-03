@@ -16,13 +16,13 @@ export default async function AdminLeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <Link
                 href="/admin"
-                className="text-[#FFBC00] hover:underline text-sm mb-2 inline-block"
+                className="text-gold hover:underline text-sm mb-2 inline-block"
               >
                 ← Admin
               </Link>

@@ -1,0 +1,47 @@
+---
+description: WordPress (bornfidis.com) vs platform.bornfidis.com boundaries, CTAs, brand, slugs
+alwaysApply: true
+---
+
+# Platform integration — Bornfidis Provisions
+
+Treat **WordPress** (`bornfidis.com`) and the **Next.js platform** (`platform.bornfidis.com`) as **two separate systems**. Do not merge them in code, runtime fetches, or rendering assumptions.
+
+## Rule 1 — No deep coupling
+
+The WordPress site must **never depend on the platform to render**. If the platform is down, `bornfidis.com` must still load fully. Do not add server-side includes, client fetches, or iframes from WP into this repo’s expectations for marketing HTML.
+
+**This repo (platform):** must not assume WordPress is up for core flows; optional outbound links to marketing URLs are fine.
+
+## Rule 2 — Booking CTAs on WordPress are external links
+
+Every “Book Private Dining” (and similar) control on WordPress must be a normal anchor to `https://platform.bornfidis.com/...` with `target="_blank"` and `rel="noopener noreferrer"`. **No iframes** unless the product owner explicitly requests them.
+
+**This repo:** primary booking entry for the public is typically `/book` on the platform host. WordPress should link out; do not embed WP inside the platform for booking.
+
+## Rule 3 — Brand alignment (platform should match WordPress design system)
+
+When building or restyling **public** provisioning/booking surfaces on the platform, prefer this system (see also `lib/wp-platform-integration.ts`):
+
+| Role | Value |
+|-----|--------|
+| Background (Bone) | `#fdf8f8` |
+| Primary text (Slate) | `#2c2c2c` |
+| Accent (Gold) | `#C9A84C` |
+| CTA buttons | `#1A3C34` (Forest Green) with Bone (`#fdf8f8`) text |
+| Headlines | Libre Caslon Text |
+| UI / labels | Montserrat, uppercase, letter-spacing (tracked) |
+
+Root layout maps headline/body fonts into the existing `--font-playfair` / `--font-inter` variables so Tailwind `font-display` / `font-sans` stay wired.
+
+## Rule 4 — URL slugs — WordPress owns marketing paths
+
+WordPress uses these **marketing** slugs: `/private-dining`, `/shop`, `/provisions`, `/journal`, `/our-story`, `/contact`.
+
+The platform must **not** ship public routes at the **same paths on the same hostname** as those marketing URLs. Today the platform lives on **`platform.bornfidis.com`**, so path overlap with WP on `bornfidis.com` is avoided by hostname. If routes are ever consolidated on one host, **do not** add conflicting public paths without an explicit routing plan.
+
+## Rule 5 — Future Academy (WordPress only)
+
+**Reserve `/academy` on WordPress** as a placeholder that will later redirect to `academy.bornfidis.com`. **Do not build that placeholder in this repo** for the root marketing domain.
+
+**Note:** This codebase may already expose `/academy` on **`platform.bornfidis.com`** (courses, checkout). That does not violate WP’s slug reservation on **`bornfidis.com`** as long as domains stay split.

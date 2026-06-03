@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Ingredient, IngredientCategory } from '@/types/ingredient'
+import { CulinaryCard } from '@/components/culinary-os'
 
 interface IngredientsClientProps {
   ingredients: Ingredient[]
@@ -72,15 +73,15 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <CulinaryCard padded={false} className="overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-[#1a5f3f]">All Ingredients</h2>
+        <h2 className="text-xl font-semibold text-forestDark">All Ingredients</h2>
         <div className="flex gap-2">
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value as any)}
-            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#1a5f3f]"
+            className="px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-forestDark"
           >
             <option value="all">All Categories</option>
             <option value="produce">Produce</option>
@@ -92,7 +93,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
           </select>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="px-4 py-1.5 bg-[#1a5f3f] text-white rounded-lg text-sm font-semibold hover:bg-[#154a32] transition"
+            className="px-4 py-1.5 bg-forestDark text-white rounded-lg text-sm font-semibold hover:bg-forestDarker transition"
           >
             {showCreateForm ? 'Cancel' : '+ Add Ingredient'}
           </button>
@@ -114,7 +115,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
       {/* Create Form */}
       {showCreateForm && (
         <div className="mx-6 mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <h3 className="text-lg font-semibold text-[#1a5f3f] mb-4">Create New Ingredient</h3>
+          <h3 className="text-lg font-semibold text-forestDark mb-4">Create New Ingredient</h3>
           <form onSubmit={handleCreate} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -123,7 +124,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                   type="text"
                   name="name"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 />
               </div>
               <div>
@@ -131,7 +132,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                 <select
                   name="category"
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 >
                   <option value="produce">Produce</option>
                   <option value="fish">Fish</option>
@@ -148,7 +149,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                   name="unit"
                   required
                   placeholder="lb, kg, bunch, bottle"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 />
               </div>
               <div>
@@ -159,7 +160,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                   min="0"
                   max="100"
                   defaultValue="50"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 />
               </div>
               <div className="md:col-span-2">
@@ -168,7 +169,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                   type="text"
                   name="seasonality"
                   placeholder="e.g., Year-round, May-September"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
                 />
               </div>
               <div className="md:col-span-2">
@@ -176,7 +177,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                 <textarea
                   name="notes"
                   rows={2}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] resize-y"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark resize-y"
                 />
               </div>
             </div>
@@ -184,7 +185,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
               <button
                 type="submit"
                 disabled={isCreating}
-                className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+                className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
               >
                 {isCreating ? 'Creating...' : 'Create Ingredient'}
               </button>
@@ -232,7 +233,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
                   <td className="py-3 px-6 text-gray-600">{ingredient.unit}</td>
                   <td className="py-3 px-6 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <span className="font-semibold text-[#1a5f3f]">{ingredient.regenerative_score}</span>
+                      <span className="font-semibold text-forestDark">{ingredient.regenerative_score}</span>
                       <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className={`h-full ${ingredient.regenerative_score >= 70 ? 'bg-green-500' : ingredient.regenerative_score >= 40 ? 'bg-yellow-500' : 'bg-red-500'}`}
@@ -257,6 +258,7 @@ export default function IngredientsClient({ ingredients: initialIngredients }: I
           </tbody>
         </table>
       </div>
-    </div>
+    </CulinaryCard>
   )
 }
+

@@ -50,7 +50,7 @@ export default function PushOptIn() {
       const subRes = await fetch('/api/push/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subscription: subscriptionJson }),
+        body: JSON.stringify(body),
       })
       if (!subRes.ok) throw new Error('Subscribe failed')
       try { localStorage.setItem(STORAGE_KEY_ASKED, '1') } catch {}
@@ -70,7 +70,7 @@ export default function PushOptIn() {
   if (!show) return null
 
   return (
-    <div className="fixed bottom-20 left-4 right-4 z-40 md:bottom-4 md:left-auto md:right-4 md:max-w-sm rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
+    <div className="fixed bottom-4 right-4 z-30 w-full max-w-sm rounded-lg border border-gray-200 bg-white p-3 shadow-lg">
       <p className="text-sm font-medium text-gray-900">Enable notifications?</p>
       <p className="text-xs text-gray-500 mt-0.5">Get instant alerts for new bookings and reminders.</p>
       <div className="mt-2 flex gap-2">

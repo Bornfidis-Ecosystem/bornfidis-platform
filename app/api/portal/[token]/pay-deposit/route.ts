@@ -69,7 +69,10 @@ export async function POST(
       apiVersion: '2024-11-20.acacia',
     })
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '') ||
+      'http://localhost:3000'
 
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -93,6 +96,7 @@ export async function POST(
       customer_email: booking.email || undefined,
       metadata: {
         booking_id: booking.id,
+        bookingId: booking.id,
         customer_name: booking.name || '',
         payment_type: 'deposit',
       },

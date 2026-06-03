@@ -27,6 +27,10 @@ people, and enterprise — starting in Jamaica and replicable globally.
 
 This is the full Bornfidis Platform - a comprehensive booking and farmer coordination system that allows customers to request chef services or catering. Admin reviews submissions, coordinates with farmers, and manages the entire event lifecycle.
 
+## Admin UI (Bornfidis Culinary OS)
+
+All work on **`/admin/**`** (layout, navigation, pages, and admin-specific components) must follow the **Bornfidis Culinary OS** design system: editorial minimalism, sharp geometry (no default rounded “SaaS” cards), restrained surfaces (no heavy shadows), **Libre Caslon Text** for editorial headlines and **Inter** for operational UI, and the bone / navy / muted gold / forest palette described in **[`docs/CULINARY_OS_DESIGN.md`](./docs/CULINARY_OS_DESIGN.md)**. Shared primitives live under [`components/culinary-os/`](./components/culinary-os/).
+
 ## Project Structure
 
 ```

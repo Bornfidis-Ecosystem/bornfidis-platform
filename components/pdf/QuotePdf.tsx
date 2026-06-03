@@ -5,6 +5,7 @@ import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/rendere
 import { BookingQuote } from '@/types/quote'
 import { formatMoney } from '@/lib/money'
 import { BookingInquiry } from '@/types/booking'
+import { colors } from '@/lib/design-tokens'
 
 // Register fonts if needed (optional - using system fonts for now)
 // Font.register({
@@ -17,17 +18,17 @@ const styles = StyleSheet.create({
     padding: 40,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   header: {
     marginBottom: 30,
-    borderBottom: '2 solid #002747',
+    borderBottom: `2 solid ${colors.navy}`,
     paddingBottom: 15,
   },
   companyName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 5,
   },
   tagline: {
@@ -41,9 +42,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 10,
-    borderBottom: '1 solid #FFBC00',
+    borderBottom: `1 solid ${colors.gold}`,
     paddingBottom: 5,
   },
   row: {
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#002747',
+    backgroundColor: colors.navy,
     color: '#FFFFFF',
     padding: 8,
     fontWeight: 'bold',
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 12,
-    backgroundColor: '#002747',
+    backgroundColor: colors.navy,
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 12,
@@ -127,8 +128,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: '#FFBC00',
-    color: '#002747',
+    backgroundColor: colors.gold,
+    color: colors.navy,
     fontWeight: 'bold',
     fontSize: 11,
     marginTop: 10,
@@ -137,12 +138,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 15,
     backgroundColor: '#F9F9F9',
-    borderLeft: '3 solid #FFBC00',
+    borderLeft: `3 solid ${colors.gold}`,
   },
   notesTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 8,
   },
   notesText: {

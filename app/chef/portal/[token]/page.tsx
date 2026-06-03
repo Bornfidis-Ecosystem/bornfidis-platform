@@ -112,7 +112,7 @@ export default async function ChefPortalPage({ params }: { params: { token: stri
           </p>
           <a
             href="mailto:brian@bornfidis.com"
-            className="inline-block px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="inline-block px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Contact Us
           </a>
@@ -123,3 +123,4 @@ export default async function ChefPortalPage({ params }: { params: { token: stri
 
   return <ChefPortalClient portalData={portalData} token={params.token} />
 }
+

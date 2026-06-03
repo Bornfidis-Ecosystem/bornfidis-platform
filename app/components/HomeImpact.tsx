@@ -38,11 +38,11 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
   ]
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-[#1a5f3f] to-[#154a32] text-white">
+    <section className="py-16 md:py-24 bg-gradient-to-br from-forestDark to-forestDarker text-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Our Impact</h2>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
           <p className="text-xl text-green-100 max-w-2xl mx-auto">
             Every meal, every farmer, every acre—building a regenerative future together.
           </p>
@@ -51,7 +51,7 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
           {impactStats.map((stat) => (
             <div key={stat.label} className="text-center">
               <div className="text-4xl mb-3">{stat.icon}</div>
-              <div className="text-3xl md:text-4xl font-bold text-[#FFBC00] mb-2">{stat.value}</div>
+              <div className="text-3xl md:text-4xl font-bold text-gold mb-2">{stat.value}</div>
               <div className="text-sm text-green-100">{stat.label}</div>
             </div>
           ))}
@@ -59,7 +59,7 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
         <div className="text-center mt-12">
           <a
             href="/impact"
-            className="inline-block px-8 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-gold-dark transition"
+            className="inline-block px-8 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-gold-dark transition"
           >
             View Full Impact Report
           </a>
@@ -68,3 +68,4 @@ export default function HomeImpact({ impact }: HomeImpactProps) {
     </section>
   )
 }
+

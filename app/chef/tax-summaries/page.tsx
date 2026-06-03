@@ -37,7 +37,7 @@ export default async function ChefTaxSummariesPage() {
 
   return (
     <div className="p-4 md:p-6 max-w-2xl mx-auto">
-      <Link href="/chef" className="text-sm text-[#1a5f3f] hover:underline mb-4 inline-block">
+      <Link href="/chef" className="text-sm text-forestDark hover:underline mb-4 inline-block">
         ← Chef Dashboard
       </Link>
       <h1 className="text-2xl font-bold text-gray-900 mb-2">Tax Summaries</h1>
@@ -66,7 +66,7 @@ export default async function ChefTaxSummariesPage() {
               <a
                 href={`/api/chef/tax-summary/${a.year}`}
                 download={`Chef-Tax-Summary-${a.year}.pdf`}
-                className="min-h-[44px] inline-flex items-center justify-center rounded-lg bg-[#1a5f3f] text-white px-4 py-3 text-sm font-medium hover:bg-[#144a30] touch-manipulation"
+                className="min-h-[44px] inline-flex items-center justify-center rounded-lg bg-forestDark text-white px-4 py-3 text-sm font-medium hover:bg-forestDarker touch-manipulation"
               >
                 Download PDF
               </a>
@@ -81,3 +81,4 @@ export default async function ChefTaxSummariesPage() {
     </div>
   )
 }
+

@@ -4,6 +4,7 @@ import { canAssignRoles } from '@/lib/authz'
 import UserManagementClient from './UserManagementClient'
 import SignOutButton from '@/components/admin/SignOutButton'
 import Link from 'next/link'
+import { CulinaryCard } from '@/components/culinary-os'
 
 /**
  * Phase 4: User Management Page
@@ -18,7 +19,7 @@ export default async function UserManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-culinary-bone">
       {/* Header */}
       <header className="bg-navy text-white">
         <div className="container mx-auto px-4 py-6">
@@ -40,9 +41,9 @@ export default async function UserManagementPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <CulinaryCard className="p-6">
           <UserManagementClient />
-        </div>
+        </CulinaryCard>
       </main>
     </div>
   )

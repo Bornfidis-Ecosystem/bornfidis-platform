@@ -55,3 +55,4 @@ export function ChefEducationListClient({ modules }: Props) {
     </ul>
   )
 }
+

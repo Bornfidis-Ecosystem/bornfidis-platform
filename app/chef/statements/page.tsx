@@ -43,7 +43,7 @@ export default async function ChefStatementsPage() {
             <span className="text-gray-900">{label}</span>
             <a
               href={`/api/chef/statements/${year}-${String(month).padStart(2, '0')}`}
-              className="text-sm text-[#1a5f3f] hover:underline font-medium"
+              className="text-sm text-forestDark hover:underline font-medium"
               download
             >
               Download PDF
@@ -52,7 +52,7 @@ export default async function ChefStatementsPage() {
         ))}
       </ul>
       <p className="text-sm text-gray-500">
-        <Link href="/chef" className="text-[#1a5f3f] hover:underline">← Back to Chef dashboard</Link>
+        <Link href="/chef" className="text-forestDark hover:underline">← Back to Chef dashboard</Link>
       </p>
     </div>
   )

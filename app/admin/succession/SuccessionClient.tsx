@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -113,7 +114,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
         </div>
       )}
 
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead>
@@ -150,7 +151,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
                           <button
                             type="button"
                             onClick={() => setEditing({ assignmentId: role.primary!.id, roleName: role.name })}
-                            className="text-[#1a5f3f] hover:underline text-xs"
+                            className="text-forestDark hover:underline text-xs"
                           >
                             Edit
                           </button>
@@ -188,7 +189,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
                             <button
                               type="button"
                               onClick={() => setEditing({ assignmentId: b.id, roleName: role.name })}
-                              className="text-[#1a5f3f] hover:underline text-xs"
+                              className="text-forestDark hover:underline text-xs"
                             >
                               Edit
                             </button>
@@ -209,7 +210,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
                       <button
                         type="button"
                         onClick={() => setAdding({ roleId: role.id, roleName: role.name, type: 'BACKUP' })}
-                        className="mt-1 text-[#1a5f3f] hover:underline text-xs"
+                        className="mt-1 text-forestDark hover:underline text-xs"
                       >
                         + Add backup
                       </button>
@@ -235,7 +236,7 @@ export default function SuccessionClient({ initialRoles, eligibleUsers }: Props)
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
@@ -282,7 +283,7 @@ function AddPrimarySelect({
       <button
         type="submit"
         disabled={!userId}
-        className="rounded bg-[#1a5f3f] text-white text-xs px-2 py-1 disabled:opacity-50"
+        className="rounded bg-forestDark text-white text-xs px-2 py-1 disabled:opacity-50"
       >
         {label}
       </button>
@@ -311,7 +312,7 @@ function AddBackupSelect({
   if (available.length === 0) {
     return (
       <span className="text-gray-400 text-xs">
-        No eligible users left <button type="button" onClick={onCancel} className="text-[#1a5f3f] hover:underline ml-1">Cancel</button>
+        No eligible users left <button type="button" onClick={onCancel} className="text-forestDark hover:underline ml-1">Cancel</button>
       </span>
     )
   }
@@ -346,7 +347,7 @@ function AddBackupSelect({
         <option value="NEAR_READY">Near-ready</option>
         <option value="READY">Ready</option>
       </select>
-      <button type="submit" disabled={!userId} className="rounded bg-[#1a5f3f] text-white text-xs px-2 py-1 disabled:opacity-50">
+      <button type="submit" disabled={!userId} className="rounded bg-forestDark text-white text-xs px-2 py-1 disabled:opacity-50">
         Add
       </button>
       <button type="button" onClick={onCancel} className="text-gray-500 hover:underline text-xs">
@@ -376,7 +377,7 @@ function EditForm({
   )
 
   return (
-    <div className="inline-block mt-1 p-2 rounded border border-gray-200 bg-white shadow">
+    <div className="inline-block mt-1 rounded-none border border-culinary-outline bg-culinary-bone p-2 shadow-none">
       <div className="flex flex-col gap-2 text-xs">
         <label className="flex items-center gap-2">
           Readiness:
@@ -419,7 +420,7 @@ function EditForm({
                 lastReviewAt: lastReviewAt ? new Date(lastReviewAt) : null,
               })
             }
-            className="rounded bg-[#1a5f3f] text-white px-2 py-0.5"
+            className="rounded bg-forestDark text-white px-2 py-0.5"
           >
             Save
           </button>
@@ -434,3 +435,4 @@ function EditForm({
     </div>
   )
 }
+

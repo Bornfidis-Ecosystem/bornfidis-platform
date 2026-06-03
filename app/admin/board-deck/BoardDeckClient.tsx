@@ -68,14 +68,14 @@ export default function BoardDeckClient({ initialData }: { initialData: BoardDec
         <button
           type="button"
           onClick={() => setPeriod('month')}
-          className={`px-3 py-1.5 rounded text-sm font-medium ${period === 'month' ? 'bg-[#1a5f3f] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+          className={`px-3 py-1.5 rounded text-sm font-medium ${period === 'month' ? 'bg-forestDark text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
         >
           Month
         </button>
         <button
           type="button"
           onClick={() => setPeriod('quarter')}
-          className={`px-3 py-1.5 rounded text-sm font-medium ${period === 'quarter' ? 'bg-[#1a5f3f] text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
+          className={`px-3 py-1.5 rounded text-sm font-medium ${period === 'quarter' ? 'bg-forestDark text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'}`}
         >
           Quarter
         </button>
@@ -93,7 +93,7 @@ export default function BoardDeckClient({ initialData }: { initialData: BoardDec
                 type="checkbox"
                 checked={sections[key] ?? true}
                 onChange={() => toggleSection(key)}
-                className="rounded border-gray-300 text-[#1a5f3f]"
+                className="rounded border-gray-300 text-forestDark"
               />
               {SECTION_LABELS[key]}
             </label>

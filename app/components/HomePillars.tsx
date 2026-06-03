@@ -13,7 +13,7 @@ const pillars = [
     description: 'Training disciples in regenerative practices and faith-anchored enterprise.',
     icon: '📚',
     href: '/cooperative',
-    color: 'from-[#FFBC00] to-[#e6a500]',
+    color: 'from-gold to-brass',
   },
   {
     title: 'Clothing',
@@ -36,8 +36,8 @@ export default function HomePillars() {
     <section className="py-16 md:py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#1a5f3f] mb-4">Our Four Pillars</h2>
-          <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+          <h2 className="text-4xl md:text-5xl font-bold text-forestDark mb-4">Our Four Pillars</h2>
+          <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
             Building a complete regenerative ecosystem that serves communities holistically.
           </p>
@@ -61,3 +61,4 @@ export default function HomePillars() {
     </section>
   )
 }
+

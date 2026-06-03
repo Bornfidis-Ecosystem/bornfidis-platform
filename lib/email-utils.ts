@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { bookingNotificationRecipient, transactionalReplyToPayload } from '@/lib/platform-email'
 
 // Initialize Resend client
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
@@ -21,10 +22,10 @@ export async function sendSubmissionNotificationEmail(
   submissionData: Record<string, any>
 ): Promise<{ success: boolean; error?: string; emailId?: string }> {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL
-    if (!adminEmail) {
-      console.warn('⚠️ ADMIN_EMAIL not set. Skipping email notification.')
-      return { success: false, error: 'ADMIN_EMAIL not configured' }
+    const adminEmail = bookingNotificationRecipient()
+    if (!adminEmail?.includes('@')) {
+      console.warn('⚠️ No valid admin notification recipient. Skipping email notification.')
+      return { success: false, error: 'No notification recipient configured' }
     }
 
     if (!resend) {
@@ -68,7 +69,7 @@ export async function sendSubmissionNotificationEmail(
 
         html += `
           <tr style="border-bottom: 1px solid #e5e5e5;">
-            <td style="padding: 12px; font-weight: 600; color: #002747; width: 200px; vertical-align: top;">${formattedKey}:</td>
+            <td style="padding: 12px; font-weight: 600; color: #0D1F2D; width: 200px; vertical-align: top;">${formattedKey}:</td>
             <td style="padding: 12px; color: #333; word-break: break-word;">${formattedValue}</td>
           </tr>
         `
@@ -81,7 +82,7 @@ export async function sendSubmissionNotificationEmail(
     // Build email HTML
     const emailHtml = `
       <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
-        <div style="background-color: #1a5f3f; color: white; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+        <div style="background-color: #2E6B4F; color: white; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
           <h1 style="margin: 0; font-size: 24px;">New ${submissionType} Submission</h1>
         </div>
         
@@ -92,7 +93,7 @@ export async function sendSubmissionNotificationEmail(
             </p>
           </div>
           
-          <h2 style="color: #002747; margin-top: 0; border-bottom: 2px solid #1a5f3f; padding-bottom: 8px;">
+          <h2 style="color: #0D1F2D; margin-top: 0; border-bottom: 2px solid #2E6B4F; padding-bottom: 8px;">
             Submission Details
           </h2>
           
@@ -110,6 +111,7 @@ export async function sendSubmissionNotificationEmail(
     // Send email
     const result = await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to: adminEmail,
       subject: `[Bornfidis] New ${submissionType} Submission`,
       html: emailHtml,

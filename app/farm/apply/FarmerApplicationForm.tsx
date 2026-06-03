@@ -73,7 +73,7 @@ export default function FarmerApplicationForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Information */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Basic Information
         </h3>
 
@@ -86,7 +86,7 @@ export default function FarmerApplicationForm() {
             id="name"
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             required
           />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -101,7 +101,7 @@ export default function FarmerApplicationForm() {
             id="email"
             value={formData.email || ''}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             required
           />
           {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -116,7 +116,7 @@ export default function FarmerApplicationForm() {
             id="phone"
             value={formData.phone || ''}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
           />
           {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
         </div>
@@ -130,7 +130,7 @@ export default function FarmerApplicationForm() {
             id="location"
             value={formData.location || ''}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             required
           />
           {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
@@ -146,7 +146,7 @@ export default function FarmerApplicationForm() {
               id="parish"
               value={formData.parish || ''}
               onChange={(e) => setFormData({ ...formData, parish: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             />
           </div>
 
@@ -159,7 +159,7 @@ export default function FarmerApplicationForm() {
               id="country"
               value={formData.country || 'Jamaica'}
               onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             />
           </div>
         </div>
@@ -167,7 +167,7 @@ export default function FarmerApplicationForm() {
 
       {/* Regenerative Practices */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Regenerative Practices
         </h3>
 
@@ -180,7 +180,7 @@ export default function FarmerApplicationForm() {
             value={formData.regenerative_practices || ''}
             onChange={(e) => setFormData({ ...formData, regenerative_practices: e.target.value })}
             rows={4}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent resize-y"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent resize-y"
             placeholder="Describe your sustainable farming practices, soil health methods, biodiversity efforts, etc."
           />
           {errors.regenerative_practices && <p className="text-red-500 text-xs mt-1">{errors.regenerative_practices}</p>}
@@ -189,7 +189,7 @@ export default function FarmerApplicationForm() {
 
       {/* Products & Capabilities */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Products & Capabilities
         </h3>
 
@@ -210,7 +210,7 @@ export default function FarmerApplicationForm() {
                 }
               }
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             placeholder="e.g., Tomatoes, Callaloo, Scotch Bonnet"
           />
           {formData.crops && formData.crops.length > 0 && (
@@ -251,7 +251,7 @@ export default function FarmerApplicationForm() {
                 }
               }
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             placeholder="e.g., Fish, Goat, Chicken"
           />
           {formData.proteins && formData.proteins.length > 0 && (
@@ -292,7 +292,7 @@ export default function FarmerApplicationForm() {
                 }
               }
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             placeholder="e.g., Drying, Smoking, Pickling, Canning"
           />
           {formData.processing_capabilities && formData.processing_capabilities.length > 0 && (
@@ -333,7 +333,7 @@ export default function FarmerApplicationForm() {
                 }
               }
             }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
             placeholder="e.g., Organic, Fair Trade, Rainforest Alliance"
           />
           {formData.certifications && formData.certifications.length > 0 && (
@@ -360,7 +360,7 @@ export default function FarmerApplicationForm() {
 
       {/* Contact & Social */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Contact & Social
         </h3>
 
@@ -374,7 +374,7 @@ export default function FarmerApplicationForm() {
               id="website_url"
               value={formData.website_url || ''}
               onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
               placeholder="https://..."
             />
             {errors.website_url && <p className="text-red-500 text-xs mt-1">{errors.website_url}</p>}
@@ -389,7 +389,7 @@ export default function FarmerApplicationForm() {
               id="instagram_handle"
               value={formData.instagram_handle || ''}
               onChange={(e) => setFormData({ ...formData, instagram_handle: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
               placeholder="@yourhandle"
             />
           </div>
@@ -408,7 +408,7 @@ export default function FarmerApplicationForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isSubmitting ? 'Submitting...' : 'Submit Application'}
         </button>
@@ -416,3 +416,4 @@ export default function FarmerApplicationForm() {
     </form>
   )
 }
+

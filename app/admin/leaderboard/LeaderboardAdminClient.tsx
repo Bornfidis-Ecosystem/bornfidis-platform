@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import Link from 'next/link'
 import type { LeaderboardRow } from '@/lib/leaderboard'
@@ -46,7 +47,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
           type="button"
           onClick={handleRecalculate}
           disabled={recalculating}
-          className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-medium hover:bg-[#144a30] disabled:opacity-50"
+          className="px-4 py-2 bg-forestDark text-white rounded-lg font-medium hover:bg-forestDarker disabled:opacity-50"
         >
           {recalculating ? 'Recalculating…' : 'Recalculate now'}
         </button>
@@ -55,7 +56,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
         )}
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900">Ranked chefs</h2>
         </div>
@@ -81,7 +82,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
                   <td className="px-4 py-2">
                     <Link
                       href={`/admin/chefs/${r.chefId}`}
-                      className="text-[#1a5f3f] hover:underline"
+                      className="text-forestDark hover:underline"
                     >
                       {r.name ?? r.chefId}
                     </Link>
@@ -112,10 +113,10 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
             No ranked chefs. Run &quot;Recalculate now&quot; or add exclusions.
           </p>
         )}
-      </div>
+      </CulinaryCard>
 
       {excluded.length > 0 && (
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <CulinaryCard padded={false} className="overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-200">
             <h2 className="text-lg font-semibold text-gray-900">Excluded (temporarily hidden from public)</h2>
           </div>
@@ -128,7 +129,7 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
                 <div>
                   <Link
                     href={`/admin/chefs/${r.chefId}`}
-                    className="text-[#1a5f3f] hover:underline font-medium"
+                    className="text-forestDark hover:underline font-medium"
                   >
                     {r.name ?? r.chefId}
                   </Link>
@@ -145,8 +146,9 @@ export default function LeaderboardAdminClient({ rows, calculatedAt }: Props) {
               </li>
             ))}
           </ul>
-        </div>
+        </CulinaryCard>
       )}
     </div>
   )
 }
+

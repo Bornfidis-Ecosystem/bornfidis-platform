@@ -52,12 +52,12 @@ export default async function ReplicationDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">Global Replication Dashboard</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">
+              <p className="text-gold text-sm mt-1">
                 {data.totalRegions} region{data.totalRegions !== 1 ? 's' : ''} • {data.activeRegions} active • {data.totalKits} kit{data.totalKits !== 1 ? 's' : ''}
               </p>
             </div>

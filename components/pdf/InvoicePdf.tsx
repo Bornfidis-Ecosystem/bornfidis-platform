@@ -4,23 +4,24 @@ import React from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import { BookingInquiry, QuoteLineItem } from '@/types/booking'
 import { formatUSD } from '@/lib/money'
+import { colors } from '@/lib/design-tokens'
 
 const styles = StyleSheet.create({
   page: {
     padding: 40,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
   },
   header: {
     marginBottom: 30,
-    borderBottom: '3 solid #002747',
+    borderBottom: `3 solid ${colors.navy}`,
     paddingBottom: 15,
   },
   companyName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 5,
   },
   tagline: {
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   invoiceTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginTop: 10,
   },
   section: {
@@ -40,9 +41,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 10,
-    borderBottom: '1 solid #FFBC00',
+    borderBottom: `1 solid ${colors.gold}`,
     paddingBottom: 5,
   },
   row: {
@@ -64,8 +65,8 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#002747',
-    color: '#FFFFFF',
+    backgroundColor: colors.navy,
+    color: colors.white,
     padding: 8,
     fontWeight: 'bold',
     fontSize: 10,
@@ -116,8 +117,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 12,
-    backgroundColor: '#002747',
-    color: '#FFFFFF',
+    backgroundColor: colors.navy,
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 5,
@@ -126,12 +127,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 15,
     backgroundColor: '#F9F9F9',
-    borderLeft: '3 solid #FFBC00',
+    borderLeft: `3 solid ${colors.gold}`,
   },
   paymentTitle: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#002747',
+    color: colors.navy,
     marginBottom: 8,
   },
   paymentRow: {
@@ -144,8 +145,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: '#FFBC00',
-    color: '#002747',
+    backgroundColor: colors.gold,
+    color: colors.navy,
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 10,
@@ -154,12 +155,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 20,
     backgroundColor: '#F5F5F5',
-    borderTop: '2 solid #002747',
+    borderTop: `2 solid ${colors.navy}`,
     textAlign: 'center',
   },
   blessingText: {
     fontSize: 11,
-    color: '#002747',
+    color: colors.navy,
     fontStyle: 'italic',
     lineHeight: 1.6,
   },

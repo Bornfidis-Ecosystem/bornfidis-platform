@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ReplicationRegion, ReplicationKit, ImpactInvestor } from '@/types/replication'
@@ -118,35 +119,35 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
 
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Total Regions</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.totalRegions}</p>
+          <p className="text-2xl font-bold text-forestDark">{data.totalRegions}</p>
           <p className="text-xs text-gray-500 mt-1">{data.activeRegions} active, {data.launchingRegions} launching</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Capital Raised</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{formatUSD(data.totalCapitalRaised)}</p>
+          <p className="text-2xl font-bold text-forestDark">{formatUSD(data.totalCapitalRaised)}</p>
           <p className="text-xs text-gray-500 mt-1">{formatUSD(data.totalCapitalCommitted)} committed</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Replication Kits</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.totalKits}</p>
-        </div>
-        <div className="bg-white rounded-lg shadow-sm p-5 border border-gray-200">
+          <p className="text-2xl font-bold text-forestDark">{data.totalKits}</p>
+        </CulinaryCard>
+        <CulinaryCard>
           <p className="text-sm text-gray-600 mb-1">Impact Investors</p>
-          <p className="text-2xl font-bold text-[#1a5f3f]">{data.investors.length}</p>
-        </div>
+          <p className="text-2xl font-bold text-forestDark">{data.investors.length}</p>
+        </CulinaryCard>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <CulinaryCard padded={false}>
         <div className="border-b border-gray-200">
           <nav className="flex -mb-px">
             <button
               onClick={() => setActiveTab('regions')}
               className={`px-6 py-3 text-sm font-semibold border-b-2 transition ${
                 activeTab === 'regions'
-                  ? 'border-[#1a5f3f] text-[#1a5f3f]'
+                  ? 'border-forestDark text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -156,7 +157,7 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
               onClick={() => setActiveTab('kits')}
               className={`px-6 py-3 text-sm font-semibold border-b-2 transition ${
                 activeTab === 'kits'
-                  ? 'border-[#1a5f3f] text-[#1a5f3f]'
+                  ? 'border-forestDark text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -166,7 +167,7 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
               onClick={() => setActiveTab('investors')}
               className={`px-6 py-3 text-sm font-semibold border-b-2 transition ${
                 activeTab === 'investors'
-                  ? 'border-[#1a5f3f] text-[#1a5f3f]'
+                  ? 'border-forestDark text-forestDark'
                   : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -211,7 +212,7 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
                           <div className="text-xs text-gray-500">{region.leader_email}</div>
                         </td>
                         <td className="py-3 px-6 text-gray-700">{region.country}</td>
-                        <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">
+                        <td className="py-3 px-6 text-right font-semibold text-forestDark">
                           {formatUSD(region.capital_needed_cents)}
                         </td>
                         <td className="py-3 px-6 text-center">
@@ -224,7 +225,7 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
                             <div className="flex gap-2 justify-end">
                               <button
                                 onClick={() => handleApproveRegion(region.id)}
-                                className="px-3 py-1 bg-[#1a5f3f] text-white text-xs font-semibold rounded hover:bg-[#154a32] transition"
+                                className="px-3 py-1 bg-forestDark text-white text-xs font-semibold rounded hover:bg-forestDarker transition"
                               >
                                 Approve
                               </button>
@@ -249,10 +250,10 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
           {activeTab === 'kits' && (
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#1a5f3f]">Replication Kits</h3>
+                <h3 className="text-lg font-semibold text-forestDark">Replication Kits</h3>
                 <a
                   href="/admin/replication/kits/new"
-                  className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg text-sm font-semibold hover:bg-[#154a32] transition"
+                  className="px-4 py-2 bg-forestDark text-white rounded-lg text-sm font-semibold hover:bg-forestDarker transition"
                 >
                   + Create Kit
                 </a>
@@ -323,7 +324,7 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
                             ? investor.region_interest.join(', ')
                             : '—'}
                         </td>
-                        <td className="py-3 px-6 text-right font-semibold text-[#1a5f3f]">
+                        <td className="py-3 px-6 text-right font-semibold text-forestDark">
                           {formatUSD(investor.capital_committed_cents)}
                         </td>
                         <td className="py-3 px-6 text-right font-semibold text-green-600">
@@ -342,7 +343,8 @@ export default function ReplicationDashboardClient({ data }: ReplicationDashboar
             </div>
           )}
         </div>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

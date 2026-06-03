@@ -69,7 +69,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
 
       {/* Vision */}
       <section>
-        <h2 className="text-3xl font-bold text-[#1a5f3f] mb-6 text-center">Our Vision</h2>
+        <h2 className="text-3xl font-bold text-forestDark mb-6 text-center">Our Vision</h2>
         <div className="bg-[#f0fdf4] p-8 rounded-lg shadow-md border border-[#d1fae5]">
           <p className="text-gray-700 leading-relaxed text-lg mb-4">
             Bornfidis Provisions believes in building generational wealth through faith-aligned housing.
@@ -90,9 +90,9 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
       </section>
 
       {/* Covenant */}
-      <section className="bg-[#1a5f3f] text-white p-8 rounded-lg shadow-md">
+      <section className="bg-forestDark text-white p-8 rounded-lg shadow-md">
         <h2 className="text-3xl font-bold mb-6 text-center">Housing Covenant</h2>
-        <div className="h-1 w-24 bg-[#FFBC00] mx-auto mb-6"></div>
+        <div className="h-1 w-24 bg-gold mx-auto mb-6"></div>
         <div className="space-y-4 text-green-100 leading-relaxed max-w-3xl mx-auto">
           <p>
             We commit to building housing that serves families for generations. Our covenant ensures:
@@ -116,11 +116,11 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
       {/* Active Projects */}
       {housingData.projects.length > 0 && (
         <section>
-          <h2 className="text-2xl font-bold text-[#1a5f3f] mb-6 text-center">Active Housing Projects</h2>
+          <h2 className="text-2xl font-bold text-forestDark mb-6 text-center">Active Housing Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {housingData.projects.map((project) => (
               <div key={project.id} className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-xl font-semibold text-[#1a5f3f] mb-2">{project.name}</h3>
+                <h3 className="text-xl font-semibold text-forestDark mb-2">{project.name}</h3>
                 <p className="text-gray-600 mb-4">{project.region}</p>
                 {project.description && (
                   <p className="text-sm text-gray-700 mb-4">{project.description}</p>
@@ -143,7 +143,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                     setSelectedProject(project.id)
                     setShowApplicationForm(true)
                   }}
-                  className="w-full px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+                  className="w-full px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
                 >
                   Apply for Housing
                 </button>
@@ -156,7 +156,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
       {/* Application Form */}
       {showApplicationForm && (
         <section className="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-          <h2 className="text-2xl font-semibold text-[#1a5f3f] mb-4">Apply for Housing</h2>
+          <h2 className="text-2xl font-semibold text-forestDark mb-4">Apply for Housing</h2>
           <form onSubmit={handleSubmitApplication} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -167,7 +167,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                 id="name"
                 name="name"
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -179,7 +179,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                 id="email"
                 name="email"
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -191,7 +191,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                 id="phone"
                 name="phone"
                 required
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             <div>
@@ -204,7 +204,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                 name="family_size"
                 required
                 min="1"
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
               />
             </div>
             {!selectedProject && (
@@ -216,7 +216,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
                   id="project_id"
                   name="project_id"
                   required
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-[#1a5f3f] focus:border-[#1a5f3f]"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-forestDark focus:border-forestDark"
                 >
                   <option value="">Select a project...</option>
                   {housingData.projects.map((project) => (
@@ -234,7 +234,7 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 px-6 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50"
+                className="flex-1 px-6 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Application'}
               </button>
@@ -255,14 +255,14 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
 
       {/* Call to Action */}
       {!showApplicationForm && (
-        <section className="bg-[#FFBC00] p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-3xl font-bold text-[#1a5f3f] mb-4">Ready to Apply?</h2>
-          <p className="text-[#1a5f3f] mb-6 max-w-2xl mx-auto">
+        <section className="bg-gold p-8 rounded-lg shadow-md text-center">
+          <h2 className="text-3xl font-bold text-forestDark mb-4">Ready to Apply?</h2>
+          <p className="text-forestDark mb-6 max-w-2xl mx-auto">
             Join our housing covenant and start building generational wealth through faith-aligned housing.
           </p>
           <button
             onClick={() => setShowApplicationForm(true)}
-            className="px-8 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="px-8 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Apply for Housing
           </button>
@@ -271,3 +271,4 @@ export default function PublicHousingClient({ housingData }: PublicHousingClient
     </div>
   )
 }
+

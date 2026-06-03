@@ -110,7 +110,7 @@ export default function ChefApplicationForm() {
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
         />
       </div>
 
@@ -125,7 +125,7 @@ export default function ChefApplicationForm() {
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           required
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
         />
       </div>
 
@@ -139,7 +139,7 @@ export default function ChefApplicationForm() {
           id="phone"
           value={formData.phone}
           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
         />
       </div>
 
@@ -154,7 +154,7 @@ export default function ChefApplicationForm() {
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
           rows={4}
           placeholder="Tell us about your culinary background, philosophy, and what draws you to Bornfidis Provisions..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent resize-y"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent resize-y"
         />
         <p className="text-xs text-gray-500 mt-1">Minimum 50 characters recommended</p>
       </div>
@@ -171,7 +171,7 @@ export default function ChefApplicationForm() {
           max="50"
           value={formData.experience_years || ''}
           onChange={(e) => setFormData({ ...formData, experience_years: e.target.value ? parseInt(e.target.value) : undefined })}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
         />
       </div>
 
@@ -192,12 +192,12 @@ export default function ChefApplicationForm() {
               }
             }}
             placeholder="e.g., Farm-to-Table, Mediterranean, Vegan"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
           />
           <button
             type="button"
             onClick={addSpecialty}
-            className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Add
           </button>
@@ -207,13 +207,13 @@ export default function ChefApplicationForm() {
             {formData.specialties.map((specialty) => (
               <span
                 key={specialty}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-[#1a5f3f] rounded-full text-sm"
+                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-forestDark rounded-full text-sm"
               >
                 {specialty}
                 <button
                   type="button"
                   onClick={() => removeSpecialty(specialty)}
-                  className="text-[#1a5f3f] hover:text-red-600"
+                  className="text-forestDark hover:text-red-600"
                 >
                   ×
                 </button>
@@ -240,12 +240,12 @@ export default function ChefApplicationForm() {
               }
             }}
             placeholder="e.g., ServSafe, Culinary School Diploma"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
           />
           <button
             type="button"
             onClick={addCertification}
-            className="px-4 py-2 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition"
+            className="px-4 py-2 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition"
           >
             Add
           </button>
@@ -255,13 +255,13 @@ export default function ChefApplicationForm() {
             {formData.certifications.map((cert) => (
               <span
                 key={cert}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-[#1a5f3f] rounded-full text-sm"
+                className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-forestDark rounded-full text-sm"
               >
                 {cert}
                 <button
                   type="button"
                   onClick={() => removeCertification(cert)}
-                  className="text-[#1a5f3f] hover:text-red-600"
+                  className="text-forestDark hover:text-red-600"
                 >
                   ×
                 </button>
@@ -282,7 +282,7 @@ export default function ChefApplicationForm() {
           value={formData.website_url}
           onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
           placeholder="https://yourwebsite.com"
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
         />
       </div>
 
@@ -301,7 +301,7 @@ export default function ChefApplicationForm() {
             value={formData.instagram_handle}
             onChange={(e) => setFormData({ ...formData, instagram_handle: e.target.value })}
             placeholder="yourhandle"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-[#1a5f3f] focus:border-transparent"
+            className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg focus:ring-2 focus:ring-forestDark focus:border-transparent"
           />
         </div>
       </div>
@@ -324,7 +324,7 @@ export default function ChefApplicationForm() {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full px-6 py-3 bg-[#1a5f3f] text-white rounded-lg font-semibold hover:bg-[#154a32] transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {isSubmitting ? (
             <>

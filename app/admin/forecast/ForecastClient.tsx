@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import type { ForecastData } from '@/lib/forecast'
 
 function formatUSD(cents: number): string {
@@ -15,7 +16,7 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+        <CulinaryCard>
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Next 30 days</h2>
           <div className="space-y-2 text-sm">
             <p>
@@ -28,8 +29,8 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
               <span className="text-gray-500 font-normal ml-1">(expected {formatUSD(data.period30.projectedExpectedCents)})</span>
             </p>
           </div>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-5 shadow-sm">
+        </CulinaryCard>
+        <CulinaryCard>
           <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Next 90 days</h2>
           <div className="space-y-2 text-sm">
             <p>
@@ -42,10 +43,10 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
               <span className="text-gray-500 font-normal ml-1">(expected {formatUSD(data.period90.projectedExpectedCents)})</span>
             </p>
           </div>
-        </div>
+        </CulinaryCard>
       </div>
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
           Confirmed vs projected
         </h2>
@@ -78,9 +79,9 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Assumptions</h2>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>Avg bookings/day (last 30d): <strong>{a.avgBookingsPerDay30}</strong></li>
@@ -92,7 +93,8 @@ export default function ForecastClient({ data }: { data: ForecastData }) {
         <p className="text-xs text-gray-500 mt-3">
           Generated {gen}. Projections are estimates only and do not guarantee future revenue. Recalculated on each load; nightly cron can be added for caching.
         </p>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

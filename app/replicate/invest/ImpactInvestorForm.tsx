@@ -69,7 +69,7 @@ export default function ImpactInvestorForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Investor Information
         </h3>
 
@@ -81,7 +81,7 @@ export default function ImpactInvestorForm() {
             type="text"
             value={formData.name || ''}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             required
           />
           {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -96,7 +96,7 @@ export default function ImpactInvestorForm() {
               type="email"
               value={formData.email || ''}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
               required
             />
             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -107,7 +107,7 @@ export default function ImpactInvestorForm() {
               type="tel"
               value={formData.phone || ''}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
         </div>
@@ -119,13 +119,13 @@ export default function ImpactInvestorForm() {
             value={formData.organization || ''}
             onChange={(e) => setFormData({ ...formData, organization: e.target.value })}
             placeholder="Organization name (if applicable)"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           />
         </div>
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a5f3f] border-b border-[#FFBC00] pb-2">
+        <h3 className="text-lg font-semibold text-forestDark border-b border-gold pb-2">
           Investment Details
         </h3>
 
@@ -145,13 +145,13 @@ export default function ImpactInvestorForm() {
               {formData.region_interest.map((region, idx) => (
                 <span
                   key={idx}
-                  className="px-3 py-1 bg-[#FFBC00] text-[#1a5f3f] rounded-full text-sm flex items-center gap-2"
+                  className="px-3 py-1 bg-gold text-forestDark rounded-full text-sm flex items-center gap-2"
                 >
                   {region}
                   <button
                     type="button"
                     onClick={() => removeRegionInterest(idx)}
-                    className="text-[#1a5f3f] hover:text-[#154a32]"
+                    className="text-forestDark hover:text-forestDarker"
                   >
                     ×
                   </button>
@@ -173,7 +173,7 @@ export default function ImpactInvestorForm() {
               setFormData({ ...formData, capital_committed_cents: Math.round(dollars * 100) })
             }}
             placeholder="0.00"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           />
         </div>
 
@@ -182,7 +182,7 @@ export default function ImpactInvestorForm() {
           <select
             value={formData.investment_type || ''}
             onChange={(e) => setFormData({ ...formData, investment_type: e.target.value as any })}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
           >
             <option value="">-- Select type --</option>
             <option value="grant">Grant</option>
@@ -200,7 +200,7 @@ export default function ImpactInvestorForm() {
               value={formData.website_url || ''}
               onChange={(e) => setFormData({ ...formData, website_url: e.target.value })}
               placeholder="https://..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
           <div>
@@ -210,7 +210,7 @@ export default function ImpactInvestorForm() {
               value={formData.linkedin_url || ''}
               onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
               placeholder="https://linkedin.com/..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1a5f3f]"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-forestDark"
             />
           </div>
         </div>
@@ -225,7 +225,7 @@ export default function ImpactInvestorForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full px-6 py-3 bg-[#FFBC00] text-[#1a5f3f] rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
+        className="w-full px-6 py-3 bg-gold text-forestDark rounded-lg font-semibold hover:bg-opacity-90 transition disabled:opacity-50"
       >
         {isSubmitting ? 'Submitting...' : 'Submit Investment Inquiry'}
       </button>

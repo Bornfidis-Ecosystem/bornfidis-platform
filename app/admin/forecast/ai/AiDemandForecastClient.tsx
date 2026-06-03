@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import Link from 'next/link'
 import type { AiDemandForecast, HorizonBand } from '@/lib/ai-demand-forecast'
 
@@ -23,15 +24,15 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
   return (
     <div className="space-y-6">
       {/* Confidence ranges summary */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">30 / 90 / 180 day horizons</h2>
         <p className="text-sm text-gray-600">
           Confidence bands: low = 85% of base, high = 115% of base. Forecasts align with historical + recent trend.
         </p>
-      </div>
+      </CulinaryCard>
 
       {/* By region */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
           Bookings volume by region
         </h2>
@@ -57,10 +58,10 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Peak days */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Peak days (next 30d)</h2>
         <p className="text-xs text-gray-500 mb-2">Top 5 days by projected bookings (day-of-week pattern).</p>
         <ul className="space-y-1 text-sm">
@@ -73,7 +74,7 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
             </li>
           ))}
         </ul>
-      </div>
+      </CulinaryCard>
 
       {/* Capacity shortfalls */}
       {data.capacityShortfalls.length > 0 && (
@@ -86,12 +87,12 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
               </li>
             ))}
           </ul>
-          <Link href="/admin/capacity" className="text-sm text-[#1a5f3f] hover:underline mt-2 inline-block">Capacity planning →</Link>
+          <Link href="/admin/capacity" className="text-sm text-forestDark hover:underline mt-2 inline-block">Capacity planning →</Link>
         </div>
       )}
 
       {/* Revenue impact */}
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <CulinaryCard padded={false} className="overflow-hidden">
         <h2 className="px-4 py-3 border-b border-gray-200 bg-gray-50 text-sm font-semibold text-gray-700">
           Revenue impact (confidence range)
         </h2>
@@ -127,25 +128,25 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
             </tbody>
           </table>
         </div>
-      </div>
+      </CulinaryCard>
 
       {/* Action suggestions */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Suggested actions</h2>
         <ul className="space-y-2 text-sm">
           {data.actionSuggestions.map((a, i) => (
             <li key={i} className="flex flex-wrap items-center gap-2">
-              <Link href={a.href} className="text-[#1a5f3f] font-medium hover:underline">
+              <Link href={a.href} className="text-forestDark font-medium hover:underline">
                 {a.action}
               </Link>
               <span className="text-gray-600">— {a.reason}</span>
             </li>
           ))}
         </ul>
-      </div>
+      </CulinaryCard>
 
       {/* Inputs */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4">
+      <CulinaryCard>
         <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-2">Inputs & assumptions</h2>
         <ul className="text-sm text-gray-600 space-y-1">
           <li>Avg bookings/day (last 30d): <strong>{data.inputs.avgBookingsPerDay30}</strong></li>
@@ -154,7 +155,8 @@ export default function AiDemandForecastClient({ data }: { data: AiDemandForecas
           <li>{data.inputs.note}</li>
         </ul>
         <p className="text-xs text-gray-500 mt-3">Generated {gen}. Lightweight model; no heavy ML. Nightly recalculation recommended for caching.</p>
-      </div>
+      </CulinaryCard>
     </div>
   )
 }
+

@@ -38,12 +38,12 @@ export default async function AdminTestamentPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-[#1a5f3f] text-white">
+      <header className="bg-forestDark text-white">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">The Living Testament</h1>
-              <p className="text-[#FFBC00] text-sm mt-1">Public covenant, story, and commissioning</p>
+              <p className="text-gold text-sm mt-1">Public covenant, story, and commissioning</p>
             </div>
             <SignOutButton />
           </div>

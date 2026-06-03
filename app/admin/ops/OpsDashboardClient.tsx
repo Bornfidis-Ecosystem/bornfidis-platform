@@ -1,5 +1,6 @@
 'use client'
 
+import { CulinaryCard } from '@/components/culinary-os'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -118,7 +119,7 @@ export default function OpsDashboardClient({
               onClick={() => setRange(r)}
               className={`rounded px-3 py-1.5 text-sm font-medium ${
                 data.range === r
-                  ? 'bg-[#1a5f3f] text-white'
+                  ? 'bg-forestDark text-white'
                   : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -137,7 +138,7 @@ export default function OpsDashboardClient({
       </div>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        <CulinaryCard>
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Operations</h2>
           <ul className="space-y-1 text-sm">
             <li><span className="text-gray-600">Bookings today:</span> <strong>{k.bookingsToday}</strong></li>
@@ -145,54 +146,54 @@ export default function OpsDashboardClient({
             <li><span className="text-gray-600">Completion rate:</span> <strong>{k.completionRatePct}%</strong></li>
             <li><span className="text-gray-600">Avg assignment time:</span> <strong>{k.avgAssignmentTimeHours}h</strong></li>
           </ul>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        </CulinaryCard>
+        <CulinaryCard>
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Quality</h2>
           <ul className="space-y-1 text-sm">
             <li><span className="text-gray-600">Avg rating:</span> <strong>{k.avgRating || '—'}</strong></li>
             <li><span className="text-gray-600">Low ratings (≤3★):</span> <strong>{k.lowRatingCount}</strong></li>
             <li><span className="text-gray-600">Active coaching:</span> <strong>{k.activeCoachingCases}</strong></li>
           </ul>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        </CulinaryCard>
+        <CulinaryCard>
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">People</h2>
           <ul className="space-y-1 text-sm">
             <li><span className="text-gray-600">Active chefs:</span> <strong>{k.activeChefs}</strong></li>
             <li><span className="text-gray-600">Available today:</span> <strong>{k.availableToday}</strong></li>
             <li><span className="text-gray-600">Featured chefs:</span> <strong>{k.featuredChefs}</strong></li>
           </ul>
-        </div>
-        <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+        </CulinaryCard>
+        <CulinaryCard>
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Finance</h2>
           <ul className="space-y-1 text-sm">
             <li><span className="text-gray-600">Payouts pending:</span> <strong>{k.payoutsPending}</strong></li>
             <li><span className="text-gray-600">Payouts paid (MTD):</span> <strong>{k.payoutsPaidMtd}</strong></li>
             <li><span className="text-gray-600">Bonus % applied:</span> <strong>{k.bonusPctApplied}%</strong></li>
           </ul>
-        </div>
+        </CulinaryCard>
         {forecastSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Revenue forecast</h2>
             <ul className="space-y-1 text-sm">
               <li><span className="text-gray-600">30d confirmed:</span> <strong>{formatForecastUSD(forecastSnapshot.period30.confirmedCents)}</strong></li>
               <li><span className="text-gray-600">90d confirmed:</span> <strong>{formatForecastUSD(forecastSnapshot.period90.confirmedCents)}</strong></li>
               <li><span className="text-gray-600">30d projected (est.):</span> <strong className="text-amber-700">{formatForecastUSD(forecastSnapshot.period30.projectedExpectedCents)}</strong></li>
             </ul>
-            <Link href="/admin/forecast" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">View forecast →</Link>
-          </div>
+            <Link href="/admin/forecast" className="text-xs text-forestDark hover:underline mt-2 inline-block">View forecast →</Link>
+          </CulinaryCard>
         )}
         {scenarioSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Scenario (base)</h2>
             <ul className="space-y-1 text-sm">
               <li><span className="text-gray-600">30d revenue:</span> <strong>{formatForecastUSD(scenarioSnapshot.base30dRevenueCents)}</strong></li>
               <li><span className="text-gray-600">90d revenue:</span> <strong>{formatForecastUSD(scenarioSnapshot.base90dRevenueCents)}</strong></li>
             </ul>
-            <Link href="/admin/scenarios" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Scenario planning →</Link>
-          </div>
+            <Link href="/admin/scenarios" className="text-xs text-forestDark hover:underline mt-2 inline-block">Scenario planning →</Link>
+          </CulinaryCard>
         )}
         {costSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Cost (30d)</h2>
             <ul className="space-y-1 text-sm">
               <li><span className="text-gray-600">Payout vs revenue:</span> <strong>{costSnapshot.payoutToRevenuePct}%</strong></li>
@@ -200,11 +201,11 @@ export default function OpsDashboardClient({
                 <li className="text-amber-700 text-xs truncate" title={costSnapshot.topRecommendation}>{costSnapshot.topRecommendation}</li>
               )}
             </ul>
-            <Link href="/admin/costs" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Cost insights →</Link>
-          </div>
+            <Link href="/admin/costs" className="text-xs text-forestDark hover:underline mt-2 inline-block">Cost insights →</Link>
+          </CulinaryCard>
         )}
         {okrSnapshot && okrSnapshot.length > 0 && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">OKRs ({okrSnapshot[0]?.period ?? '—'})</h2>
             <ul className="space-y-2 text-sm">
               {okrSnapshot.slice(0, 2).map((okr) => (
@@ -220,21 +221,21 @@ export default function OpsDashboardClient({
                 </li>
               ))}
             </ul>
-            <Link href="/admin/okrs" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">View OKRs →</Link>
-          </div>
+            <Link href="/admin/okrs" className="text-xs text-forestDark hover:underline mt-2 inline-block">View OKRs →</Link>
+          </CulinaryCard>
         )}
         {capacitySnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Capacity (3mo)</h2>
             <p className="text-sm text-gray-600">Next month: {capacitySnapshot.nextMonth.requiredChefs} chefs required, gap {capacitySnapshot.nextMonth.gap}, hire target {capacitySnapshot.nextMonth.hireTarget}</p>
             <p className={`text-xs mt-1 ${capacitySnapshot.nextMonth.risk === 'shortfall' ? 'text-red-600' : capacitySnapshot.nextMonth.risk === 'surplus' ? 'text-amber-600' : 'text-green-600'}`}>
               {capacitySnapshot.riskSummary}
             </p>
-            <Link href="/admin/capacity" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Capacity planning →</Link>
-          </div>
+            <Link href="/admin/capacity" className="text-xs text-forestDark hover:underline mt-2 inline-block">Capacity planning →</Link>
+          </CulinaryCard>
         )}
         {successionSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Succession (Phase 2BA)</h2>
             <p className="text-sm text-gray-600">
               Roles with backup: {successionSnapshot.rolesWithBackup}/{successionSnapshot.totalRoles}
@@ -242,11 +243,11 @@ export default function OpsDashboardClient({
             {successionSnapshot.gaps.length > 0 && (
               <p className="text-xs text-amber-700 mt-1">Gaps: {successionSnapshot.gaps.join(', ')}</p>
             )}
-            <Link href="/admin/succession" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Succession planning →</Link>
-          </div>
+            <Link href="/admin/succession" className="text-xs text-forestDark hover:underline mt-2 inline-block">Succession planning →</Link>
+          </CulinaryCard>
         )}
         {aiDemandSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">AI Demand (Phase 2BB)</h2>
             <p className="text-sm text-gray-600">
               30d bookings: {aiDemandSnapshot.period30Bookings.low}–{aiDemandSnapshot.period30Bookings.high} <span className="text-gray-500">(base {aiDemandSnapshot.period30Bookings.base})</span>
@@ -255,11 +256,11 @@ export default function OpsDashboardClient({
               <p className="text-xs text-amber-700 mt-1">Capacity shortfall — consider recruitment.</p>
             )}
             <p className="text-xs text-gray-500 mt-1">{aiDemandSnapshot.actionCount} suggested action(s)</p>
-            <Link href="/admin/forecast/ai" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">AI demand forecast →</Link>
-          </div>
+            <Link href="/admin/forecast/ai" className="text-xs text-forestDark hover:underline mt-2 inline-block">AI demand forecast →</Link>
+          </CulinaryCard>
         )}
         {riskSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Risks (Phase 2BC)</h2>
             <p className="text-sm text-gray-600">
               Open: <strong>{riskSnapshot.open}</strong> · Monitoring: <strong>{riskSnapshot.monitoring}</strong> · Closed: <strong>{riskSnapshot.closed}</strong>
@@ -267,22 +268,22 @@ export default function OpsDashboardClient({
             {riskSnapshot.needsReview > 0 && (
               <p className="text-xs text-amber-700 mt-1">{riskSnapshot.needsReview} need review (monthly cadence)</p>
             )}
-            <Link href="/admin/risks" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Risk register →</Link>
-          </div>
+            <Link href="/admin/risks" className="text-xs text-forestDark hover:underline mt-2 inline-block">Risk register →</Link>
+          </CulinaryCard>
         )}
         {growthExperimentsSnapshot && (
-          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+          <CulinaryCard>
             <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Growth experiments (Phase 2BD)</h2>
             <p className="text-sm text-gray-600">
               Running: <strong>{growthExperimentsSnapshot.runningCount}</strong> · Completed with winner: <strong>{growthExperimentsSnapshot.completedWithWinner}</strong>
             </p>
-            <Link href="/admin/experiments" className="text-xs text-[#1a5f3f] hover:underline mt-2 inline-block">Experiments →</Link>
-          </div>
+            <Link href="/admin/experiments" className="text-xs text-forestDark hover:underline mt-2 inline-block">Experiments →</Link>
+          </CulinaryCard>
         )}
       </section>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <CulinaryCard as="section" padded={false} className="overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
             <h2 className="text-lg font-semibold text-gray-900">At Risk</h2>
             <p className="text-xs text-gray-500">Low ratings, late, missed prep — click through to detail.</p>
@@ -304,12 +305,12 @@ export default function OpsDashboardClient({
                   {data.atRisk.map((row) => (
                     <tr key={`${row.bookingId}-${row.reason}`} className="hover:bg-gray-50">
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-forestDark hover:underline">
                           {row.bookingName}
                         </Link>
                       </td>
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/chefs/${row.chefId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/chefs/${row.chefId}`} className="text-forestDark hover:underline">
                           {row.chefName ?? row.chefId}
                         </Link>
                       </td>
@@ -325,9 +326,9 @@ export default function OpsDashboardClient({
               </table>
             )}
           </div>
-        </section>
+        </CulinaryCard>
 
-        <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <CulinaryCard as="section" padded={false} className="overflow-hidden">
           <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
             <h2 className="text-lg font-semibold text-gray-900">Today&apos;s Ops</h2>
             <p className="text-xs text-gray-500">Bookings and assignments for today.</p>
@@ -349,7 +350,7 @@ export default function OpsDashboardClient({
                   {data.todaysOps.map((row) => (
                     <tr key={row.bookingId} className="hover:bg-gray-50">
                       <td className="px-4 py-2 text-sm">
-                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-[#1a5f3f] hover:underline">
+                        <Link href={`/admin/bookings/${row.bookingId}`} className="text-forestDark hover:underline">
                           {row.bookingName}
                         </Link>
                       </td>
@@ -361,7 +362,7 @@ export default function OpsDashboardClient({
                       </td>
                       <td className="px-4 py-2 text-sm">
                         {row.chefId ? (
-                          <Link href={`/admin/chefs/${row.chefId}`} className="text-[#1a5f3f] hover:underline">
+                          <Link href={`/admin/chefs/${row.chefId}`} className="text-forestDark hover:underline">
                             {row.chefName ?? row.chefId}
                           </Link>
                         ) : (
@@ -374,10 +375,10 @@ export default function OpsDashboardClient({
               </table>
             )}
           </div>
-        </section>
+        </CulinaryCard>
       </div>
 
-      <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard as="section" padded={false} className="overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
           <h2 className="text-lg font-semibold text-gray-900">SLA At Risk (Phase 2AJ)</h2>
           <p className="text-xs text-gray-500">Bookings with breached or at-risk SLAs — assignment, confirmation, prep, arrival.</p>
@@ -399,7 +400,7 @@ export default function OpsDashboardClient({
                 {data.slaAtRisk.map((row) => (
                   <tr key={row.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-sm">
-                      <Link href={`/admin/bookings/${row.id}`} className="text-[#1a5f3f] hover:underline">
+                      <Link href={`/admin/bookings/${row.id}`} className="text-forestDark hover:underline">
                         {row.name}
                       </Link>
                     </td>
@@ -422,9 +423,9 @@ export default function OpsDashboardClient({
             </table>
           )}
         </div>
-      </section>
+      </CulinaryCard>
 
-      <section className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <CulinaryCard as="section" padded={false} className="overflow-hidden">
         <div className="px-4 py-3 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">AI Insights (Phase 2AZ)</h2>
@@ -440,7 +441,7 @@ export default function OpsDashboardClient({
                 router.refresh()
               }
             }}
-            className="rounded px-3 py-1.5 bg-[#1a5f3f] text-white text-sm hover:bg-[#144a30]"
+            className="rounded px-3 py-1.5 bg-forestDark text-white text-sm hover:bg-forestDarker"
           >
             Generate insights
           </button>
@@ -459,7 +460,7 @@ export default function OpsDashboardClient({
                     await setAiCategoryEnabled(cat, next)
                     router.refresh()
                   }}
-                  className="rounded border-gray-300 text-[#1a5f3f]"
+                  className="rounded border-gray-300 text-forestDark"
                 />
                 {CATEGORY_LABELS[cat] ?? cat}
               </label>
@@ -476,13 +477,13 @@ export default function OpsDashboardClient({
                   <div>
                     <p className="font-medium text-gray-900">{i.title}</p>
                     <p className="text-sm text-gray-600 mt-1">{i.whyItMatters}</p>
-                    <p className="text-sm text-[#1a5f3f] mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
+                    <p className="text-sm text-forestDark mt-1"><strong>Suggested:</strong> {i.suggestedAction}</p>
                   </div>
                   <span className="text-xs text-gray-500 shrink-0">{i.confidencePct}%</span>
                 </div>
                 <div className="flex flex-wrap gap-2 mt-2">
                   {i.entityId && (
-                    <Link href={`/admin/bookings/${i.entityId}`} className="text-xs text-[#1a5f3f] hover:underline">View booking →</Link>
+                    <Link href={`/admin/bookings/${i.entityId}`} className="text-xs text-forestDark hover:underline">View booking →</Link>
                   )}
                   <button
                     type="button"
@@ -510,7 +511,7 @@ export default function OpsDashboardClient({
                         const ok = await markAiInsightActionTaken(i.id, action)
                         if (ok.success) { setActionTakenFor((p) => ({ ...p, [i.id]: '' })); toast.success('Logged'); router.refresh() }
                       }}
-                      className="text-xs text-[#1a5f3f] hover:underline"
+                      className="text-xs text-forestDark hover:underline"
                     >
                       Log
                     </button>
@@ -520,7 +521,8 @@ export default function OpsDashboardClient({
             ))
           )}
         </div>
-      </section>
+      </CulinaryCard>
     </div>
   )
 }
+

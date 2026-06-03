@@ -54,6 +54,7 @@ export default function InviteTable({ invites }: { invites: InviteRow[] }) {
             <th className="text-left py-2 font-semibold text-gray-700">Role</th>
             <th className="text-left py-2 font-semibold text-gray-700">Invited by</th>
             <th className="text-left py-2 font-semibold text-gray-700">Status</th>
+            <th className="text-left py-2 font-semibold text-gray-700">Date</th>
             <th className="text-left py-2 font-semibold text-gray-700">Expires</th>
             <th className="text-left py-2 font-semibold text-gray-700">Actions</th>
           </tr>
@@ -61,7 +62,7 @@ export default function InviteTable({ invites }: { invites: InviteRow[] }) {
         <tbody>
           {invites.length === 0 ? (
             <tr>
-              <td colSpan={6} className="py-8 text-center text-gray-500">
+              <td colSpan={7} className="py-8 text-center text-gray-500">
                 No invites yet. Use the form above to invite a partner.
               </td>
             </tr>
@@ -73,7 +74,7 @@ export default function InviteTable({ invites }: { invites: InviteRow[] }) {
                 ? 'Accepted'
                 : expired
                   ? 'Expired'
-                  : 'Pending'
+                  : 'Sent'
 
               return (
                 <tr key={invite.id} className="border-b border-gray-100 hover:bg-gray-50">
@@ -87,11 +88,18 @@ export default function InviteTable({ invites }: { invites: InviteRow[] }) {
                           ? 'bg-green-100 text-green-700'
                           : status === 'Expired'
                             ? 'bg-gray-200 text-gray-700'
-                            : 'bg-yellow-100 text-yellow-800'
+                            : 'bg-blue-100 text-blue-800'
                       }`}
                     >
                       {status}
                     </span>
+                  </td>
+                  <td className="py-3 text-gray-600">
+                    {new Date(invite.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
                   </td>
                   <td className="py-3 text-gray-600">
                     {expiresAt.toLocaleDateString('en-US', {
@@ -136,3 +144,4 @@ export default function InviteTable({ invites }: { invites: InviteRow[] }) {
     </div>
   )
 }
+

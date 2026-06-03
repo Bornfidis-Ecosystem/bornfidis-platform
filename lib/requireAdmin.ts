@@ -2,18 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/auth'
 import { getCurrentUserRole } from '@/lib/get-user-role'
 import { hasRole, ADMIN_AREA_ROLES } from '@/lib/require-role'
+import type { AdminPlatformRole } from '@/lib/admin-rbac'
+import { resolveAdminPlatformRole, resolveAdminPlatformRoleForEmail } from '@/lib/admin-rbac'
 
 /**
  * Admin Guard Utility — Bornfidis Auth + Roles (Phase 1)
  *
- * Single source of truth: Prisma User.role
- * Allowed for admin area: ADMIN, STAFF, COORDINATOR (legacy)
- * Fallback: ADMIN_EMAILS allowlist for first-time setup before role is set
+ * Prisma User.role + admin_user_roles platform layer + ADMIN_EMAILS allowlist.
  */
 
 interface AdminGuardResult {
   user: any
+  /** Prisma `User.role` (legacy partner/chef/etc.). */
   role: string | null
+  /** Ops console role when resolved (table → allowlist → Prisma admin-area). */
+  platformRole: AdminPlatformRole | null
   isAdmin: boolean
   error?: string
 }
@@ -39,31 +42,26 @@ export async function checkAdminAccess(): Promise<AdminGuardResult> {
       return {
         user: null,
         role: null,
+        platformRole: null,
         isAdmin: false,
         error: 'Not authenticated',
       }
     }
 
-    // Role from Prisma (synced from Supabase metadata / User table)
-    const role = await getCurrentUserRole()
+    const prismaRole = await getCurrentUserRole()
+    const platformRole = await resolveAdminPlatformRoleForEmail(user.email, prismaRole)
 
-    if (hasRole(role, ADMIN_AREA_ROLES)) {
-      return {
-        user,
-        role: role ?? null,
-        isAdmin: true,
-      }
-    }
-
-    // Fallback: email allowlist for first-time setup before role is set in DB
-    const { isAllowedAdminEmail } = await import('@/lib/auth')
-    if (user.email && isAllowedAdminEmail(user.email)) {
-      if (process.env.NODE_ENV === 'development') {
-        console.log(`✅ Admin access via allowlist (set role in DB): ${user.email}`)
+    if (platformRole) {
+      if (process.env.NODE_ENV === 'development' && prismaRole && !hasRole(prismaRole, ADMIN_AREA_ROLES)) {
+        const { isAllowedAdminEmail } = await import('@/lib/auth')
+        if (user.email && isAllowedAdminEmail(user.email)) {
+          console.log(`✅ Admin access via allowlist / platform table: ${user.email}`)
+        }
       }
       return {
         user,
-        role: role ?? null,
+        role: prismaRole ?? null,
+        platformRole,
         isAdmin: true,
       }
     }
@@ -71,24 +69,29 @@ export async function checkAdminAccess(): Promise<AdminGuardResult> {
     if (process.env.NODE_ENV === 'development') {
       console.log('🔍 Admin role check:', {
         email: user.email,
-        prismaRole: role,
-        allowed: ADMIN_AREA_ROLES,
+        prismaRole,
+        platformRole,
       })
     }
 
     return {
       user,
-      role: role ?? null,
+      role: prismaRole ?? null,
+      platformRole: null,
       isAdmin: false,
       error: 'Access denied: Admin role required',
     }
-  } catch (error: any) {
-    console.error('Error checking admin access:', error)
+  } catch (error: unknown) {
+    const msg = error instanceof Error ? error.message : String(error)
+    if (!/session|auth|missing|jwt/i.test(msg)) {
+      console.error('Error checking admin access:', error)
+    }
     return {
       user: null,
       role: null,
+      platformRole: null,
       isAdmin: false,
-      error: error.message || 'Authentication error',
+      error: msg || 'Authentication error',
     }
   }
 }
@@ -126,6 +129,22 @@ export async function requireAdmin(
   }
 
   // Authorized
+  return null
+}
+
+/**
+ * API routes: admin session required, then founder_admin platform role only.
+ */
+export async function requireFounderAdminApi(request: NextRequest): Promise<NextResponse | null> {
+  const authError = await requireAdmin(request)
+  if (authError) return authError
+  const r = await resolveAdminPlatformRole()
+  if (r !== 'founder_admin') {
+    return NextResponse.json(
+      { success: false, error: 'Access denied: Founder admin only' },
+      { status: 403 }
+    )
+  }
   return null
 }
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { parseFarmerMessage, type ParsedFarmerMessage } from '@/lib/intakeParser'
+import { logActivity } from '@/lib/activity-log'
 
 /**
  * Phase 11G.2: WhatsApp Inbound Webhook
@@ -123,11 +124,19 @@ export async function POST(request: NextRequest) {
           phone,
           name: parsed.name || 'Unknown Farmer',
           parish: parsed.parish || null,
-          acres: parsed.acres || null,
-          language: 'en',
+          farm_size_acres: parsed.acres != null ? parsed.acres : null,
+          crops_available: [],
+          tags: [],
         },
       })
       console.log('✅ Created new Farmer:', farmer.id, { name: farmer.name })
+      logActivity({
+        type: 'FARMER_SIGNUP',
+        title: 'Farmer joined',
+        description: `${farmer.name}${farmer.parish ? ` from ${farmer.parish}` : ''}`,
+        division: 'PROJU',
+        metadata: { farmerId: farmer.id },
+      }).catch(() => {})
     }
 
     farmerId = farmer.id
