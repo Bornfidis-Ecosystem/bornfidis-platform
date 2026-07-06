@@ -35,9 +35,9 @@ function ProvisionsProductCard({ product }: { product: ProvisionsProduct }) {
   return (
     <article className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
       <div className="aspect-[4/3] bg-navyLight/10 flex items-center justify-center">
-        {product.image ? (
+        {product.imageHero ? (
           <img
-            src={product.image}
+            src={product.imageHero}
             alt=""
             className="w-full h-full object-cover"
           />

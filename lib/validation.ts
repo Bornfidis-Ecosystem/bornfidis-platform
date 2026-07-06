@@ -452,6 +452,36 @@ export type StorySubmissionInput = z.infer<typeof storySubmissionSchema>
 export type PressKitInput = z.infer<typeof pressKitSchema>
 export type PartnerInquiryInput = z.infer<typeof partnerInquirySchema>
 
+export const digitalStudioApplicationSchema = z
+  .object({
+    businessName: z.string().min(2, 'Business name is required'),
+    contactName: z.string().min(2, 'Your name is required'),
+    contactEmail: z.string().email('Invalid email address'),
+    businessType: z.enum([
+      'restaurant',
+      'caterer',
+      'farm-food-producer',
+      'guest-house',
+      'other',
+    ]),
+    businessTypeOther: z.string().optional(),
+    biggestGap: z.string().min(3, 'Please describe your biggest gap'),
+    websiteStatus: z.enum(['yes-needs-work', 'yes-needs-rebuild', 'no-scratch']),
+    timeline: z.enum(['asap', '1-3-months', 'exploring']),
+    notes: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.businessType === 'other' && !data.businessTypeOther?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Please describe your business type',
+        path: ['businessTypeOther'],
+      })
+    }
+  })
+
+export type DigitalStudioApplicationInput = z.infer<typeof digitalStudioApplicationSchema>
+
 /**
  * Phase 9A: The Living Testament validation schemas
  */

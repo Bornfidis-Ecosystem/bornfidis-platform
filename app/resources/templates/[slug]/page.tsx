@@ -2,11 +2,10 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { TEMPLATES, TEMPLATE_CARD_FOOTER } from '@/lib/resources-data'
 import TemplateCardIcon from '@/components/resources/TemplateCardIcon'
-import { colors } from '@/lib/design-tokens'
 
 export const dynamic = 'force-dynamic'
 
-const CHARCOAL = '#1a1a1a'
+const CHARCOAL = '#2C2C2C'
 
 const MICRO_TRUST = 'Built by Bornfidis • Practical • Jamaica-ready'
 
@@ -20,8 +19,8 @@ export default async function TemplateDetailPage({
   if (!template) notFound()
 
   return (
-    <div className="min-h-screen bg-card">
-      <header className="text-white px-6 py-6 bg-forest">
+    <div className="min-h-screen bg-[#FAF6F0]">
+      <header className="text-white px-6 py-6 bg-[#1A3C34]">
         <Link
           href="/resources/templates"
           className="text-sm opacity-90 hover:underline"
@@ -30,9 +29,7 @@ export default async function TemplateDetailPage({
         </Link>
         <div className="flex items-center justify-between gap-3 mt-2">
           <div className="flex flex-col gap-1">
-            <span
-              className="inline-flex rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-goldAccent text-forest"
-            >
+            <span className="inline-flex rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-[#C9A84C] text-[#1A3C34]">
               {template.tag}
             </span>
             {template.tagSubtext && (
@@ -44,7 +41,7 @@ export default async function TemplateDetailPage({
               </span>
             )}
           </div>
-          <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-goldAccent text-goldAccent shrink-0">
+          <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-[#C9A84C] text-[#C9A84C] shrink-0">
             <TemplateCardIcon slug={template.slug} className="shrink-0" />
           </div>
         </div>
@@ -52,19 +49,13 @@ export default async function TemplateDetailPage({
       </header>
 
       <main className="max-w-xl mx-auto px-4 py-6">
-        <div
-          className="rounded-2xl p-5 mb-4 border"
-          style={{
-            backgroundColor: colors.card,
-            borderColor: '#e8e5dd',
-          }}
-        >
-          <p style={{ color: CHARCOAL }} className="text-gray-800">
+        <div className="rounded-none p-5 mb-4 border border-[#E0DDD8] bg-white">
+          <p className="text-[#2C2C2C]">
             {template.problem}
           </p>
           {template.includes && template.includes.length > 0 && (
             <>
-              <p className="text-sm font-medium mt-4 text-forest">
+              <p className="text-sm font-medium mt-4 text-[#1A3C34]">
                 What it includes:
               </p>
               <ul className="list-disc pl-5 text-sm mt-1 space-y-0.5" style={{ color: CHARCOAL }}>
@@ -82,7 +73,7 @@ export default async function TemplateDetailPage({
               {template.whyItSells}
             </p>
           )}
-          <p className="text-lg font-semibold mt-4 text-forest">
+          <p className="text-lg font-semibold mt-4 text-[#1A3C34]">
             {template.priceDisplay}
           </p>
           {template.valueNote && (
@@ -95,7 +86,7 @@ export default async function TemplateDetailPage({
                 ? 'Free download'
                 : 'One-time purchase · Instant download'}
           </p>
-          <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-[#e8e5dd]">
+          <p className="text-xs text-gray-500 mt-3 pt-3 border-t border-[#E0DDD8]">
             {MICRO_TRUST}
           </p>
           <p className="text-xs text-gray-400 mt-2">
@@ -106,7 +97,7 @@ export default async function TemplateDetailPage({
         {/* CTA: Forest green with gold text */}
         <a
           href={`mailto:hello@bornfidis.com?subject=${template.isFree ? 'Free download' : 'Purchase'}: ${encodeURIComponent(template.name)}`}
-          className="block w-full text-center rounded-lg py-3 font-semibold hover:opacity-95 transition border-2 bg-forest text-goldAccent border-goldAccent"
+          className="block w-full text-center rounded-none py-3 font-semibold hover:opacity-95 transition border-2 bg-[#1A3C34] text-[#C9A84C] border-[#C9A84C]"
         >
           {template.isFree ? 'Get free download' : 'Download'}
         </a>
@@ -117,7 +108,7 @@ export default async function TemplateDetailPage({
         <p className="text-center pt-6">
           <Link
             href="/resources"
-            className="text-sm font-medium hover:underline text-forest"
+            className="text-sm font-medium hover:underline text-[#1A3C34]"
           >
             ← Back to Resources
           </Link>
@@ -126,4 +117,3 @@ export default async function TemplateDetailPage({
     </div>
   )
 }
-

@@ -18,7 +18,7 @@ type PublicMarketingShellProps = {
  */
 export function PublicMarketingShell({ children }: PublicMarketingShellProps) {
   return (
-    <div className="public-editorial-root min-h-screen bg-[#fdf8f8] text-[#2c2c2c]">
+    <div className="public-editorial-root min-h-screen bg-bone text-[#1a1a1a]">
       <main className="mx-auto w-full max-w-[1440px]">{children}</main>
     </div>
   )

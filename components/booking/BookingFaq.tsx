@@ -17,7 +17,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'Do you travel?',
-    a: 'Yes. We offer private dining experiences across Vermont and Jamaica, with select travel options available.',
+    a: 'Yes. We serve Vermont and the Northeast directly. New Jersey and select destinations by arrangement. Jamaica private dining is partner-led — submit an inquiry and we connect you with our Jamaica team.',
   },
   {
     q: 'When will I receive my quote?',
@@ -32,9 +32,9 @@ export function BookingFaq() {
         <SectionHeading theme="culinary" eyebrow="FAQ" title="Questions, answered" />
         <ul className="mx-auto mt-10 max-w-3xl space-y-6">
           {FAQS.map((item) => (
-            <li key={item.q} className="border-b border-[#C9A84C]/35 pb-6 last:border-0 last:pb-0">
-              <h3 className="font-display text-lg font-normal text-[#2c2c2c]">{item.q}</h3>
-              <p className="mt-2 font-sans text-sm leading-relaxed text-[#2c2c2c]/75">{item.a}</p>
+            <li key={item.q} className="border-b border-[#ffbc00]/35 pb-6 last:border-0 last:pb-0">
+              <h3 className="font-display text-lg font-normal text-[#1a1a1a]">{item.q}</h3>
+              <p className="mt-2 font-sans text-sm leading-relaxed text-[#1a1a1a]/75">{item.a}</p>
             </li>
           ))}
         </ul>

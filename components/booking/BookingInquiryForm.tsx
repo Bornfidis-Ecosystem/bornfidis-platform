@@ -14,6 +14,7 @@ import { CheckboxGroup } from '@/components/ui/CheckboxGroup'
 import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { BOOKING_UPSELL_OPTIONS } from '@/lib/booking-upsells'
 import { bookEyebrow, bookSection } from '@/components/booking/book-culinary-classes'
+import { JAMAICA_PARTNER_HELPER, SERVICE_REGIONS } from '@/lib/homepage-content'
 
 const budgetTiers = [
   { value: '', label: 'Select budget tier' },
@@ -24,6 +25,7 @@ const budgetTiers = [
 
 const experienceTypeOptions = [
   { value: '', label: 'Select experience type' },
+  { value: "The Chef's Passage", label: "The Chef's Passage — 5-course signature" },
   { value: 'Private Dinner', label: 'Private Dinner' },
   { value: 'Weekend Retreat', label: 'Weekend Retreat' },
   { value: 'Retreat & Events', label: 'Retreat & Events' },
@@ -51,7 +53,16 @@ const diningStyles = [
   { value: 'not_sure_yet', label: 'Not Sure Yet' },
 ]
 
-const optionClass = 'bg-[#fdf8f8] text-[#2c2c2c]'
+const optionClass = 'bg-[#faf6f0] text-[#1a1a1a]'
+
+const regionOptions = [
+  { value: '', label: 'Select service region' },
+  ...SERVICE_REGIONS.map((r) => ({ value: r.value, label: r.label })),
+]
+
+function regionLabel(value: string): string {
+  return SERVICE_REGIONS.find((r) => r.value === value)?.label ?? value
+}
 
 export function BookingInquiryForm() {
   const router = useRouter()
@@ -62,6 +73,7 @@ export function BookingInquiryForm() {
     email: '',
     phone: '',
     eventDate: '',
+    serviceRegion: 'vermont-northeast',
     location: '',
     guestCount: '',
     experienceType: '',
@@ -89,7 +101,9 @@ export function BookingInquiryForm() {
     phone: formData.phone,
     eventDate: formData.eventDate,
     eventTime: '',
-    location: formData.location,
+    location: formData.serviceRegion
+      ? `[${regionLabel(formData.serviceRegion)}] ${formData.location}`.trim()
+      : formData.location,
     guestCount: formData.guestCount,
     guests: formData.guestCount,
     occasion: formData.occasion,
@@ -227,6 +241,24 @@ export function BookingInquiryForm() {
                   value={formData.eventDate}
                   onChange={handleChange}
                 />
+                <SelectField
+                  theme="culinary"
+                  label="Service Region"
+                  id="serviceRegion"
+                  name="serviceRegion"
+                  required
+                  value={formData.serviceRegion}
+                  onChange={handleChange}
+                >
+                  {regionOptions.map((o) => (
+                    <option key={o.label} value={o.value} disabled={o.value === ''} className={optionClass}>
+                      {o.label}
+                    </option>
+                  ))}
+                </SelectField>
+                {formData.serviceRegion === 'jamaica-partner' ? (
+                  <p className="font-sans text-xs leading-relaxed text-[#1a1a1a]/65">{JAMAICA_PARTNER_HELPER}</p>
+                ) : null}
                 <TextareaField
                   theme="culinary"
                   label="Event Location"
@@ -363,7 +395,7 @@ export function BookingInquiryForm() {
               >
                 {isSubmitting ? (
                   <span className="inline-flex items-center gap-2">
-                    <Spinner size="sm" className="text-[#fdf8f8]" />
+                    <Spinner size="sm" className="text-[#faf6f0]" />
                     Sending…
                   </span>
                 ) : (

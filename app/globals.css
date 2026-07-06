@@ -3,18 +3,21 @@
 @tailwind utilities;
 
 :root {
-  /* Bornfidis — Brand tokens (June 2026)
-     Palette: Forest Green · Burnished Gold · Bone · Slate */
+  /* Bornfidis — Brand tokens (compass-and-anchor, June 2026)
+     Palette: Navy · Marigold Gold · Ivory · Slate text */
   color-scheme: light;
 
   /* ── Canonical palette ───────────────────────────────────────── */
-  --color-green: #1A3C34;
-  --color-gold: #C9A84C;
-  --color-bone: #FAF6F0;
-  --color-slate: #2C2C2C;
-  --color-muted: #747878;
-  --color-light: #F1EDEC;
-  --color-mid: #E0DDD8;
+  --color-navy: #002747;
+  --color-gold: #ffbc00;
+  --color-bone: #faf6f0;
+  --color-slate: #1a1a1a;
+  --color-muted: #5c6470;
+  --color-light: #f3efe6;
+  --color-mid: #e0ddd8;
+  /* Legacy bridge — old “green/forest” tokens resolve to navy */
+  --color-green: var(--color-navy);
+  --color-forest: var(--color-navy);
 
   /* ── Semantic (resolve to the canonical palette) ─────────────── */
   --color-faint: var(--color-muted);
@@ -25,16 +28,14 @@
   --color-bg-primary: var(--color-bone);
   --color-bg-surface: var(--color-light);
   --color-accent: var(--color-gold);
-  --color-accent-hover: #b8963f;
+  --color-accent-hover: #e6a800;
   --color-nature: var(--color-green);
   --color-scripture: var(--color-gold);
 
-  /* Legacy / Tailwind bridge — old names now resolve to the canonical palette */
-  --color-navy: var(--color-green);
-  --color-navy-light: var(--color-green);
-  --color-forest: var(--color-green);
-  --color-forest-dark: var(--color-green);
-  --color-forest-darker: var(--color-green);
+  /* Legacy / Tailwind bridge — old names now resolve to navy + gold */
+  --color-navy-light: #003d6b;
+  --color-forest-dark: var(--color-navy);
+  --color-forest-darker: #001a2e;
   --color-gold-dark: var(--color-accent-hover);
   --color-gold-accent: var(--color-gold);
   --color-charcoal: var(--color-slate);
@@ -105,7 +106,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-serif), serif;
+  font-family: var(--font-serif), ui-sans-serif, sans-serif;
 }
 
 /* Prevent horizontal scrolling. Use `clip` so these wrappers don't become
@@ -151,26 +152,28 @@ h6 {
     display: inline-block;
     font-weight: 600;
     padding: 0.5rem 1.5rem;
-    border-radius: 0.75rem;
+    border-radius: 0;
+    box-shadow: none;
     transition: opacity 0.2s;
-    background-color: var(--bornfidis-gold);
-    color: var(--bornfidis-forest);
+    background-color: var(--color-navy);
+    color: var(--color-bone);
   }
   .btn-primary:hover {
-    opacity: 0.9;
+    opacity: 0.92;
   }
   .btn-secondary {
     display: inline-block;
     font-weight: 600;
     padding: 0.5rem 1.5rem;
-    border-radius: 0.75rem;
-    border: 2px solid var(--bornfidis-forest);
-    color: var(--bornfidis-forest);
+    border-radius: 0;
+    box-shadow: none;
+    border: 1px solid var(--color-navy);
+    color: var(--color-navy);
     transition: background-color 0.2s, color 0.2s;
   }
   .btn-secondary:hover {
-    background-color: var(--bornfidis-forest);
-    color: var(--bornfidis-gold-accent);
+    background-color: var(--color-navy);
+    color: var(--color-bone);
   }
   .btn-tertiary {
     font-weight: 500;
@@ -191,6 +194,6 @@ h6 {
 .public-editorial-root h1,
 .public-editorial-root h2,
 .public-editorial-root h3 {
-  font-family: var(--font-serif), Georgia, serif;
-  font-weight: 400;
+  font-family: var(--font-serif), ui-sans-serif, sans-serif;
+  font-weight: 600;
 }

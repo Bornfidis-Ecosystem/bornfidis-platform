@@ -126,7 +126,7 @@ export default function ProvisionsComingSoonGrid() {
       <div className="lg:col-span-3 flex flex-wrap items-center gap-4">
         <Link
           href="/book"
-          className="inline-flex rounded-full bg-[#C9A84C] px-6 py-3 font-medium text-[#0F3D2E] transition hover:opacity-90"
+          className="inline-flex rounded-none bg-[#002747] px-6 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0] transition hover:opacity-90"
         >
           Explore Bornfidis
         </Link>

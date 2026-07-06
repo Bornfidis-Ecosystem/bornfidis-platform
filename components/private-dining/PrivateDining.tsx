@@ -5,7 +5,8 @@ import Image from 'next/image'
 import { bornfidisPhotos } from '@/lib/bornfidis-photos'
 import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
 import { HospitalityCredibility } from '@/components/marketing/HospitalityCredibility'
-import { PHASE1_CTA } from '@/lib/phase1-marketing'
+import { PHASE1_CTA, SIGNATURE_PRODUCT_NAME } from '@/lib/phase1-marketing'
+import { SIGNATURE_EXPERIENCE } from '@/lib/homepage-content'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -43,7 +44,7 @@ const LOCATION_OPTIONS = [
   'Stowe, Vermont',
   'Other Vermont location',
   'New Jersey',
-  'Jamaica / Caribbean',
+  'Jamaica (partner inquiry)',
   "Other — I'll explain below",
 ] as const
 
@@ -235,17 +236,17 @@ export default function PrivateDining() {
             <span className="breadcrumb-current">Private Dining</span>
           </div>
           <h1 className="page-hero-title">
-            The table is set.
+            {SIGNATURE_PRODUCT_NAME}
             <br />
             <em>We come to you.</em>
           </h1>
           <div className="hero-rule" />
-          <p className="page-hero-body">
-            Bespoke, chef-led private dining in your home, chalet, or Vermont retreat. No fixed
-            menus. No performance. A meal made entirely for the people at your table.
+          <p className="page-hero-body">{SIGNATURE_EXPERIENCE.tagline}</p>
+          <p className="page-hero-body" style={{ marginTop: '1rem', fontSize: '0.9375rem', opacity: 0.85 }}>
+            {SIGNATURE_EXPERIENCE.description}
           </p>
           <a href="#book" className="btn-primary">
-            {PHASE1_CTA.bookPrivateDining.shortLabel}
+            {SIGNATURE_EXPERIENCE.ctaLabel}
           </a>
         </div>
         <div className="page-hero-right">
@@ -269,12 +270,12 @@ export default function PrivateDining() {
                 <div className="hero-stat-label">Guests per event</div>
               </div>
               <div>
-                <div className="hero-stat-num">$150</div>
-                <div className="hero-stat-label">Per person from</div>
+                <div className="hero-stat-num">$1,200</div>
+                <div className="hero-stat-label">From · Vermont</div>
               </div>
               <div>
-                <div className="hero-stat-num">NJ + VT</div>
-                <div className="hero-stat-label">Service areas</div>
+                <div className="hero-stat-num">VT + NE</div>
+                <div className="hero-stat-label">Primary service area</div>
               </div>
             </div>
           </div>
@@ -299,9 +300,14 @@ export default function PrivateDining() {
           <div className="exp-desc">Built around your guests, your occasion, your season.</div>
         </div>
         <div className="exp-item reveal reveal-delay-3">
-          <div className="exp-icon">We serve</div>
-          <div className="exp-title">Southern VT + NJ</div>
-          <div className="exp-desc">And advance bookings in Jamaica and the Caribbean.</div>
+          <div className="exp-icon">Jamaica</div>
+          <div className="exp-title">Partner inquiries</div>
+          <div className="exp-desc">
+            <Link href={PHASE1_CTA.jamaicaPartnerInquiry.href} className="underline decoration-[rgba(255,188,0,0.5)]">
+              Request a quote
+            </Link>{' '}
+            — our partner team handles Jamaica private dining.
+          </div>
         </div>
       </div>
 

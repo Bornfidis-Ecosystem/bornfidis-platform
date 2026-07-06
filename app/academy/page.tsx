@@ -104,14 +104,14 @@ export default async function AcademyPage({ searchParams }: PageProps) {
           <section id="featured" className="mb-16">
             <h2 className="sr-only">Academy products</h2>
             {products.length === 0 ? (
-              <div className="border border-[#C9A84C]/35 p-12 text-center">
+              <div className="border border-[#ffbc00]/35 p-12 text-center">
                 <p className={`${academyHeadline} text-xl`}>No products available yet</p>
                 <p className={`${academyBody} mt-3 text-sm`}>
                   New guides and courses will appear here. Check back soon or browse the free guide below.
                 </p>
                 <Link
                   href="/guide/5-caribbean-sauces"
-                  className="mt-6 inline-block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+                  className="mt-6 inline-block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#ffbc00] no-underline hover:text-[#1a1a1a]"
                 >
                   Get the free guide — 5 Caribbean Sauces →
                 </Link>
@@ -128,7 +128,7 @@ export default async function AcademyPage({ searchParams }: PageProps) {
           <p className={`${academyBody} mb-8 text-center text-sm`}>
             <Link
               href="/guide/5-caribbean-sauces"
-              className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+              className="font-semibold text-[#ffbc00] no-underline hover:text-[#1a1a1a]"
             >
               New: Get our free guide — 5 Caribbean Sauces
             </Link>
@@ -137,11 +137,11 @@ export default async function AcademyPage({ searchParams }: PageProps) {
           <AcademyEmailCapture />
 
           <p className={`${academyBody} mt-12 text-center text-sm`}>
-            <Link href="/dashboard/library" className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+            <Link href="/dashboard/library" className="text-[#ffbc00] no-underline hover:text-[#1a1a1a]">
               View your library
             </Link>
             {' · '}
-            <Link href="/payments" className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+            <Link href="/payments" className="text-[#ffbc00] no-underline hover:text-[#1a1a1a]">
               Payment &amp; participation
             </Link>
           </p>

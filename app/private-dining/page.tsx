@@ -4,9 +4,9 @@ import PrivateDining from '@/components/private-dining/PrivateDining'
 import '@/components/private-dining/private-dining.css'
 
 export const metadata: Metadata = {
-  title: 'Private Dining — Bornfidis',
+  title: 'Private Dining — The Chef\'s Passage | Bornfidis',
   description:
-    'Bespoke, chef-led private dining in your home, chalet, or Vermont retreat. Custom menus. Full service. Complete cleanup. From $150 per person.',
+    "The Chef's Passage — Bornfidis signature private dining in Vermont from $1,200. Five courses, tableside service, full cleanup. Jamaica via partner inquiry.",
 }
 
 export default function PrivateDiningPage() {

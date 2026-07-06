@@ -629,7 +629,7 @@ export default function StoryPage() {
       {/* ── Royal Caribbean credibility (legacy — not hero marketing) ─ */}
       <section className="rc-credibility" aria-labelledby="rc-credibility-heading">
         <div className="rc-credibility-header">
-          <p className="label reveal" style={{ color: 'rgba(201, 168, 76, 0.7)', marginBottom: '1.25rem' }}>
+          <p className="label reveal" style={{ color: 'rgba(255, 188, 0, 0.7)', marginBottom: '1.25rem' }}>
             The verified years
           </p>
           <h2 id="rc-credibility-heading" className="rc-credibility-title reveal reveal-delay-1">

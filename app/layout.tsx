@@ -1,13 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter, Libre_Caslon_Text, Montserrat } from 'next/font/google'
+import { Inter, Montserrat, Poppins } from 'next/font/google'
 import './globals.css'
 import RootShell from '@/components/layout/RootShell'
 import { brandAssets } from '@/lib/brand-assets'
 
-/** Headlines — WordPress brief: Libre Caslon Text (exposed as --font-serif for Tailwind `font-display`). */
-const headline = Libre_Caslon_Text({
+/** Display / headlines — compass-and-anchor identity (Poppins → --font-serif / font-display). */
+const headline = Poppins({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-serif',
 })
 

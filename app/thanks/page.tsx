@@ -19,10 +19,10 @@ function first(param?: string | string[]): string | undefined {
 }
 
 const alertClass =
-  'mb-6 !rounded-none !border-[#C9A84C]/35 !bg-[#fdf8f8] !text-[#2c2c2c] [&_svg]:text-[#1A3C34]'
+  'mb-6 !rounded-none !border-[#ffbc00]/35 !bg-[#faf6f0] !text-[#1a1a1a] [&_svg]:text-[#002747]'
 
-const refClass = 'text-center font-sans text-sm text-[#2c2c2c]/60'
-const monoRef = 'font-mono font-medium text-[#2c2c2c]'
+const refClass = 'text-center font-sans text-sm text-[#1a1a1a]/60'
+const monoRef = 'font-mono font-medium text-[#1a1a1a]'
 
 export default async function ThanksPage({ searchParams }: { searchParams: Promise<Search> }) {
   const params = await searchParams
@@ -45,7 +45,7 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
           </p>
         ) : null}
         {sessionId ? (
-          <p className="mb-8 break-all text-center font-mono text-xs text-[#2c2c2c]/45">
+          <p className="mb-8 break-all text-center font-mono text-xs text-[#1a1a1a]/45">
             Session: {sessionId}
           </p>
         ) : null}
@@ -68,7 +68,7 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
           </p>
         ) : null}
         {sessionId ? (
-          <p className="mb-8 break-all text-center font-mono text-xs text-[#2c2c2c]/45">
+          <p className="mb-8 break-all text-center font-mono text-xs text-[#1a1a1a]/45">
             Session: {sessionId}
           </p>
         ) : null}
@@ -87,7 +87,7 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
             className={alertClass}
           />
           {sessionId ? (
-            <p className="mb-8 break-all font-mono text-xs text-[#2c2c2c]/45">Session: {sessionId}</p>
+            <p className="mb-8 break-all font-mono text-xs text-[#1a1a1a]/45">Session: {sessionId}</p>
           ) : null}
           <PrimaryButton theme="culinary" href="/">
             Back to home
@@ -110,7 +110,7 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
             Reference: <span className={monoRef}>{bookingId.slice(0, 8)}…</span>
           </p>
         ) : null}
-        <div className="mt-8 border-t border-[#C9A84C]/25 pt-8">
+        <div className="mt-8 border-t border-[#ffbc00]/25 pt-8">
           <ThanksMessage title="What happens next">
             <ol className="mt-3 list-decimal space-y-2 pl-5">
               <li>We review your request and availability</li>
@@ -123,7 +123,7 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
           Questions?{' '}
           <a
             href="mailto:brian@bornfidis.com"
-            className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+            className="font-semibold text-[#ffbc00] no-underline hover:text-[#1a1a1a]"
           >
             brian@bornfidis.com
           </a>
@@ -144,22 +144,22 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
       />
 
       <div className="mt-8 max-w-none">
-        <h2 className="font-display text-2xl font-normal text-[#2c2c2c]">What happens next?</h2>
+        <h2 className="font-display text-2xl font-normal text-[#1a1a1a]">What happens next?</h2>
         <ol className={`${bookBody} mt-4 space-y-3 text-sm`}>
           <li className="flex items-start gap-2">
-            <span className="font-semibold text-[#C9A84C]">1.</span>
+            <span className="font-semibold text-[#ffbc00]">1.</span>
             <span>We&apos;ll review your request and check availability</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="font-semibold text-[#C9A84C]">2.</span>
+            <span className="font-semibold text-[#ffbc00]">2.</span>
             <span>You&apos;ll receive a detailed quote within 48 hours</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="font-semibold text-[#C9A84C]">3.</span>
+            <span className="font-semibold text-[#ffbc00]">3.</span>
             <span>Once you approve, we&apos;ll send a deposit invoice to secure your date</span>
           </li>
           <li className="flex items-start gap-2">
-            <span className="font-semibold text-[#C9A84C]">4.</span>
+            <span className="font-semibold text-[#ffbc00]">4.</span>
             <span>
               When your chef is assigned, you&apos;ll see their profile and verified credentials in your
               booking portal.
@@ -168,12 +168,12 @@ export default async function ThanksPage({ searchParams }: { searchParams: Promi
         </ol>
       </div>
 
-      <div className="mt-8 border-t border-[#C9A84C]/25 pt-8">
+      <div className="mt-8 border-t border-[#ffbc00]/25 pt-8">
         <p className={`${bookBody} text-center text-sm`}>
           Questions?{' '}
           <a
             href="mailto:brian@bornfidis.com"
-            className="font-semibold text-[#C9A84C] no-underline hover:text-[#2c2c2c]"
+            className="font-semibold text-[#ffbc00] no-underline hover:text-[#1a1a1a]"
           >
             brian@bornfidis.com
           </a>
