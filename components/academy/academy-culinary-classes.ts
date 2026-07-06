@@ -9,19 +9,19 @@ export {
 } from '@/components/booking/book-culinary-classes'
 
 export const academyCard =
-  'border border-[#C9A84C]/35 bg-[#fdf8f8] overflow-hidden transition-colors hover:border-[#C9A84C]/55'
+  'border border-[#ffbc00]/35 bg-[#faf6f0] overflow-hidden transition-colors hover:border-[#ffbc00]/55'
 
 export const academyPillActive =
-  'rounded-none border border-[#1A3C34] bg-[#1A3C34] px-4 py-2 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#fdf8f8]'
+  'rounded-none border border-[#002747] bg-[#002747] px-4 py-2 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0]'
 
 export const academyPillInactive =
-  'rounded-none border border-[#C9A84C]/35 bg-transparent px-4 py-2 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c]/70 transition hover:border-[#C9A84C] hover:text-[#2c2c2c]'
+  'rounded-none border border-[#ffbc00]/35 bg-transparent px-4 py-2 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]/70 transition hover:border-[#ffbc00] hover:text-[#1a1a1a]'
 
 export const academyBtnPrimary =
-  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#1A3C34] bg-[#1A3C34] px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#fdf8f8] shadow-none transition hover:bg-[#15352d] disabled:cursor-not-allowed disabled:opacity-60'
+  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#002747] bg-[#002747] px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0] shadow-none transition hover:bg-[#001a2e] disabled:cursor-not-allowed disabled:opacity-60'
 
 export const academyBtnSecondary =
-  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#2c2c2c] bg-transparent px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c] transition hover:border-[#C9A84C]'
+  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#1a1a1a] bg-transparent px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a] transition hover:border-[#ffbc00]'
 
 export const academyLinkBack =
-  'mb-8 inline-block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c]/70 no-underline transition hover:text-[#C9A84C]'
+  'mb-8 inline-block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]/70 no-underline transition hover:text-[#ffbc00]'

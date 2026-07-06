@@ -1,6 +1,7 @@
 import { Resend } from 'resend'
 import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
-import { transactionalReplyToPayload } from '@/lib/platform-email'
+import { bookingNotificationRecipient, transactionalReplyToPayload } from '@/lib/platform-email'
+import type { DigitalStudioApplicationInput } from '@/lib/validation'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -1311,6 +1312,100 @@ export async function sendSlaEscalationEmail({
   } catch (e: unknown) {
     const message = e instanceof Error ? e.message : 'Failed to send'
     console.error('sendSlaEscalationEmail:', e)
+    return { success: false, error: message }
+  }
+}
+
+const DIGITAL_STUDIO_BUSINESS_LABELS: Record<DigitalStudioApplicationInput['businessType'], string> = {
+  restaurant: 'Restaurant',
+  caterer: 'Caterer',
+  'farm-food-producer': 'Farm or food producer',
+  'guest-house': 'Guest house or small hospitality property',
+  other: 'Other',
+}
+
+const DIGITAL_STUDIO_WEBSITE_LABELS: Record<DigitalStudioApplicationInput['websiteStatus'], string> = {
+  'yes-needs-work': 'Yes, needs work',
+  'yes-needs-rebuild': 'Yes, needs a rebuild',
+  'no-scratch': 'No, starting from scratch',
+}
+
+const DIGITAL_STUDIO_TIMELINE_LABELS: Record<DigitalStudioApplicationInput['timeline'], string> = {
+  asap: 'ASAP',
+  '1-3-months': 'Next 1–3 months',
+  exploring: 'Just exploring',
+}
+
+/**
+ * Digital Studio pilot — notify admin and confirm receipt to applicant. No DB persistence.
+ */
+export async function sendDigitalStudioApplicationEmails(
+  application: DigitalStudioApplicationInput
+): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — Digital Studio application skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+
+  const adminEmail = bookingNotificationRecipient()
+  const businessTypeLabel =
+    application.businessType === 'other' && application.businessTypeOther
+      ? `Other — ${application.businessTypeOther}`
+      : DIGITAL_STUDIO_BUSINESS_LABELS[application.businessType]
+
+  const adminRows = [
+    ['Business', escapeHtmlForEmail(application.businessName)],
+    ['Contact', escapeHtmlForEmail(application.contactName)],
+    ['Email', escapeHtmlForEmail(application.contactEmail)],
+    ['Business type', escapeHtmlForEmail(businessTypeLabel)],
+    ['Biggest gap', escapeHtmlForEmail(application.biggestGap)],
+    ['Website', escapeHtmlForEmail(DIGITAL_STUDIO_WEBSITE_LABELS[application.websiteStatus])],
+    ['Timeline', escapeHtmlForEmail(DIGITAL_STUDIO_TIMELINE_LABELS[application.timeline])],
+  ]
+
+  if (application.notes?.trim()) {
+    adminRows.push(['Notes', escapeHtmlForEmail(application.notes.trim())])
+  }
+
+  const adminList = adminRows
+    .map(([label, value]) => `<li style="margin-bottom:8px;"><strong>${label}:</strong> ${value}</li>`)
+    .join('')
+
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
+      to: adminEmail,
+      reply_to: application.contactEmail,
+      subject: `[Digital Studio Pilot] ${application.businessName}`,
+      html: `
+        <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
+          <h2 style="color: #002747; margin-bottom: 16px;">New Digital Studio pilot application</h2>
+          <ul style="list-style: none; padding: 0;">${adminList}</ul>
+          <p style="margin-top: 20px; color: #666; font-size: 14px;">Reply directly to this email to reach the applicant.</p>
+        </div>
+      `,
+    })
+
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
+      to: application.contactEmail,
+      subject: 'We received your Bornfidis Digital Studio application',
+      html: `
+        <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
+          <h2 style="color: #002747; margin-bottom: 16px;">Application received</h2>
+          <p>Hi ${escapeHtmlForEmail(application.contactName)},</p>
+          <p>Thank you for applying to the Bornfidis Digital Studio pilot. We read every application personally and will reach out if we're a fit for this cohort.</p>
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">— Bornfidis Digital Studio</p>
+        </div>
+      `,
+    })
+
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('Digital Studio application email error:', error)
     return { success: false, error: message }
   }
 }

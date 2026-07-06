@@ -1,17 +1,17 @@
 /* Shared conversion band — works on any public marketing page */
 .bf-conversion-cta {
   --cta-bone: #faf6f0;
-  --cta-slate: #2c2c2c;
+  --cta-slate: #1a1a1a;
   --cta-green: #1a3c34;
   --cta-gold: #c9a84c;
-  --cta-muted: rgba(44, 44, 44, 0.65);
+  --cta-muted: rgba(26, 26, 26, 0.65);
   padding: 4rem 1.5rem;
-  border-top: 1px solid rgba(26, 60, 52, 0.1);
+  border-top: 1px solid rgba(0, 39, 71, 0.1);
 }
 
 .bf-conversion-cta--forest {
   background: var(--cta-green);
-  border-top-color: rgba(201, 168, 76, 0.25);
+  border-top-color: rgba(255, 188, 0, 0.25);
   --cta-muted: rgba(250, 246, 240, 0.65);
 }
 
@@ -36,7 +36,7 @@
 }
 
 .bf-conversion-cta--forest .bf-conversion-cta__eyebrow {
-  color: rgba(201, 168, 76, 0.85);
+  color: rgba(255, 188, 0, 0.85);
 }
 
 .bf-conversion-cta__title {
@@ -84,7 +84,7 @@
 }
 
 .bf-conversion-cta__primary:hover {
-  background: #143028;
+  background: #001a2e;
 }
 
 .bf-conversion-cta--forest .bf-conversion-cta__primary:hover {
@@ -107,7 +107,7 @@
   text-transform: uppercase;
   text-decoration: none;
   color: var(--cta-green);
-  border-bottom: 1px solid rgba(26, 60, 52, 0.25);
+  border-bottom: 1px solid rgba(0, 39, 71, 0.25);
   padding-bottom: 2px;
   transition: color 0.2s, border-color 0.2s;
 }

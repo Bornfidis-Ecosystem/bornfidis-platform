@@ -6,9 +6,9 @@ import { useEffect, useState } from 'react'
 
 import { brandAssets } from '@/lib/brand-assets'
 
-const CREAM = '#F2EDE4'
-const GOLD = '#C9A84C'
-const GOLD_DIM = 'rgba(201,168,76,0.18)'
+const CREAM = '#faf6f0'
+const GOLD = '#ffbc00'
+const GOLD_DIM = 'rgba(255,188,0,0.18)'
 
 function useScrollY() {
   const [y, setY] = useState(0)
@@ -26,7 +26,7 @@ export default function BrutalistBookingNav() {
   const navScrolled = scrollY > 48
 
   const linkClass =
-    'text-[0.72rem] font-medium uppercase tracking-[0.18em] text-[rgba(242,237,228,0.55)] transition-colors hover:text-[#C9A84C] no-underline'
+    'text-[0.72rem] font-medium uppercase tracking-[0.18em] text-[rgba(250,246,240,0.55)] transition-colors hover:text-[#ffbc00] no-underline'
 
   return (
     <nav
@@ -43,7 +43,7 @@ export default function BrutalistBookingNav() {
     >
       <Link href="/" className="flex items-center gap-3 no-underline">
         <Image
-          src={brandAssets.iconNavTlGold}
+          src={brandAssets.markGold}
           alt="Bornfidis Provisions"
           width={40}
           height={40}

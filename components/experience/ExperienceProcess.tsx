@@ -14,8 +14,8 @@ export function ExperienceProcess() {
         <h2 className={`${bookHeadline} text-2xl md:text-3xl`}>The process</h2>
         <ol className="mt-10 grid gap-8 md:grid-cols-3">
           {STEPS.map((s) => (
-            <li key={s.step} className="border-l-2 border-[#C9A84C]/50 pl-6">
-              <span className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
+            <li key={s.step} className="border-l-2 border-[#ffbc00]/50 pl-6">
+              <span className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#ffbc00]">
                 Step {s.step}
               </span>
               <h3 className={`${bookHeadline} mt-2 text-xl`}>{s.title}</h3>

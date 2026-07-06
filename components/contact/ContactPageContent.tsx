@@ -26,8 +26,11 @@ import { PHASE1_CONTACT_SERVICE_PARAM, PHASE1_CTA } from '@/lib/phase1-marketing
 
 const serviceOptions = [
   'Private Chef Dining',
+  "The Chef's Passage",
   'Cooking Class',
   'Product / Gourmet Inquiry',
+  'Jamaica Private Dining (partner-led)',
+  'Partners / Investors / Consulting',
   'Custom Menu Request',
   'Villa Guest Hospitality',
   'General Inquiry',
@@ -99,14 +102,14 @@ export default function ContactPageContent() {
   return (
     <PublicMarketingShell active="contact">
       {/* Hero */}
-      <section className="border-b border-[#C9A84C]/35 pt-28 md:pt-32">
+      <section className="border-b border-[#ffbc00]/35 pt-28 md:pt-32">
         <PageContainer wide>
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <p className={bookEyebrow}>Contact &amp; custom booking</p>
               <h1 className={`${bookHeadline} mt-4 text-[clamp(2rem,5vw,3.25rem)]`}>
                 Let&apos;s Shape an Experience with{' '}
-                <span className="text-[#C9A84C]">Clarity and Care</span>
+                <span className="text-[#ffbc00]">Clarity and Care</span>
               </h1>
               <p className={`${bookBody} mt-6`}>
                 Private dining, cooking classes, and small-batch provisions — Caribbean-inspired,
@@ -123,7 +126,7 @@ export default function ContactPageContent() {
               </div>
               <p className={`${bookBody} mt-4 text-sm`}>
                 Planning a dinner?{' '}
-                <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#1A3C34] underline">
+                <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#002747] underline">
                   {PHASE1_CTA.bookPrivateDining.label}
                 </Link>
                 . Provisions or a class? Use the inquiry form below.
@@ -141,7 +144,7 @@ export default function ContactPageContent() {
       </section>
 
       {/* Mosaic */}
-      <section className="border-b border-[#C9A84C]/35 py-12 md:py-16">
+      <section className="border-b border-[#ffbc00]/35 py-12 md:py-16">
         <PageContainer wide>
           <p className={`${bookEyebrow} text-center`}>In the wild</p>
           <div className="mt-8 grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-3">
@@ -181,10 +184,10 @@ export default function ContactPageContent() {
               },
             ].map((card) => (
               <BrandedCard key={card.step} theme="culinary">
-                <p className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#C9A84C]">
+                <p className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#ffbc00]">
                   {card.step}
                 </p>
-                <h3 className="mt-4 font-display text-xl text-[#2c2c2c]">{card.title}</h3>
+                <h3 className="mt-4 font-display text-xl text-[#1a1a1a]">{card.title}</h3>
                 <p className={`${bookBody} mt-3 text-sm`}>{card.body}</p>
               </BrandedCard>
             ))}
@@ -227,7 +230,7 @@ export default function ContactPageContent() {
           <h2 className={`${bookHeadline} mt-4`}>Tell Us About Your Request</h2>
           <p className={`${bookBody} mt-4`}>Share the essentials below and we&apos;ll review your request with care.</p>
 
-          <div className="mt-12 border border-[#C9A84C]/35 bg-[#fdf8f8] p-6 md:p-10">
+          <div className="mt-12 border border-[#ffbc00]/35 bg-[#faf6f0] p-6 md:p-10">
             {error ? (
               <div className="mb-6 border border-red-300 bg-red-50 p-4 font-sans text-sm text-red-800">
                 {error}
@@ -355,7 +358,7 @@ export default function ContactPageContent() {
                   type="text"
                   required
                   minLength={10}
-                  placeholder="Port Antonio villa, private home, retreat venue…"
+                  placeholder="Vermont home, Jamaica partner venue, retreat property…"
                   className={bookFieldClass}
                 />
               </div>
@@ -380,7 +383,7 @@ export default function ContactPageContent() {
                 />
               </div>
 
-              <p className={`${bookBody} border-t border-[#C9A84C]/25 pt-6 text-sm`}>
+              <p className={`${bookBody} border-t border-[#ffbc00]/25 pt-6 text-sm`}>
                 By submitting, you are requesting a response regarding service availability and fit. A submitted
                 form does not automatically confirm a booking.
               </p>
@@ -394,7 +397,7 @@ export default function ContactPageContent() {
                 {submitting ? 'Submitting…' : 'Submit inquiry'}
               </PrimaryButton>
 
-              <p className="text-center font-sans text-xs text-[#2c2c2c]/55">
+              <p className="text-center font-sans text-xs text-[#1a1a1a]/55">
                 We respond within 24 hours. No spam. Your details are handled with care.
               </p>
             </form>
@@ -402,7 +405,7 @@ export default function ContactPageContent() {
 
           <p className={`${bookBody} mt-8 text-center text-sm`}>
             Prefer the full booking flow?{' '}
-            <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#C9A84C] no-underline hover:text-[#2c2c2c]">
+            <Link href={PHASE1_CTA.bookPrivateDining.href} className="text-[#ffbc00] no-underline hover:text-[#1a1a1a]">
               {PHASE1_CTA.bookPrivateDining.label} →
             </Link>
           </p>

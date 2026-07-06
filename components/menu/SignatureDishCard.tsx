@@ -18,9 +18,9 @@ export function SignatureDishCard({ name, description, tag, imageSrc, imageAlt }
         <Image src={imageSrc} alt={imageAlt} fill className="object-cover object-center" sizes="(max-width: 768px) 100vw, 50vw" />
       </div>
       <div className="flex flex-1 flex-col p-6 md:p-8">
-        <h2 className="font-display text-2xl font-light italic text-[#2c2c2c] md:text-[1.65rem]">{name}</h2>
+        <h2 className="font-display text-2xl font-semibold text-[#1a1a1a] md:text-[1.65rem]">{name}</h2>
         <p className={`${bookBody} mt-3 flex-1 text-sm leading-relaxed`}>{description}</p>
-        <p className="mt-6 font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#C9A84C]">{tag}</p>
+        <p className="mt-6 font-sans text-[11px] font-semibold uppercase tracking-[0.12em] text-[#ffbc00]">{tag}</p>
       </div>
     </BrandedCard>
   )

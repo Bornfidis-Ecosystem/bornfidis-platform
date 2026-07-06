@@ -14,9 +14,9 @@ import { PageContainer } from '@/components/ui/PageContainer'
 export function AcademySuccessCard({ children }: { children: ReactNode }) {
   return (
     <PublicMarketingShell active="academy">
-      <section className="flex min-h-[55vh] items-center border-b border-[#C9A84C]/35 pt-28 pb-20 md:pt-32">
+      <section className="flex min-h-[55vh] items-center border-b border-[#ffbc00]/35 pt-28 pb-20 md:pt-32">
         <PageContainer wide className="mx-auto w-full max-w-xl text-center">
-          <div className="border border-[#C9A84C]/35 p-8 md:p-10">{children}</div>
+          <div className="border border-[#ffbc00]/35 p-8 md:p-10">{children}</div>
           <p className="mt-8">
             <Link href="/academy" className={academyLinkBack}>
               ← Back to Academy

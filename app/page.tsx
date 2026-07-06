@@ -6,7 +6,7 @@ import '@/components/home/home-editorial.css'
 export const metadata: Metadata = {
   title: 'Bornfidis — Caribbean Heart. Vermont Hands.',
   description:
-    'Bornfidis is a private dining and provisions company rooted in Caribbean culinary identity and Vermont craft. Born for this. Made for your table.',
+    'Host an unforgettable private dining experience in Vermont, New Jersey, or Jamaica. Bornfidis Provisions — chef-led tables, small-batch pantry, and cooking classes.',
 }
 
 export default function HomePage() {

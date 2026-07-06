@@ -9,7 +9,7 @@ import { bookBody, bookEyebrow, bookHeadline } from '@/components/booking/book-c
 
 export function BookingHero() {
   return (
-    <section className="border-b border-[#C9A84C]/35 pt-24 md:pt-28">
+    <section className="border-b border-[#ffbc00]/35 pt-24 md:pt-28">
       <PageContainer wide as="div" className="pb-16 pt-12 md:pb-20 md:pt-16">
         <div className="grid items-stretch gap-10 lg:grid-cols-2 lg:gap-16">
           {/* Left — copy */}

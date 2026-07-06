@@ -6,7 +6,7 @@ import '@/components/provisions/provisions.css'
 export const metadata: Metadata = {
   title: 'Provisions — Bornfidis',
   description:
-    'Small-batch pantry essentials forged at the intersection of Jamaica and Vermont. Maple Jerk Blend. Vermont Smoked Sea Salt. Caribbean Chili Oil. Limited quantities.',
+    'Small-batch pantry provisions from Vermont and Jamaica. Maple Jerk Rub, Maple Escovitch, Green Seasoning, and Sorrel Gastrique — request a batch.',
 }
 
 export default function ProvisionsPage() {

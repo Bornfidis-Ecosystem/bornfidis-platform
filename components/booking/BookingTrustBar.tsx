@@ -20,9 +20,9 @@ export function BookingTrustBar() {
           {ITEMS.map((item) => (
             <li
               key={item}
-              className="flex gap-3 border-b border-[#C9A84C]/35 pb-5 font-sans text-sm font-light leading-relaxed tracking-wide text-[#2c2c2c] last:border-0 sm:border-0 sm:pb-0"
+              className="flex gap-3 border-b border-[#ffbc00]/35 pb-5 font-sans text-sm font-light leading-relaxed tracking-wide text-[#1a1a1a] last:border-0 sm:border-0 sm:pb-0"
             >
-              <span className="mt-0.5 shrink-0 text-[#C9A84C]" aria-hidden>
+              <span className="mt-0.5 shrink-0 text-[#ffbc00]" aria-hidden>
                 ✦
               </span>
               <span>{item}</span>

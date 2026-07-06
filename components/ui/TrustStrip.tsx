@@ -22,10 +22,10 @@ export function TrustStrip({
     variant === 'light'
       ? 'text-white/80'
       : variant === 'culinary'
-        ? 'text-[#2c2c2c]/70'
+        ? 'text-[#1a1a1a]/70'
         : 'text-forest/80'
   const checkClass =
-    variant === 'light' ? 'text-gold' : variant === 'culinary' ? 'text-[#C9A84C]' : 'text-goldAccent'
+    variant === 'light' ? 'text-gold' : variant === 'culinary' ? 'text-[#ffbc00]' : 'text-goldAccent'
 
   return (
     <ul

@@ -1,21 +1,17 @@
 import Link from 'next/link'
 import { TEMPLATES, TEMPLATE_CARD_FOOTER } from '@/lib/resources-data'
 import TemplateCardIcon from '@/components/resources/TemplateCardIcon'
-import { colors } from '@/lib/design-tokens'
 
 export const dynamic = 'force-dynamic'
 
-const CHARCOAL = '#1a1a1a'
+const CHARCOAL = '#2C2C2C'
 
 const MICRO_TRUST = 'Built by Bornfidis • Practical • Jamaica-ready'
 
 export default function TemplatesPage() {
   return (
-    <div className="min-h-screen bg-card" style={{ backgroundColor: colors.card }}>
-      <header
-        className="text-white px-6 py-8 text-center bg-forest"
-        style={{ backgroundColor: colors.forest }}
-      >
+    <div className="min-h-screen bg-[#FAF6F0]">
+      <header className="bg-[#1A3C34] text-white px-6 py-8 text-center">
         <h1 className="text-2xl font-bold">Templates</h1>
         <p className="text-sm mt-2 opacity-90">
           Ready-to-use documents
@@ -27,13 +23,12 @@ export default function TemplatesPage() {
           <Link
             key={t.slug}
             href={`/resources/templates/${t.slug}`}
-            className="block rounded-2xl p-5 transition hover:opacity-95 border border-[#e8e5dd]"
-            style={{ backgroundColor: colors.card }}
+            className="block rounded-none p-5 transition hover:opacity-95 border border-[#E0DDD8] bg-white"
           >
             {/* Top row: Tag pill (left) + Icon (right) */}
             <div className="flex items-center justify-between gap-3 mb-3">
               <div className="flex flex-col gap-1">
-                <span className="inline-flex items-center rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-forest text-goldAccent">
+                <span className="inline-flex items-center rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-[#1A3C34] text-[#C9A84C]">
                   {t.tag}
                 </span>
                 {t.tagSubtext && (
@@ -47,35 +42,23 @@ export default function TemplatesPage() {
                   </span>
                 )}
               </div>
-              <div
-                className="w-12 h-12 rounded-full flex items-center justify-center border-2 shrink-0"
-                className="border-2 border-goldAccent text-goldAccent"
-              >
+              <div className="w-12 h-12 rounded-none flex items-center justify-center border-2 border-[#C9A84C] text-[#C9A84C] shrink-0">
                 <TemplateCardIcon slug={t.slug} className="shrink-0" />
               </div>
             </div>
 
             {/* Title */}
-            <h2
-              className="text-lg font-bold leading-tight"
-              className="text-forest"
-            >
+            <h2 className="text-lg font-bold leading-tight text-[#1A3C34]">
               {t.name}
             </h2>
 
             {/* Description */}
-            <p
-              className="text-sm mt-2 leading-snug"
-              style={{ color: CHARCOAL }}
-            >
+            <p className="text-sm mt-2 leading-snug" style={{ color: CHARCOAL }}>
               {t.problem}
             </p>
 
             {/* Price */}
-            <p
-              className="text-sm font-semibold mt-2"
-              className="text-forest"
-            >
+            <p className="text-sm font-semibold mt-2 text-[#1A3C34]">
               {t.priceDisplay}
             </p>
             {t.purpose && (
@@ -83,12 +66,12 @@ export default function TemplatesPage() {
             )}
 
             {/* Learn more */}
-            <p className="mt-3 text-sm font-medium" className="text-goldAccent">
+            <p className="mt-3 text-sm font-medium text-[#C9A84C]">
               Learn more →
             </p>
 
             {/* Micro-trust */}
-            <p className="text-xs mt-3 pt-3 border-t border-[#e8e5dd] text-gray-500">
+            <p className="text-xs mt-3 pt-3 border-t border-[#E0DDD8] text-gray-500">
               {MICRO_TRUST}
             </p>
             {/* Card footer (same on all) */}
@@ -101,8 +84,7 @@ export default function TemplatesPage() {
         <p className="text-center pt-4">
           <Link
             href="/resources"
-            className="text-sm font-medium hover:underline"
-            className="text-forest"
+            className="text-sm font-medium hover:underline text-[#1A3C34]"
           >
             ← Back to Resources
           </Link>
@@ -111,4 +93,3 @@ export default function TemplatesPage() {
     </div>
   )
 }
-

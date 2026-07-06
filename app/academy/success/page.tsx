@@ -144,7 +144,7 @@ export default async function AcademySuccessPage({
     <AcademySuccessCard>
       <AcademyCheckoutCompleteTracker productSlug={productSlug} productTitle={productTitle} />
       <div
-        className="mx-auto mb-6 flex h-14 w-14 items-center justify-center border border-[#C9A84C]/35 bg-[#1A3C34] text-[#fdf8f8]"
+        className="mx-auto mb-6 flex h-14 w-14 items-center justify-center border border-[#ffbc00]/35 bg-[#002747] text-[#faf6f0]"
         aria-hidden
       >
         <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">

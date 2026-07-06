@@ -18,9 +18,9 @@ export function ExperienceIncludes() {
           {ITEMS.map((t) => (
             <li
               key={t}
-              className="rounded-none border border-[#C9A84C]/35 bg-[#fdf8f8] px-4 py-4 text-center font-sans text-sm text-[#2c2c2c] shadow-none"
+              className="rounded-none border border-[#ffbc00]/35 bg-[#faf6f0] px-4 py-4 text-center font-sans text-sm text-[#1a1a1a] shadow-none"
             >
-              <span className="mb-2 block text-[#C9A84C]" aria-hidden>
+              <span className="mb-2 block text-[#ffbc00]" aria-hidden>
                 —
               </span>
               {t}

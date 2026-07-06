@@ -30,7 +30,7 @@ export function CheckboxGroup({
       <legend
         className={
           culinary
-            ? 'mb-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#2c2c2c]'
+            ? 'mb-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]'
             : 'mb-3 text-sm font-medium text-cream/80'
         }
       >
@@ -42,7 +42,7 @@ export function CheckboxGroup({
             <label
               className={
                 culinary
-                  ? 'flex cursor-pointer items-start gap-3 font-sans text-sm text-[#2c2c2c]'
+                  ? 'flex cursor-pointer items-start gap-3 font-sans text-sm text-[#1a1a1a]'
                   : 'flex cursor-pointer items-start gap-3 text-sm text-cream/90'
               }
             >
@@ -51,18 +51,18 @@ export function CheckboxGroup({
                 name={`${name}[]`}
                 className={
                   culinary
-                    ? 'mt-1 h-4 w-4 rounded-none border border-[#2c2c2c] bg-[#fdf8f8] text-[#1A3C34] shadow-none focus:ring-[#C9A84C]'
+                    ? 'mt-1 h-4 w-4 rounded-none border border-[#1a1a1a] bg-[#faf6f0] text-[#002747] shadow-none focus:ring-[#ffbc00]'
                     : 'mt-1 h-4 w-4 rounded border border-brass/40 bg-midnight text-brass focus:ring-brass/50'
                 }
                 checked={value.includes(o.id)}
                 onChange={() => toggle(o.id)}
               />
               <span>
-                <span className={culinary ? 'font-medium text-[#2c2c2c]' : 'font-medium text-cream'}>
+                <span className={culinary ? 'font-medium text-[#1a1a1a]' : 'font-medium text-cream'}>
                   {o.label}
                 </span>
                 {o.description ? (
-                  <span className={culinary ? 'ml-1 text-[#2c2c2c]/55' : 'ml-1 text-cream/50'}>
+                  <span className={culinary ? 'ml-1 text-[#1a1a1a]/55' : 'ml-1 text-cream/50'}>
                     — {o.description}
                   </span>
                 ) : null}
