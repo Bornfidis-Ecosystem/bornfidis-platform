@@ -8,6 +8,16 @@ import { NextResponse, type NextRequest } from 'next/server'
  * - / and /admin/login always allowed
  */
 export async function middleware(request: NextRequest) {
+  const hostname = request.nextUrl.hostname
+
+  // platform.bornfidis.com → bornfidis.com (preserves ?code= for auth when DNS is configured)
+  if (hostname === 'platform.bornfidis.com') {
+    const canonical = new URL(request.url)
+    canonical.hostname = 'bornfidis.com'
+    canonical.protocol = 'https:'
+    return NextResponse.redirect(canonical, 308)
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,

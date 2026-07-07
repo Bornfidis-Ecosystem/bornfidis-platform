@@ -1,14 +1,15 @@
 export const dynamic = 'force-dynamic'
 
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
 
+import { buildAuthCallbackUrl, generateAdminMagicLink } from '@/lib/auth-magic-link'
 import { isAllowedAdminEmail } from '@/lib/auth'
-import { absoluteSiteUrl, DEFAULT_SITE_ORIGIN } from '@/lib/site-url'
+import { sendAdminMagicLinkEmail } from '@/lib/email'
 
 /**
- * Server-side admin magic link — always redirects to bornfidis.com/auth/callback.
- * Avoids client/env/Supabase Site URL sending users to platform.bornfidis.com.
+ * Server-side admin magic link.
+ * Uses Supabase admin generateLink + Resend so redirects always target bornfidis.com,
+ * regardless of Supabase Site URL still pointing at platform.bornfidis.com.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -20,38 +21,29 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 })
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return NextResponse.json({ error: 'Auth is not configured' }, { status: 500 })
-    }
-
-    // Avoid revealing allowlist — still return success for unknown emails.
     if (!isAllowedAdminEmail(email)) {
       return NextResponse.json({ success: true })
     }
 
     const nextPath =
       nextRaw.startsWith('/') && !nextRaw.startsWith('//') ? nextRaw : '/admin'
-    const redirectTo = absoluteSiteUrl(
-      `/auth/callback?next=${encodeURIComponent(nextPath)}`,
-      DEFAULT_SITE_ORIGIN
-    )
+    const redirectTo = buildAuthCallbackUrl(nextPath)
 
-    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      auth: { autoRefreshToken: false, persistSession: false },
+    const generated = await generateAdminMagicLink(email, redirectTo)
+    if ('error' in generated) {
+      return NextResponse.json({ error: generated.error }, { status: 400 })
+    }
+
+    const sent = await sendAdminMagicLinkEmail({
+      to: email,
+      magicLink: generated.link,
     })
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectTo,
-        shouldCreateUser: false,
-      },
-    })
-
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 })
+    if (!sent.success) {
+      return NextResponse.json(
+        { error: sent.error ?? 'Failed to send magic link email' },
+        { status: 500 }
+      )
     }
 
     return NextResponse.json({ success: true })

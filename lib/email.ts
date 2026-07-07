@@ -1032,6 +1032,60 @@ export async function sendChefOnboardingEmail(
 }
 
 /**
+ * Admin magic link — sent via Resend with bornfidis.com redirect (bypasses Supabase default email).
+ */
+export async function sendAdminMagicLinkEmail({
+  to,
+  magicLink,
+}: {
+  to: string
+  magicLink: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — admin magic link email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const safeLink = escapeHtmlForEmail(magicLink)
+  try {
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: 'Sign in to Bornfidis Admin',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h2 style="color: #002747; margin-bottom: 16px;">Bornfidis Admin</h2>
+          <p>Click below to sign in. This link expires shortly and can only be used once.</p>
+          <p>
+            <a href="${safeLink}"
+               style="display:inline-block;padding:12px 20px;
+                      background:#002747;color:#faf6f0;
+                      text-decoration:none;border-radius:4px;
+                      font-weight:600;">
+              Sign in to Admin
+            </a>
+          </p>
+          <p style="font-size:12px;color:#666;">
+            If the button does not work, copy and paste this URL into your browser:<br />
+            ${safeLink}
+          </p>
+          <p style="font-size:12px;color:#666;">
+            You requested this from bornfidis.com/admin/login. If you did not request it, ignore this email.
+          </p>
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('❌ Error sending admin magic link email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Phase 2B-Email: Partner invite email — single source
  * Secure invite link, forest-green CTA, professional. Works in production.
  */
