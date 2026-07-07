@@ -7,7 +7,7 @@ const brutalistClass =
   'inline-flex min-h-[48px] items-center justify-center rounded-sm border border-brass/40 bg-brass/90 px-8 py-3 text-sm font-semibold text-midnight shadow-sm transition hover:bg-brass focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brass'
 
 const culinaryClass =
-  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#002747] bg-[#002747] px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0] shadow-none transition-colors duration-refined hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffbc00]'
+  'inline-flex min-h-[48px] items-center justify-center rounded-none border border-[#002747] bg-[#002747] px-8 py-3 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0] shadow-none transition-colors duration-refined hover:bg-[#001528] active:bg-[#001528] active:text-[#ffbc00] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffbc00]'
 
 type PrimaryButtonProps =
   | ({ href: string; children: ReactNode; className?: string; theme?: 'brutalist' | 'culinary' } & Omit<

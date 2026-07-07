@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClientSupabaseClient, getClientAuthUser } from '@/lib/auth-client'
-import { authCallbackUrl } from '@/lib/site-url'
 
 /**
  * Admin Login Form Component
@@ -165,28 +164,25 @@ function AdminLoginForm() {
     setMessage(null)
 
     try {
-      const supabase = createClientSupabaseClient()
-      
-      // Send magic link email
       const next = searchParams.get('next')
       const nextPath =
         next && next.startsWith('/') && !next.startsWith('//') ? next : '/admin'
-      const { error } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          // Use current browser origin so magic links match bornfidis.com even if env still points elsewhere.
-          emailRedirectTo: authCallbackUrl(nextPath, window.location.origin),
-        },
-      })
 
-      if (error) {
+      const res = await fetch('/api/admin/auth/magic-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), next: nextPath }),
+      })
+      const data = (await res.json()) as { error?: string; success?: boolean }
+
+      if (!res.ok || data.error) {
+        const errMsg = data.error ?? 'Failed to send magic link'
         const isRateLimit =
-          error.message?.toLowerCase().includes('rate limit') ||
-          error.message?.toLowerCase().includes('too many requests') ||
-          error.code === 'over_email_send_limit'
+          errMsg.toLowerCase().includes('rate limit') ||
+          errMsg.toLowerCase().includes('too many requests')
         const friendlyMessage = isRateLimit
           ? 'Too many login attempts. Please wait a few minutes and try again, or check your email for an existing magic link.'
-          : error.message
+          : errMsg
         setMessage({ type: 'error', text: friendlyMessage })
         setIsLoading(false)
         return
@@ -237,9 +233,9 @@ function AdminLoginForm() {
             Enter your email to receive a magic link
           </p>
           <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-            Sign in at{' '}
-            <strong>bornfidis.com/admin/login</strong> — not platform.bornfidis.com (that subdomain
-            is not live yet). After updating Supabase, magic links will return here.
+            Sign in at <strong>bornfidis.com/admin/login</strong>. Magic links return to{' '}
+            <strong>bornfidis.com/auth/callback</strong> — not platform.bornfidis.com. Request a
+            fresh link after each deploy; old emails may still point at the wrong domain.
           </p>
         </div>
 

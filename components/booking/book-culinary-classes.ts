@@ -22,3 +22,7 @@ export const bookFieldClass =
 
 export const bookLabelClass =
   'mb-1 block font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]'
+
+/** Uppercase text link — gold highlight on hover, active, and keyboard focus. */
+export const marketingTextLink =
+  'inline-flex font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#002747] underline decoration-[#ffbc00]/60 underline-offset-4 transition-colors hover:text-[#ffbc00] active:text-[#ffbc00] focus-visible:text-[#ffbc00] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffbc00]/40 focus-visible:ring-offset-2'

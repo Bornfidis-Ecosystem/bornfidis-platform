@@ -8,6 +8,7 @@ import {
   bookEyebrow,
   bookHeadline,
   bookSection,
+  marketingTextLink,
 } from '@/components/booking/book-culinary-classes'
 import {
   DIGITAL_STUDIO_AUDIENCE,
@@ -37,12 +38,7 @@ export default function DigitalStudioPageContent() {
             {DIGITAL_STUDIO_BUILT_FOR.title}
           </h2>
           <p className={`${bookBody} mt-6 max-w-3xl`}>{DIGITAL_STUDIO_BUILT_FOR.body}</p>
-          <Link
-            href={DIGITAL_STUDIO_BUILT_FOR.platformHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#002747] underline decoration-[#ffbc00]/60 underline-offset-4 transition-colors hover:text-[#1a1a1a]"
-          >
+          <Link href={DIGITAL_STUDIO_BUILT_FOR.platformHref} className={`mt-6 ${marketingTextLink}`}>
             {DIGITAL_STUDIO_BUILT_FOR.platformLinkLabel} →
           </Link>
         </PageContainer>

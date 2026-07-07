@@ -18,6 +18,10 @@ function isBlockedOrigin(origin: string): boolean {
   return BLOCKED_ORIGINS.has(normalizeOrigin(origin))
 }
 
+function isLocalHost(hostname: string): boolean {
+  return hostname === 'localhost' || hostname === '127.0.0.1'
+}
+
 /** Resolve origin from env, blocking deprecated platform subdomain. */
 export function siteOrigin(): string {
   const candidates = [
@@ -35,6 +39,15 @@ export function siteOrigin(): string {
   return DEFAULT_SITE_ORIGIN
 }
 
+/** Origin used for auth callbacks — always bornfidis.com in production. */
+export function authSiteOrigin(): string {
+  if (typeof window !== 'undefined') {
+    const { hostname, protocol, host } = window.location
+    if (isLocalHost(hostname)) return `${protocol}//${host}`
+  }
+  return DEFAULT_SITE_ORIGIN
+}
+
 /** Client-safe origin — prefer the page the user is on (e.g. bornfidis.com). */
 export function resolveSiteOrigin(preferredOrigin?: string): string {
   if (preferredOrigin) {
@@ -49,8 +62,9 @@ export function absoluteSiteUrl(path: string, preferredOrigin?: string): string 
   return `${resolveSiteOrigin(preferredOrigin)}${normalized}`
 }
 
-/** Supabase OTP redirect — server-side default; pass window.location.origin on the client. */
-export function authCallbackUrl(nextPath = '/admin', preferredOrigin?: string): string {
+/** Supabase OTP redirect — production always uses bornfidis.com. */
+export function authCallbackUrl(nextPath = '/admin'): string {
   const next = nextPath.startsWith('/') ? nextPath : '/admin'
-  return absoluteSiteUrl(`/auth/callback?next=${encodeURIComponent(next)}`, preferredOrigin)
+  const path = `/auth/callback?next=${encodeURIComponent(next)}`
+  return `${authSiteOrigin()}${path}`
 }

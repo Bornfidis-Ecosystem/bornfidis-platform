@@ -119,7 +119,9 @@
   border-bottom-color: rgba(250, 246, 240, 0.35);
 }
 
-.bf-conversion-cta__link:hover {
+.bf-conversion-cta__link:hover,
+.bf-conversion-cta__link:active,
+.bf-conversion-cta__link:focus-visible {
   color: var(--cta-gold);
   border-bottom-color: var(--cta-gold);
 }

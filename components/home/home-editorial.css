@@ -632,7 +632,9 @@
   transition: color 0.2s, border-color 0.2s;
 }
 
-.bf-home .difference-cta-link:hover {
+.bf-home .difference-cta-link:hover,
+.bf-home .difference-cta-link:active,
+.bf-home .difference-cta-link:focus-visible {
   color: var(--gold);
   border-color: var(--gold);
 }

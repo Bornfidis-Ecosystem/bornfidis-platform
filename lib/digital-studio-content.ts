@@ -2,10 +2,6 @@
  * /digital-studio — Bornfidis Digital Studio pilot page (application-only, not in main nav).
  */
 
-import { siteOrigin } from '@/lib/site-url'
-
-const platformUrl = siteOrigin()
-
 export const DIGITAL_STUDIO_HERO = {
   eyebrow: 'Bornfidis Digital Studio',
   headline: 'Digital Systems for Food, Farm & Hospitality Businesses',
@@ -17,7 +13,7 @@ export const DIGITAL_STUDIO_BUILT_FOR = {
   title: 'Built for Bornfidis. Now Built for You.',
   body:
     "Before we built systems for anyone else, we built one for ourselves. The booking flow, brand system, and standard operating procedures behind Bornfidis weren't designed by a generalist agency guessing at what a hospitality business needs — they were built in-house, by someone who's spent 13 years running one, from Royal Caribbean's kitchens and dining rooms to a working Vermont–Jamaica hospitality brand today.",
-  platformHref: platformUrl,
+  platformHref: '/book',
   platformLinkLabel: 'See it in action',
 } as const
 
