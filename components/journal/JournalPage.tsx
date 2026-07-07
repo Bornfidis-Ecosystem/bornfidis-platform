@@ -95,9 +95,9 @@ const POSTS: Post[] = [
   {
     category: 'jamaica',
     imageClass: 'green',
-    imageTag: 'Replace with Portland Parish photography',
-    src: bornfidisPhotos.jamaica.portlandParishValley,
-    alt: 'Green hills and valley in Portland Parish, Jamaica — Bornfidis Caribbean sourcing country',
+    imageTag: 'Port Antonio',
+    src: bornfidisPhotos.jamaica.portAntonioMarina,
+    alt: 'Port Antonio harbour — yachts and hills above the marina',
     label: 'Jamaica',
     title: 'Why Scotch Bonnet Is Not About the Heat. A Defense of the Most Misunderstood Pepper.',
     excerpt:
@@ -136,16 +136,16 @@ const MOST_READ = [
 const MINI_CARDS = [
   {
     imageClass: '',
-    src: bornfidisPhotos.food.cremeBrulee,
-    alt: 'Bornfidis crème brûlée plated with berries and mint for a private dining course',
+    src: bornfidisPhotos.food.guestPlatedChicken,
+    alt: 'Bornfidis private dining — a guest course plated with herbs and sauce',
     category: 'The Table',
     title: 'What a Private Dining Guest Actually Wants. And What They Are Afraid to Ask For.',
     date: 'December 2025',
   },
   {
     imageClass: 'slate',
-    src: bornfidisPhotos.jamaica.clarendonMist,
-    alt: 'Misty green hills above Port Antonio, Jamaica — Bornfidis Caribbean roots',
+    src: bornfidisPhotos.jamaica.portAntonioPier,
+    alt: 'Port Antonio, Jamaica — wooden pier over the harbour',
     category: 'Jamaica',
     title: 'Port Antonio Is Not a Destination. It Is a Kitchen with a View.',
     date: 'October 2025',

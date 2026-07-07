@@ -23,8 +23,8 @@ export const SIGNATURE_EXPERIENCE = {
   jamaicaContactHref: '/contact?service=jamaica-partner',
   ctaLabel: "Book The Chef's Passage",
   ctaHref: PHASE1_CTA.bookYourTable.href,
-  photoSrc: bornfidisPhotos.events.servicePlating,
-  photoAlt: 'Chef Brian Maylor plating a course during a Bornfidis private dining service',
+  photoSrc: bornfidisPhotos.food.guestPlatedCourse,
+  photoAlt: 'A Bornfidis private dining course — plated with seasonal vegetables and sauce',
 } as const
 
 export const HERO = {
@@ -111,9 +111,9 @@ export const FEATURED_GUEST_MOMENT = {
   eventDetail: 'Private dining · April 22, 2026 · 5 guests',
   quote:
     'The tableside crème brûlée was the moment everyone stopped talking — five guests, one table, and a chef who made the evening feel effortless.',
-  momentLabel: 'Tableside crème brûlée',
-  imageSrc: bornfidisPhotos.food.cremeBrulee,
-  imageAlt: 'Bornfidis crème brûlée — tableside finish at a private dining table',
+  momentLabel: 'Plated to the table',
+  imageSrc: bornfidisPhotos.food.guestPlatedChicken,
+  imageAlt: 'Bornfidis private dining — a guest course plated with herbs and sauce',
 } as const
 
 /** Used on /our-story — not on homepage. */

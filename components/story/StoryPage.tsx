@@ -597,8 +597,8 @@ export default function StoryPage() {
         </div>
         <div className="world-panel jamaica">
           <Image
-            src={bornfidisPhotos.jamaica.clarendonMist}
-            alt="Misty green hills above Port Antonio, Jamaica — the Caribbean roots of Bornfidis"
+            src={bornfidisPhotos.jamaica.portAntonioBayView}
+            alt="Port Antonio, Jamaica — bay view above the town locals recognize"
             fill
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="world-photo"

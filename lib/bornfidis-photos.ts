@@ -14,7 +14,7 @@ export const bornfidisPhotos = {
   events: {
     servicePlating: '/images/bornfidis-events/brian-service-plating.png',
     platesServiceRow: '/images/bornfidis-events/plates-service-row.png',
-    rcGuestsDining: '/images/bornfidis-events/brian-rc-guests-dining.png',
+    rcGuestsDining: '/images/bornfidis-events/brian-rc-guests-dining.jpg',
     rcGalleySaute: '/images/bornfidis-events/brian-rc-galley-saute.png',
     rcDiningTrick: '/images/bornfidis-events/brian-rc-dining-trick.png',
     rcMediterraneanBoat: '/images/bornfidis-events/brian-rc-mediterranean-boat.png',
@@ -24,14 +24,17 @@ export const bornfidisPhotos = {
     cremeBrulee: '/images/bornfidis-food/creme-brulee.png',
     oystersOnIce: '/images/bornfidis-food/oysters-on-ice.png',
     seasonalSalad: '/images/bornfidis-food/seasonal-salad-watermelon-radish.png',
+    guestPlatedChicken: '/images/bornfidis-food/guest-plated-chicken.jpg',
+    guestPlatedCourse: '/images/bornfidis-food/guest-plated-course.jpg',
   },
   table: {
     vermontCabin: '/images/bornfidis-table/vermont-table-cabin.jpg',
   },
   jamaica: {
-    clarendonMist: '/images/bornfidis-jamaica/clarendon-valley-mist.png',
-    desireValleyRoad: '/images/bornfidis-jamaica/desire-valley-road.png',
-    portlandParishValley: '/images/bornfidis-jamaica/portland-parish-valley.png',
+    portAntonioBayView: '/images/bornfidis-jamaica/port-antonio-bay-view.jpg',
+    portAntonioMarina: '/images/bornfidis-jamaica/port-antonio-marina.jpg',
+    portAntonioPier: '/images/bornfidis-jamaica/port-antonio-pier.jpg',
+    portAntonioRainbowRoad: '/images/bornfidis-jamaica/port-antonio-rainbow-road.jpg',
   },
 } as const
 

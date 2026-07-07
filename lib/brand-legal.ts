@@ -1,10 +1,10 @@
 /**
- * Public-facing legal entity and geography — single source for footer and forms.
- * LLC transition: Bornfidis Sportswear LLC → Born for This LLC.
+ * Public-facing legal entity and geography — footer copyright only.
+ * Consumer brand remains "Bornfidis" / "Bornfidis Provisions" in nav, headlines, and logo.
  */
 export const BRAND_LEGAL = {
-  /** Legal entity (use in copyright and formal references). */
-  companyName: 'Born for This LLC',
+  /** Legal entity line for copyright (DBA). */
+  companyLegalLine: 'Bornfidis Sportswear LLC, DBA Bornfidis Provisions',
   /** Consumer-facing trade name. */
   tradeName: 'Bornfidis Provisions',
   /** Short geography line — both operating roots, not a single city. */
@@ -13,5 +13,5 @@ export const BRAND_LEGAL = {
 } as const
 
 export function brandCopyrightLine(year = new Date().getFullYear()): string {
-  return `© ${year} ${BRAND_LEGAL.companyName} · ${BRAND_LEGAL.locationsLine}`
+  return `© ${year} ${BRAND_LEGAL.companyLegalLine} · ${BRAND_LEGAL.locationsLine}`
 }
