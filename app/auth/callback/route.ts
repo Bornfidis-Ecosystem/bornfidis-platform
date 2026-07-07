@@ -1,11 +1,11 @@
 export const dynamic = 'force-dynamic'
 
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { handleAuthCallback } from '@/lib/auth-callback-handler'
 
 /**
- * Primary Supabase auth callback — magic links should redirect here.
- * Configure in Supabase → Auth → Redirect URLs: https://bornfidis.com/auth/callback
+ * Alias for /api/auth/callback — some Supabase configs use /auth/callback.
+ * Prefer /api/auth/callback in Redirect URLs (confirmed live on bornfidis.com).
  */
 export async function GET(request: NextRequest) {
   return handleAuthCallback(request)

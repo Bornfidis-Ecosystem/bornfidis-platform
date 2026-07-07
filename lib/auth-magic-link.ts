@@ -1,10 +1,10 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { DEFAULT_SITE_ORIGIN } from '@/lib/site-url'
 
-/** Production auth callback — always bornfidis.com. */
+/** Production auth callback — /api/auth/callback is live on bornfidis.com. */
 export function buildAuthCallbackUrl(nextPath = '/admin'): string {
   const next = nextPath.startsWith('/') ? nextPath : '/admin'
-  return `${DEFAULT_SITE_ORIGIN}/auth/callback?next=${encodeURIComponent(next)}`
+  return `${DEFAULT_SITE_ORIGIN}/api/auth/callback?next=${encodeURIComponent(next)}`
 }
 
 /** Force Supabase verify links to redirect to bornfidis.com, not platform subdomain. */

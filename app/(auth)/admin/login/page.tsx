@@ -234,8 +234,7 @@ function AdminLoginForm() {
           </p>
           <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
             Sign in at <strong>bornfidis.com/admin/login</strong>. Magic links return to{' '}
-            <strong>bornfidis.com/auth/callback</strong> — not platform.bornfidis.com. Request a
-            fresh link after each deploy; old emails may still point at the wrong domain.
+            <strong>bornfidis.com/api/auth/callback</strong> — not platform.bornfidis.com.
           </p>
         </div>
 

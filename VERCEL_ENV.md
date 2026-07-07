@@ -87,8 +87,8 @@ In **Supabase Dashboard → Authentication → URL Configuration**:
 
 - **Site URL:** `https://bornfidis.com`
 - **Redirect URLs** (add each):
-  - `https://bornfidis.com/auth/callback`
-  - `https://bornfidis.com/api/auth/callback` (legacy)
+  - `https://bornfidis.com/api/auth/callback`
+  - `https://bornfidis.com/auth/callback` (redirects to API route)
   - `https://bornfidis.com/admin`
   - `https://bornfidis.com/admin/login`
   - `http://localhost:3000/auth/callback`

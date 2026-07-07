@@ -82,7 +82,7 @@ export async function middleware(request: NextRequest) {
   const isAuthCallback =
     pathname === '/auth/callback' || pathname === '/api/auth/callback'
   if (authCode && !isAuthCallback) {
-    const callbackUrl = new URL('/auth/callback', request.url)
+    const callbackUrl = new URL('/api/auth/callback', request.url)
     callbackUrl.searchParams.set('code', authCode)
     const nextParam = request.nextUrl.searchParams.get('next')
     callbackUrl.searchParams.set(

@@ -62,9 +62,9 @@ export function absoluteSiteUrl(path: string, preferredOrigin?: string): string 
   return `${resolveSiteOrigin(preferredOrigin)}${normalized}`
 }
 
-/** Supabase OTP redirect — production always uses bornfidis.com. */
+/** Supabase OTP redirect — production uses /api/auth/callback (live on bornfidis.com). */
 export function authCallbackUrl(nextPath = '/admin'): string {
   const next = nextPath.startsWith('/') ? nextPath : '/admin'
-  const path = `/auth/callback?next=${encodeURIComponent(next)}`
+  const path = `/api/auth/callback?next=${encodeURIComponent(next)}`
   return `${authSiteOrigin()}${path}`
 }
