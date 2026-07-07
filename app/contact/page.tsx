@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
 
 import ContactPageContent from '@/components/contact/ContactPageContent'
+import { PHASE1_CONTACT_SERVICE_PARAM } from '@/lib/phase1-marketing'
 
 export const metadata: Metadata = {
   title: 'Contact — Bornfidis',
@@ -9,10 +9,14 @@ export const metadata: Metadata = {
     'Contact Bornfidis for private dining, cooking classes, and small-batch provisions. Caribbean-inspired. Vermont-crafted.',
 }
 
-export default function ContactPage() {
-  return (
-    <Suspense fallback={null}>
-      <ContactPageContent />
-    </Suspense>
-  )
+type ContactPageProps = {
+  searchParams: Promise<{ service?: string }>
+}
+
+export default async function ContactPage({ searchParams }: ContactPageProps) {
+  const params = await searchParams
+  const key = params.service?.toLowerCase() ?? ''
+  const presetService = PHASE1_CONTACT_SERVICE_PARAM[key] ?? ''
+
+  return <ContactPageContent presetService={presetService} />
 }

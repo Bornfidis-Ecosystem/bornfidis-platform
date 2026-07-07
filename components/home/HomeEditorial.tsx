@@ -30,7 +30,7 @@ export default function HomeEditorial() {
           </h1>
           <div className="hero-rule hero-enter hero-enter--2" />
           <p className="hero-body hero-enter hero-enter--3">{HERO.outcomeLine}</p>
-          <p className="hero-jamaica-note hero-enter hero-enter--3">{HERO.jamaicaLine}</p>
+          <p className="hero-serving-note hero-enter hero-enter--3">{HERO.servingNote}</p>
           <div className="hero-actions hero-enter hero-enter--4">
             <Link href={HERO.primaryCta.href} className="btn-primary">
               {HERO.primaryCta.label}
@@ -69,7 +69,8 @@ export default function HomeEditorial() {
               <div className="hero-score-num">
                 97<span>.80</span>
               </div>
-              <div className="hero-score-label">Guest Score Average</div>
+              <div className="hero-score-label">Guest satisfaction average</div>
+              <p className="hero-score-detail">{HERO.guestScoreDetail}</p>
             </div>
           </div>
         </div>
@@ -88,6 +89,9 @@ export default function HomeEditorial() {
             </h2>
             <Link href={PROVISIONS_HOME_STRIP.href} className="provisions-strip__link">
               {PROVISIONS_HOME_STRIP.linkLabel} &rarr;
+            </Link>
+            <Link href={PROVISIONS_HOME_STRIP.requestHref} className="provisions-strip__link provisions-strip__link--secondary">
+              {PROVISIONS_HOME_STRIP.requestLabel} &rarr;
             </Link>
           </div>
           <Link href={PROVISIONS_HOME_STRIP.href} className="provisions-strip__photo-link">

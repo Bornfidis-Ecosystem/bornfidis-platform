@@ -6,7 +6,7 @@ import '@/components/home/home-editorial.css'
 export const metadata: Metadata = {
   title: 'Bornfidis — Caribbean Heart. Vermont Hands.',
   description:
-    'Host an unforgettable private dining experience in Vermont, New Jersey, or Jamaica. Bornfidis Provisions — chef-led tables, small-batch pantry, and cooking classes.',
+    'Chef-led private dining and small-batch provisions rooted in Jamaican tradition and Vermont craft. Serving Vermont now — Jamaica and select travel by advance request.',
 }
 
 export default function HomePage() {

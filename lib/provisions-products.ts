@@ -86,10 +86,13 @@ export const PROVISIONS_FLAGSHIP_PRODUCTS: ProvisionsProduct[] = [
   },
 ]
 
+export const PROVISIONS_BATCH_LINE =
+  'Request a batch — we prepare small runs when orders align, so every jar stays fresh and intentional.' as const
+
 export const PROVISIONS_HERO = {
   titleLine1: 'Small batch.',
   titleLine2: 'No shortcuts.',
   body:
-    'Pantry provisions from our Vermont and Jamaica roots — hand-made in limited runs. Request a batch; we produce when demand aligns, then deliver.',
+    'Pantry provisions from our Vermont and Jamaica roots — hand-made in limited runs. Request a batch; we prepare when orders align, then deliver.',
   processLine: 'Request → Produce → Deliver',
 } as const

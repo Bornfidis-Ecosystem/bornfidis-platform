@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { brandAssets } from '@/lib/brand-assets'
 import { brandCopyrightLine, BRAND_LEGAL } from '@/lib/brand-legal'
 import { PHASE1_CTA, PHASE1_FOOTER_LINKS, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
+import { PROVISIONS_BATCH_LINE } from '@/lib/provisions-products'
 
 /**
  * Global public footer — navy canvas, gold accents, compass mark.
@@ -40,7 +41,7 @@ export default function PublicFooter() {
             </div>
             <p className="max-w-sm font-sans text-sm leading-relaxed text-white/55">
               Chef-led private dining from {BRAND_LEGAL.locationsLine} — luxury-ship training, one table at a
-              time. Small-batch provisions when you request a batch.
+              time. {PROVISIONS_BATCH_LINE}
             </p>
           </div>
 

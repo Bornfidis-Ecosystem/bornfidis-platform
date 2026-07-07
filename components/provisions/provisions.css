@@ -113,6 +113,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 20rem;
   padding: 0.875rem 1.75rem;
   font-family: var(--sans);
   font-size: 0.6875rem;

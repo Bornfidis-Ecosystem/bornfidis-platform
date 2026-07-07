@@ -131,25 +131,37 @@
   margin-bottom: 1rem;
 }
 
-.bf-home .hero-jamaica-note {
+.bf-home .hero-jamaica-note,
+.bf-home .hero-serving-note {
   font-family: var(--sans);
   font-size: 0.8125rem;
   line-height: 1.6;
-  color: rgba(255, 188, 0, 0.75);
-  max-width: 40ch;
-  margin-bottom: 2rem;
+  color: rgba(255, 188, 0, 0.85);
+  max-width: 42ch;
+  margin-bottom: 1.5rem;
 }
 
 .bf-home .hero-actions {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   margin-bottom: 1.25rem;
+  width: 100%;
+  max-width: 22rem;
 }
 
 /* Ivory CTA on navy hero — primary action reads at full weight */
 .bf-home .hero .btn-primary {
   background: var(--bone);
   color: var(--green);
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .bf-home .hero .btn-primary {
+    width: auto;
+  }
 }
 
 .bf-home .hero-secondary {
@@ -310,6 +322,16 @@
   text-transform: uppercase;
   color: rgba(250, 246, 240, 0.55);
   margin-top: 4px;
+}
+
+.bf-home .hero-score-detail {
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: rgba(250, 246, 240, 0.5);
+  margin-top: 0.35rem;
+  max-width: 16rem;
+  margin-left: auto;
 }
 
 /* ── Marquee strip ──────────────────────────────────────────── */
@@ -1450,6 +1472,12 @@
   align-self: flex-start;
   transition: border-color 0.2s var(--ease);
   white-space: nowrap;
+}
+
+.bf-home .provisions-strip__link--secondary {
+  margin-top: 0.75rem;
+  color: rgba(250, 246, 240, 0.75);
+  border-bottom-color: rgba(255, 188, 0, 0.25);
 }
 
 .bf-home .provisions-strip__link:hover {

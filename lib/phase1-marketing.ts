@@ -106,7 +106,10 @@ export const PHASE1_CTA = {
 
   requestProduct: { label: 'Request a Product', href: '/contact?service=product' },
 
-  bookCookingClass: { label: 'Book a Cooking Class', href: '/contact?service=cooking-class' },
+  bookCookingClass: {
+    label: 'Inquire About a Cooking Class',
+    href: '/contact?service=cooking-class',
+  },
 
   contactBornfidis: { label: 'Contact Bornfidis', href: '/contact' },
 

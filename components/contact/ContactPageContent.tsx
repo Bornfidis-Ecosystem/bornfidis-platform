@@ -4,7 +4,6 @@ import type { FormEvent, ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 
 import {
   bookBody,
@@ -22,7 +21,7 @@ import { PrimaryButton } from '@/components/ui/PrimaryButton'
 import { SecondaryButton } from '@/components/ui/SecondaryButton'
 import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
 import { bornfidisPhotos } from '@/lib/bornfidis-photos'
-import { PHASE1_CONTACT_SERVICE_PARAM, PHASE1_CTA } from '@/lib/phase1-marketing'
+import { PHASE1_CTA } from '@/lib/phase1-marketing'
 
 const serviceOptions = [
   'Private Chef Dining',
@@ -58,16 +57,14 @@ function SectionEyebrow({ children }: { children: ReactNode }) {
   return <p className={bookEyebrow}>{children}</p>
 }
 
-export default function ContactPageContent() {
-  const searchParams = useSearchParams()
+type ContactPageContentProps = {
+  presetService?: string
+}
+
+export default function ContactPageContent({ presetService = '' }: ContactPageContentProps) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const minDate = useMemo(() => new Date().toISOString().split('T')[0], [])
-
-  const presetService = useMemo(() => {
-    const key = searchParams.get('service')?.toLowerCase() ?? ''
-    return PHASE1_CONTACT_SERVICE_PARAM[key] ?? ''
-  }, [searchParams])
 
   useEffect(() => {
     if (presetService) {

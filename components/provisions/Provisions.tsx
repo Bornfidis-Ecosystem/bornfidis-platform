@@ -7,6 +7,7 @@ import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
 import { BRAND_LEGAL } from '@/lib/brand-legal'
 import { PHASE1_CTA } from '@/lib/phase1-marketing'
 import {
+  PROVISIONS_BATCH_LINE,
   PROVISIONS_FLAGSHIP_PRODUCTS,
   PROVISIONS_GIFT_BUNDLE,
   PROVISIONS_HEADER_IMAGE,
@@ -98,8 +99,7 @@ export default function Provisions() {
             Four provisions from our kitchen — photos from real customer test runs.
           </h2>
           <p className="bf-prov-catalog__note">
-            Hand-made in limited runs across {BRAND_LEGAL.locationsLine}. No warehouse shelves — we
-            batch when you request.
+            Hand-made in limited runs across {BRAND_LEGAL.locationsLine}. {PROVISIONS_BATCH_LINE}
           </p>
         </div>
 

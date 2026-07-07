@@ -26,7 +26,7 @@ export const HOSPITALITY_STATS: CredibilityStat[] = [
   {
     value: 'Host-led',
     label: 'Private dining experiences',
-    detail: 'Delivered in your home, chalet, or retreat — Vermont, New Jersey & Caribbean',
+    detail: 'Delivered in your home, chalet, or retreat — serving Vermont now; Jamaica and select travel by advance request',
   },
 ]
 

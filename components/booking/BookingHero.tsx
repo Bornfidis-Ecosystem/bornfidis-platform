@@ -22,8 +22,11 @@ export function BookingHero() {
               Chef-led private dining designed for intimate celebrations, elegant gatherings, and unforgettable
               evenings.
             </p>
+            <p className={`${bookBody} mx-auto mt-3 max-w-xl text-sm lg:mx-0`}>
+              Serving Vermont now. Jamaica and select travel engagements by advance request.
+            </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4 lg:justify-start">
-              <PrimaryButton theme="culinary" href="#booking-form" className="w-full min-w-[200px] sm:w-auto">
+              <PrimaryButton theme="culinary" href="#booking-form" className="w-full min-w-0 sm:min-w-[200px] sm:w-auto">
                 {PHASE1_CTA.bookPrivateDining.label}
               </PrimaryButton>
               <SecondaryButton

@@ -31,20 +31,25 @@ export const HERO = {
   taglineLine1: 'Caribbean Heart.',
   taglineLine2: 'Vermont Hands.',
   outcomeLine:
-    'Host an unforgettable private dining experience in Vermont and the Northeast — chef-led, fully hosted, without lifting a finger.',
-  jamaicaLine: 'Jamaica inquiries welcome — we connect you with our partner team.',
+    'Host an unforgettable private dining experience — chef-led, fully hosted, without lifting a finger.',
+  servingNote:
+    'Serving Vermont now. Jamaica and select travel engagements by advance request.',
+  guestScoreDetail: '97.80 guest satisfaction average from luxury hospitality appraisals.',
   primaryCta: PHASE1_CTA.bookYourTable,
   secondaryLinks: [
     { label: 'Explore Provisions', href: '/provisions' },
-    { label: 'Cooking Classes', href: PHASE1_CTA.bookCookingClass.href },
+    { label: 'Inquire About a Cooking Class', href: PHASE1_CTA.bookCookingClass.href },
   ],
 } as const
 
 export const PROVISIONS_HOME_STRIP = {
   eyebrow: 'From the pantry',
-  headline: 'Maple Jerk Rub, Green Seasoning, Sorrel Gastrique, and Maple Escovitch — request a batch.',
+  headline:
+    'Maple Jerk Rub, Green Seasoning, Sorrel Gastrique, and Maple Escovitch — request a batch when orders align.',
   href: '/provisions',
+  requestHref: PHASE1_CTA.requestProduct.href,
   linkLabel: 'View all provisions',
+  requestLabel: 'Request a batch',
   image: '/images/provisions/provisions-gift-basket.jpg',
   imageAlt: 'Bornfidis Guest Welcome Package — four provisions in a wicker basket',
 } as const
@@ -70,7 +75,7 @@ export const ROYAL_CARIBBEAN_HOME_STATS: HomeStat[] = [
     value: '97',
     valueSuffix: '.80',
     label: 'Guest satisfaction',
-    detail: 'Documented shipboard average',
+    detail: 'Guest satisfaction average from luxury hospitality appraisals',
     animateTo: 97.8,
     animateDecimals: 2,
   },
