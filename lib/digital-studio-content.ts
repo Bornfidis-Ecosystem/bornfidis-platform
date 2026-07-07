@@ -2,10 +2,9 @@
  * /digital-studio — Bornfidis Digital Studio pilot page (application-only, not in main nav).
  */
 
-const platformUrl =
-  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ||
-  'https://platform.bornfidis.com'
+import { siteOrigin } from '@/lib/site-url'
+
+const platformUrl = siteOrigin()
 
 export const DIGITAL_STUDIO_HERO = {
   eyebrow: 'Bornfidis Digital Studio',

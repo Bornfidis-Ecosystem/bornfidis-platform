@@ -6,7 +6,8 @@ import { useEffect, useRef, useState } from 'react'
 
 import { bornfidisPhotos } from '@/lib/bornfidis-photos'
 import { ConversionCtaBand } from '@/components/marketing/ConversionCtaBand'
-import { PHASE1_CTA } from '@/lib/phase1-marketing'
+import { PHASE1_CTA, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
+import { PROVISIONS_FLAGSHIP_PRODUCTS } from '@/lib/provisions-products'
 
 /**
  * Bornfidis — Journal (editorial / newspaper layout).
@@ -60,12 +61,13 @@ const POSTS: Post[] = [
   {
     category: 'provisions',
     imageClass: 'green',
-    imageTag: 'Replace with jar photography',
-    useMonogram: true,
+    imageTag: 'Maple Jerk Rub',
+    src: '/images/provisions/maple-jerk-rub-hero.jpg',
+    alt: 'Maple Jerk Rub — Bornfidis Provisions test batch',
     label: 'Provisions',
     title: 'Small Batch No. 01 Is Ready. What That Means and What Comes Next.',
     excerpt:
-      'The first production run of the Maple Jerk Blend is complete. Fifteen jars. Each one labeled with the batch date and the exact quantity of maple sugar used. Here is what is in it, where everything came from, and when the next batch will be made.',
+      'The first production run of Maple Jerk Rub is complete. Hand-mixed in limited runs — each jar labeled with the batch date. Here is what is in it, where everything came from, and when the next batch will be made.',
     date: 'October 2025',
   },
   {
@@ -119,12 +121,15 @@ const POSTS: Post[] = [
   },
 ]
 
-const PROVISIONS = [
-  { name: 'Maple Jerk Rub', meta: 'From $18 · 4 oz · Request batch' },
-  { name: 'Jerk Marinade', meta: 'From $22 · 8 oz · Pre-order' },
-  { name: 'Sorrel Gastrique', meta: 'From $26 · 5 oz · Request batch' },
-  { name: 'Green Seasoning', meta: 'From $20 · 6 oz · Waitlist' },
-]
+const JOURNAL_PROVISIONS = PROVISIONS_FLAGSHIP_PRODUCTS.map((product) => {
+  const nav = PHASE1_PRIMARY_PRODUCTS.find((p) => p.id === product.id)
+  return {
+    name: product.name,
+    meta: `${product.priceFrom} · ${product.size} · ${product.status}`,
+    href: nav?.href ?? `/provisions#${product.id}`,
+    image: product.imageHero,
+  }
+})
 
 const MOST_READ = [
   { num: '01', title: 'The 48-Hour Marinade. Why Time Is the Most Important Ingredient.', cat: 'From the Kitchen' },
@@ -214,7 +219,18 @@ export default function JournalPage() {
       { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
     )
     reveals.forEach((el) => observer.observe(el))
-    return () => observer.disconnect()
+
+    // Fallback: never leave cards at opacity 0 if observer misses (slow layout, mobile, etc.)
+    const fallback = window.setTimeout(() => {
+      root.querySelectorAll<HTMLElement>('.reveal:not(.visible)').forEach((el) => {
+        if (getComputedStyle(el).display !== 'none') el.classList.add('visible')
+      })
+    }, 900)
+
+    return () => {
+      observer.disconnect()
+      window.clearTimeout(fallback)
+    }
   }, [])
 
   // After a filter change, make sure anything now shown is fully revealed
@@ -358,16 +374,16 @@ export default function JournalPage() {
         <aside className="sidebar">
           <div className="sidebar-section">
             <span className="sidebar-label">From the provisions</span>
-            {PROVISIONS.map((pr) => (
-              <div key={pr.name} className="sidebar-provision">
-                <div className="sidebar-provision-swatch">
-                  <span className="swatch-letter">B</span>
+            {JOURNAL_PROVISIONS.map((pr) => (
+              <Link key={pr.name} href={pr.href} className="sidebar-provision sidebar-provision--linked">
+                <div className="sidebar-provision-swatch sidebar-provision-swatch--photo">
+                  <Image src={pr.image} alt="" fill sizes="48px" className="sidebar-provision-photo" />
                 </div>
                 <div>
                   <div className="sidebar-provision-name">{pr.name}</div>
                   <div className="sidebar-provision-price">{pr.meta}</div>
                 </div>
-              </div>
+              </Link>
             ))}
             <Link href={PHASE1_CTA.requestProduct.href} className="sidebar-link">
               {PHASE1_CTA.requestProduct.label} &rarr;

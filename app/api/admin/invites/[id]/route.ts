@@ -4,10 +4,10 @@ import { NextRequest } from 'next/server'
 import { requireAdmin } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { sendInviteEmail } from '@/lib/email'
+import { siteOrigin } from '@/lib/site-url'
 
 function inviteUrl(token: string): string {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://platform.bornfidis.com'
-  return `${base.replace(/\/$/, '')}/invite?token=${encodeURIComponent(token)}`
+  return `${siteOrigin()}/invite?token=${encodeURIComponent(token)}`
 }
 
 /**

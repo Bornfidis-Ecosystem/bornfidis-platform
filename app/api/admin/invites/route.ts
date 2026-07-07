@@ -5,6 +5,7 @@ import { randomUUID } from 'crypto'
 import { requireAdmin, getAdminUser } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { sendInviteEmail } from '@/lib/email'
+import { siteOrigin } from '@/lib/site-url'
 import { UserRole } from '@prisma/client'
 
 const INVITE_ROLES: UserRole[] = [
@@ -16,11 +17,8 @@ const INVITE_ROLES: UserRole[] = [
 const EXPIRY_DAYS = 7
 
 function inviteUrl(role: UserRole, token: string): string {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    'https://platform.bornfidis.com'
-  return `${base.replace(/\/$/, '')}/invite?role=${encodeURIComponent(role)}&token=${encodeURIComponent(token)}`
+  const base = siteOrigin()
+  return `${base}/invite?role=${encodeURIComponent(role)}&token=${encodeURIComponent(token)}`
 }
 
 /**

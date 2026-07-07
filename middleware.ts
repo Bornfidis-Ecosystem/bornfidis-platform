@@ -66,6 +66,17 @@ export async function middleware(request: NextRequest) {
   }
 
   const pathname = request.nextUrl.pathname
+
+  // Supabase PKCE: magic links may land on /?code= — route to server callback
+  const authCode = request.nextUrl.searchParams.get('code')
+  if (authCode && pathname !== '/api/auth/callback') {
+    const callbackUrl = new URL('/api/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', authCode)
+    const nextParam = request.nextUrl.searchParams.get('next')
+    callbackUrl.searchParams.set('next', nextParam && nextParam.startsWith('/') ? nextParam : '/admin')
+    return NextResponse.redirect(callbackUrl)
+  }
+
   response.headers.set('x-pathname', pathname)
 
   // My Library lives at /dashboard/library; /academy/library redirects there

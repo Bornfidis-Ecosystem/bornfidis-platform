@@ -475,6 +475,26 @@
   justify-content: center;
 }
 
+.bf-journal .sidebar-provision--linked {
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.2s ease;
+}
+
+.bf-journal .sidebar-provision--linked:hover {
+  opacity: 0.85;
+}
+
+.bf-journal .sidebar-provision-swatch--photo {
+  position: relative;
+  overflow: hidden;
+  background: var(--mid);
+}
+
+.bf-journal .sidebar-provision-photo {
+  object-fit: cover;
+}
+
 .bf-journal .swatch-letter {
   font-family: var(--serif);
   font-size: 1.25rem;

@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClientSupabaseClient, getClientAuthUser } from '@/lib/auth-client'
+import { authCallbackUrl } from '@/lib/site-url'
 
 /**
  * Admin Login Form Component
@@ -168,16 +169,12 @@ function AdminLoginForm() {
       
       // Send magic link email
       const next = searchParams.get('next')
-      const redirectTo =
-        next && next.startsWith('/') ? encodeURIComponent(next) : ''
-      const emailRedirectTo =
-        redirectTo
-          ? `${window.location.origin}/admin/login?next=${redirectTo}`
-          : `${window.location.origin}/admin/login`
+      const nextPath =
+        next && next.startsWith('/') && !next.startsWith('//') ? next : '/admin'
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo,
+          emailRedirectTo: authCallbackUrl(nextPath),
         },
       })
 
@@ -237,6 +234,11 @@ function AdminLoginForm() {
           <h1 className="text-3xl font-bold text-navy mb-2">Admin Login</h1>
           <p className="text-gray-600 text-sm">
             Enter your email to receive a magic link
+          </p>
+          <p className="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+            Sign in at{' '}
+            <strong>bornfidis.com/admin/login</strong> — not platform.bornfidis.com (that subdomain
+            is not live yet). After updating Supabase, magic links will return here.
           </p>
         </div>
 

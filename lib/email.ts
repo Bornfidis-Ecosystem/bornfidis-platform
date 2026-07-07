@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import { bookingNotificationRecipient, transactionalReplyToPayload } from '@/lib/platform-email'
 import type { DigitalStudioApplicationInput } from '@/lib/validation'
+import { siteOrigin } from '@/lib/site-url'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -1256,7 +1257,7 @@ export async function sendSlaAlertEmail({
 }): Promise<{ success: boolean; error?: string }> {
   if (!resend) return { success: false, error: 'Email not configured' }
   try {
-    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://platform.bornfidis.com'
+    const base = siteOrigin()
     await resend.emails.send({
       from: FROM_EMAIL,
       to,
@@ -1295,7 +1296,7 @@ export async function sendSlaEscalationEmail({
 }): Promise<{ success: boolean; error?: string }> {
   if (!resend) return { success: false, error: 'Email not configured' }
   try {
-    const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://platform.bornfidis.com'
+    const base = siteOrigin()
     await resend.emails.send({
       from: FROM_EMAIL,
       to,

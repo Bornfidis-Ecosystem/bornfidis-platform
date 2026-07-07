@@ -5,15 +5,12 @@ import { randomUUID } from 'crypto'
 import { requireAdmin } from '@/lib/requireAdmin'
 import { db } from '@/lib/db'
 import { sendInviteEmail } from '@/lib/email'
+import { siteOrigin } from '@/lib/site-url'
 
 const EXPIRY_DAYS = 7
 
 function inviteUrl(token: string): string {
-  const base =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.NEXT_PUBLIC_APP_URL ||
-    'https://platform.bornfidis.com'
-  return `${base.replace(/\/$/, '')}/invite?token=${encodeURIComponent(token)}`
+  return `${siteOrigin()}/invite?token=${encodeURIComponent(token)}`
 }
 
 /**

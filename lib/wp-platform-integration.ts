@@ -11,9 +11,9 @@ function platformOriginFromEnv(): string | undefined {
   return raw || undefined
 }
 
-/** Canonical platform base URL (no trailing slash). */
+/** Canonical platform base URL (no trailing slash). Production: bornfidis.com until platform subdomain DNS is live. */
 export const PLATFORM_ORIGIN =
-  platformOriginFromEnv() ?? 'https://platform.bornfidis.com'
+  platformOriginFromEnv() ?? 'https://bornfidis.com'
 
 /** Default public booking path on the platform (WordPress CTAs should link here). */
 export const PLATFORM_BOOKING_PATH = '/book' as const

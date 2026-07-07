@@ -1,13 +1,10 @@
 /**
  * Printable QR code for farmer intake registration.
- * Operational URL: https://platform.bornfidis.com/farmer-intake (LINKING RULE: ops live on platform subdomain)
+ * Operational URL: https://bornfidis.com/farmer-intake
  */
-const FARMER_INTAKE_PATH = '/farmer-intake'
-const BASE_URL =
-  typeof process !== 'undefined' && process.env.NEXT_PUBLIC_SITE_URL
-    ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '')
-    : 'https://platform.bornfidis.com'
-const FARMER_INTAKE_URL = `${BASE_URL}${FARMER_INTAKE_PATH}`
+import { absoluteSiteUrl } from '@/lib/site-url'
+
+const FARMER_INTAKE_URL = absoluteSiteUrl('/farmer-intake')
 
 // Public QR image API (no API key)
 const QR_IMAGE_URL = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(FARMER_INTAKE_URL)}`
