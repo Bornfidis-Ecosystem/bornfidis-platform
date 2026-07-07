@@ -59,7 +59,13 @@ function SidebarNavLinks({
  * Full-viewport Culinary OS shell: fixed sidebar, operational main canvas, mobile drawer.
  * Matches stitch reference: Bornfidis Culinary OS (zero radius, no shadows, Inter + Libre Caslon).
  */
-export function CulinaryAdminChrome({ children, navItems, user, role }: CulinaryAdminChromeProps) {
+export function CulinaryAdminChrome({
+  children,
+  navItems,
+  user,
+  role,
+  showFinancialShortcuts = false,
+}: CulinaryAdminChromeProps) {
   const pathname = usePathname() ?? ''
   const [mobileOpen, setMobileOpen] = useState(false)
 
