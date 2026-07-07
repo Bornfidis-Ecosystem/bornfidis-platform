@@ -67,13 +67,18 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
 
-  // Supabase PKCE: magic links may land on /?code= — route to server callback
+  // Supabase PKCE: magic links may land on /?code= — route to auth callback
   const authCode = request.nextUrl.searchParams.get('code')
-  if (authCode && pathname !== '/api/auth/callback') {
-    const callbackUrl = new URL('/api/auth/callback', request.url)
+  const isAuthCallback =
+    pathname === '/auth/callback' || pathname === '/api/auth/callback'
+  if (authCode && !isAuthCallback) {
+    const callbackUrl = new URL('/auth/callback', request.url)
     callbackUrl.searchParams.set('code', authCode)
     const nextParam = request.nextUrl.searchParams.get('next')
-    callbackUrl.searchParams.set('next', nextParam && nextParam.startsWith('/') ? nextParam : '/admin')
+    callbackUrl.searchParams.set(
+      'next',
+      nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/admin'
+    )
     return NextResponse.redirect(callbackUrl)
   }
 

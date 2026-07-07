@@ -10,8 +10,8 @@ Set these in **Vercel → Project → Settings → Environment Variables**. Appl
 
 | Variable | Description |
 |----------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | Production URL, e.g. `https://platform.bornfidis.com`. Used for auth redirects, links, Stripe callbacks. **No trailing slash.** |
-| `NEXT_PUBLIC_PLATFORM_ORIGIN` | Same canonical platform origin as above, e.g. `https://platform.bornfidis.com`. Used by `lib/wp-platform-integration.ts` (`platformBookingUrl()`). **No trailing slash.** Match **Production** (and Preview if previews should generate correct absolute links). |
+| `NEXT_PUBLIC_SITE_URL` | Production URL: `https://bornfidis.com`. Used for auth redirects, links, Stripe callbacks. **No trailing slash.** Do **not** use `platform.bornfidis.com` until DNS is live. |
+| `NEXT_PUBLIC_PLATFORM_ORIGIN` | Same as `NEXT_PUBLIC_SITE_URL` for now: `https://bornfidis.com`. Used by `lib/wp-platform-integration.ts` (`platformBookingUrl()`). **No trailing slash.** |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL (`https://xxxxx.supabase.co`) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (keep secret) |
@@ -85,16 +85,26 @@ All have defaults in code; set only if you want to override.
 
 In **Supabase Dashboard → Authentication → URL Configuration**:
 
-- **Site URL:** set to `NEXT_PUBLIC_SITE_URL` (e.g. `https://platform.bornfidis.com`)
-- **Redirect URLs:** add `https://platform.bornfidis.com/**` (or your domain) so magic links and callbacks work.
+- **Site URL:** `https://bornfidis.com`
+- **Redirect URLs** (add each):
+  - `https://bornfidis.com/auth/callback`
+  - `https://bornfidis.com/api/auth/callback` (legacy)
+  - `https://bornfidis.com/admin`
+  - `https://bornfidis.com/admin/login`
+  - `http://localhost:3000/auth/callback`
+  - `http://localhost:3000/admin`
+
+Remove `https://platform.bornfidis.com/**` until that subdomain resolves in DNS.
 
 ---
 
 ## Quick copy (core only)
 
 ```
-NEXT_PUBLIC_SITE_URL=https://platform.bornfidis.com
-NEXT_PUBLIC_PLATFORM_ORIGIN=https://platform.bornfidis.com
+NEXT_PUBLIC_SITE_URL=https://bornfidis.com
+NEXT_PUBLIC_PLATFORM_ORIGIN=https://bornfidis.com
+NEXT_PUBLIC_APP_URL=https://bornfidis.com
+NEXT_PUBLIC_BASE_URL=https://bornfidis.com
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...

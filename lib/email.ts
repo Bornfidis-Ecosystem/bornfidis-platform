@@ -1212,7 +1212,7 @@ export async function sendLeadMagnetDeliveryEmail({
   if (!to || !to.includes('@')) {
     return { success: false, error: 'Invalid email address' }
   }
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'https://bornfidis.com'
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? siteOrigin()
   const academyUrl = `${baseUrl.replace(/\/$/, '')}/academy`
   try {
     await resend.emails.send({

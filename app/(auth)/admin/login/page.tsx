@@ -174,7 +174,8 @@ function AdminLoginForm() {
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-          emailRedirectTo: authCallbackUrl(nextPath),
+          // Use current browser origin so magic links match bornfidis.com even if env still points elsewhere.
+          emailRedirectTo: authCallbackUrl(nextPath, window.location.origin),
         },
       })
 
