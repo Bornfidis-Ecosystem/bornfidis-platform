@@ -27,6 +27,9 @@ const linkClass =
 const colTitleClass =
   'mb-6 font-sans text-[0.5625rem] font-semibold uppercase tracking-[0.2em] text-[var(--color-gold)]'
 
+const legalLinkClass =
+  'font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25 no-underline transition-colors duration-200 hover:text-[var(--color-gold)] active:text-[var(--color-gold)] focus-visible:text-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-navy)]'
+
 export default function PublicFooter() {
   return (
     <footer className="w-full border-t-[3px] border-[var(--color-gold)] bg-[var(--color-navy)] px-6 py-20 md:px-20">
@@ -104,7 +107,7 @@ export default function PublicFooter() {
               href="https://bornfidis.com/privacy"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25 no-underline transition-colors hover:text-white/50"
+              className={legalLinkClass}
             >
               Privacy
             </a>
@@ -112,7 +115,7 @@ export default function PublicFooter() {
               href="https://bornfidis.com/terms"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25 no-underline transition-colors hover:text-white/50"
+              className={legalLinkClass}
             >
               Terms
             </a>

@@ -2,14 +2,13 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { canReceiveAdminMagicLink } from '@/lib/admin-magic-link-access'
 import { buildAuthCallbackUrl, generateAdminMagicLink } from '@/lib/auth-magic-link'
-import { isAllowedAdminEmail } from '@/lib/auth'
 import { sendAdminMagicLinkEmail } from '@/lib/email'
 
 /**
  * Server-side admin magic link.
- * Uses Supabase admin generateLink + Resend so redirects always target bornfidis.com,
- * regardless of Supabase Site URL still pointing at platform.bornfidis.com.
+ * Uses Supabase admin generateLink + Resend so redirects always target bornfidis.com.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +20,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 })
     }
 
-    if (!isAllowedAdminEmail(email)) {
+    const allowed = await canReceiveAdminMagicLink(email)
+    if (!allowed) {
+      // Do not reveal allowlist — same response as success.
+      console.warn('[magic-link] Request for non-allowlisted email (no email sent):', email)
       return NextResponse.json({ success: true })
     }
 
@@ -31,6 +33,7 @@ export async function POST(request: NextRequest) {
 
     const generated = await generateAdminMagicLink(email, redirectTo)
     if ('error' in generated) {
+      console.error('[magic-link] generateLink failed:', generated.error, { email })
       return NextResponse.json({ error: generated.error }, { status: 400 })
     }
 
@@ -40,14 +43,18 @@ export async function POST(request: NextRequest) {
     })
 
     if (!sent.success) {
+      console.error('[magic-link] Resend failed:', sent.error, { email })
       return NextResponse.json(
         { error: sent.error ?? 'Failed to send magic link email' },
         { status: 500 }
       )
     }
 
+    console.log('[magic-link] Sent admin magic link to:', email)
     return NextResponse.json({ success: true })
-  } catch {
-    return NextResponse.json({ error: 'Failed to send magic link' }, { status: 500 })
+  } catch (err) {
+    console.error('[magic-link] Unhandled error:', err)
+    const message = err instanceof Error ? err.message : 'Failed to send magic link'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

@@ -11,7 +11,7 @@ const BLOCKED_ORIGINS = new Set([
 ])
 
 function normalizeOrigin(value: string): string {
-  return value.trim().replace(/\/$/, '')
+  return value.trim().replace(/\r/g, '').replace(/\/$/, '')
 }
 
 function isBlockedOrigin(origin: string): boolean {
