@@ -1,4 +1,10 @@
 import { db } from '@/lib/db'
+import {
+  isCompletedStatus,
+  isConfirmedStatus,
+  isNewLeadStatus,
+  isQuotedStatus,
+} from '@/lib/admin-dashboard-status'
 
 export type AdminDashboardMetrics = {
   pipeline: {
@@ -27,22 +33,13 @@ export type AdminDashboardMetrics = {
   }>
 }
 
-function isNewLeadStatus(status: string) {
-  const s = status.trim().toLowerCase()
-  return s === 'new' || s === 'pending' || s === 'reviewed'
-}
-
-function isQuotedStatus(status: string) {
-  return status.trim().toLowerCase() === 'quoted'
-}
-
-function isConfirmedStatus(status: string) {
-  return status.trim().toLowerCase() === 'confirmed'
-}
-
-function isCompletedStatus(status: string) {
-  return status.trim().toLowerCase() === 'completed'
-}
+export {
+  NEW_LEAD_STATUSES,
+  QUOTED_STATUSES,
+  normalizeStatus,
+  isNewLeadStatus,
+  isQuotedStatus,
+} from '@/lib/admin-dashboard-status'
 
 export async function getAdminDashboardMetrics(): Promise<AdminDashboardMetrics> {
   const now = new Date()

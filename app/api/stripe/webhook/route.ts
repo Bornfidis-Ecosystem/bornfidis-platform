@@ -65,8 +65,8 @@ async function markStripeEventProcessed(eventId: string) {
  * Idempotency: stripe_webhook_events (evt id) + unique stripe_event_id on booking_activities
  */
 export async function POST(request: NextRequest) {
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+    const stripeSecretKey = process.env.STRIPE_SECRET_KEY?.trim().replace(/\r/g, '')
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET?.trim().replace(/\r/g, '')
 
     if (!stripeSecretKey) {
         console.error('STRIPE_SECRET_KEY is not set')

@@ -22,6 +22,7 @@ import {
   QuotePreview,
   validateQuoteForm,
 } from '@/lib/quotes/quoteBuilder'
+import { formatDateOnly, parseLocalDateOnly } from '@/lib/date-utils'
 
 const fieldClass =
   'w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-3 font-culinary-sans text-sm text-culinary-ink outline-none focus:border-culinary-navy focus:ring-1 focus:ring-culinary-navy/30'
@@ -30,9 +31,9 @@ const labelClass = 'mb-2 block font-culinary-sans text-sm font-medium text-culin
 
 function formatDateReadable(dateString: string) {
   if (!dateString) return ''
-  const date = new Date(dateString)
+  const date = parseLocalDateOnly(dateString)
   if (Number.isNaN(date.getTime())) return dateString
-  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+  return formatDateOnly(dateString, { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
 async function copyText(text: string) {

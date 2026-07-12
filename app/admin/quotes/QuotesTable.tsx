@@ -2,6 +2,11 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
+import {
+  daysUntilDateOnlyEnd,
+  formatDateOnly,
+  isDateOnlyExpired,
+} from '@/lib/date-utils'
 import { SendDraftQuoteButton } from './SendDraftQuoteButton'
 
 interface QuoteRow {
@@ -42,9 +47,10 @@ interface Pagination {
 const usd = (n: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
 
-const fmtDate = (s: string | null) =>
-  s ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'
+/** Date-only business dates (event / expires / sent / accepted). */
+const fmtDate = (s: string | null) => (s ? formatDateOnly(s) : '—')
 
+/** Full timestamps (created_at, etc.). */
 const fmtDateTime = (s: string | null) =>
   s
     ? new Date(s).toLocaleString('en-US', {
@@ -201,7 +207,9 @@ function QuoteDrawer({
               <span className="text-culinary-text-muted">Expires</span>
               <span
                 className={`text-right font-medium ${
-                  quote.expires_date && new Date(quote.expires_date) < new Date() ? 'text-red-700' : 'text-culinary-ink'
+                  quote.expires_date && isDateOnlyExpired(quote.expires_date)
+                    ? 'text-red-700'
+                    : 'text-culinary-ink'
                 }`}
               >
                 {fmtDate(quote.expires_date)}
@@ -311,7 +319,8 @@ export function QuotesTable() {
 
   const expiringSoon = quotes.filter((q) => {
     if (!q.expires_date || q.quote_status === 'accepted') return false
-    const days = (new Date(q.expires_date).getTime() - Date.now()) / 86400000
+    if (isDateOnlyExpired(q.expires_date)) return false
+    const days = daysUntilDateOnlyEnd(q.expires_date)
     return days >= 0 && days <= 3
   }).length
 
@@ -448,15 +457,15 @@ export function QuotesTable() {
               !error &&
               quotes.map((q) => {
                 const isExpired =
-                  q.expires_date &&
-                  new Date(q.expires_date) < new Date() &&
+                  Boolean(q.expires_date) &&
+                  isDateOnlyExpired(q.expires_date!) &&
                   q.quote_status !== 'accepted'
 
                 const rowExpiringSoon =
-                  q.expires_date &&
+                  Boolean(q.expires_date) &&
                   !isExpired &&
                   q.quote_status === 'sent' &&
-                  (new Date(q.expires_date).getTime() - Date.now()) / 86400000 <= 3
+                  daysUntilDateOnlyEnd(q.expires_date!) <= 3
 
                 return (
                   <tr
