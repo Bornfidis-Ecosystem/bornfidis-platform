@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic'
 
 export default function ServicesPage() {
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
-      <header className="bg-[#1A3C34] text-white px-6 py-8 text-center">
+    <div className="min-h-screen bg-bone">
+      <header className="bg-navy text-white px-6 py-8 text-center">
         <h1 className="text-2xl font-bold">Services</h1>
         <p className="text-sm mt-2 opacity-90">
           Paperwork & setup help
@@ -14,7 +14,7 @@ export default function ServicesPage() {
       </header>
 
       <main className="max-w-xl mx-auto px-4 py-6 space-y-6">
-        <p className="text-[#2C2C2C]">{SERVICES_INTRO}</p>
+        <p className="text-charcoal">{SERVICES_INTRO}</p>
 
         <div className="space-y-4">
           {SERVICE_ITEMS.map((s, i) => (
@@ -22,7 +22,7 @@ export default function ServicesPage() {
               key={i}
               className="rounded-none bg-white p-5 shadow-sm border border-gray-100"
             >
-              <h2 className="text-lg font-semibold text-[#2C2C2C]">{s.title}</h2>
+              <h2 className="text-lg font-semibold text-charcoal">{s.title}</h2>
               <p className="text-sm text-gray-600 mt-1">Who it’s for: {s.for}</p>
             </div>
           ))}
@@ -30,7 +30,7 @@ export default function ServicesPage() {
 
         <a
           href="mailto:hello@bornfidis.com?subject=Request support - Resources"
-          className="block w-full text-center rounded-none py-3 text-white font-semibold hover:opacity-95 transition bg-[#1A3C34]"
+          className="block w-full text-center rounded-none py-3 text-white font-semibold hover:opacity-95 transition bg-navy"
         >
           Request support
         </a>

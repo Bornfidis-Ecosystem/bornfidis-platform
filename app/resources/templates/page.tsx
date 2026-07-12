@@ -4,14 +4,12 @@ import TemplateCardIcon from '@/components/resources/TemplateCardIcon'
 
 export const dynamic = 'force-dynamic'
 
-const CHARCOAL = '#2C2C2C'
-
 const MICRO_TRUST = 'Built by Bornfidis • Practical • Jamaica-ready'
 
 export default function TemplatesPage() {
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
-      <header className="bg-[#1A3C34] text-white px-6 py-8 text-center">
+    <div className="min-h-screen bg-bone">
+      <header className="bg-navy text-white px-6 py-8 text-center">
         <h1 className="text-2xl font-bold">Templates</h1>
         <p className="text-sm mt-2 opacity-90">
           Ready-to-use documents
@@ -28,7 +26,7 @@ export default function TemplatesPage() {
             {/* Top row: Tag pill (left) + Icon (right) */}
             <div className="flex items-center justify-between gap-3 mb-3">
               <div className="flex flex-col gap-1">
-                <span className="inline-flex items-center rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-[#1A3C34] text-[#C9A84C]">
+                <span className="inline-flex items-center rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-navy text-gold">
                   {t.tag}
                 </span>
                 {t.tagSubtext && (
@@ -42,23 +40,23 @@ export default function TemplatesPage() {
                   </span>
                 )}
               </div>
-              <div className="w-12 h-12 rounded-none flex items-center justify-center border-2 border-[#C9A84C] text-[#C9A84C] shrink-0">
+              <div className="w-12 h-12 rounded-none flex items-center justify-center border-2 border-gold text-gold shrink-0">
                 <TemplateCardIcon slug={t.slug} className="shrink-0" />
               </div>
             </div>
 
             {/* Title */}
-            <h2 className="text-lg font-bold leading-tight text-[#1A3C34]">
+            <h2 className="text-lg font-bold leading-tight text-navy">
               {t.name}
             </h2>
 
             {/* Description */}
-            <p className="text-sm mt-2 leading-snug" style={{ color: CHARCOAL }}>
+            <p className="text-sm mt-2 leading-snug text-charcoal">
               {t.problem}
             </p>
 
             {/* Price */}
-            <p className="text-sm font-semibold mt-2 text-[#1A3C34]">
+            <p className="text-sm font-semibold mt-2 text-navy">
               {t.priceDisplay}
             </p>
             {t.purpose && (
@@ -66,7 +64,7 @@ export default function TemplatesPage() {
             )}
 
             {/* Learn more */}
-            <p className="mt-3 text-sm font-medium text-[#C9A84C]">
+            <p className="mt-3 text-sm font-medium text-gold">
               Learn more →
             </p>
 
@@ -84,7 +82,7 @@ export default function TemplatesPage() {
         <p className="text-center pt-4">
           <Link
             href="/resources"
-            className="text-sm font-medium hover:underline text-[#1A3C34]"
+            className="text-sm font-medium hover:underline text-navy"
           >
             ← Back to Resources
           </Link>

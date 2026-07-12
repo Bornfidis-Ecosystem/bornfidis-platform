@@ -1,9 +1,9 @@
 /* Shared conversion band — works on any public marketing page */
 .bf-conversion-cta {
-  --cta-bone: #faf6f0;
-  --cta-slate: #1a1a1a;
-  --cta-green: #1a3c34;
-  --cta-gold: #c9a84c;
+  --cta-bone: var(--color-bone);
+  --cta-slate: var(--color-slate);
+  --cta-green: var(--color-navy);
+  --cta-gold: var(--color-gold);
   --cta-muted: rgba(26, 26, 26, 0.65);
   padding: 4rem 1.5rem;
   border-top: 1px solid rgba(0, 39, 71, 0.1);

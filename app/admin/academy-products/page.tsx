@@ -51,7 +51,7 @@ export default async function AdminAcademyProductsPage() {
           <div className="flex items-baseline gap-2">
             <Link
               href="/admin"
-              className="text-[#1A3C34] font-semibold tracking-[0.2em] uppercase text-sm"
+              className="text-navy font-semibold tracking-[0.2em] uppercase text-sm"
             >
               Bornfidis
             </Link>
@@ -60,7 +60,7 @@ export default async function AdminAcademyProductsPage() {
           </div>
           <Link
             href="/admin/academy"
-            className="text-sm font-medium text-[#1A3C34] hover:underline"
+            className="text-sm font-medium text-navy hover:underline"
           >
             Academy analytics
           </Link>

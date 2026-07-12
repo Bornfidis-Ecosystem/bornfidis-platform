@@ -42,8 +42,8 @@ export function AppNav({ role }: { role: UserRole | string | null }) {
   return (
     <div className="min-w-0 space-y-2">
       {pinnedVisible.length > 0 && (
-        <div className="rounded-lg border border-[#1A3C34]/12 bg-white/90 px-2 py-2 shadow-sm">
-          <p className="mb-1.5 px-0.5 text-[10px] font-semibold uppercase tracking-wider text-[#1A3C34]/80">
+        <div className="rounded-lg border border-navy/12 bg-white/90 px-2 py-2 shadow-sm">
+          <p className="mb-1.5 px-0.5 text-[10px] font-semibold uppercase tracking-wider text-navy/80">
             Daily tools
           </p>
           <nav

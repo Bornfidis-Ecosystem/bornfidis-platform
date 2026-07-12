@@ -4,15 +4,15 @@ export const dynamic = 'force-dynamic'
 
 export default function PaymentsPage() {
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
+    <div className="min-h-screen bg-bone">
       {/* Forest green header + gold divider */}
-      <header className="bg-[#1A3C34] text-white px-6 py-8 text-center">
+      <header className="bg-navy text-white px-6 py-8 text-center">
         <h1 className="text-2xl font-bold">Payment & Participation</h1>
         <p className="text-lg font-medium mt-1 opacity-95">
           Bornfidis — Pilot Phase
         </p>
-        <div className="mt-4 h-0.5 w-16 mx-auto rounded-none bg-[#C9A84C]" />
-        <p className="text-lg font-semibold mt-4 text-[#C9A84C]">
+        <div className="mt-4 h-0.5 w-16 mx-auto rounded-none bg-gold" />
+        <p className="text-lg font-semibold mt-4 text-gold">
           Simple. Transparent. Fair.
         </p>
       </header>
@@ -20,7 +20,7 @@ export default function PaymentsPage() {
       <main className="max-w-xl mx-auto px-4 py-6 space-y-5">
         {/* Intro card */}
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
-          <p className="text-[#2C2C2C]">
+          <p className="text-charcoal">
             Bornfidis is starting small. Payments are handled clearly and
             respectfully, with no pressure and no confusion.
           </p>
@@ -30,9 +30,9 @@ export default function PaymentsPage() {
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl" aria-hidden>🌱</span>
-            <h2 className="text-lg font-semibold text-[#2C2C2C]">Farmers</h2>
+            <h2 className="text-lg font-semibold text-charcoal">Farmers</h2>
           </div>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>Paid per delivery or supply</li>
             <li>Pricing agreed before anything moves</li>
             <li>Goal: fair, above-market pay for quality & reliability</li>
@@ -44,9 +44,9 @@ export default function PaymentsPage() {
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl" aria-hidden>🍽️</span>
-            <h2 className="text-lg font-semibold text-[#2C2C2C]">Chefs</h2>
+            <h2 className="text-lg font-semibold text-charcoal">Chefs</h2>
           </div>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>Pay only for what you order</li>
             <li>No subscriptions</li>
             <li>No hidden fees</li>
@@ -58,11 +58,11 @@ export default function PaymentsPage() {
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl" aria-hidden>🎓</span>
-            <h2 className="text-lg font-semibold text-[#2C2C2C]">
+            <h2 className="text-lg font-semibold text-charcoal">
               Educators & Coordinators
             </h2>
           </div>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>Paid by stipend or per engagement</li>
             <li>Amount agreed before work begins</li>
             <li>No unpaid expectations</li>
@@ -73,11 +73,11 @@ export default function PaymentsPage() {
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3 mb-3">
             <span className="text-3xl" aria-hidden>👩🏽‍🌾👨🏽‍🍳</span>
-            <h2 className="text-lg font-semibold text-[#2C2C2C]">
+            <h2 className="text-lg font-semibold text-charcoal">
               Youth & Apprentices
             </h2>
           </div>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>Paid learning opportunities</li>
             <li>Clear hours</li>
             <li>Clear stipend</li>
@@ -87,10 +87,10 @@ export default function PaymentsPage() {
 
         {/* Important Boundaries */}
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-charcoal mb-3 flex items-center gap-2">
             <span aria-hidden>🔒</span> Important Boundaries
           </h2>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>No &quot;work for exposure&quot;</li>
             <li>No forced participation</li>
             <li>Payment happens only when value is delivered</li>
@@ -99,13 +99,13 @@ export default function PaymentsPage() {
 
         {/* When Money Is Discussed */}
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-3 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-charcoal mb-3 flex items-center gap-2">
             <span aria-hidden>🕊️</span> When Money Is Discussed
           </h2>
-          <p className="text-sm text-[#2C2C2C] mb-2">
+          <p className="text-sm text-charcoal mb-2">
             Not at signup. Not in WhatsApp groups. Only when:
           </p>
-          <ul className="list-disc pl-5 text-sm text-[#2C2C2C] space-y-1">
+          <ul className="list-disc pl-5 text-sm text-charcoal space-y-1">
             <li>An opportunity is real</li>
             <li>Details are clear</li>
             <li>Everyone agrees</li>
@@ -114,10 +114,10 @@ export default function PaymentsPage() {
 
         {/* Our Principle */}
         <section className="rounded-none bg-white p-5 shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-2 flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-charcoal mb-2 flex items-center gap-2">
             <span aria-hidden>🌿</span> Our Principle
           </h2>
-          <p className="text-[#2C2C2C]">
+          <p className="text-charcoal">
             Bornfidis moves at the speed of trust. We start small, do things
             properly, and grow from there.
           </p>
@@ -126,7 +126,7 @@ export default function PaymentsPage() {
         <p className="text-center pt-4">
           <Link
             href="/"
-            className="text-sm font-medium text-gray-600 hover:text-[#2C2C2C] underline"
+            className="text-sm font-medium text-gray-600 hover:text-charcoal underline"
           >
             Back to Home
           </Link>

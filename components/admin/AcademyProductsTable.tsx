@@ -69,7 +69,7 @@ export function AcademyProductsTable({
               <td className="px-4 py-3 text-right">
                 <Link
                   href={`/admin/academy-products/${p.id}/edit`}
-                  className="text-[#1A3C34] font-medium hover:underline text-xs"
+                  className="text-navy font-medium hover:underline text-xs"
                 >
                   Edit
                 </Link>

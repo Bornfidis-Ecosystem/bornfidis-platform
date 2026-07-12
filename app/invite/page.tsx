@@ -63,7 +63,7 @@ export default async function InvitePage({
         <div className="pt-2">
           <Link
             href={continueUrl}
-            className="inline-block w-full sm:w-auto rounded-lg bg-[#14532d] px-6 py-3 text-white font-semibold hover:bg-[#0f3d22] transition"
+            className="inline-block w-full sm:w-auto rounded-lg bg-navy px-6 py-3 text-white font-semibold hover:bg-forestDarker transition"
           >
             Continue as a {label}
           </Link>

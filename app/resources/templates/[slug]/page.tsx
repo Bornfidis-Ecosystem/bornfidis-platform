@@ -5,8 +5,6 @@ import TemplateCardIcon from '@/components/resources/TemplateCardIcon'
 
 export const dynamic = 'force-dynamic'
 
-const CHARCOAL = '#2C2C2C'
-
 const MICRO_TRUST = 'Built by Bornfidis • Practical • Jamaica-ready'
 
 export default async function TemplateDetailPage({
@@ -19,8 +17,8 @@ export default async function TemplateDetailPage({
   if (!template) notFound()
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
-      <header className="text-white px-6 py-6 bg-[#1A3C34]">
+    <div className="min-h-screen bg-bone">
+      <header className="text-white px-6 py-6 bg-navy">
         <Link
           href="/resources/templates"
           className="text-sm opacity-90 hover:underline"
@@ -29,7 +27,7 @@ export default async function TemplateDetailPage({
         </Link>
         <div className="flex items-center justify-between gap-3 mt-2">
           <div className="flex flex-col gap-1">
-            <span className="inline-flex rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-[#C9A84C] text-[#1A3C34]">
+            <span className="inline-flex rounded-none px-3 py-1 text-[10px] font-semibold uppercase tracking-wide shadow-sm w-fit bg-gold text-navy">
               {template.tag}
             </span>
             {template.tagSubtext && (
@@ -41,7 +39,7 @@ export default async function TemplateDetailPage({
               </span>
             )}
           </div>
-          <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-[#C9A84C] text-[#C9A84C] shrink-0">
+          <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-gold text-gold shrink-0">
             <TemplateCardIcon slug={template.slug} className="shrink-0" />
           </div>
         </div>
@@ -50,15 +48,15 @@ export default async function TemplateDetailPage({
 
       <main className="max-w-xl mx-auto px-4 py-6">
         <div className="rounded-none p-5 mb-4 border border-[#E0DDD8] bg-white">
-          <p className="text-[#2C2C2C]">
+          <p className="text-charcoal">
             {template.problem}
           </p>
           {template.includes && template.includes.length > 0 && (
             <>
-              <p className="text-sm font-medium mt-4 text-[#1A3C34]">
+              <p className="text-sm font-medium mt-4 text-navy">
                 What it includes:
               </p>
-              <ul className="list-disc pl-5 text-sm mt-1 space-y-0.5" style={{ color: CHARCOAL }}>
+              <ul className="list-disc pl-5 text-sm mt-1 space-y-0.5 text-charcoal">
                 {template.includes.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
@@ -73,7 +71,7 @@ export default async function TemplateDetailPage({
               {template.whyItSells}
             </p>
           )}
-          <p className="text-lg font-semibold mt-4 text-[#1A3C34]">
+          <p className="text-lg font-semibold mt-4 text-navy">
             {template.priceDisplay}
           </p>
           {template.valueNote && (
@@ -97,7 +95,7 @@ export default async function TemplateDetailPage({
         {/* CTA: Forest green with gold text */}
         <a
           href={`mailto:hello@bornfidis.com?subject=${template.isFree ? 'Free download' : 'Purchase'}: ${encodeURIComponent(template.name)}`}
-          className="block w-full text-center rounded-none py-3 font-semibold hover:opacity-95 transition border-2 bg-[#1A3C34] text-[#C9A84C] border-[#C9A84C]"
+          className="block w-full text-center rounded-none py-3 font-semibold hover:opacity-95 transition border-2 bg-navy text-gold border-gold"
         >
           {template.isFree ? 'Get free download' : 'Download'}
         </a>
@@ -108,7 +106,7 @@ export default async function TemplateDetailPage({
         <p className="text-center pt-6">
           <Link
             href="/resources"
-            className="text-sm font-medium hover:underline text-[#1A3C34]"
+            className="text-sm font-medium hover:underline text-navy"
           >
             ← Back to Resources
           </Link>

@@ -1,9 +1,9 @@
 /* Trust & authority — visually distinct from page credentials strips */
 .bf-hospitality-cred {
-  --hc-bone: #faf6f0;
-  --hc-slate: #1a1a1a;
-  --hc-green: #1a3c34;
-  --hc-gold: #c9a84c;
+  --hc-bone: var(--color-bone);
+  --hc-slate: var(--color-slate);
+  --hc-green: var(--color-navy);
+  --hc-gold: var(--color-gold);
   --hc-muted: rgba(250, 246, 240, 0.55);
   background: var(--hc-green);
   color: var(--hc-bone);

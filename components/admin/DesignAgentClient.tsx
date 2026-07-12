@@ -24,7 +24,7 @@ const AI_TOOLS = [
   { id: 'firefly', label: 'Adobe Firefly', suffix: '' },
 ] as const
 
-const BRAND_COLORS = 'Brand palette: forest green #1A3C34, coral #E07B54, gold #C9A84C. Use these as primary accents.'
+const BRAND_COLORS = 'Brand palette: navy #002747, heritage gold #FFBC00, coral #E07B54 (secondary accent). Prefer navy and gold as primary accents.'
 const TYPOGRAPHY = 'Typography: clean sans-serif or editorial serif for headlines; avoid script or playful fonts. Professional, timeless.'
 const QUICK_TAGS = [
   'Caribbean',
@@ -103,7 +103,7 @@ export function DesignAgentClient() {
   return (
     <div className="max-w-2xl space-y-8">
       <CulinaryCard>
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-4">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-navy mb-4">
           Asset type
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -114,7 +114,7 @@ export function DesignAgentClient() {
               onClick={() => setAssetType(a.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 assetType === a.id
-                  ? 'bg-[#1A3C34] text-white'
+                  ? 'bg-navy text-white'
                   : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
@@ -125,7 +125,7 @@ export function DesignAgentClient() {
       </CulinaryCard>
 
       <CulinaryCard>
-        <label htmlFor="product-name" className="block text-sm font-semibold text-[#1A3C34] mb-2">
+        <label htmlFor="product-name" className="block text-sm font-semibold text-navy mb-2">
           Product name
         </label>
         <input
@@ -134,12 +134,12 @@ export function DesignAgentClient() {
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
           placeholder="e.g. Regenerative Enterprise Foundations"
-          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]/20"
+          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy/20"
         />
       </CulinaryCard>
 
       <CulinaryCard>
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-navy mb-3">
           Division
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -150,7 +150,7 @@ export function DesignAgentClient() {
               onClick={() => setDivision(d.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 division === d.id
-                  ? 'bg-[#1A3C34] text-white'
+                  ? 'bg-navy text-white'
                   : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
@@ -161,7 +161,7 @@ export function DesignAgentClient() {
       </CulinaryCard>
 
       <CulinaryCard>
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-[#1A3C34] mb-3">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-navy mb-3">
           AI tool
         </h2>
         <div className="flex flex-wrap gap-2">
@@ -172,7 +172,7 @@ export function DesignAgentClient() {
               onClick={() => setAiTool(t.id)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
                 aiTool === t.id
-                  ? 'bg-[#C9A84C] text-[#1A3C34]'
+                  ? 'bg-gold text-navy'
                   : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
@@ -183,7 +183,7 @@ export function DesignAgentClient() {
       </CulinaryCard>
 
       <CulinaryCard>
-        <label htmlFor="details" className="block text-sm font-semibold text-[#1A3C34] mb-2">
+        <label htmlFor="details" className="block text-sm font-semibold text-navy mb-2">
           Extra details
         </label>
         <textarea
@@ -192,7 +192,7 @@ export function DesignAgentClient() {
           onChange={(e) => setDetails(e.target.value)}
           placeholder="Mood, elements, or specific requests..."
           rows={3}
-          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]/20 resize-y"
+          className="w-full rounded-none border border-culinary-outline bg-culinary-bone px-4 py-2.5 text-stone-900 shadow-none placeholder:text-stone-400 focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy/20 resize-y"
         />
         <p className="text-xs text-stone-500 mt-2 mb-1">Quick tags:</p>
         <div className="flex flex-wrap gap-1.5">
@@ -201,7 +201,7 @@ export function DesignAgentClient() {
               key={tag}
               type="button"
               onClick={() => addQuickTag(tag)}
-              className="px-2.5 py-1 rounded-md bg-[#E07B54]/10 text-[#1A3C34] text-xs font-medium hover:bg-[#E07B54]/20 transition"
+              className="px-2.5 py-1 rounded-md bg-[#E07B54]/10 text-navy text-xs font-medium hover:bg-[#E07B54]/20 transition"
             >
               + {tag}
             </button>
@@ -212,19 +212,19 @@ export function DesignAgentClient() {
       <button
         type="button"
         onClick={handleGenerate}
-        className="w-full rounded-none bg-[#1A3C34] text-white font-semibold py-3.5 px-6 shadow-none hover:opacity-90 transition"
+        className="w-full rounded-none bg-navy text-white font-semibold py-3.5 px-6 shadow-none hover:opacity-90 transition"
       >
         Generate brand prompt
       </button>
 
       {generatedPrompt && (
-        <CulinaryCard className="border-2 border-[#1A3C34]/30 bg-culinary-surface-low">
+        <CulinaryCard className="border-2 border-navy/30 bg-culinary-surface-low">
           <div className="flex items-center justify-between gap-2 mb-3">
-            <span className="text-sm font-semibold text-[#1A3C34]">Your prompt</span>
+            <span className="text-sm font-semibold text-navy">Your prompt</span>
             <button
               type="button"
               onClick={handleCopy}
-              className="rounded-none bg-[#C9A84C] text-[#1A3C34] font-medium px-4 py-2 text-sm shadow-none hover:opacity-90 transition"
+              className="rounded-none bg-gold text-navy font-medium px-4 py-2 text-sm shadow-none hover:opacity-90 transition"
             >
               {copied ? 'Copied!' : 'Copy'}
             </button>
@@ -239,7 +239,7 @@ export function DesignAgentClient() {
       )}
 
       <p className="text-center text-sm text-stone-500">
-        <Link href="/admin" className="text-[#1A3C34] hover:underline font-medium">
+        <Link href="/admin" className="text-navy hover:underline font-medium">
           ← Back to Dashboard
         </Link>
       </p>

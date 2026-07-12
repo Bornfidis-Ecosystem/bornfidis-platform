@@ -46,7 +46,7 @@ export const ADMIN_NAV_GROUP_STYLES: Record<AdminNavVisualGroup, string> = {
   partners:
     'border-cyan-200/90 bg-cyan-50/95 text-cyan-950 hover:bg-cyan-100/95 focus-visible:ring-cyan-600/40',
   finance:
-    'border-[#c9a227]/50 bg-[#FFF9E6]/95 text-navy hover:bg-gold/25 focus-visible:ring-gold/60',
+    'border-gold/50 bg-gold/10 text-navy hover:bg-gold/25 focus-visible:ring-gold/60',
   strategy:
     'border-purple-200/90 bg-purple-50/95 text-purple-950 hover:bg-purple-100/95 focus-visible:ring-purple-600/40',
   operations:

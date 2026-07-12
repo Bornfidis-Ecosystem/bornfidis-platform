@@ -18,8 +18,8 @@ export default async function LessonDetailPage({
     : 'Free preview available'
 
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
-      <header className="text-white px-6 py-6 bg-[#1A3C34]">
+    <div className="min-h-screen bg-bone">
+      <header className="text-white px-6 py-6 bg-navy">
         <Link
           href="/resources/lessons"
           className="text-sm opacity-90 hover:underline"
@@ -32,10 +32,10 @@ export default async function LessonDetailPage({
 
       <main className="max-w-xl mx-auto px-4 py-6">
         <div className="rounded-none bg-white p-5 shadow-sm border border-gray-100 mb-6">
-          <p className="text-sm font-medium text-[#2C2C2C]">You’ll learn:</p>
-          <p className="text-[#2C2C2C] mt-1">{lesson.outcome}</p>
+          <p className="text-sm font-medium text-charcoal">You’ll learn:</p>
+          <p className="text-charcoal mt-1">{lesson.outcome}</p>
           <p className="text-xs text-gray-500 mt-3">{previewNote}</p>
-          <p className="text-lg font-semibold mt-4 text-[#2C2C2C]">
+          <p className="text-lg font-semibold mt-4 text-charcoal">
             Full lesson: ${lesson.price}
           </p>
         </div>
@@ -43,7 +43,7 @@ export default async function LessonDetailPage({
         <div className="space-y-3">
           <a
             href={`mailto:hello@bornfidis.com?subject=Purchase lesson: ${encodeURIComponent(lesson.title)}`}
-            className="block w-full text-center rounded-none py-3 text-white font-semibold hover:opacity-95 transition bg-[#1A3C34]"
+            className="block w-full text-center rounded-none py-3 text-white font-semibold hover:opacity-95 transition bg-navy"
           >
             Get full lesson (${lesson.price})
           </a>

@@ -42,7 +42,7 @@ export default function WelcomePageContent({ role }: { role: InviteRole }) {
                     ? '/partner'
                     : '/'
             }
-            className="inline-block rounded-lg bg-[#14532d] px-4 py-2 text-white font-medium hover:bg-[#0f3d22] transition"
+            className="inline-block rounded-lg bg-navy px-4 py-2 text-white font-medium hover:bg-forestDarker transition"
           >
             {role === 'EDUCATOR' ? 'Go to Home' : 'Go to my area'}
           </Link>

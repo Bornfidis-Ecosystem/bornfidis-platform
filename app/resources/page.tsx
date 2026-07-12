@@ -4,10 +4,10 @@ export const dynamic = 'force-dynamic'
 
 export default function ResourcesPage() {
   return (
-    <div className="min-h-screen bg-[#FAF6F0]">
-      <header className="bg-[#1A3C34] text-white px-6 py-10 text-center">
+    <div className="min-h-screen bg-bone">
+      <header className="bg-navy text-white px-6 py-10 text-center">
         <h1 className="text-2xl font-bold">Resources</h1>
-        <div className="mt-3 h-0.5 w-16 mx-auto rounded-none bg-[#C9A84C]" />
+        <div className="mt-3 h-0.5 w-16 mx-auto rounded-none bg-gold" />
         <p className="text-lg mt-4 max-w-md mx-auto leading-relaxed">
           Tools, templates, and short lessons to help farmers, chefs, and
           community builders move faster.
@@ -19,7 +19,7 @@ export default function ResourcesPage() {
           href="/resources/templates"
           className="block rounded-none bg-white p-5 shadow-sm border border-gray-100 hover:border-gray-200 transition"
         >
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-1">
+          <h2 className="text-lg font-semibold text-charcoal mb-1">
             Templates
           </h2>
           <p className="text-sm text-gray-600">
@@ -31,7 +31,7 @@ export default function ResourcesPage() {
           href="/resources/lessons"
           className="block rounded-none bg-white p-5 shadow-sm border border-gray-100 hover:border-gray-200 transition"
         >
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-1">
+          <h2 className="text-lg font-semibold text-charcoal mb-1">
             Mini Lessons
           </h2>
           <p className="text-sm text-gray-600">
@@ -43,7 +43,7 @@ export default function ResourcesPage() {
           href="/resources/services"
           className="block rounded-none bg-white p-5 shadow-sm border border-gray-100 hover:border-gray-200 transition"
         >
-          <h2 className="text-lg font-semibold text-[#2C2C2C] mb-1">
+          <h2 className="text-lg font-semibold text-charcoal mb-1">
             Services
           </h2>
           <p className="text-sm text-gray-600">
@@ -58,7 +58,7 @@ export default function ResourcesPage() {
         <div className="text-center pt-4">
           <Link
             href="/resources/templates"
-            className="inline-block rounded-none px-6 py-3 text-white font-semibold hover:opacity-95 transition bg-[#1A3C34]"
+            className="inline-block rounded-none px-6 py-3 text-white font-semibold hover:opacity-95 transition bg-navy"
           >
             Explore Resources
           </Link>

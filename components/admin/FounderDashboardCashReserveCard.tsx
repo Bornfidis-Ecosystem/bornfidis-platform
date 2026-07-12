@@ -43,12 +43,12 @@ export function FounderDashboardCashReserveCard({ cashReserveCents }: FounderDas
     <div className="bg-white border border-gray-200 rounded-lg p-4 min-w-0">
       <p className="text-xs font-medium text-gray-500 uppercase">Cash Reserve</p>
       <div className="flex items-baseline gap-2 mt-1 flex-wrap">
-        <span className="text-xl font-bold text-[#1A3C34]">${displayValue}</span>
+        <span className="text-xl font-bold text-navy">${displayValue}</span>
         {!editing ? (
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="text-xs text-gray-500 hover:text-[#1A3C34] underline"
+            className="text-xs text-gray-500 hover:text-navy underline"
           >
             Set
           </button>
@@ -67,7 +67,7 @@ export function FounderDashboardCashReserveCard({ cashReserveCents }: FounderDas
             <button
               type="submit"
               disabled={submitting}
-              className="text-xs text-[#1A3C34] font-medium disabled:opacity-50"
+              className="text-xs text-navy font-medium disabled:opacity-50"
             >
               Save
             </button>

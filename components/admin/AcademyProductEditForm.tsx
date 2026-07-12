@@ -73,7 +73,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+          className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy"
           required
         />
       </div>
@@ -86,7 +86,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
-          className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+          className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy"
         />
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -98,7 +98,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
             id="edit-type"
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+            className="w-full rounded border border-stone-300 px-3 py-2 text-sm focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy"
           >
             {TYPES.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -115,7 +115,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
             min={0}
             value={priceCents}
             onChange={(e) => setPriceCents(e.target.value)}
-            className="w-full rounded border border-stone-300 px-3 py-2 text-sm tabular-nums focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+            className="w-full rounded border border-stone-300 px-3 py-2 text-sm tabular-nums focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy"
           />
         </div>
       </div>
@@ -128,7 +128,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
           type="text"
           value={stripePriceId}
           onChange={(e) => setStripePriceId(e.target.value)}
-          className="w-full rounded border border-stone-300 px-3 py-2 text-sm font-mono focus:border-[#1A3C34] focus:outline-none focus:ring-1 focus:ring-[#1A3C34]"
+          className="w-full rounded border border-stone-300 px-3 py-2 text-sm font-mono focus:border-navy focus:outline-none focus:ring-1 focus:ring-navy"
         />
       </div>
       <div className="flex flex-wrap gap-4 items-center">
@@ -137,7 +137,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
             type="checkbox"
             checked={active}
             onChange={(e) => setActive(e.target.checked)}
-            className="rounded border-stone-300 text-[#1A3C34] focus:ring-[#1A3C34]"
+            className="rounded border-stone-300 text-navy focus:ring-navy"
           />
           Active
         </label>
@@ -146,7 +146,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
             type="checkbox"
             checked={featured}
             onChange={(e) => setFeatured(e.target.checked)}
-            className="rounded border-stone-300 text-[#1A3C34] focus:ring-[#1A3C34]"
+            className="rounded border-stone-300 text-navy focus:ring-navy"
           />
           Featured
         </label>
@@ -155,7 +155,7 @@ export function AcademyProductEditForm({ product }: { product: ProductRow }) {
         <button
           type="submit"
           disabled={pending}
-          className="px-4 py-2 rounded-lg bg-[#1A3C34] text-white text-sm font-medium hover:opacity-90 disabled:opacity-60"
+          className="px-4 py-2 rounded-lg bg-navy text-white text-sm font-medium hover:opacity-90 disabled:opacity-60"
         >
           {pending ? 'Saving…' : 'Save changes'}
         </button>

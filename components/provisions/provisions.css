@@ -127,7 +127,7 @@
 }
 
 .bf-prov-hero__cta:hover {
-  background: #143d32;
+  background: var(--color-navy);
   transform: translateY(-1px);
 }
 
@@ -424,7 +424,7 @@
 }
 
 .bf-prov-gift__cta:hover {
-  background: #143d32;
+  background: var(--color-navy);
 }
 
 /* Process strip */
