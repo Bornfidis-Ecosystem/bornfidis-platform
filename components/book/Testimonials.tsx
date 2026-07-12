@@ -19,7 +19,7 @@ export function Testimonials() {
     <section className="bg-[#050505] px-6 py-24 text-white md:px-16">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16">
-          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[#ffbc00]">Past Experiences</p>
+          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-gold">Past Experiences</p>
           <h2 className="font-display text-4xl font-black uppercase leading-none md:text-5xl">
             What Clients Say
           </h2>
@@ -33,7 +33,7 @@ export function Testimonials() {
           {TESTIMONIALS.map((t, i) => (
             <article
               key={`${t.initials}-${t.name}`}
-              className="group flex flex-col overflow-hidden border border-white/10 transition-colors duration-300 hover:border-[#ffbc00]/35"
+              className="group flex flex-col overflow-hidden border border-white/10 transition-colors duration-300 hover:border-gold/35"
             >
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#111]">
                 <Image
@@ -50,13 +50,13 @@ export function Testimonials() {
               </div>
 
               <div className="flex flex-1 flex-col justify-between p-7 md:p-8">
-                <div className="font-serif text-4xl leading-none text-[#ffbc00]/35" aria-hidden>
+                <div className="font-serif text-4xl leading-none text-gold/35" aria-hidden>
                   &ldquo;
                 </div>
                 <p className="mb-8 mt-4 flex-1 text-base leading-relaxed text-white/75">{t.quote}</p>
                 <div className="flex items-center gap-4 border-t border-white/10 pt-6">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-[#ffbc00]/30 bg-[#ffbc00]/20">
-                    <span className="text-xs font-bold tracking-wider text-[#ffbc00]">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border border-gold/30 bg-gold/20">
+                    <span className="text-xs font-bold tracking-wider text-gold">
                       {t.initials}
                     </span>
                   </div>
@@ -71,7 +71,7 @@ export function Testimonials() {
         </div>
         <div className="mt-14 flex flex-col gap-3 border-t border-white/10 pt-10 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-px w-8 bg-[#ffbc00]/40" />
+            <div className="h-px w-8 bg-gold/40" />
             <p className="text-xs uppercase tracking-wide text-white/30">
               Shared with permission from guests & tasting partners
             </p>

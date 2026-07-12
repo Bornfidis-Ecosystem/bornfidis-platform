@@ -10,7 +10,7 @@ type BrandedCardProps = {
 export function BrandedCard({ children, className = '', theme }: BrandedCardProps) {
   const culinary = theme === 'culinary'
   const base = culinary
-    ? 'rounded-none border border-[#ffbc00]/40 bg-[#faf6f0] p-6 shadow-none md:p-8'
+    ? 'rounded-none border border-gold/40 bg-bone p-6 shadow-none md:p-8'
     : 'rounded-sm border border-brass/25 bg-midnight/40 p-6 shadow-lg backdrop-blur-sm md:p-8'
   return <div className={`${base} ${className}`.trim()}>{children}</div>
 }

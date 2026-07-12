@@ -35,7 +35,7 @@ export function AcademyEmailCapture() {
 
   if (submitted) {
     return (
-      <section className="border border-[#ffbc00]/35 p-8 text-center" aria-live="polite">
+      <section className="border border-gold/35 p-8 text-center" aria-live="polite">
         <p className={academyBody}>You&apos;re on the list. We&apos;ll be in touch.</p>
       </section>
     )
@@ -43,7 +43,7 @@ export function AcademyEmailCapture() {
 
   return (
     <section
-      className="border border-[#ffbc00]/35 p-8 md:p-10"
+      className="border border-gold/35 p-8 md:p-10"
       aria-labelledby="academy-email-heading"
     >
       <p className={`${academyEyebrow} text-center`}>Stay in the loop</p>

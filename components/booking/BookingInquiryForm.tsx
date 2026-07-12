@@ -53,7 +53,7 @@ const diningStyles = [
   { value: 'not_sure_yet', label: 'Not Sure Yet' },
 ]
 
-const optionClass = 'bg-[#faf6f0] text-[#1a1a1a]'
+const optionClass = 'bg-bone text-charcoal'
 
 const regionOptions = [
   { value: '', label: 'Select service region' },
@@ -257,7 +257,7 @@ export function BookingInquiryForm() {
                   ))}
                 </SelectField>
                 {formData.serviceRegion === 'jamaica-partner' ? (
-                  <p className="font-sans text-xs leading-relaxed text-[#1a1a1a]/65">{JAMAICA_PARTNER_HELPER}</p>
+                  <p className="font-sans text-xs leading-relaxed text-charcoal/65">{JAMAICA_PARTNER_HELPER}</p>
                 ) : null}
                 <TextareaField
                   theme="culinary"
@@ -395,7 +395,7 @@ export function BookingInquiryForm() {
               >
                 {isSubmitting ? (
                   <span className="inline-flex items-center gap-2">
-                    <Spinner size="sm" className="text-[#faf6f0]" />
+                    <Spinner size="sm" className="text-bone" />
                     Sending…
                   </span>
                 ) : (

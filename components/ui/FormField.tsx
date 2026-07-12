@@ -22,7 +22,7 @@ function classes(theme: 'brutalist' | 'culinary' | undefined) {
   return {
     field: culinary ? bookFieldClass : brutalistFieldClass,
     label: culinary ? bookLabelClass : brutalistLabelClass,
-    description: culinary ? 'mb-1.5 text-xs text-[#1a1a1a]/55' : 'mb-1.5 text-xs text-cream/50',
+    description: culinary ? 'mb-1.5 text-xs text-charcoal/55' : 'mb-1.5 text-xs text-cream/50',
     error: culinary ? 'mt-1 text-xs text-red-700' : 'mt-1 text-xs text-red-300',
     required: culinary ? 'text-red-700' : 'text-red-400',
   }

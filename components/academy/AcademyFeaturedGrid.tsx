@@ -72,7 +72,7 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
         {filtered.map((product) => (
           <article key={product.slug} className={academyCard}>
             <Link href={`/academy/${product.slug}`} className="block no-underline">
-              <div className="relative aspect-[3/4] bg-[#1a1a1a]/5 md:aspect-[4/3]">
+              <div className="relative aspect-[3/4] bg-charcoal/5 md:aspect-[4/3]">
                 {product.image ? (
                   <Image
                     src={product.image}
@@ -82,24 +82,24 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center font-display text-4xl text-[#1a1a1a]/25">
+                  <div className="flex h-full w-full items-center justify-center font-display text-4xl text-charcoal/25">
                     {product.title.charAt(0)}
                   </div>
                 )}
-                <span className="absolute left-3 top-3 bg-[#002747] px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0]">
+                <span className="absolute left-3 top-3 bg-navy px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-bone">
                   {pillarLabel(product.pillar)}
                 </span>
               </div>
-              <div className="border-t border-[#ffbc00]/25 p-6">
-                <p className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#ffbc00]">
+              <div className="border-t border-gold/25 p-6">
+                <p className="font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-gold">
                   {CARD_TAGLINE[product.slug] ?? pillarLabel(product.pillar)}
                 </p>
                 <h2 className={`${academyHeadline} mt-2 text-xl`}>{product.title}</h2>
                 {product.subtitle ? (
                   <p className={`${academyBody} mt-2 line-clamp-2 text-sm`}>{product.subtitle}</p>
                 ) : null}
-                <p className="mt-4 font-display text-lg text-[#1a1a1a]">{product.priceDisplay}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]/70">
+                <p className="mt-4 font-display text-lg text-charcoal">{product.priceDisplay}</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 font-sans text-[12px] font-semibold uppercase tracking-[0.1em] text-charcoal/70">
                   Get access →
                 </span>
               </div>
@@ -110,7 +110,7 @@ export function AcademyFeaturedGrid({ products, totalPurchaseCount, initialPilla
 
       <p className={`${academyBody} mb-12 text-center text-lg`}>{socialProofText}</p>
 
-      <div className="border border-[#ffbc00]/35 bg-[#faf6f0] p-8 text-center">
+      <div className="border border-gold/35 bg-bone p-8 text-center">
         <p className={`${academyBody} mb-6 text-sm`}>
           Start with the Foundations manual or choose the guide for your industry.
         </p>

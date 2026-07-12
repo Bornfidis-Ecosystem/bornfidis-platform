@@ -115,30 +115,30 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
 
           {!rich ? (
             <article className={`${academyCard} mt-6 max-w-3xl`}>
-              <div className="relative aspect-video bg-[#1a1a1a]/5">
+              <div className="relative aspect-video bg-charcoal/5">
                 {product.image ? (
                   <Image src={product.image} alt="" fill className="object-cover" sizes="896px" priority />
                 ) : (
-                  <div className="flex h-full items-center justify-center font-display text-6xl text-[#1a1a1a]/25">
+                  <div className="flex h-full items-center justify-center font-display text-6xl text-charcoal/25">
                     {product.title.charAt(0)}
                   </div>
                 )}
                 <div className="absolute left-4 top-4 flex flex-wrap gap-2">
-                  <span className="bg-[#002747] px-3 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#faf6f0]">
+                  <span className="bg-navy px-3 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-bone">
                     {product.category}
                   </span>
                   {product.type !== 'DOWNLOAD' ? (
-                    <span className="border border-[#ffbc00]/50 bg-[#faf6f0] px-3 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-[#1a1a1a]">
+                    <span className="border border-gold/50 bg-bone px-3 py-1.5 font-sans text-[10px] font-semibold uppercase tracking-[0.1em] text-charcoal">
                       {product.type === 'COURSE' ? 'Course' : 'Bundle'}
                     </span>
                   ) : null}
                 </div>
               </div>
-              <div className="border-t border-[#ffbc00]/25 p-8">
+              <div className="border-t border-gold/25 p-8">
                 <h1 className={`${academyHeadline} text-2xl`}>{product.title}</h1>
                 <p className={`${academyBody} mt-4`}>{product.description}</p>
                 <div className="mt-6 flex flex-wrap items-center gap-4">
-                  <span className="font-display text-xl text-[#1a1a1a]">{product.priceDisplay}</span>
+                  <span className="font-display text-xl text-charcoal">{product.priceDisplay}</span>
                   <AcademyBuyButton product={product} size="lg" />
                 </div>
                 <p className={`${academyBody} mt-4 text-sm`}>
@@ -149,7 +149,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
           ) : (
             <>
               <section className="mt-8 grid grid-cols-1 items-start gap-10 md:grid-cols-5 md:gap-12">
-                <div className="relative aspect-[3/4] max-w-sm overflow-hidden border border-[#ffbc00]/35 md:col-span-2">
+                <div className="relative aspect-[3/4] max-w-sm overflow-hidden border border-gold/35 md:col-span-2">
                   {product.image ? (
                     <Image
                       src={product.image}
@@ -160,7 +160,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
                       priority
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center font-display text-5xl text-[#1a1a1a]/25">
+                    <div className="flex h-full items-center justify-center font-display text-5xl text-charcoal/25">
                       {product.title.charAt(0)}
                     </div>
                   )}
@@ -169,7 +169,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
                   <p className={academyEyebrow}>{product.category}</p>
                   <h1 className={`${academyHeadline} mt-3 text-3xl md:text-4xl`}>{product.title}</h1>
                   {product.subtitle ? <p className={`${academyBody} mt-3`}>{product.subtitle}</p> : null}
-                  <p className="mt-6 font-display text-2xl text-[#1a1a1a]">{product.priceDisplay}</p>
+                  <p className="mt-6 font-display text-2xl text-charcoal">{product.priceDisplay}</p>
                   <div className="mt-6">
                     <AcademyBuyButton product={product} size="lg" />
                   </div>
@@ -185,12 +185,12 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
 
                 {product.targetAudience && product.targetAudience.length > 0 ? (
                   <div className="mt-10">
-                    <h3 className="font-display text-lg text-[#1a1a1a]">Who this is for</h3>
+                    <h3 className="font-display text-lg text-charcoal">Who this is for</h3>
                     <ul className="mt-3 flex flex-wrap gap-2">
                       {product.targetAudience.map((aud) => (
                         <li
                           key={aud}
-                          className="border border-[#ffbc00]/35 px-3 py-1.5 font-sans text-sm text-[#1a1a1a]"
+                          className="border border-gold/35 px-3 py-1.5 font-sans text-sm text-charcoal"
                         >
                           {aud}
                         </li>
@@ -201,7 +201,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
 
                 {product.learningOutcomes && product.learningOutcomes.length > 0 ? (
                   <div className="mt-10">
-                    <h3 className="font-display text-lg text-[#1a1a1a]">What you&apos;ll learn</h3>
+                    <h3 className="font-display text-lg text-charcoal">What you&apos;ll learn</h3>
                     <ul className={`${academyBody} mt-3 list-disc space-y-2 pl-5 text-sm`}>
                       {product.learningOutcomes.map((outcome) => (
                         <li key={outcome}>{outcome}</li>
@@ -212,7 +212,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
 
                 {product.whatIsIncluded && product.whatIsIncluded.length > 0 ? (
                   <div className="mt-10">
-                    <h3 className="font-display text-lg text-[#1a1a1a]">What&apos;s included</h3>
+                    <h3 className="font-display text-lg text-charcoal">What&apos;s included</h3>
                     <ul className={`${academyBody} mt-3 list-disc space-y-2 pl-5 text-sm`}>
                       {product.whatIsIncluded.map((item) => (
                         <li key={item}>{item}</li>
@@ -228,7 +228,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
                   {TESTIMONIAL_PLACEHOLDERS.slice(0, 5).map((t, i) => (
                     <blockquote key={i} className={`${academyCard} p-6`}>
                       <p className={`${academyBody} text-sm italic`}>&ldquo;{t.quote}&rdquo;</p>
-                      <footer className="mt-4 font-sans text-sm font-semibold text-[#1a1a1a]">
+                      <footer className="mt-4 font-sans text-sm font-semibold text-charcoal">
                         {t.name} — {t.role}
                       </footer>
                     </blockquote>
@@ -240,17 +240,17 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
                 <h2 className={`${academyHeadline} text-xl`}>Frequently asked questions</h2>
                 <dl className="mt-6 space-y-6">
                   {FAQ_ITEMS.map((faq) => (
-                    <div key={faq.q} className="border-b border-[#ffbc00]/25 pb-6 last:border-0">
-                      <dt className="font-display text-lg text-[#1a1a1a]">{faq.q}</dt>
+                    <div key={faq.q} className="border-b border-gold/25 pb-6 last:border-0">
+                      <dt className="font-display text-lg text-charcoal">{faq.q}</dt>
                       <dd className={`${academyBody} mt-2 text-sm`}>{faq.a}</dd>
                     </div>
                   ))}
                 </dl>
               </section>
 
-              <section className="mt-16 border border-[#ffbc00]/35 p-8 text-center md:p-12">
+              <section className="mt-16 border border-gold/35 p-8 text-center md:p-12">
                 <h2 className={academyHeadline}>Ready to build with structure?</h2>
-                <p className="mt-4 font-display text-3xl text-[#1a1a1a]">{product.priceDisplay}</p>
+                <p className="mt-4 font-display text-3xl text-charcoal">{product.priceDisplay}</p>
                 <AcademyBuyButton product={product} size="lg" className="mt-8 justify-center" />
                 <p className={`${academyBody} mt-4 text-sm`}>Secure checkout · Instant access</p>
               </section>

@@ -39,21 +39,21 @@ export function HowItWorks() {
     <section className="bg-[#0a0a0a] px-6 py-24 text-white md:px-16">
       <div className="mx-auto max-w-6xl">
         <div className="mb-16">
-          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-[#ffbc00]">The Process</p>
+          <p className="mb-4 text-xs uppercase tracking-[0.2em] text-gold">The Process</p>
           <h2 className="font-display text-4xl font-black uppercase leading-none md:text-5xl">
             How It Works
           </h2>
         </div>
 
         <div className="relative">
-          <div className="absolute bottom-0 left-[2.25rem] top-0 hidden w-px bg-[#ffbc00]/15 md:block" />
+          <div className="absolute bottom-0 left-[2.25rem] top-0 hidden w-px bg-gold/15 md:block" />
 
           <div className="space-y-0">
             {STEPS.map((step, i) => (
               <div key={step.num} className="group relative flex items-start gap-8 md:gap-12">
                 <div className="relative z-10 flex-shrink-0">
-                  <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border border-[#ffbc00]/30 bg-black transition-colors duration-300 group-hover:border-[#ffbc00]/70">
-                    <span className="font-mono text-sm font-bold tracking-widest text-[#ffbc00]">
+                  <div className="flex h-[4.5rem] w-[4.5rem] items-center justify-center border border-gold/30 bg-black transition-colors duration-300 group-hover:border-gold/70">
+                    <span className="font-mono text-sm font-bold tracking-widest text-gold">
                       {step.num}
                     </span>
                   </div>
@@ -70,14 +70,14 @@ export function HowItWorks() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col items-start gap-6 border-t border-[#ffbc00]/15 pt-12 sm:flex-row sm:items-center">
+        <div className="mt-16 flex flex-col items-start gap-6 border-t border-gold/15 pt-12 sm:flex-row sm:items-center">
           <div>
             <p className="text-lg font-medium text-white/90">Ready to start planning?</p>
             <p className="mt-1 text-sm text-white/40">Most inquiries receive a proposal within 4 hours.</p>
           </div>
           <Link
             href="#booking-form"
-            className="flex-shrink-0 border border-[#ffbc00] px-8 py-3 text-sm font-bold uppercase tracking-[0.15em] text-[#ffbc00] transition-colors duration-200 hover:bg-[#ffbc00] hover:text-black"
+            className="flex-shrink-0 border border-gold px-8 py-3 text-sm font-bold uppercase tracking-[0.15em] text-gold transition-colors duration-200 hover:bg-gold hover:text-black"
           >
             Begin Your Inquiry
           </Link>
