@@ -34,12 +34,5 @@ export const WORDPRESS_MARKETING_SLUGS = [
   '/academy', // placeholder on WP until redirect to academy.bornfidis.com
 ] as const
 
-/** Platform-aligned brand (navy / gold / ivory). WordPress CTAs use forest on WP host only. */
-export const wordpressAlignedBrand = {
-  bone: '#faf6f0',
-  slate: '#1a1a1a',
-  gold: '#ffbc00',
-  navy: '#002747',
-  forestCta: '#002747',
-  ctaTextOnForest: '#faf6f0',
-} as const
+/** Platform-aligned brand — single source: `lib/design-tokens.ts`. */
+export { wordpressAlignedBrand } from '@/lib/design-tokens'

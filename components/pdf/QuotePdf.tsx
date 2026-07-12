@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     padding: 40,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    backgroundColor: colors.white,
+    backgroundColor: colors.card,
   },
   header: {
     marginBottom: 30,
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 10,
-    color: '#666666',
+    color: colors.muted,
     marginTop: 5,
   },
   section: {
@@ -54,11 +54,11 @@ const styles = StyleSheet.create({
   label: {
     width: '30%',
     fontWeight: 'bold',
-    color: '#333333',
+    color: colors.text,
   },
   value: {
     width: '70%',
-    color: '#666666',
+    color: colors.muted,
   },
   table: {
     marginTop: 15,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: colors.navy,
-    color: '#FFFFFF',
+    color: colors.white,
     padding: 8,
     fontWeight: 'bold',
     fontSize: 10,
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     padding: 8,
-    borderBottom: '1 solid #E5E5E5',
+    borderBottom: `1 solid ${colors.border}`,
   },
   tableCellTitle: {
     width: '40%',
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   tableCellDescription: {
     width: '30%',
     fontSize: 9,
-    color: '#666666',
+    color: colors.muted,
   },
   tableCellQty: {
     width: '10%',
@@ -109,17 +109,17 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontWeight: 'bold',
-    color: '#333333',
+    color: colors.text,
   },
   totalValue: {
-    color: '#333333',
+    color: colors.text,
   },
   grandTotal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 12,
     backgroundColor: colors.navy,
-    color: '#FFFFFF',
+    color: colors.white,
     fontWeight: 'bold',
     fontSize: 12,
     marginTop: 5,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   notes: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.white,
     borderLeft: `3 solid ${colors.gold}`,
   },
   notesTitle: {
@@ -148,15 +148,15 @@ const styles = StyleSheet.create({
   },
   notesText: {
     fontSize: 10,
-    color: '#666666',
+    color: colors.muted,
     lineHeight: 1.5,
   },
   footer: {
     marginTop: 30,
     paddingTop: 15,
-    borderTop: '1 solid #E5E5E5',
+    borderTop: `1 solid ${colors.border}`,
     fontSize: 9,
-    color: '#999999',
+    color: colors.muted,
     textAlign: 'center',
   },
 })

@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     padding: 40,
     fontSize: 11,
     fontFamily: 'Helvetica',
-    backgroundColor: colors.white,
+    backgroundColor: colors.card,
   },
   header: {
     marginBottom: 30,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 10,
-    color: '#666666',
+    color: colors.muted,
     marginTop: 5,
   },
   invoiceTitle: {
@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
   label: {
     width: '30%',
     fontWeight: 'bold',
-    color: '#333333',
+    color: colors.text,
   },
   value: {
     width: '70%',
-    color: '#666666',
+    color: colors.muted,
   },
   table: {
     marginTop: 15,
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     padding: 8,
-    borderBottom: '1 solid #E5E5E5',
+    borderBottom: `1 solid ${colors.border}`,
   },
   tableCellTitle: {
     width: '40%',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   tableCellDescription: {
     width: '30%',
     fontSize: 9,
-    color: '#666666',
+    color: colors.muted,
   },
   tableCellQty: {
     width: '10%',
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontWeight: 'bold',
-    color: '#333333',
+    color: colors.text,
   },
   totalValue: {
-    color: '#333333',
+    color: colors.text,
   },
   grandTotal: {
     flexDirection: 'row',
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   paymentSection: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: colors.white,
     borderLeft: `3 solid ${colors.gold}`,
   },
   paymentTitle: {
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   blessing: {
     marginTop: 30,
     padding: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.white,
     borderTop: `2 solid ${colors.navy}`,
     textAlign: 'center',
   },
@@ -167,9 +167,9 @@ const styles = StyleSheet.create({
   footer: {
     marginTop: 20,
     paddingTop: 15,
-    borderTop: '1 solid #E5E5E5',
+    borderTop: `1 solid ${colors.border}`,
     fontSize: 9,
-    color: '#999999',
+    color: colors.muted,
     textAlign: 'center',
   },
 })
@@ -336,7 +336,7 @@ export function InvoicePdfDocument({ booking, lineItems }: InvoicePdfProps) {
           {depositPaidCents > 0 && (
             <View style={styles.paymentRow}>
               <Text>Deposit Received:</Text>
-              <Text style={{ fontWeight: 'bold', color: '#22c55e' }}>-{formatUSD(depositPaidCents)}</Text>
+              <Text style={{ fontWeight: 'bold', color: colors.success }}>-{formatUSD(depositPaidCents)}</Text>
             </View>
           )}
           {booking.paid_at && (
@@ -367,7 +367,7 @@ export function InvoicePdfDocument({ booking, lineItems }: InvoicePdfProps) {
         {booking.quote_notes && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Notes</Text>
-            <Text style={{ fontSize: 10, color: '#666666', lineHeight: 1.5 }}>
+            <Text style={{ fontSize: 10, color: colors.muted, lineHeight: 1.5 }}>
               {booking.quote_notes}
             </Text>
           </View>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { brand, chartColors } from '@/lib/design-tokens'
 
 const POLL_MS = 30_000
 
@@ -15,12 +16,12 @@ export interface ActivityEvent {
 }
 
 const EVENT_COLORS: Record<string, string> = {
-  EMAIL_SUBSCRIBER: '#3B6D11',
-  BOOKING_LEAD: '#0D1F2D',
-  ACADEMY_PURCHASE: '#534AB7',
-  SPORTSWEAR_ORDER: '#CE472E',
-  FARMER_SIGNUP: '#3B6D11',
-  ADMIN_LOG: '#64748b',
+  EMAIL_SUBSCRIBER: chartColors.conversion,
+  BOOKING_LEAD: chartColors.bookings,
+  ACADEMY_PURCHASE: chartColors.academy,
+  SPORTSWEAR_ORDER: chartColors.sportswear,
+  FARMER_SIGNUP: chartColors.proju,
+  ADMIN_LOG: brand.muted,
 }
 
 function getRelativeTime(iso: string): string {

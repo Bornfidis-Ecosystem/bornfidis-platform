@@ -3,6 +3,7 @@
 import React from 'react'
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type { InvestorReportData } from '@/lib/investor-report'
+import { colors } from '@/lib/design-tokens'
 
 function formatUSD(cents: number): string {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(
@@ -11,13 +12,13 @@ function formatUSD(cents: number): string {
 }
 
 const styles = StyleSheet.create({
-  page: { padding: 40, fontSize: 10, fontFamily: 'Helvetica' },
-  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 4, color: '#0D1F2D' },
-  subtitle: { fontSize: 9, color: '#666', marginBottom: 20 },
+  page: { padding: 40, fontSize: 10, fontFamily: 'Helvetica', backgroundColor: colors.card, color: colors.text },
+  title: { fontSize: 18, fontWeight: 'bold', marginBottom: 4, color: colors.navy },
+  subtitle: { fontSize: 9, color: colors.muted, marginBottom: 20 },
   section: { marginBottom: 16 },
-  sectionTitle: { fontSize: 12, fontWeight: 'bold', marginBottom: 6, color: '#0D1F2D', borderBottomWidth: 1, borderBottomColor: '#ddd', paddingBottom: 4 },
+  sectionTitle: { fontSize: 12, fontWeight: 'bold', marginBottom: 6, color: colors.navy, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 4 },
   row: { flexDirection: 'row', marginBottom: 4 },
-  label: { width: '50%', color: '#555' },
+  label: { width: '50%', color: colors.muted },
   value: { width: '50%', fontWeight: 'bold' },
 })
 

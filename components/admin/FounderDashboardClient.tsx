@@ -2,19 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import { CulinaryCard } from '@/components/culinary-os'
+import { chartColors } from '@/lib/design-tokens'
 
 const DIVISION_COLORS: Record<string, string> = {
-  Sportswear: '#CE472E',
-  Academy: '#534AB7',
-  Provisions: '#0D1F2D',
-  ProJu: '#3B6D11',
+  Sportswear: chartColors.sportswear,
+  Academy: chartColors.academy,
+  Provisions: chartColors.provisions,
+  ProJu: chartColors.proju,
 }
 
 const DIVISION_BORDER_LEFT: Record<string, string> = {
   Sportswear: 'border-l-[#CE472E]',
-  Academy: 'border-l-[#534AB7]',
-  Provisions: 'border-l-midnight',
-  ProJu: 'border-l-[#3B6D11]',
+  Academy: 'border-l-[#33526C]',
+  Provisions: 'border-l-[#002747]',
+  ProJu: 'border-l-[#FFBC00]',
 }
 
 const sectionHeading =
@@ -415,7 +416,7 @@ export function FounderDashboardClient() {
                 <div key={item.id} className="flex items-start gap-3 px-gutter py-3">
                   <span
                     className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-none"
-                    style={{ backgroundColor: DIVISION_COLORS[item.division] ?? '#2e5c34' }}
+                    style={{ backgroundColor: DIVISION_COLORS[item.division] ?? chartColors.provisions }}
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-culinary-sans text-sm text-culinary-ink">{item.description}</p>

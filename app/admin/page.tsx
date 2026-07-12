@@ -17,21 +17,22 @@ import { getAdminPaymentHealth } from '@/lib/admin-payment-health'
 import PaymentHealthSection from '@/components/admin/PaymentHealthSection'
 import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
+import { chartColors } from '@/lib/design-tokens'
 
 export const dynamic = 'force-dynamic'
 
 const DIVISION_COLORS: Record<string, string> = {
-  Sportswear: '#CE472E',
-  Academy: '#534AB7',
-  Provisions: '#0D1F2D',
-  ProJu: '#3B6D11',
+  Sportswear: chartColors.sportswear,
+  Academy: chartColors.academy,
+  Provisions: chartColors.provisions,
+  ProJu: chartColors.proju,
 }
 
 const DIVISION_BORDER_LEFT_CLASSES: Record<string, string> = {
   Sportswear: 'border-l-[#CE472E]',
-  Academy: 'border-l-[#534AB7]',
-  Provisions: 'border-l-midnight',
-  ProJu: 'border-l-[#3B6D11]',
+  Academy: 'border-l-[#33526C]',
+  Provisions: 'border-l-[#002747]',
+  ProJu: 'border-l-[#FFBC00]',
 }
 
 interface Metrics {

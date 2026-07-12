@@ -3,6 +3,7 @@ import type { QuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials
 import { bookingNotificationRecipient, transactionalReplyToPayload } from '@/lib/platform-email'
 import type { DigitalStudioApplicationInput } from '@/lib/validation'
 import { siteOrigin } from '@/lib/site-url'
+import { brand } from '@/lib/design-tokens'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -708,7 +709,7 @@ export async function sendAdminNotificationEmail(
       subject: `New Bornfidis Booking Inquiry`,
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #2E6B4F; margin-bottom: 16px;">New Booking Inquiry</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">New Booking Inquiry</h2>
           
           <ul style="list-style: none; padding: 0;">
             <li style="margin-bottom: 8px;"><strong>Name:</strong> ${bookingData.name}</li>
@@ -763,7 +764,7 @@ export async function sendBookingApprovedEmail(
       subject: 'Your booking is confirmed 🎉',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #2E6B4F; margin-bottom: 16px;">Your booking is confirmed 🎉</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Your booking is confirmed 🎉</h2>
 
           <p>Hi ${name},</p>
 
@@ -817,7 +818,7 @@ export async function sendBookingDeclinedEmail(
       subject: 'Regarding your Bornfidis inquiry',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #2E6B4F; margin-bottom: 16px;">Thank you for your inquiry</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Thank you for your inquiry</h2>
 
           <p>Hi ${name},</p>
 
@@ -889,18 +890,18 @@ export async function sendInvoiceEmail(
       subject: `Invoice #${bookingData.invoiceNumber} - Bornfidis Provisions`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #0D1F2D;">Invoice #${bookingData.invoiceNumber}</h1>
+          <h1 style="color: ${brand.navy};">Invoice #${bookingData.invoiceNumber}</h1>
           <p>Dear ${name},</p>
           
           <p>Thank you for your payment! Your booking is now fully paid.</p>
           
-          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #C8963E;">
-            <h2 style="color: #0D1F2D; margin-top: 0;">Payment Summary</h2>
+          <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${brand.gold};">
+            <h2 style="color: ${brand.navy}; margin-top: 0;">Payment Summary</h2>
             <ul style="line-height: 1.8; list-style: none; padding: 0;">
               <li style="margin-bottom: 10px;"><strong>Total Amount:</strong> ${bookingData.totalAmount}</li>
               <li style="margin-bottom: 10px;"><strong>Deposit Paid:</strong> ${bookingData.depositPaid}</li>
               <li style="margin-bottom: 10px;"><strong>Balance Paid:</strong> ${bookingData.balancePaid}</li>
-              <li style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #C8963E;"><strong style="font-size: 18px; color: #22c55e;">Status: Fully Paid ✓</strong></li>
+              <li style="margin-top: 15px; padding-top: 15px; border-top: 2px solid ${brand.gold};"><strong style="font-size: 18px; color: ${brand.success};">Status: Fully Paid ✓</strong></li>
             </ul>
           </div>
           ${testimonialHtml}
@@ -982,12 +983,12 @@ export async function sendChefOnboardingEmail(
       subject: 'Complete Your Stripe Onboarding - Bornfidis Chef Network',
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #2E6B4F;">Welcome to the Bornfidis Chef Network, ${data.chef_name}!</h1>
+          <h1 style="color: ${brand.navy};">Welcome to the Bornfidis Chef Network, ${data.chef_name}!</h1>
           
           <p>Your application has been approved! To start receiving bookings and payouts, please complete your Stripe Connect onboarding.</p>
           
-          <div style="background-color: #f0f9f4; border-left: 4px solid #2E6B4F; padding: 16px; margin: 24px 0;">
-            <p style="margin: 0; font-weight: 600; color: #2E6B4F;">Next Steps:</p>
+          <div style="background-color: ${brand.ivory}; border-left: 4px solid ${brand.navy}; padding: 16px; margin: 24px 0;">
+            <p style="margin: 0; font-weight: 600; color: ${brand.navy};">Next Steps:</p>
             <ol style="margin: 12px 0 0 0; padding-left: 20px; line-height: 1.8;">
               <li>Click the button below to start onboarding</li>
               <li>Complete your Stripe account setup (takes ~5 minutes)</li>
@@ -997,7 +998,7 @@ export async function sendChefOnboardingEmail(
           
           <div style="text-align: center; margin: 32px 0;">
             <a href="${data.onboarding_url}" 
-               style="display: inline-block; background-color: #2E6B4F; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
+               style="display: inline-block; background-color: ${brand.navy}; color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 16px;">
               Complete Stripe Onboarding
             </a>
           </div>
@@ -1056,12 +1057,12 @@ export async function sendAdminMagicLinkEmail({
       subject: 'Sign in to Bornfidis Admin',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2 style="color: #002747; margin-bottom: 16px;">Bornfidis Admin</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Bornfidis Admin</h2>
           <p>Click below to sign in. This link expires shortly and can only be used once.</p>
           <p>
             <a href="${safeLink}"
                style="display:inline-block;padding:12px 20px;
-                      background:#002747;color:#faf6f0;
+                      background:${brand.navy};color:${brand.ivory};
                       text-decoration:none;border-radius:4px;
                       font-weight:600;">
               Sign in to Admin
@@ -1121,14 +1122,14 @@ export async function sendInviteEmail({
       subject: "You're invited to Bornfidis",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2 style="color: #14532d; margin-bottom: 16px;">You're invited to Bornfidis</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">You're invited to Bornfidis</h2>
           <p>A community building fair, local food systems in Jamaica.</p>
           <p>${whyLine}</p>
           <p>Click below to continue as ${roleLabel}:</p>
           <p>
             <a href="${inviteUrl}"
                style="display:inline-block;padding:12px 20px;
-                      background:#14532d;color:#fff;
+                      background:${brand.navy};color:${brand.white};
                       text-decoration:none;border-radius:6px;">
               Continue as ${roleLabel}
             </a>
@@ -1177,7 +1178,7 @@ export async function sendChefMonthlyStatementEmail({
       subject: `Your Monthly Chef Statement – ${monthLabel}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #2E6B4F;">Monthly Chef Statement</h2>
+          <h2 style="color: ${brand.navy};">Monthly Chef Statement</h2>
           <p>Hi ${chefName},</p>
           <p>Your earnings statement for <strong>${monthLabel}</strong> is attached as a PDF.</p>
           <p>This statement is for your records. Totals match payouts already made.</p>
@@ -1226,7 +1227,7 @@ export async function sendChefTaxSummaryEmail({
       subject: `Your ${year} Tax Summary – Bornfidis Chef`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #2E6B4F;">Annual Tax Summary (Informational)</h2>
+          <h2 style="color: ${brand.navy};">Annual Tax Summary (Informational)</h2>
           <p>Hi ${chefName},</p>
           <p>Your earnings summary for <strong>${year}</strong> is attached as a PDF.</p>
           <p>This is an informational summary for your records. It is not tax advice. Consult a tax professional for filing.</p>
@@ -1275,9 +1276,9 @@ export async function sendLeadMagnetDeliveryEmail({
       subject: `Your free guide: ${guideTitle}`,
       html: `
         <div style="font-family: system-ui, sans-serif; max-width: 600px;">
-          <h2 style="color: #2E6B4F;">Your guide is attached</h2>
+          <h2 style="color: ${brand.navy};">Your guide is attached</h2>
           <p>Thanks for signing up. Your free guide <strong>${guideTitle}</strong> is attached to this email.</p>
-          <p>Save it, print it, and start cooking. If you want to go deeper — full techniques, 28 lessons, and 42 professional recipes — check out <a href="${academyUrl}" style="color: #2E6B4F;">Caribbean Culinary Foundations</a> in the Academy.</p>
+          <p>Save it, print it, and start cooking. If you want to go deeper — full techniques, 28 lessons, and 42 professional recipes — check out <a href="${academyUrl}" style="color: ${brand.navy};">Caribbean Culinary Foundations</a> in the Academy.</p>
           <p style="margin-top: 24px; color: #666;">
             Bornfidis Academy
           </p>
@@ -1435,7 +1436,7 @@ export async function sendDigitalStudioApplicationEmails(
       subject: `[Digital Studio Pilot] ${application.businessName}`,
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #002747; margin-bottom: 16px;">New Digital Studio pilot application</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">New Digital Studio pilot application</h2>
           <ul style="list-style: none; padding: 0;">${adminList}</ul>
           <p style="margin-top: 20px; color: #666; font-size: 14px;">Reply directly to this email to reach the applicant.</p>
         </div>
@@ -1449,7 +1450,7 @@ export async function sendDigitalStudioApplicationEmails(
       subject: 'We received your Bornfidis Digital Studio application',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: #002747; margin-bottom: 16px;">Application received</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Application received</h2>
           <p>Hi ${escapeHtmlForEmail(application.contactName)},</p>
           <p>Thank you for applying to the Bornfidis Digital Studio pilot. We read every application personally and will reach out if we're a fit for this cohort.</p>
           <p style="margin-top: 24px; color: #666; font-size: 14px;">— Bornfidis Digital Studio</p>
