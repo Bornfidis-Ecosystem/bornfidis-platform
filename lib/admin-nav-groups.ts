@@ -83,6 +83,7 @@ export function getAdminNavVisualGroup(href: string): AdminNavVisualGroup {
   if (href.startsWith('/admin/reviews')) return 'quality'
   if (href.startsWith('/admin/cooperative') || href.startsWith('/admin/invites')) return 'partners'
   if (
+    href.startsWith('/admin/payments') ||
     href.startsWith('/admin/payouts') ||
     href.startsWith('/admin/currency') ||
     href.startsWith('/admin/region-pricing') ||

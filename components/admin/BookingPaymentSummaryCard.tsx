@@ -1,8 +1,9 @@
 import type { BookingInquiry } from '@/types/booking'
 import type { LastStripeActivityInfo } from '@/lib/admin-payment-health'
 import { formatUSD } from '@/lib/money'
-import ManualPaymentMarkButtons from './ManualPaymentMarkButtons'
+import { stripePaymentDashboardUrl } from '@/lib/stripe-reconciliation'
 import PaymentSummaryActionButtons from './PaymentSummaryActionButtons'
+import LinkStripePaymentPanel from './LinkStripePaymentPanel'
 import { CulinaryCard } from '@/components/culinary-os'
 
 type Props = {
@@ -22,12 +23,15 @@ type Props = {
     | 'event_date'
     | 'email'
     | 'phone'
+    | 'stripe_payment_link_url'
   >
   lastStripeActivity: LastStripeActivityInfo
   /** Quote saved with line items (required for deposit/quote emails). */
   hasSavedQuote: boolean
   /** Manual mark-paid / dangerous reconciliation — founder_admin only. */
   showFounderOnlyPaymentControls?: boolean
+  /** Optional: amount on a linked webhook log for mismatch detection */
+  lastReceivedAmountCents?: number | null
 }
 
 function fmtDate(iso: string | undefined) {
@@ -45,6 +49,20 @@ function fmtDate(iso: string | undefined) {
   }
 }
 
+function PiLink({ id }: { id?: string | null }) {
+  if (!id) return <span className="text-culinary-text-muted">—</span>
+  return (
+    <a
+      href={stripePaymentDashboardUrl(id)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="break-all font-mono text-[11px] text-culinary-navy underline hover:opacity-80"
+    >
+      {id}
+    </a>
+  )
+}
+
 /**
  * Payment truth-at-a-glance for admin booking detail (pairs with Stripe webhook updates).
  */
@@ -53,6 +71,7 @@ export default function BookingPaymentSummaryCard({
   lastStripeActivity,
   hasSavedQuote,
   showFounderOnlyPaymentControls = false,
+  lastReceivedAmountCents = null,
 }: Props) {
   const depositPaid = !!booking.paid_at
   const balancePaid = !!(booking.balance_paid_at || booking.fully_paid_at)
@@ -67,25 +86,36 @@ export default function BookingPaymentSummaryCard({
   let paymentBadge: { label: string; className: string }
   if (balancePaid) {
     paymentBadge = {
-      label: 'Fully paid',
+      label: 'Paid in full',
       className: 'border-culinary-forest/50 bg-culinary-bone text-culinary-forest',
     }
   } else if (depositPaid && impliedBalance > 0) {
     paymentBadge = {
-      label: 'Partially paid',
+      label: 'Deposit paid',
       className: 'border-culinary-gold-line bg-culinary-bone text-culinary-navy',
     }
   } else if (depositPaid) {
     paymentBadge = {
-      label: 'Deposit only',
+      label: 'Deposit paid',
       className: 'border-culinary-outline bg-culinary-surface-low text-culinary-navy',
+    }
+  } else if (booking.stripe_payment_link_url) {
+    paymentBadge = {
+      label: 'Awaiting payment',
+      className: 'border-amber-600/40 bg-amber-50 text-amber-950',
     }
   } else {
     paymentBadge = {
-      label: 'No payment recorded',
+      label: 'Not sent',
       className: 'border-culinary-outline bg-culinary-surface-low text-culinary-text-muted',
     }
   }
+
+  const expectedForMatch = depositPaid && !balancePaid ? depositCents : quoteTotal
+  const amountMismatch =
+    lastReceivedAmountCents != null &&
+    expectedForMatch > 0 &&
+    lastReceivedAmountCents !== expectedForMatch
 
   const miniPanel =
     'rounded-none border border-culinary-outline bg-culinary-surface-low p-gutter'
@@ -96,7 +126,7 @@ export default function BookingPaymentSummaryCard({
         <div>
           <h2 className="font-culinary-sans text-label-caps text-culinary-navy">Payment</h2>
           <p className="mt-0.5 font-culinary-sans text-body-md text-culinary-text-muted">
-            Stripe + manual reconciliation
+            Stripe Checkout + reconciliation
           </p>
         </div>
         <span
@@ -133,6 +163,13 @@ export default function BookingPaymentSummaryCard({
         </div>
       </div>
 
+      {amountMismatch && (
+        <div className="mt-stack-sm rounded-none border border-orange-500/50 bg-orange-50 px-3 py-2 font-culinary-sans text-body-md text-orange-950">
+          Amount mismatch: Stripe received {formatUSD(lastReceivedAmountCents!)} vs expected{' '}
+          {formatUSD(expectedForMatch)}. Confirm before treating as settled.
+        </div>
+      )}
+
       <PaymentSummaryActionButtons
         bookingId={booking.id}
         clientName={booking.name}
@@ -148,13 +185,13 @@ export default function BookingPaymentSummaryCard({
       <div className="mt-stack-md space-y-stack-sm font-culinary-sans text-body-md">
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           <span className="shrink-0 text-culinary-text-muted">Deposit PI</span>
-          <code className="break-all text-[11px] text-culinary-ink">{booking.stripe_payment_intent_id || '—'}</code>
+          <PiLink id={booking.stripe_payment_intent_id} />
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           <span className="shrink-0 text-culinary-text-muted">Balance PI</span>
-          <code className="break-all text-[11px] text-culinary-ink">
-            {booking.balance_payment_intent_id || booking.stripe_balance_payment_intent_id || '—'}
-          </code>
+          <PiLink
+            id={booking.balance_payment_intent_id || booking.stripe_balance_payment_intent_id}
+          />
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1">
           <span className="shrink-0 text-culinary-text-muted">Last Stripe-linked activity</span>
@@ -170,24 +207,19 @@ export default function BookingPaymentSummaryCard({
             )}
           </span>
         </div>
+        <p className="text-culinary-text-muted">
+          Payouts: processed by Stripe on your payout schedule (typically within ~2 business days after
+          available balance).
+        </p>
       </div>
 
-      {showFounderOnlyPaymentControls ? (
-        <div className="mt-stack-md border-t border-culinary-outline pt-stack-md">
-          <p className="mb-stack-sm font-culinary-sans text-label-caps text-culinary-text-muted">
-            Manual reconciliation
-          </p>
-          <ManualPaymentMarkButtons
-            bookingId={booking.id}
-            depositPaid={depositPaid}
-            balancePaid={balancePaid}
-          />
-        </div>
-      ) : (
-        <p className="mt-stack-md border-t border-culinary-outline pt-stack-md font-culinary-sans text-body-md text-culinary-text-muted">
-          Manual payment overrides are limited to founder admins.
-        </p>
-      )}
+      <LinkStripePaymentPanel
+        bookingId={booking.id}
+        depositPaid={depositPaid}
+        balancePaid={balancePaid}
+        hasBalanceDue={hasBalanceDue}
+        showFounderControls={showFounderOnlyPaymentControls}
+      />
     </CulinaryCard>
   )
 }

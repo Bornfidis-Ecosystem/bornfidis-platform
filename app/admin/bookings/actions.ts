@@ -1299,10 +1299,12 @@ export async function addBookingActivity(
 
 /**
  * Admin reconciliation: mark deposit received without Stripe (offline, metadata mismatch, etc.).
+ * Optional paymentIntentId attaches the Stripe PI for audit / dashboard links.
  */
 export async function markDepositPaidManually(
   bookingId: string,
-  note?: string
+  note?: string,
+  paymentIntentId?: string
 ): Promise<{ success: boolean; error?: string; alreadyApplied?: boolean }> {
   try {
     await requireAdminUser()
@@ -1316,17 +1318,26 @@ export async function markDepositPaidManually(
       return { success: true, alreadyApplied: true }
     }
     const now = new Date()
+    const pi = paymentIntentId?.trim() || undefined
     await db.bookingInquiry.update({
       where: { id: bookingId },
       data: {
         paidAt: now,
         status: 'booked',
+        ...(pi
+          ? {
+              stripePaymentIntentId: pi,
+              stripePaymentStatus: 'deposit_paid',
+            }
+          : {}),
       },
     })
     const act = await addBookingActivity(bookingId, {
       type: 'manual_deposit_paid',
       title: 'Deposit marked paid (manual)',
-      description: note?.trim() || 'Recorded by admin outside Stripe or for reconciliation.',
+      description:
+        [note?.trim(), pi ? `Stripe PI: ${pi}` : null].filter(Boolean).join(' · ') ||
+        'Recorded by admin outside Stripe or for reconciliation.',
     })
     if (!act.success) console.warn('markDepositPaidManually activity:', act.error)
     return { success: true }

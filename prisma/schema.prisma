@@ -345,6 +345,7 @@ model BookingInquiry {
   prepItems                    BookingPrepItem[]
   timeline                     BookingTimeline[]
   activities                   BookingActivity[]
+  stripeWebhookLogs            StripeWebhookLog[]
   clientProfile                ClientProfile?      @relation(fields: [clientProfileId], references: [id], onDelete: SetNull)
   chefAssignment               ChefAssignment?
   chefPrepChecklist            ChefPrepChecklist?
@@ -924,6 +925,31 @@ model StripeWebhookEvent {
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("stripe_webhook_events")
+  @@schema("public")
+}
+
+/// Auditable Stripe payment events for reconciliation (matched + unmatched).
+model StripeWebhookLog {
+  id                String    @id @default(uuid())
+  eventType         String    @map("event_type")
+  stripeEventId     String?   @unique @map("stripe_event_id")
+  stripeObjectId    String    @map("stripe_object_id")
+  paymentIntentId   String?   @map("payment_intent_id")
+  amountCents       Int?      @map("amount_cents")
+  customerEmail     String?   @map("customer_email")
+  matchedBookingId  String?   @map("matched_booking_id")
+  processingStatus  String    @default("received") @map("processing_status") // received | matched | unmatched | error
+  errorMessage      String?   @map("error_message")
+  paymentType       String?   @map("payment_type") // deposit | balance | consulting | unknown
+  rawPayload        Json?     @map("raw_payload")
+  receivedAt        DateTime  @default(now()) @map("received_at")
+  matchedBooking    BookingInquiry? @relation(fields: [matchedBookingId], references: [id], onDelete: SetNull)
+
+  @@index([matchedBookingId])
+  @@index([processingStatus])
+  @@index([customerEmail])
+  @@index([receivedAt])
+  @@map("stripe_webhook_log")
   @@schema("public")
 }
 

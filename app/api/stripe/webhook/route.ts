@@ -9,15 +9,15 @@ import { tryPayoutForBooking } from '@/lib/payout-engine'
 import { tryPayoutsForBooking } from '@/lib/farmer-payout-engine'
 import { tryPayoutsForBookingIngredients } from '@/lib/ingredient-payout-engine'
 import { recordBookingImpact } from '@/lib/impact-tracker'
-import { getAccountStatus } from '@/lib/stripe-connect'
 import { db } from '@/lib/db'
+import { writeStripeWebhookLog } from '@/lib/stripe-webhook-log'
+import {
+    customerEmailFromSession,
+    resolveBookingIdFromMetadata,
+    resolveCheckoutPaymentType,
+    sessionPaymentIntentId,
+} from '@/lib/stripe-reconciliation'
 import Stripe from 'stripe'
-
-function sessionPaymentIntentId(session: Stripe.Checkout.Session): string | null {
-    const pi = session.payment_intent
-    if (!pi) return null
-    return typeof pi === 'string' ? pi : pi.id
-}
 
 /** Per-event activity row; unique stripeEventId prevents duplicate rows on Stripe retries. */
 async function createBookingActivityDeduped(input: {
@@ -110,21 +110,17 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ received: true })
         }
 
-        const checkoutMode = (
-            session.metadata?.checkout_mode ||
-            session.metadata?.payment_type ||
-            session.metadata?.kind ||
-            session.metadata?.type ||
-            ''
-        ).toLowerCase()
+        const checkoutMode = resolveCheckoutPaymentType(session.metadata)
+        const paymentIntentId = sessionPaymentIntentId(session)
+        const customerEmail = customerEmailFromSession(session)
+        const amountCents = session.amount_total ?? null
 
         /** Consulting: no booking row — notify admin and exit */
         if (checkoutMode === 'consulting') {
             try {
                 const adminRaw = bookingNotificationRecipient()
-                const customer = session.customer_email || session.metadata?.customer_email || ''
                 const guest = session.metadata?.guest_name || ''
-                const amountTotal = session.amount_total != null ? formatUSD(session.amount_total) : '—'
+                const amountTotal = amountCents != null ? formatUSD(amountCents) : '—'
                 if (adminRaw?.includes('@')) {
                     await sendEmail({
                         to: adminRaw,
@@ -132,7 +128,7 @@ export async function POST(request: NextRequest) {
                         text: [
                             'A consulting / menu session was paid via Stripe Checkout.',
                             '',
-                            `Customer email: ${customer || '—'}`,
+                            `Customer email: ${customerEmail || '—'}`,
                             `Guest name (metadata): ${guest || '—'}`,
                             `Amount: ${amountTotal}`,
                             `Session: ${session.id}`,
@@ -140,6 +136,17 @@ export async function POST(request: NextRequest) {
                     })
                 }
                 console.log('✅ Consulting checkout completed (admin notified)')
+                await writeStripeWebhookLog({
+                    eventType: event.type,
+                    stripeEventId: event.id,
+                    stripeObjectId: session.id,
+                    paymentIntentId,
+                    amountCents,
+                    customerEmail,
+                    processingStatus: 'matched',
+                    paymentType: 'consulting',
+                    rawPayload: event as unknown as object,
+                })
                 await markStripeEventProcessed(event.id)
             } catch (consultErr: unknown) {
                 console.error('Consulting webhook handling error:', consultErr)
@@ -147,22 +154,47 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ received: true })
         }
 
-        const bookingId = session.metadata?.bookingId ?? session.metadata?.booking_id
+        const bookingId = resolveBookingIdFromMetadata(session.metadata)
         if (!bookingId) {
-            console.log('Skipping session without bookingId / booking_id')
+            console.log('Unmatched checkout.session.completed — no booking_id', session.id)
+            await writeStripeWebhookLog({
+                eventType: event.type,
+                stripeEventId: event.id,
+                stripeObjectId: session.id,
+                paymentIntentId,
+                amountCents,
+                customerEmail,
+                matchedBookingId: null,
+                processingStatus: 'unmatched',
+                paymentType: checkoutMode || 'unknown',
+                errorMessage: 'Missing metadata.booking_id / bookingId',
+                rawPayload: event as unknown as object,
+            })
+            await markStripeEventProcessed(event.id)
             return NextResponse.json({ received: true })
         }
 
-        const rawMeta = checkoutMode
-        const isDeposit = rawMeta === 'deposit'
-        const isFullOrBalance = rawMeta === 'full' || rawMeta === 'balance'
+        const isDeposit = checkoutMode === 'deposit'
+        const isFullOrBalance = checkoutMode === 'full' || checkoutMode === 'balance'
 
         if (!isDeposit && !isFullOrBalance) {
-            console.log(`Skipping session with unknown payment type: ${rawMeta || '(empty)'}`)
+            console.log(`Unmatched session — unknown payment type: ${checkoutMode || '(empty)'}`)
+            await writeStripeWebhookLog({
+                eventType: event.type,
+                stripeEventId: event.id,
+                stripeObjectId: session.id,
+                paymentIntentId,
+                amountCents,
+                customerEmail,
+                matchedBookingId: bookingId,
+                processingStatus: 'unmatched',
+                paymentType: checkoutMode || 'unknown',
+                errorMessage: `Unknown payment type: ${checkoutMode || '(empty)'}`,
+                rawPayload: event as unknown as object,
+            })
+            await markStripeEventProcessed(event.id)
             return NextResponse.json({ received: true })
         }
-
-        const paymentIntentId = sessionPaymentIntentId(session)
 
         try {
             if (isDeposit) {
@@ -186,6 +218,7 @@ export async function POST(request: NextRequest) {
                             stripe_payment_intent_id: paymentIntentId ?? undefined,
                             status: 'confirmed',
                             paid_at: new Date().toISOString(),
+                            stripe_payment_status: 'deposit_paid',
                         })
                         .eq('id', bookingId)
 
@@ -227,6 +260,18 @@ export async function POST(request: NextRequest) {
                 }
 
                 console.log(`✅ Deposit payment completed for booking ${bookingId}`)
+                await writeStripeWebhookLog({
+                    eventType: event.type,
+                    stripeEventId: event.id,
+                    stripeObjectId: session.id,
+                    paymentIntentId,
+                    amountCents,
+                    customerEmail,
+                    matchedBookingId: bookingId,
+                    processingStatus: 'matched',
+                    paymentType: 'deposit',
+                    rawPayload: event as unknown as object,
+                })
                 await markStripeEventProcessed(event.id)
             } else if (isFullOrBalance) {
                 // Full / balance payment — mark balance + fully paid timestamps
@@ -251,9 +296,11 @@ export async function POST(request: NextRequest) {
                 if (!previousBalancePaid) {
                     const updateData: Record<string, unknown> = {
                         stripe_balance_payment_intent_id: paymentIntentId ?? undefined,
+                        balance_payment_intent_id: paymentIntentId ?? undefined,
                         balance_paid_at: now,
                         fully_paid_at: now,
                         paid_at: now,
+                        stripe_payment_status: 'paid_in_full',
                     }
 
                     const { error: updateError } = await supabaseAdmin
@@ -380,15 +427,112 @@ export async function POST(request: NextRequest) {
                     }
                 }
 
+                await writeStripeWebhookLog({
+                    eventType: event.type,
+                    stripeEventId: event.id,
+                    stripeObjectId: session.id,
+                    paymentIntentId,
+                    amountCents,
+                    customerEmail,
+                    matchedBookingId: bookingId,
+                    processingStatus: 'matched',
+                    paymentType: 'balance',
+                    rawPayload: event as unknown as object,
+                })
                 await markStripeEventProcessed(event.id)
             }
         } catch (error: any) {
             console.error('Error processing payment webhook:', error)
+            await writeStripeWebhookLog({
+                eventType: event.type,
+                stripeEventId: event.id,
+                stripeObjectId: session.id,
+                paymentIntentId,
+                amountCents,
+                customerEmail,
+                matchedBookingId: bookingId,
+                processingStatus: 'error',
+                paymentType: isDeposit ? 'deposit' : 'balance',
+                errorMessage: error?.message || 'Failed to process payment',
+                rawPayload: event as unknown as object,
+            })
             return NextResponse.json(
                 { error: error.message || 'Failed to process payment' },
                 { status: 500 }
             )
         }
+    } else if (event.type === 'payment_intent.succeeded') {
+        const pi = event.data.object as Stripe.PaymentIntent
+        const alreadyProcessed = await db.stripeWebhookEvent.findUnique({ where: { id: event.id } })
+        if (alreadyProcessed) {
+            return NextResponse.json({ received: true })
+        }
+
+        const bookingId = resolveBookingIdFromMetadata(pi.metadata)
+        const paymentType = resolveCheckoutPaymentType(pi.metadata) || 'unknown'
+        const customerEmail =
+            (typeof pi.receipt_email === 'string' && pi.receipt_email) ||
+            pi.metadata?.customer_email ||
+            null
+        const amountCents = pi.amount_received || pi.amount
+
+        if (!bookingId) {
+            await writeStripeWebhookLog({
+                eventType: event.type,
+                stripeEventId: event.id,
+                stripeObjectId: pi.id,
+                paymentIntentId: pi.id,
+                amountCents,
+                customerEmail,
+                matchedBookingId: null,
+                processingStatus: 'unmatched',
+                paymentType,
+                errorMessage: 'payment_intent.succeeded without booking metadata — review in Payments tab',
+                rawPayload: event as unknown as object,
+            })
+            await markStripeEventProcessed(event.id)
+            return NextResponse.json({ received: true })
+        }
+
+        const existing = await db.bookingInquiry.findFirst({
+            where: {
+                OR: [{ stripePaymentIntentId: pi.id }, { balancePaymentIntentId: pi.id }],
+            },
+            select: { id: true },
+        })
+        if (existing) {
+            await writeStripeWebhookLog({
+                eventType: event.type,
+                stripeEventId: event.id,
+                stripeObjectId: pi.id,
+                paymentIntentId: pi.id,
+                amountCents,
+                customerEmail,
+                matchedBookingId: existing.id,
+                processingStatus: 'matched',
+                paymentType,
+                errorMessage: 'Already applied via checkout or prior update',
+                rawPayload: event as unknown as object,
+            })
+            await markStripeEventProcessed(event.id)
+            return NextResponse.json({ received: true })
+        }
+
+        await writeStripeWebhookLog({
+            eventType: event.type,
+            stripeEventId: event.id,
+            stripeObjectId: pi.id,
+            paymentIntentId: pi.id,
+            amountCents,
+            customerEmail,
+            matchedBookingId: bookingId,
+            processingStatus: 'unmatched',
+            paymentType,
+            errorMessage:
+                'payment_intent has booking_id but was not auto-applied (use Link payment on booking detail)',
+            rawPayload: event as unknown as object,
+        })
+        await markStripeEventProcessed(event.id)
     } else if (event.type === 'account.updated') {
         // Phase 5B: Handle Stripe Connect account updates
         const account = event.data.object as Stripe.Account
