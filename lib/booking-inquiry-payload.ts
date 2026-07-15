@@ -39,6 +39,9 @@ export const bookingInquiryPayloadSchema = z
     notes: z.string().optional(),
     upsellInterests: z.array(z.string()).max(32).optional(),
     website_url: z.string().max(0, 'Spam detected').optional(),
+    referralSource: z.string().max(120).optional(),
+    productSlug: z.string().max(120).optional(),
+    leadType: z.string().max(80).optional(),
   })
   .superRefine((val, ctx) => {
     const displayName = (val.fullName ?? val.name ?? '').trim()
@@ -46,15 +49,20 @@ export const bookingInquiryPayloadSchema = z
       ctx.addIssue({ code: 'custom', path: ['fullName'], message: 'Name must be at least 2 characters' })
     }
     const g = val.guestCount ?? val.guests
-    if (g == null || g < 1) {
-      ctx.addIssue({ code: 'custom', path: ['guestCount'], message: 'Guest count is required' })
+    // Contact / product / class inquiries often omit guest count — default later.
+    if (g != null && g < 1) {
+      ctx.addIssue({ code: 'custom', path: ['guestCount'], message: 'Guest count must be at least 1' })
     }
     if (g != null && g > 500) {
       ctx.addIssue({ code: 'custom', path: ['guestCount'], message: 'Guest count is too high' })
     }
   })
   .transform((val) => {
-    const guests = val.guestCount ?? val.guests!
+    const guests = val.guestCount ?? val.guests ?? 1
+    const productNote = val.productSlug?.trim()
+      ? `Product interest: ${val.productSlug.trim()}`
+      : null
+    const leadNote = val.leadType?.trim() ? `Lead type: ${val.leadType.trim()}` : null
     return {
       name: (val.fullName ?? val.name ?? '').trim(),
       email: val.email || null,
@@ -68,8 +76,11 @@ export const bookingInquiryPayloadSchema = z
       diningStyle: val.diningStyle || null,
       dietaryRestrictions: val.allergies || val.dietaryRestrictions || null,
       upsellInterests: val.upsellInterests ?? [],
+      referralSource: val.referralSource?.trim() || null,
+      productSlug: val.productSlug?.trim() || null,
+      leadType: val.leadType?.trim() || null,
       mergedNotes: mergePrivateDiningNotes({
-        notes: val.notes,
+        notes: [val.notes, leadNote, productNote].filter(Boolean).join('\n\n') || undefined,
         kitchenNotes: val.kitchenNotes,
         message: val.message,
         experienceType: val.experienceType,

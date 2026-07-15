@@ -26,6 +26,7 @@ const sectionHeading =
   'mb-5 border-b border-culinary-outline pb-2 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-text-muted'
 
 export default function ActionNeededSection({ actionNeeded }: { actionNeeded: AdminActionNeeded | null }) {
+  // id used by Phase 4 Command nav: /admin#action-needed
   const groups: GroupConfig[] = [
     {
       label: 'Deposit Follow-Up',
@@ -70,7 +71,7 @@ export default function ActionNeededSection({ actionNeeded }: { actionNeeded: Ad
   }
 
   return (
-    <section className="min-w-0">
+    <section id="action-needed" className="min-w-0 scroll-mt-24">
       <h2 className={sectionHeading}>Action Needed</h2>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -126,6 +127,57 @@ export default function ActionNeededSection({ actionNeeded }: { actionNeeded: Ad
             </Link>
           </CulinaryCard>
         ))}
+      </div>
+
+      {/* Phase 8: supplementary action indicators */}
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {(actionNeeded?.overduePrepTasks?.length ?? 0) > 0 && (
+          <CulinaryCard className="border-amber-200 bg-amber-50/60">
+            <h3 className="font-culinary-sans text-sm font-semibold text-amber-900">Overdue Prep Tasks</h3>
+            <p className="mt-1 font-culinary-sans text-2xl font-semibold tabular-nums text-amber-900">
+              {actionNeeded!.overduePrepTasks.length}
+            </p>
+            <Link href="/admin/bookings?prep=overdue" className="mt-2 inline-flex font-culinary-sans text-xs font-semibold text-amber-800 underline">
+              View overdue →
+            </Link>
+          </CulinaryCard>
+        )}
+
+        {(actionNeeded?.failedEmailCount ?? 0) > 0 && (
+          <CulinaryCard className="border-red-200 bg-red-50/60">
+            <h3 className="font-culinary-sans text-sm font-semibold text-red-900">Failed Emails</h3>
+            <p className="mt-1 font-culinary-sans text-2xl font-semibold tabular-nums text-red-900">
+              {actionNeeded!.failedEmailCount}
+            </p>
+            <Link href="/admin/email-log" className="mt-2 inline-flex font-culinary-sans text-xs font-semibold text-red-800 underline">
+              View email log →
+            </Link>
+          </CulinaryCard>
+        )}
+
+        {(actionNeeded?.dsApplicationsPending ?? 0) > 0 && (
+          <CulinaryCard>
+            <h3 className="font-culinary-sans text-sm font-semibold text-culinary-navy">DS Applications</h3>
+            <p className="mt-1 font-culinary-sans text-2xl font-semibold tabular-nums text-culinary-navy">
+              {actionNeeded!.dsApplicationsPending}
+            </p>
+            <Link href="/admin/digital-studio" className="mt-2 inline-flex font-culinary-sans text-xs font-semibold text-culinary-navy underline">
+              Review applications →
+            </Link>
+          </CulinaryCard>
+        )}
+
+        {(actionNeeded?.dsProjectsAwaitingInput ?? 0) > 0 && (
+          <CulinaryCard>
+            <h3 className="font-culinary-sans text-sm font-semibold text-culinary-navy">DS Awaiting Client</h3>
+            <p className="mt-1 font-culinary-sans text-2xl font-semibold tabular-nums text-culinary-navy">
+              {actionNeeded!.dsProjectsAwaitingInput}
+            </p>
+            <Link href="/admin/digital-studio" className="mt-2 inline-flex font-culinary-sans text-xs font-semibold text-culinary-navy underline">
+              View projects →
+            </Link>
+          </CulinaryCard>
+        )}
       </div>
     </section>
   )

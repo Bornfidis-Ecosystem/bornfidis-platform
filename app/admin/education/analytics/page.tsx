@@ -1,21 +1,18 @@
 import Link from 'next/link'
-import { getCurrentUserRole } from '@/lib/get-user-role'
-import { requireRole } from '@/lib/require-role'
+import { isManagerOrFounder, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { redirect } from 'next/navigation'
 import { getEducationAnalytics } from '@/lib/education-analytics'
 
 export const dynamic = 'force-dynamic'
 
-const ANALYTICS_ROLES = ['ADMIN', 'STAFF']
-
 /**
- * Phase 2O — Education Analytics. Admin/Staff only.
+ * Phase 2O — Education Analytics. Founder / manager only.
  * Completion rates, per-module table, non-compliant users.
  */
 export default async function AdminEducationAnalyticsPage() {
-  const role = await getCurrentUserRole()
-  if (!role) redirect('/admin/login')
-  requireRole(role, ANALYTICS_ROLES)
+  const platformRole = await resolveAdminPlatformRole()
+  if (!platformRole) redirect('/admin/login')
+  if (!isManagerOrFounder(platformRole)) redirect('/admin')
 
   const analytics = await getEducationAnalytics()
 

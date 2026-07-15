@@ -19,12 +19,13 @@ If `ADMIN_EMAIL` is unset at runtime, **`bookings@bornfidis.com`** is still used
 | Purpose | Address | Notes |
 |---------|---------|--------|
 | Founder / owner | `brian@bornfidis.com` | Primary founder; include on `ADMIN_EMAILS` for dashboard access. |
+| Founder (shared admin) | `admin@bornfidis.com` | Full founder permissions when seeded as `founder_admin` + Prisma `ADMIN`. |
 | Backup admin login | `bornfidisprovisions@gmail.com` | Gmail backup; keep on `ADMIN_EMAILS` if this account should reach `/admin`. |
 | Booking notifications | `bookings@bornfidis.com` | **`ADMIN_EMAIL`** — queue for new inquiries and related system mail. |
 | Customer-facing sender | `provisions@bornfidis.com` | **`RESEND_FROM_EMAIL`** — culinary / luxury brand line. |
 | Public / replies | `hello@bornfidis.com` | **`RESEND_REPLY_TO`** and public `mailto:` patterns on marketing pages where applicable. |
 | System / backend | `tech@bornfidis.com` | Engineering, migrations, infrastructure; not wired as a default recipient in app code—add to `admin_user_roles` or ops lists as needed. |
-| Internal admin (alias) | `admin@bornfidis.com` | Optional shared ops alias; configure in Google Workspace / forwarding as needed. |
+| Internal admin (alias) | `admin@bornfidis.com` | Shared founder login alias — keep on `ADMIN_EMAILS` and `admin_user_roles` as `founder_admin` for full Culinary OS access. |
 
 ## Operations & hospitality (Caryll)
 

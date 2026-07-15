@@ -4,6 +4,7 @@ import { createBookingInquiryRecord } from '@/lib/booking-inquiry-create'
 import { sendBookingConfirmationEmail, sendAdminNotificationEmail } from '@/lib/email'
 import { bookingNotificationRecipient } from '@/lib/platform-email'
 import { sendSubmissionConfirmationSMS } from '@/lib/sms-utils'
+import { checkFormRateLimit, clientIpFromRequest } from '@/lib/form-rate-limit'
 
 /**
  * POST /api/submit-booking
@@ -11,6 +12,15 @@ import { sendSubmissionConfirmationSMS } from '@/lib/sms-utils'
  */
 export async function POST(request: NextRequest) {
   try {
+    const ip = clientIpFromRequest(request)
+    const rate = checkFormRateLimit(`book:${ip}`, { limit: 8, windowMs: 60_000 })
+    if (!rate.ok) {
+      return NextResponse.json(
+        { success: false, error: 'Too many submissions. Please wait a minute and try again.' },
+        { status: 429, headers: { 'Retry-After': String(rate.retryAfterSec) } },
+      )
+    }
+
     const body = await request.json()
 
     if (body.website_url && body.website_url.length > 0) {

@@ -2,12 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { brandAssets } from '@/lib/brand-assets'
-import { brandCopyrightLine, BRAND_LEGAL } from '@/lib/brand-legal'
+import { brandCopyrightLine, brandLocationsLine, BRAND_LEGAL } from '@/lib/brand-legal'
 import { PHASE1_CTA, PHASE1_FOOTER_LINKS, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
 import { PROVISIONS_BATCH_LINE } from '@/lib/provisions-products'
 
 /**
- * Global public footer — navy canvas, gold accents, compass mark.
+ * Global public footer — navy canvas, gold accents, umbrella brand.
  */
 
 const EXPERIENCE_LINKS = [
@@ -18,6 +18,7 @@ const EXPERIENCE_LINKS = [
 
 const BORNFIDIS_LINKS = [
   { href: '/our-story', label: 'Our Story' },
+  { href: '/digital-studio', label: 'Digital Studio' },
   ...PHASE1_FOOTER_LINKS,
   { href: '/contact', label: 'Contact' },
 ] as const
@@ -39,12 +40,12 @@ export default function PublicFooter() {
             <div className="mb-6 flex items-center gap-3">
               <Image src={brandAssets.markGold} alt="" width={40} height={40} className="h-10 w-10" />
               <span className="font-display text-[1.25rem] font-semibold text-[var(--color-gold)]">
-                Bornfidis Provisions
+                {BRAND_LEGAL.umbrellaName}
               </span>
             </div>
             <p className="max-w-sm font-sans text-sm leading-relaxed text-white/55">
-              Chef-led private dining from {BRAND_LEGAL.locationsLine} — luxury-ship training, one table at a
-              time. {PROVISIONS_BATCH_LINE}
+              {BRAND_LEGAL.umbrellaName} — chef-led hospitality and digital operating systems from{' '}
+              {brandLocationsLine()}. {PROVISIONS_BATCH_LINE}
             </p>
           </div>
 
@@ -90,8 +91,8 @@ export default function PublicFooter() {
                 </li>
               ))}
               <li>
-                <a href="mailto:hello@bornfidis.com" className={linkClass}>
-                  hello@bornfidis.com
+                <a href={`mailto:${BRAND_LEGAL.email}`} className={linkClass}>
+                  {BRAND_LEGAL.email}
                 </a>
               </li>
             </ul>
@@ -99,26 +100,21 @@ export default function PublicFooter() {
         </div>
 
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-          <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25">
-            {brandCopyrightLine()}
-          </p>
+          <div className="max-w-2xl space-y-1">
+            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25">
+              {brandCopyrightLine()}
+            </p>
+            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25">
+              {brandLocationsLine()}
+            </p>
+          </div>
           <div className="flex gap-8">
-            <a
-              href="https://bornfidis.com/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={legalLinkClass}
-            >
+            <Link href="/privacy" className={legalLinkClass}>
               Privacy
-            </a>
-            <a
-              href="https://bornfidis.com/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={legalLinkClass}
-            >
+            </Link>
+            <Link href="/terms" className={legalLinkClass}>
               Terms
-            </a>
+            </Link>
           </div>
         </div>
       </div>

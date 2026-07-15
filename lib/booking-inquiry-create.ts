@@ -32,6 +32,7 @@ export async function createBookingInquiryRecord(
     dietaryRestrictions: p.dietaryRestrictions,
     notes: p.mergedNotes,
     status: 'new_inquiry',
+    referralSource: p.referralSource,
     clientProfile: { connect: { id: clientProfile.id } },
   }
 

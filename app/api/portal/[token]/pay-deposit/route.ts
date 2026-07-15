@@ -36,7 +36,7 @@ export async function POST(
     // Verify token and get booking
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
-      .select('id, name, email, quote_total_cents, deposit_amount_cents, paid_at, customer_portal_token_revoked_at')
+      .select('id, name, email, quote_total_cents, deposit_amount_cents, quote_deposit_cents, paid_at, customer_portal_token_revoked_at')
       .eq('customer_portal_token', token)
       .is('customer_portal_token_revoked_at', null)
       .single()
@@ -56,7 +56,7 @@ export async function POST(
       )
     }
 
-    const depositAmountCents = booking.deposit_amount_cents || 0
+    const depositAmountCents = booking.deposit_amount_cents || booking.quote_deposit_cents || 0
     if (depositAmountCents <= 0) {
       return NextResponse.json(
         { success: false, error: 'No deposit amount set. Please contact us.' },
@@ -97,8 +97,11 @@ export async function POST(
       metadata: {
         booking_id: booking.id,
         bookingId: booking.id,
-        customer_name: booking.name || '',
+        checkout_mode: 'deposit',
         payment_type: 'deposit',
+        type: 'deposit',
+        customer_name: booking.name || '',
+        deposit_amount_cents: String(depositAmountCents),
       },
     })
 
@@ -108,6 +111,7 @@ export async function POST(
       .update({
         stripe_session_id: session.id,
         deposit_amount_cents: depositAmountCents,
+        quote_deposit_cents: depositAmountCents,
       })
       .eq('id', booking.id)
 

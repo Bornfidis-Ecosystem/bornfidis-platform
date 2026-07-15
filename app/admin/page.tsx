@@ -193,10 +193,10 @@ export default async function AdminPage() {
             </span>
             {showFinancials ? (
               <Link
-                href="/admin/quotes"
+                href="/admin/bookings"
                 className="hidden sm:inline-flex items-center justify-center rounded-none bg-culinary-navy px-5 py-2.5 font-culinary-sans text-label-caps uppercase tracking-[0.1em] text-culinary-on-navy transition-colors hover:bg-culinary-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-culinary-gold"
               >
-                Quote Builder
+                Bookings
               </Link>
             ) : null}
           </div>
@@ -367,31 +367,27 @@ export default async function AdminPage() {
         {/* Zone 1.36 — Prep execution readiness (checklist gates, next 7 days) */}
         <PrepAttentionSection rows={prepAttention} />
 
-        {/* Zone 1.5 — Provisions Quote Builder quick launch (financial roles only) */}
+        {/* Zone 1.5 — Live quote path (financial roles only) */}
         {showFinancials ? (
         <section className="min-w-0">
-          <h2 className={sectionHeading}>Provisions Quote Builder</h2>
+          <h2 className={sectionHeading}>Quotes & deposits</h2>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             <CulinaryCard
               as={Link}
-              href="/admin/quotes"
+              href="/admin/bookings"
               className="group block transition refined hover:border-culinary-gold-line hover:bg-culinary-surface-low lg:col-span-1"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-culinary-display text-lg font-semibold text-culinary-navy">Provisions Quote Builder</h3>
+                  <h3 className="font-culinary-display text-lg font-semibold text-culinary-navy">Booking quotes</h3>
                   <p className="mt-2 font-culinary-sans text-sm leading-6 text-culinary-text-muted">
-                    Generate client-ready quotes, deposit totals, and copy-ready WhatsApp and email replies.
+                    Save line items and deposits on a booking, then send portal or Stripe deposit links (live money path).
                   </p>
-                </div>
-
-                <div className="rounded-none border border-culinary-gold-line bg-culinary-bone px-3 py-1 font-culinary-sans text-xs font-semibold text-culinary-navy">
-                  New
                 </div>
               </div>
 
               <div className="mt-4 inline-flex items-center font-culinary-sans text-sm font-semibold text-culinary-navy group-hover:text-culinary-gold">
-                Open Quote Builder →
+                Open bookings →
               </div>
             </CulinaryCard>
           </div>

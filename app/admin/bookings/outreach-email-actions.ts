@@ -137,6 +137,14 @@ export async function sendBookingQuoteOfferEmail(bookingId: string): Promise<
     return { success: false, error: sendResult.error || 'Failed to send email' }
   }
 
+  await db.bookingInquiry.update({
+    where: { id: bookingId },
+    data: {
+      quoteStatus: 'sent',
+      quoteSentAt: new Date(),
+    },
+  })
+
   const logResult = await addBookingActivity(bookingId, {
     type: 'quote_sent',
     title: 'Quote email sent',

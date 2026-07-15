@@ -7,7 +7,7 @@ import { headers } from 'next/headers'
 import { UserRole } from '@prisma/client'
 import { checkAdminAccess } from '@/lib/requireAdmin'
 import { CulinaryAdminChrome } from '@/components/culinary-os'
-import { getNavForPlatformUser } from '@/lib/filter-nav'
+import { getPrimaryNavForPlatformUser, groupAdminNavItems } from '@/lib/filter-nav'
 import { guardFinancialPath } from '@/lib/admin-rbac'
 import { canViewPlatformFinancials, platformRoleLabel } from '@/lib/ops-coordinator-access'
 import { ADMIN_AREA_ROLES, hasRole } from '@/lib/require-role'
@@ -121,7 +121,7 @@ export default async function AdminLayout({
 
     return (
       <CulinaryAdminChrome
-        navItems={getNavForPlatformUser(navRole, platformRole)}
+        navGroups={groupAdminNavItems(getPrimaryNavForPlatformUser(navRole, platformRole))}
         user={result.user}
         role={roleBadge}
         showFinancialShortcuts={canViewPlatformFinancials(platformRole)}

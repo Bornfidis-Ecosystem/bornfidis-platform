@@ -13,7 +13,7 @@ export function getAllowedAdminEmails(): string[] {
   const adminEmails = process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || ''
   return adminEmails
     .split(',')
-    .map((email) => email.trim().toLowerCase())
+    .map((email) => email.trim().toLowerCase().replace(/\r/g, ''))
     .filter((email) => email.length > 0)
 }
 
@@ -23,7 +23,7 @@ export function getAllowedAdminEmails(): string[] {
  */
 export function isAllowedAdminEmail(email: string): boolean {
   const allowedEmails = getAllowedAdminEmails()
-  return allowedEmails.includes(email.toLowerCase())
+  return allowedEmails.includes(email.trim().toLowerCase().replace(/\r/g, ''))
 }
 
 /**
@@ -91,9 +91,11 @@ export async function getServerAuthUser() {
       return null
     }
 
-    // Check if user's email is in allowed admin emails
+    // Allowlist, or active platform / Prisma admin-area role (admin_user_roles).
     if (!isAllowedAdminEmail(user.email)) {
-      return null
+      const { resolveAdminPlatformRoleForEmail } = await import('@/lib/admin-rbac')
+      const platformRole = await resolveAdminPlatformRoleForEmail(user.email)
+      if (!platformRole) return null
     }
 
     return user

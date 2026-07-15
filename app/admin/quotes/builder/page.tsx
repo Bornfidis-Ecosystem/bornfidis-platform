@@ -137,7 +137,7 @@ export default function AdminQuotesPage() {
             <div>
               <h1 className="font-culinary-display text-2xl font-bold text-culinary-navy">Bornfidis Provisions Quote Builder</h1>
               <p className="mt-1 font-culinary-sans text-sm text-culinary-text-muted">
-                Create a client-ready quote preview for private chef bookings (no database required).
+                Preview only — does not save to the database or create a portal deposit.
               </p>
             </div>
 
@@ -148,6 +148,17 @@ export default function AdminQuotesPage() {
             )}
           </div>
         </div>
+
+        <CulinaryCard className="border-amber-300 bg-amber-50/90 print:hidden">
+          <p className="font-culinary-sans text-sm font-semibold text-amber-950">Preview / Labs tool</p>
+          <p className="mt-1 font-culinary-sans text-sm text-amber-900/90">
+            To collect a real deposit, open the booking and use{' '}
+            <Link href="/admin/bookings" className="underline font-medium">
+              Quote &amp; Payment
+            </Link>
+            , then send the client portal link. This page only builds copy-ready text.
+          </p>
+        </CulinaryCard>
 
         <CulinaryCard as="form" onSubmit={handleSubmit} className="print:hidden sm:p-7">
           <div className="grid gap-5 md:grid-cols-2">

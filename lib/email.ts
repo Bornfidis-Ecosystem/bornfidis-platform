@@ -4,6 +4,7 @@ import { bookingNotificationRecipient, transactionalReplyToPayload } from '@/lib
 import type { DigitalStudioApplicationInput } from '@/lib/validation'
 import { siteOrigin } from '@/lib/site-url'
 import { brand } from '@/lib/design-tokens'
+import { BRAND_LEGAL, brandCopyrightLine } from '@/lib/brand-legal'
 
 // Check if Resend API key is configured
 if (!process.env.RESEND_API_KEY) {
@@ -12,10 +13,40 @@ if (!process.env.RESEND_API_KEY) {
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-// Email "from" address - use custom domain if verified, otherwise use Resend test domain
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL
-  ? `Bornfidis Provisions <${process.env.RESEND_FROM_EMAIL}>`
-  : 'Bornfidis Provisions <onboarding@resend.dev>'
+const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev'
+
+/**
+ * Division-aware sender identity (Phase 7).
+ * Provisions: "Bornfidis Provisions <provisions@bornfidis.com>"
+ * Digital Studio: "Bornfidis Digital Studio <hello@bornfidis.com>"
+ * Admin/internal: "Bornfidis <admin@bornfidis.com>"
+ */
+type EmailDivision = 'provisions' | 'digital-studio' | 'admin' | 'academy'
+
+function fromAddress(division: EmailDivision = 'provisions'): string {
+  switch (division) {
+    case 'digital-studio':
+      return `${BRAND_LEGAL.digitalStudioDba} <${FROM_ADDRESS}>`
+    case 'admin':
+      return `Bornfidis <${FROM_ADDRESS}>`
+    case 'academy':
+      return `Bornfidis Academy <${FROM_ADDRESS}>`
+    default:
+      return `${BRAND_LEGAL.provisionsDba} <${FROM_ADDRESS}>`
+  }
+}
+
+const FROM_EMAIL = fromAddress('provisions')
+
+/** Standard email footer with legal line and copyright. */
+function emailLegalFooter(): string {
+  return `
+    <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #9ca3af; line-height: 1.5;">
+      <p style="margin: 0;">${brandCopyrightLine()}</p>
+      <p style="margin: 4px 0 0;">${BRAND_LEGAL.companyLegalLine}.</p>
+    </div>
+  `
+}
 
 function escapeHtmlForEmail(s: string): string {
   return s
@@ -177,16 +208,18 @@ export async function sendDepositRequestEmail(
       <p style="margin-top: 24px;">
         Warm regards,<br/>
         <strong>Brian Maylor</strong><br/>
-        Bornfidis Provisions
+        ${BRAND_LEGAL.provisionsDba}
       </p>
+      ${emailLegalFooter()}
     </div>
   `
 
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to: input.to,
-      subject: `Bornfidis Provisions — Deposit request for ${input.clientName.trim()}`,
+      subject: `${BRAND_LEGAL.provisionsDba} — Deposit request for ${input.clientName.trim()}`,
       text,
       html,
     })
@@ -274,14 +307,16 @@ export async function sendQuoteOfferEmail(
       <p style="margin-top: 24px;">
         Warm regards,<br/>
         <strong>Brian Maylor</strong><br/>
-        Bornfidis Provisions
+        ${BRAND_LEGAL.provisionsDba}
       </p>
+      ${emailLegalFooter()}
     </div>
   `
 
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to: input.to,
       subject: `Your Bornfidis quote — ${input.clientName.trim()}`,
       text,
@@ -368,7 +403,7 @@ export async function sendAcademyPurchaseConfirmationEmail(
         `
   try {
     await resend.emails.send({
-      from: FROM_EMAIL,
+      from: fromAddress('academy'),
       to,
       subject: `Your ${params.productTitle} is Ready`,
       html: `
@@ -388,6 +423,7 @@ export async function sendAcademyPurchaseConfirmationEmail(
             With gratitude,<br/>
             <strong>Bornfidis Academy</strong>
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -486,8 +522,9 @@ export async function sendBookingConfirmationEmail(
           <p style="margin: 0 0 8px; font-size: 16px;">We look forward to serving you.</p>
           <p style="margin: 28px 0 0; font-size: 15px; color: #374151;">
             — Brian Maylor<br/>
-            <strong style="color: #0F3D2E;">Bornfidis Provisions</strong>
+            <strong style="color: #0F3D2E;">${BRAND_LEGAL.provisionsDba}</strong>
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -500,7 +537,8 @@ export async function sendBookingConfirmationEmail(
 }
 
 /**
- * Sent when Stripe deposit checkout completes — mirrors admin deposit copy with optional social proof.
+ * @deprecated Never called — `sendPrivateDiningBookingConfirmedEmail` is used instead.
+ * Kept for backward compatibility; remove after confirming no external callers.
  */
 export async function sendDepositReceivedEmail(
   to: string,
@@ -534,8 +572,9 @@ export async function sendDepositReceivedEmail(
           ${testimonialHtml}
           <p style="margin-top: 24px;">
             With gratitude,<br/>
-            <strong>Bornfidis Provisions</strong>
+            <strong>${BRAND_LEGAL.provisionsDba}</strong>
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -570,8 +609,9 @@ export async function sendPrivateDiningBookingConfirmedEmail(
   try {
     await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to,
-      subject: 'Your private dining is confirmed — Bornfidis Provisions',
+      subject: `Your private dining is confirmed — ${BRAND_LEGAL.provisionsDba}`,
       text: [
         `Hi ${name.trim().split(/\s+/)[0] || 'there'},`,
         '',
@@ -587,7 +627,8 @@ export async function sendPrivateDiningBookingConfirmedEmail(
           <p>We&rsquo;ve received your deposit and your private dining date is <strong>confirmed</strong> with our team.</p>
           <p>Next, we&rsquo;ll connect on menu direction, service timing, and any final details so the day runs smoothly.</p>
           ${testimonialHtml}
-          <p style="margin-top: 28px;">With gratitude,<br/><strong style="color: #0F3D2E;">Bornfidis Provisions</strong></p>
+          <p style="margin-top: 28px;">With gratitude,<br/><strong style="color: #0F3D2E;">${BRAND_LEGAL.provisionsDba}</strong></p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -652,8 +693,9 @@ export async function sendInquiryStalenessReminderEmail(
             If anything changed, reply to this email and we&rsquo;ll adjust the plan.
           </p>
           <p style="margin: 28px 0 0; font-size: 15px; color: #0F3D2E;">
-            <strong>Bornfidis Provisions</strong>
+            <strong>${BRAND_LEGAL.provisionsDba}</strong>
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -760,13 +802,14 @@ export async function sendBookingApprovedEmail(
     console.log('📧 Sending booking approved email to:', to)
     const result = await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to,
-      subject: 'Your booking is confirmed 🎉',
+      subject: 'Your booking is confirmed',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
-          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Your booking is confirmed 🎉</h2>
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Your booking is confirmed</h2>
 
-          <p>Hi ${name},</p>
+          <p>Hi ${escapeHtmlForEmail(name)},</p>
 
           <p>
             We're happy to confirm your Bornfidis event for
@@ -779,9 +822,10 @@ export async function sendBookingApprovedEmail(
 
           <p style="margin-top: 24px;">
             With gratitude,<br/>
-            <strong>Bornfidis Provisions</strong><br/>
-            Food • Community • Trust
+            <strong>${BRAND_LEGAL.provisionsDba}</strong><br/>
+            Food &bull; Community &bull; Trust
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -814,17 +858,18 @@ export async function sendBookingDeclinedEmail(
     console.log('📧 Sending booking declined email to:', to)
     const result = await resend.emails.send({
       from: FROM_EMAIL,
+      ...transactionalReplyToPayload(),
       to,
       subject: 'Regarding your Bornfidis inquiry',
       html: `
         <div style="font-family: system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6;">
           <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Thank you for your inquiry</h2>
 
-          <p>Hi ${name},</p>
+          <p>Hi ${escapeHtmlForEmail(name)},</p>
 
           <p>
             Thank you for reaching out to Bornfidis.
-            Unfortunately, we're unable to support this request at this time.
+            Unfortunately, we&rsquo;re unable to support this request at this time.
           </p>
 
           <p>
@@ -833,8 +878,9 @@ export async function sendBookingDeclinedEmail(
 
           <p style="margin-top: 24px;">
             Respectfully,<br/>
-            <strong>Bornfidis Provisions</strong>
+            <strong>${BRAND_LEGAL.provisionsDba}</strong>
           </p>
+          ${emailLegalFooter()}
         </div>
       `,
     })
@@ -1428,8 +1474,10 @@ export async function sendDigitalStudioApplicationEmails(
     .join('')
 
   try {
+    const dsFrom = fromAddress('digital-studio')
+
     await resend.emails.send({
-      from: FROM_EMAIL,
+      from: fromAddress('admin'),
       ...transactionalReplyToPayload(),
       to: adminEmail,
       reply_to: application.contactEmail,
@@ -1444,7 +1492,7 @@ export async function sendDigitalStudioApplicationEmails(
     })
 
     await resend.emails.send({
-      from: FROM_EMAIL,
+      from: dsFrom,
       ...transactionalReplyToPayload(),
       to: application.contactEmail,
       subject: 'We received your Bornfidis Digital Studio application',
@@ -1453,7 +1501,8 @@ export async function sendDigitalStudioApplicationEmails(
           <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Application received</h2>
           <p>Hi ${escapeHtmlForEmail(application.contactName)},</p>
           <p>Thank you for applying to the Bornfidis Digital Studio pilot. We read every application personally and will reach out if we're a fit for this cohort.</p>
-          <p style="margin-top: 24px; color: #666; font-size: 14px;">— Bornfidis Digital Studio</p>
+          <p style="margin-top: 24px; color: #666; font-size: 14px;">— ${BRAND_LEGAL.digitalStudioDba}</p>
+          ${emailLegalFooter()}
         </div>
       `,
     })

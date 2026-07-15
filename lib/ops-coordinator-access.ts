@@ -23,6 +23,7 @@ export const FINANCIAL_ADMIN_PATH_PREFIXES = [
   '/admin/board-deck',
   '/admin/scenarios',
   '/admin/quotes',
+  '/admin/payments',
   '/admin/okrs',
   '/admin/experiments',
   '/admin/capacity',

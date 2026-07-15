@@ -420,36 +420,18 @@ export async function updateBooking(
           }
         }
 
-        // Phase 3.5: Auto-generate prep checklist when booking is approved
-        // Only create prep items if model exists (migration has been run)
-        if ('bookingPrepItem' in db) {
-          try {
-            // Check if prep checklist already exists to prevent duplicates
-            const existingPrep = await db.bookingPrepItem.findFirst({
-              where: { bookingId: id },
-            })
-
-            if (!existingPrep) {
-              await db.bookingPrepItem.createMany({
-                data: [
-                  { bookingId: id, title: 'Confirm guest count', order: 1 },
-                  { bookingId: id, title: 'Confirm event location', order: 2 },
-                  { bookingId: id, title: 'Finalize menu / service scope', order: 3 },
-                  { bookingId: id, title: 'Assign lead chef', order: 4 },
-                  { bookingId: id, title: 'Assign support staff', order: 5 },
-                  { bookingId: id, title: 'Confirm suppliers / farmers', order: 6 },
-                  { bookingId: id, title: 'Equipment & transport check', order: 7 },
-                  { bookingId: id, title: 'Final client confirmation', order: 8 },
-                  { bookingId: id, title: 'Day-before readiness check', order: 9 },
-                  { bookingId: id, title: 'Event-day execution', order: 10 },
-                ],
-              })
-              console.log('✅ Auto-generated prep checklist for booking:', id)
-            }
-          } catch (prepError: any) {
-            // If prep creation fails (e.g., table doesn't exist), just log and continue
-            console.warn('Could not create prep checklist (migration may not be run yet):', prepError.message)
+        // Phase 8: Idempotent prep task creation using BookingPrepItem source of truth
+        try {
+          const { createDefaultPrepTasks } = await import('@/lib/prep-tasks')
+          const created = await createDefaultPrepTasks(id, {
+            eventDate: currentBooking.eventDate,
+            actorName: 'System (booking confirmed)',
+          })
+          if (created > 0) {
+            console.log(`✅ Created ${created} prep tasks for booking:`, id)
           }
+        } catch (prepError: unknown) {
+          console.warn('Could not create prep tasks:', prepError instanceof Error ? prepError.message : prepError)
         }
       } else if (updates.status === 'declined') {
         // Send email (if email provided)
@@ -991,6 +973,31 @@ export async function updateBookingQuote(
   await requireAuth()
 
   try {
+    // Phase 5: Immutable after deposit paid or client accepted
+    const existing = await db.bookingInquiry.findUnique({
+      where: { id },
+      select: {
+        paidAt: true,
+        quoteStatus: true,
+      },
+    })
+    if (!existing) {
+      return { success: false, error: 'Booking not found' }
+    }
+    if (existing.paidAt) {
+      return {
+        success: false,
+        error: 'Quote is locked after deposit payment. Create a new booking revision if totals must change.',
+      }
+    }
+    const statusNorm = (existing.quoteStatus ?? '').toLowerCase()
+    if (statusNorm === 'accepted') {
+      return {
+        success: false,
+        error: 'Quote was accepted by the client and is locked. Unlock by declining, or revise via a new inquiry.',
+      }
+    }
+
     // Validate input
     if (!payload.quote_line_items || payload.quote_line_items.length === 0) {
       return { success: false, error: 'At least one line item is required' }
@@ -1070,14 +1077,17 @@ export async function updateBookingQuote(
       quoteTotalCents,
       depositPercentage: payload.deposit_percentage,
       depositAmountCents,
+      // Keep dual columns in sync (email/admin paths historically used quote_deposit_cents)
+      quoteDepositCents: depositAmountCents,
       balanceAmountCents,
+      quoteUpdatedAt: new Date(),
+      // Invalidate stale Stripe links when amounts change (Phase 5 dynamic deposit)
+      stripePaymentLinkUrl: null,
+      stripeSessionId: null,
       regionCode: regionCode ?? null,
       regionMultiplierSnapshot: regionMultiplierSnapshot ?? null,
       regionTravelFeeCentsSnapshot: regionTravelFeeCentsSnapshot ?? null,
       regionMinimumCentsSnapshot: regionMinimumCentsSnapshot ?? null,
-      surgeMultiplierSnapshot: surgeMultiplierSnapshot ?? null,
-      surgeAppliedAt: surgeAppliedAt ?? null,
-      surgeLabel: surgeLabel ?? null,
     }
 
     // Phase 2S + 2Q: Tier multiplier (locked at assignment) then performance bonus on tiered base
@@ -1830,7 +1840,7 @@ export async function toggleTimelineMilestone(
  */
 export async function getBookingPrepItems(
   bookingId: string
-): Promise<{ success: boolean; prepItems?: Array<{ id: string; title: string; order: number; completed: boolean; completedAt: string | null; notes: string | null; createdAt: string }>; error?: string }> {
+): Promise<{ success: boolean; prepItems?: Array<{ id: string; title: string; taskType: string | null; order: number; status: string; priority: string; assignedTo: string | null; dueAt: string | null; completed: boolean; completedAt: string | null; notes: string | null; createdAt: string }>; error?: string }> {
   await requireAuth()
 
   try {
@@ -1850,7 +1860,12 @@ export async function getBookingPrepItems(
       prepItems: prepItems.map((item) => ({
         id: item.id,
         title: item.title,
+        taskType: item.taskType ?? null,
         order: item.order,
+        status: item.status,
+        priority: item.priority,
+        assignedTo: item.assignedTo ?? null,
+        dueAt: item.dueAt?.toISOString() ?? null,
         completed: item.completed,
         completedAt: item.completedAt?.toISOString() || null,
         notes: item.notes || null,
@@ -1886,11 +1901,12 @@ export async function updatePrepItem(
       return { success: false, error: 'Prep feature not available. Run: npx prisma generate' }
     }
 
-    const updateData: any = {}
+    const updateData: Record<string, unknown> = {}
     
     if (updates.completed !== undefined) {
       updateData.completed = updates.completed
       updateData.completedAt = updates.completed ? new Date() : null
+      updateData.status = updates.completed ? 'completed' : 'pending'
     }
 
     if (updates.notes !== undefined) {

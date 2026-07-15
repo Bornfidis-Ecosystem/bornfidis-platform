@@ -1,162 +1,132 @@
 /**
-
- * Phase 1 marketing constants — single source for public nav, footer, and product names.
-
- * Bornfidis Provisions & Private Dining (Vermont-first, guest path).
-
+ * Public marketing constants — nav, footer, CTAs.
+ * Umbrella: Bornfidis. Divisions: Provisions (primary) + Digital Studio (application-only).
+ * Do not add Sportswear or Academy to primary nav until those offers are production-ready.
  */
 
-
-
 export const PHASE1_NAV_LINKS = [
-
-  { href: '/private-dining', label: 'Private Dining' },
-
   { href: '/provisions', label: 'Provisions' },
-
+  { href: '/private-dining', label: 'Private Dining' },
+  { href: '/digital-studio', label: 'Digital Studio' },
   { href: '/our-story', label: 'Our Story' },
-
   { href: '/contact', label: 'Contact' },
-
 ] as const
-
-
 
 /** Footer-only links — not in main nav */
-
 export const PHASE1_FOOTER_LINKS = [
-
   { href: '/journal', label: 'Journal' },
-
   { href: '/partners', label: 'Work with Bornfidis' },
-
 ] as const
-
-
 
 export const PHASE1_PRIMARY_PRODUCTS = [
-
   {
-
     id: 'maple-jerk-rub',
-
     name: 'Maple Jerk Rub',
-
     categoryLabel: 'Dry Spice Rub',
-
     href: '/provisions#maple-jerk-rub',
-
   },
-
   {
-
     id: 'maple-escovitch',
-
     name: 'Maple Escovitch',
-
     categoryLabel: 'Finishing Sauce',
-
     href: '/provisions#maple-escovitch',
-
   },
-
   {
-
     id: 'green-seasoning',
-
     name: 'Green Seasoning',
-
     categoryLabel: 'Fresh Seasoning',
-
     href: '/provisions#green-seasoning',
-
   },
-
   {
-
     id: 'sorrel-gastrique',
-
     name: 'Sorrel Gastrique',
-
     categoryLabel: 'Finishing Sauce',
-
     href: '/provisions#sorrel-gastrique',
-
   },
-
 ] as const
 
-
-
 export const PHASE1_CTA = {
-
   bookNow: { label: 'BOOK NOW', href: '/book' },
-
   bookYourTable: { label: 'Book Your Table', href: '/book' },
-
   bookPrivateDining: {
-
     label: 'Book a Private Dining Experience',
-
     href: '/book',
-
     shortLabel: 'Book Private Dining',
-
   },
-
+  exploreProvisions: {
+    label: 'Explore Bornfidis Provisions',
+    href: '/provisions',
+  },
+  exploreDigitalStudio: {
+    label: 'Explore Bornfidis Digital Studio',
+    href: '/digital-studio',
+  },
+  applyDigitalStudio: {
+    label: 'Apply to the Pilot',
+    href: '/digital-studio/apply',
+  },
   requestProduct: { label: 'Request a Product', href: '/contact?service=product' },
-
   bookCookingClass: {
     label: 'Inquire About a Cooking Class',
     href: '/contact?service=cooking-class',
   },
-
   contactBornfidis: { label: 'Contact Bornfidis', href: '/contact' },
-
   workWithBornfidis: { label: 'Work with Bornfidis', href: '/partners' },
-
   jamaicaPartnerInquiry: {
-
     label: 'Jamaica Private Dining Inquiry',
-
     href: '/contact?service=jamaica-partner',
-
   },
-
 } as const
 
-
-
 /** Maps `?service=` on /contact to form option values. */
-
 export const PHASE1_CONTACT_SERVICE_PARAM: Record<string, string> = {
-
   product: 'Product / Gourmet Inquiry',
-
   'cooking-class': 'Cooking Class',
-
   'jamaica-partner': 'Jamaica Private Dining (partner-led)',
-
   partners: 'Partners / Investors / Consulting',
-
+  'digital-studio': 'Digital Studio',
 }
 
-
-
 export const PHASE1_CONVERSION_ACTIONS = [
-
   PHASE1_CTA.bookPrivateDining,
-
   PHASE1_CTA.requestProduct,
-
   PHASE1_CTA.bookCookingClass,
-
   PHASE1_CTA.contactBornfidis,
-
 ] as const
-
-
 
 export const SIGNATURE_PRODUCT_NAME = "The Chef's Passage"
 
+/** Homepage umbrella hero (Phase 1 IA). */
+export const ECOSYSTEM_HERO = {
+  headlineLine1: 'One Ecosystem.',
+  headlineLine2: 'Practical Systems for Food, Hospitality and Enterprise.',
+  body:
+    'Bornfidis brings together chef-led hospitality and digital operating systems—built to help people serve well, grow responsibly and create lasting value.',
+  primaryCta: PHASE1_CTA.exploreProvisions,
+  secondaryCta: PHASE1_CTA.exploreDigitalStudio,
+} as const
 
+export const DIVISION_CARDS = [
+  {
+    id: 'provisions',
+    eyebrow: 'Primary offer',
+    title: 'Bornfidis Provisions',
+    description:
+      'Chef-led private dining, small-batch pantry products, and hospitality that arrives ready—so you host, and we handle the rest.',
+    href: '/provisions',
+    ctaLabel: 'Explore Provisions',
+    secondaryHref: '/book',
+    secondaryCtaLabel: 'Book Private Dining',
+  },
+  {
+    id: 'digital-studio',
+    eyebrow: 'Application only',
+    title: 'Bornfidis Digital Studio',
+    description:
+      'Digital systems for food, farm, and hospitality businesses—bookings, brand, and back-of-house. Pilot applications open; no public pricing.',
+    href: '/digital-studio',
+    ctaLabel: 'Explore Digital Studio',
+    secondaryHref: '/digital-studio/apply',
+    secondaryCtaLabel: 'Apply to the Pilot',
+  },
+] as const

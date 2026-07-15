@@ -190,8 +190,8 @@ export async function markQuoteSent(
 }
 
 /**
- * Create Stripe Checkout Session for deposit payment (fixed Price `STRIPE_DEPOSIT_PRICE_ID`).
- * Same implementation as `POST /api/checkout` with `mode: "deposit"`.
+ * Create Stripe Checkout Session for deposit payment (dynamic amount from booking quote).
+ * Same pattern as portal pay-deposit — no fixed STRIPE_DEPOSIT_PRICE_ID.
  */
 export async function createStripeDepositLink(
   bookingId: string
@@ -209,7 +209,7 @@ export async function createStripeDepositLink(
 
     const { data: booking, error: bookingError } = await supabaseAdmin
       .from('booking_inquiries')
-      .select('quote_deposit_cents, name, email, quote_total_cents')
+      .select('deposit_amount_cents, quote_deposit_cents, name, email, quote_total_cents, paid_at')
       .eq('id', bookingId)
       .single()
 
@@ -217,13 +217,19 @@ export async function createStripeDepositLink(
       return { success: false, error: 'Booking not found' }
     }
 
-    const depositCents = booking.quote_deposit_cents || 0
+    if (booking.paid_at) {
+      return { success: false, error: 'Deposit has already been paid for this booking.' }
+    }
+
+    const depositCents = booking.deposit_amount_cents || booking.quote_deposit_cents || 0
     if (depositCents <= 0) {
       return { success: false, error: 'Deposit amount must be greater than 0. Please save the quote first.' }
     }
 
     const { createDepositCheckoutSessionForBooking } = await import('@/lib/stripe-deposit-checkout')
-    const { url } = await createDepositCheckoutSessionForBooking(bookingId)
+    const { url } = await createDepositCheckoutSessionForBooking(bookingId, {
+      amountCents: depositCents,
+    })
     return { success: true, url }
   } catch (error: any) {
     console.error('Error creating Stripe deposit link:', error)

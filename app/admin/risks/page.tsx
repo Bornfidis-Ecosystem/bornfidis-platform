@@ -1,23 +1,21 @@
 import Link from 'next/link'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isManagerOrFounder, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { listRisksAction } from './actions'
 import RisksClient from './RisksClient'
 
 export const dynamic = 'force-dynamic'
 
-/** Phase 2BC — Risk Register. Admin/Staff only. */
+/** Phase 2BC — Risk Register. Founder / manager only. */
 export default async function AdminRisksPage({
   searchParams,
 }: {
   searchParams: Promise<{ category?: string; status?: string }>
 }) {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN' && roleStr !== 'STAFF') {
+  if (!isManagerOrFounder(await resolveAdminPlatformRole())) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Risk register is available to Admin and Staff only.</p>
+        <p className="text-gray-600">Risk register is available to founder and manager roles only.</p>
         <a href="/admin" className="text-forestDark hover:underline">Back to Dashboard</a>
       </div>
     )

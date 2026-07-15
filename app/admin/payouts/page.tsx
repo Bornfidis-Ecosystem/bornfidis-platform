@@ -1,6 +1,4 @@
-import { redirect } from 'next/navigation'
-import { getCurrentUserRole } from '@/lib/get-user-role'
-import { canViewAdmin } from '@/lib/authz'
+import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import PayoutsClient from './PayoutsClient'
 import SignOutButton from '@/components/admin/SignOutButton'
 import Link from 'next/link'
@@ -8,15 +6,10 @@ import { CulinaryCard } from '@/components/culinary-os'
 
 /**
  * Phase 4.5: Payout Management Page
- * Admin-only page for managing farmer payouts
+ * Founder / manager — farmer payouts
  */
 export default async function PayoutsPage() {
-  const userRole = await getCurrentUserRole()
-
-  // Only ADMIN can access this page
-  if (!canViewAdmin(userRole)) {
-    redirect('/admin')
-  }
+  await requireFinancialPageAccess()
 
   return (
     <div className="min-h-screen bg-culinary-bone">

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isManagerOrFounder, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { getOpsDashboardData } from '@/lib/ops-dashboard'
 import { getForecastData } from '@/lib/forecast'
 import { getScenarioInputs, buildScenarios } from '@/lib/scenarios'
@@ -18,20 +18,19 @@ export const dynamic = 'force-dynamic'
 
 /**
  * Phase 2AG — Ops Reporting Dashboard
- * Access: ADMIN, STAFF only (not COORDINATOR).
+ * Access: founder_admin / manager (not operations_coordinator).
  */
 export default async function AdminOpsPage({
   searchParams,
 }: {
   searchParams: Promise<{ range?: string }>
 }) {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN' && roleStr !== 'STAFF') {
+  const platformRole = await resolveAdminPlatformRole()
+  if (!isManagerOrFounder(platformRole)) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Ops dashboard is available to ADMIN and STAFF only.</p>
+        <p className="text-gray-600">Ops dashboard is available to founder and manager roles only.</p>
         <a href="/admin" className="text-forestDark hover:underline">Back to Dashboard</a>
       </div>
     )

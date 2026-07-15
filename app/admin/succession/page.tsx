@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isManagerOrFounder, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { ensureDefaultSuccessionRoles, listRolesWithAssignments, listEligibleUsers } from '@/lib/succession'
 import SuccessionClient from './SuccessionClient'
 import type { RoleWithAssignments } from '@/lib/succession'
@@ -9,16 +9,14 @@ export const dynamic = 'force-dynamic'
 /**
  * Phase 2BA — Workforce Succession Planning
  * Critical roles (Lead Chef Elite, Regional Coordinator, Ops Lead): primary + backups, readiness, training path.
- * Access: Admin/Staff only.
+ * Access: founder_admin / manager.
  */
 export default async function AdminSuccessionPage() {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN' && roleStr !== 'STAFF') {
+  if (!isManagerOrFounder(await resolveAdminPlatformRole())) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Succession planning is available to Admin and Staff only.</p>
+        <p className="text-gray-600">Succession planning is available to founder and manager roles only.</p>
         <a href="/admin" className="text-forestDark hover:underline">Back to Dashboard</a>
       </div>
     )

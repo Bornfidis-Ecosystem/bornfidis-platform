@@ -38,6 +38,8 @@ interface PortalData {
     paid: boolean
     paid_at?: string
   }
+  /** draft | sent | accepted | declined */
+  quote_status?: string | null
   fully_paid: boolean
   fully_paid_at?: string
   invoice_available: boolean
@@ -64,6 +66,10 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
   const [messageText, setMessageText] = useState('')
   const [isSendingMessage, setIsSendingMessage] = useState(false)
   const [messageStatus, setMessageStatus] = useState<'success' | 'error' | null>(null)
+  const [quoteStatus, setQuoteStatus] = useState<string | null>(portalData.quote_status ?? null)
+  const [isDecidingQuote, setIsDecidingQuote] = useState(false)
+  const [decisionMessage, setDecisionMessage] = useState<string | null>(null)
+  const [reviewSubmitted, setReviewSubmitted] = useState(false)
 
   // Check for payment status in URL
   useEffect(() => {
@@ -82,6 +88,33 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
       }, 5000)
     }
   }, [searchParams])
+
+  const handleQuoteDecision = async (action: 'accept' | 'decline') => {
+    if (action === 'decline') {
+      const ok = window.confirm('Decline this quote? You can contact us if plans change.')
+      if (!ok) return
+    }
+    setIsDecidingQuote(true)
+    setDecisionMessage(null)
+    try {
+      const response = await fetch(`/api/portal/${token}/quote-decision`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action }),
+      })
+      const data = await response.json()
+      if (data.success) {
+        setQuoteStatus(data.quote_status ?? (action === 'accept' ? 'accepted' : 'declined'))
+        setDecisionMessage(data.message || (action === 'accept' ? 'Quote accepted.' : 'Quote declined.'))
+      } else {
+        setDecisionMessage(data.error || 'Could not update quote')
+      }
+    } catch {
+      setDecisionMessage('Could not update quote')
+    } finally {
+      setIsDecidingQuote(false)
+    }
+  }
 
   const handlePayDeposit = async () => {
     setIsProcessingPayment(true)
@@ -398,13 +431,59 @@ export default function PortalClient({ portalData, token }: PortalClientProps) {
           </div>
         </div>
 
+        {/* Phase 5 — Accept / decline quote (locks totals; deposit still confirms) */}
+        {hasQuote && !portalData.deposit.paid && quoteStatus !== 'declined' && (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
+            <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
+              Quote decision
+            </h2>
+            {quoteStatus === 'accepted' ? (
+              <p className="text-green-700 font-medium mb-2">
+                Quote accepted. Pay your deposit below to secure the date.
+              </p>
+            ) : (
+              <>
+                <p className="text-gray-600 mb-4 text-sm">
+                  Accept this quote to lock the package, then pay the deposit. Or decline if you will not move forward.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleQuoteDecision('accept')}
+                    disabled={isDecidingQuote}
+                    className="px-6 py-3 bg-forestDark text-white rounded-lg font-semibold hover:bg-forestDarker transition disabled:opacity-50"
+                  >
+                    {isDecidingQuote ? 'Saving…' : 'Accept quote'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleQuoteDecision('decline')}
+                    disabled={isDecidingQuote}
+                    className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition disabled:opacity-50"
+                  >
+                    Decline
+                  </button>
+                </div>
+              </>
+            )}
+            {decisionMessage ? (
+              <p className="mt-3 text-sm text-gray-700">{decisionMessage}</p>
+            ) : null}
+          </div>
+        )}
+        {quoteStatus === 'declined' && !portalData.deposit.paid ? (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 text-amber-950 text-sm">
+            This quote was declined. Contact us if you would like a revised proposal.
+          </div>
+        ) : null}
+
         {/* Payment Actions */}
         <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 mb-6">
           <h2 className="text-xl font-semibold text-forestDark mb-4 pb-2 border-b border-gold">
             Payment Actions
           </h2>
           <div className="flex flex-wrap gap-3">
-            {!portalData.deposit.paid && hasQuote && (
+            {!portalData.deposit.paid && hasQuote && quoteStatus !== 'declined' && (
               <button
                 onClick={handlePayDeposit}
                 disabled={isProcessingPayment}

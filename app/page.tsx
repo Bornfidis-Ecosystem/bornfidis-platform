@@ -4,9 +4,10 @@ import HomeEditorial from '@/components/home/HomeEditorial'
 import '@/components/home/home-editorial.css'
 
 export const metadata: Metadata = {
-  title: 'Bornfidis — Caribbean Heart. Vermont Hands.',
+  title: 'Bornfidis — Practical Systems for Food, Hospitality and Enterprise',
   description:
-    'Chef-led private dining and small-batch provisions rooted in Jamaican tradition and Vermont craft. Serving Vermont now — Jamaica and select travel by advance request.',
+    'Bornfidis brings together chef-led hospitality (Provisions) and digital operating systems (Digital Studio)—built to help people serve well, grow responsibly and create lasting value.',
+  alternates: { canonical: 'https://bornfidis.com' },
 }
 
 export default function HomePage() {

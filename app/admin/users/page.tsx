@@ -1,6 +1,5 @@
-import { notFound, redirect } from 'next/navigation'
-import { getCurrentUserRole } from '@/lib/get-user-role'
-import { canAssignRoles } from '@/lib/authz'
+import { redirect } from 'next/navigation'
+import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import UserManagementClient from './UserManagementClient'
 import SignOutButton from '@/components/admin/SignOutButton'
 import Link from 'next/link'
@@ -8,13 +7,10 @@ import { CulinaryCard } from '@/components/culinary-os'
 
 /**
  * Phase 4: User Management Page
- * Admin-only page for managing user roles
+ * Founder admin only — managing user roles
  */
 export default async function UserManagementPage() {
-  const userRole = await getCurrentUserRole()
-
-  // Only ADMIN can access this page
-  if (!canAssignRoles(userRole)) {
+  if (!isFounderAdminRole(await resolveAdminPlatformRole())) {
     redirect('/admin')
   }
 

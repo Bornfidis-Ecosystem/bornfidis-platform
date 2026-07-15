@@ -54,6 +54,7 @@ export function DigitalStudioApplicationForm() {
       websiteStatus: String(formData.get('websiteStatus') ?? ''),
       timeline: String(formData.get('timeline') ?? ''),
       notes: String(formData.get('notes') ?? '').trim() || undefined,
+      website_url: String(formData.get('website_url') ?? ''),
     }
 
     try {
@@ -93,6 +94,17 @@ export function DigitalStudioApplicationForm() {
   return (
     <form onSubmit={handleSubmit} className="border border-[#ffbc00]/35 bg-white p-6 md:p-10">
       <p className={`${bookBody} mb-8 max-w-xl text-sm`}>{DIGITAL_STUDIO_FORM.intro}</p>
+
+      <div className="absolute left-[-9999px] top-0" aria-hidden="true">
+        <label htmlFor="ds-website-url">Website URL</label>
+        <input
+          type="text"
+          id="ds-website-url"
+          name="website_url"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
 
       <div className="grid gap-8 md:grid-cols-2">
         <div>

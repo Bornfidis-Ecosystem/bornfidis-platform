@@ -10,13 +10,14 @@ import Stripe from 'stripe'
  * Body:
  * - booking_id: string
  * 
- * Authentication: Optional (admin) or public (with valid booking_id)
+ * Authentication: admin required (portal uses /api/portal/[token]/pay-balance instead).
  */
 export async function POST(request: NextRequest) {
   try {
-    // Try to get authenticated user (optional for Phase 3C client portal)
     const user = await getServerAuthUser()
-    // If no user, we'll validate booking_id instead (public access)
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
+    }
 
     // Check if Stripe is configured
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY

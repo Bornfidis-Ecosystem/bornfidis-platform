@@ -2,8 +2,9 @@ import { db } from '@/lib/db'
 import { BOOKING_CHECKLIST_WRITABLE_KEYS } from '@/lib/bookings/checklist'
 
 /**
- * Execution-readiness gates: incomplete on any of these hides “ready” for prep
- * (matches product spec — dietary is tracked in full checklist but not this gate).
+ * @deprecated Phase 8 — Legacy boolean gate fields on BookingInquiry.
+ * BookingPrepItem rows are now the source of truth.
+ * Boolean gates are used as fallback for bookings that predate Phase 8.
  */
 const PREP_GATE_FIELDS = [
   { prismaKey: 'menuConfirmed' as const, short: 'Menu' },
@@ -46,14 +47,16 @@ export type PrepAttentionBooking = {
   eventDate: Date
   doneCount: number
   totalCount: number
-  /** Short labels for prep gate fields still false (e.g. Menu, Guest count). */
   missingPrepLabels: string[]
   missingPrepCount: number
+  /** Phase 8: overdue prep items (only when task rows exist). */
+  overdue?: number
 }
 
 /**
- * Bookings with event in the next 7 days (inclusive window from start of today)
- * where at least one prep-gate checklist item is still incomplete.
+ * Phase 8 — Unified prep attention query.
+ * Uses BookingPrepItem rows as source of truth when they exist.
+ * Falls back to legacy inline boolean gates for pre-Phase-8 bookings.
  */
 export async function getPrepAttentionNeeded(): Promise<PrepAttentionBooking[]> {
   const now = new Date()
@@ -64,7 +67,6 @@ export async function getPrepAttentionNeeded(): Promise<PrepAttentionBooking[]> 
   const rows = await db.bookingInquiry.findMany({
     where: {
       eventDate: { gte: todayStart, lte: windowEnd },
-      OR: PREP_GATE_FIELDS.map(({ prismaKey }) => ({ [prismaKey]: false })),
       NOT: {
         OR: [
           { status: { equals: 'cancelled', mode: 'insensitive' } },
@@ -89,21 +91,52 @@ export async function getPrepAttentionNeeded(): Promise<PrepAttentionBooking[]> 
       balancePaidAt: true,
       fullyPaidAt: true,
       testimonialRequestedAt: true,
+      prepItems: {
+        select: { status: true, dueAt: true, completed: true, title: true },
+      },
     },
     orderBy: [{ eventDate: 'asc' }, { createdAt: 'asc' }],
   })
 
-  return rows.map((r) => {
-    const missingPrepLabels = PREP_GATE_FIELDS.filter((f) => !r[f.prismaKey]).map((f) => f.short)
-    return {
-      id: r.id,
-      name: r.name,
-      status: r.status,
-      eventDate: r.eventDate,
-      doneCount: countChecklistDone(r),
-      totalCount: 10,
-      missingPrepLabels,
-      missingPrepCount: missingPrepLabels.length,
-    }
-  })
+  return rows
+    .map((r) => {
+      if (r.prepItems.length > 0) {
+        const total = r.prepItems.length
+        const completed = r.prepItems.filter((t) => t.status === 'completed').length
+        const overdue = r.prepItems.filter(
+          (t) => t.dueAt && t.dueAt < now && t.status !== 'completed' && t.status !== 'cancelled',
+        ).length
+        const incomplete = r.prepItems.filter(
+          (t) => t.status !== 'completed' && t.status !== 'cancelled',
+        )
+        if (completed >= total) return null
+
+        return {
+          id: r.id,
+          name: r.name,
+          status: r.status,
+          eventDate: r.eventDate,
+          doneCount: completed,
+          totalCount: total,
+          missingPrepLabels: incomplete.slice(0, 3).map((t) => t.title),
+          missingPrepCount: incomplete.length,
+          overdue,
+        }
+      }
+
+      const missingPrepLabels = PREP_GATE_FIELDS.filter((f) => !r[f.prismaKey]).map((f) => f.short)
+      if (missingPrepLabels.length === 0) return null
+
+      return {
+        id: r.id,
+        name: r.name,
+        status: r.status,
+        eventDate: r.eventDate,
+        doneCount: countChecklistDone(r),
+        totalCount: 10,
+        missingPrepLabels,
+        missingPrepCount: missingPrepLabels.length,
+      }
+    })
+    .filter((r): r is PrepAttentionBooking => r !== null)
 }

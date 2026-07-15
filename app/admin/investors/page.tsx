@@ -1,20 +1,17 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { getInvestorReportData } from '@/lib/investor-report'
 import InvestorReportClient from './InvestorReportClient'
 
 export const dynamic = 'force-dynamic'
 
-/** Phase 2AS — Investor Reporting. Admin only (not Staff). */
+/** Phase 2AS — Investor Reporting. Founder admin only. */
 export default async function AdminInvestorsPage() {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN') {
+  if (!isFounderAdminRole(await resolveAdminPlatformRole())) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Investor reporting is available to Admin only.</p>
+        <p className="text-gray-600">Investor reporting is available to founder admin only.</p>
         <Link href="/admin" className="text-forestDark hover:underline">Back to Dashboard</Link>
       </div>
     )

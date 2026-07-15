@@ -24,6 +24,7 @@ const prisma = new PrismaClient({
 const rows: { email: string; role: AppRole }[] = [
   { email: 'brian@bornfidis.com', role: 'founder_admin' },
   { email: 'tech@bornfidis.com', role: 'founder_admin' },
+  { email: 'admin@bornfidis.com', role: 'founder_admin' },
   { email: 'caryll@bornfidis.com', role: 'operations_coordinator' },
   { email: 'bornfidisprovisions@gmail.com', role: 'manager' },
 ]

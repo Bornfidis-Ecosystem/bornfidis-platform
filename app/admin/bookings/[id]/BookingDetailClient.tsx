@@ -1384,7 +1384,7 @@ export default function BookingDetailClient({
       )}
 
       {/* Quote & Payment - Collapsible */}
-      <CulinaryCard padded={false} className="mb-stack-md overflow-hidden">
+      <CulinaryCard id="booking-quote" padded={false} className="mb-stack-md scroll-mt-24 overflow-hidden">
         <button
           type="button"
           onClick={() => setQuoteExpanded(!quoteExpanded)}
@@ -1777,11 +1777,21 @@ export default function BookingDetailClient({
             <button
               type="button"
               onClick={handleSaveQuote}
-              disabled={isSavingQuote || lineItems.length === 0}
+              disabled={
+                isSavingQuote ||
+                lineItems.length === 0 ||
+                !!booking.paid_at ||
+                (booking.quote_status ?? '').toLowerCase() === 'accepted'
+              }
               className="w-full px-6 py-3 bg-green-600 text-white font-semibold rounded-none hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
             >
               {isSavingQuote ? 'Saving...' : 'Save Quote'}
             </button>
+            {(booking.paid_at || (booking.quote_status ?? '').toLowerCase() === 'accepted') && (
+              <p className="mt-2 text-center text-sm text-amber-800">
+                Quote is locked after client accept or deposit payment.
+              </p>
+            )}
 
             {/* Shortcut: most-used deposit message */}
             <div className="mt-3">

@@ -149,6 +149,18 @@
   max-width: 22rem;
 }
 
+.bf-home .hero-actions--stack {
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 28rem;
+}
+
+.bf-home .ecosystem-hero-accent {
+  display: inline;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+  line-height: 1.2;
+}
+
 /* Ivory CTA on navy hero — primary action reads at full weight */
 .bf-home .hero .btn-primary {
   background: var(--bone);
@@ -158,10 +170,109 @@
   justify-content: center;
 }
 
+.bf-home .btn-secondary-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.95rem 1.75rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid rgba(250, 246, 240, 0.45);
+  color: var(--bone);
+  background: transparent;
+  transition: opacity 0.2s var(--ease);
+}
+
+.bf-home .btn-secondary-hero:hover {
+  opacity: 0.85;
+}
+
 @media (min-width: 640px) {
-  .bf-home .hero .btn-primary {
+  .bf-home .hero .btn-primary,
+  .bf-home .btn-secondary-hero {
     width: auto;
   }
+}
+
+/* ── Division cards ─────────────────────────────────────────── */
+.bf-home .divisions {
+  background: var(--bone);
+  padding: 5rem 1.5rem;
+}
+
+.bf-home .divisions__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.bf-home .divisions__headline {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 600;
+  color: var(--slate);
+  margin: 0.75rem 0 2.5rem;
+  max-width: 28ch;
+  line-height: 1.2;
+}
+
+.bf-home .divisions__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .bf-home .divisions__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+  }
+}
+
+.bf-home .division-card {
+  padding: 2rem 0;
+  border-top: 1px solid rgba(0, 39, 71, 0.12);
+}
+
+.bf-home .division-card__title {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--green);
+  margin: 0.75rem 0 1rem;
+  line-height: 1.25;
+}
+
+.bf-home .division-card__body {
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 1.75rem;
+  max-width: 42ch;
+}
+
+.bf-home .division-card__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.bf-home .division-card__cta {
+  width: auto;
+}
+
+.bf-home .division-card__link {
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);
 }
 
 .bf-home .hero-secondary {

@@ -469,6 +469,7 @@ export const digitalStudioApplicationSchema = z
     websiteStatus: z.enum(['yes-needs-work', 'yes-needs-rebuild', 'no-scratch']),
     timeline: z.enum(['asap', '1-3-months', 'exploring']),
     notes: z.string().optional(),
+    website_url: z.string().max(0, 'Spam detected').optional(),
   })
   .superRefine((data, ctx) => {
     if (data.businessType === 'other' && !data.businessTypeOther?.trim()) {

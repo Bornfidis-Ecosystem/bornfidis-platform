@@ -1,7 +1,5 @@
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-import { getCurrentUserRole } from '@/lib/get-user-role'
-import { canViewAdmin } from '@/lib/authz'
+import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import { listStripeWebhookLogs } from '@/lib/stripe-webhook-log'
 import { formatUSD } from '@/lib/money'
 import { stripePaymentDashboardUrl } from '@/lib/stripe-reconciliation'
@@ -17,10 +15,7 @@ export default async function PaymentsReconciliationPage({
 }: {
   searchParams: Promise<Search>
 }) {
-  const userRole = await getCurrentUserRole()
-  if (!canViewAdmin(userRole)) {
-    redirect('/admin')
-  }
+  await requireFinancialPageAccess()
 
   const sp = await searchParams
   const status = sp.status === 'all' ? undefined : sp.status || 'unmatched'

@@ -28,6 +28,7 @@ const serviceOptions = [
   "The Chef's Passage",
   'Cooking Class',
   'Product / Gourmet Inquiry',
+  'Digital Studio',
   'Jamaica Private Dining (partner-led)',
   'Partners / Investors / Consulting',
   'Custom Menu Request',
@@ -59,9 +60,13 @@ function SectionEyebrow({ children }: { children: ReactNode }) {
 
 type ContactPageContentProps = {
   presetService?: string
+  productSlug?: string
 }
 
-export default function ContactPageContent({ presetService = '' }: ContactPageContentProps) {
+export default function ContactPageContent({
+  presetService = '',
+  productSlug = '',
+}: ContactPageContentProps) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const minDate = useMemo(() => new Date().toISOString().split('T')[0], [])
@@ -239,6 +244,10 @@ export default function ContactPageContent({ presetService = '' }: ContactPageCo
                 <label htmlFor="website_url">Website URL</label>
                 <input type="text" id="website_url" name="website_url" tabIndex={-1} autoComplete="off" />
               </div>
+              {productSlug ? (
+                <input type="hidden" name="productSlug" value={productSlug} />
+              ) : null}
+              <input type="hidden" name="referralSource" value="contact" />
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div>
@@ -332,7 +341,10 @@ export default function ContactPageContent({ presetService = '' }: ContactPageCo
                 </div>
                 <div>
                   <label htmlFor="guestCount" className={bookLabelClass}>
-                    Guest count
+                    Guest count{' '}
+                    <span className="font-normal normal-case tracking-normal text-[#1a1a1a]/50">
+                      (optional for product / class)
+                    </span>
                   </label>
                   <input
                     id="guestCount"
@@ -345,6 +357,12 @@ export default function ContactPageContent({ presetService = '' }: ContactPageCo
                 </div>
               </div>
 
+              {productSlug ? (
+                <p className={`${bookBody} rounded-none border border-[#ffbc00]/35 bg-white px-4 py-3 text-sm`}>
+                  Product interest: <strong className="text-[#002747]">{productSlug}</strong>
+                </p>
+              ) : null}
+
               <div>
                 <label htmlFor="location" className={bookLabelClass}>
                   Location / venue <span className="text-red-600">*</span>
@@ -354,8 +372,8 @@ export default function ContactPageContent({ presetService = '' }: ContactPageCo
                   name="location"
                   type="text"
                   required
-                  minLength={10}
-                  placeholder="Vermont home, Jamaica partner venue, retreat property…"
+                  minLength={3}
+                  placeholder="Vermont home, Jamaica partner venue, mail/ship TBD…"
                   className={bookFieldClass}
                 />
               </div>

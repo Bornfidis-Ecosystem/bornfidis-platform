@@ -817,6 +817,7 @@ model PrepChecklistTemplate {
   @@schema("public")
 }
 
+/// @deprecated Phase 8 — Chef-portal only; overlaps with BookingPrepItem. Migrate chef checks to BookingPrepItem rows before removal.
 model ChefPrepChecklist {
   id         String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
   bookingId  String                 @unique @map("booking_id")
@@ -957,14 +958,24 @@ model BookingPrepItem {
   id                String                 @id @default(uuid())
   bookingId         String                 @map("booking_id")
   title             String
+  taskType          String?                @map("task_type")
   order             Int
+  status            String                 @default("pending") @map("status")
+  priority          String                 @default("normal") @map("priority")
+  assignedTo        String?                @map("assigned_to")
+  dueAt             DateTime?              @map("due_at")
   completed         Boolean                @default(false)
   completedAt       DateTime?              @map("completed_at")
   notes             String?
+  source            String                 @default("system") @map("source")
+  metadata          Json?
   createdAt         DateTime               @default(now()) @map("created_at")
+  updatedAt         DateTime               @default(now()) @updatedAt @map("updated_at")
   booking           BookingInquiry         @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   farmerAssignments PrepFarmerAssignment[]
 
+  @@index([bookingId, status])
+  @@index([dueAt])
   @@map("booking_prep_items")
   @@schema("public")
 }
@@ -1055,6 +1066,123 @@ model FarmerPayout {
   booking     BookingInquiry @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@map("farmer_payouts")
+  @@schema("public")
+}
+
+/// Bornfidis Digital Studio pilot applications (CRM — not email-only).
+model DigitalStudioApplication {
+  id                String    @id @default(cuid())
+  businessName      String    @map("business_name")
+  contactName       String    @map("contact_name")
+  contactEmail      String    @map("contact_email")
+  businessType      String    @map("business_type")
+  businessTypeOther String?   @map("business_type_other")
+  biggestGap        String    @map("biggest_gap")
+  websiteStatus     String    @map("website_status")
+  timeline          String
+  notes             String?
+  status            String    @default("new")
+  source            String    @default("digital-studio-apply")
+  assignedTo        String?   @map("assigned_to")
+  lastContactedAt   DateTime? @map("last_contacted_at")
+  nextActionAt      DateTime? @map("next_action_at")
+  metadata          Json?
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  projects          DigitalStudioProject[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([contactEmail])
+  @@map("digital_studio_applications")
+  @@schema("public")
+}
+
+/// Phase 8 — Digital Studio project delivery (post-acceptance).
+model DigitalStudioProject {
+  id                  String                      @id @default(cuid())
+  applicationId       String?                     @map("application_id")
+  projectNumber       String                      @unique @map("project_number")
+  name                String
+  clientName          String                      @map("client_name")
+  clientEmail         String                      @map("client_email")
+  status              String                      @default("active") @map("status")
+  phase               String                      @default("discovery") @map("phase")
+  ownerId             String?                     @map("owner_id")
+  startDate           DateTime?                   @map("start_date") @db.Date
+  targetLaunchDate    DateTime?                   @map("target_launch_date") @db.Date
+  actualLaunchDate    DateTime?                   @map("actual_launch_date") @db.Date
+  totalAmountCents    Int?                        @map("total_amount_cents")
+  depositAmountCents  Int?                        @map("deposit_amount_cents")
+  balanceAmountCents  Int?                        @map("balance_amount_cents")
+  depositPaidAt       DateTime?                   @map("deposit_paid_at")
+  balancePaidAt       DateTime?                   @map("balance_paid_at")
+  currency            String                      @default("usd")
+  portalToken         String?                     @unique @map("portal_token")
+  notes               String?
+  metadata            Json?
+  createdAt           DateTime                    @default(now()) @map("created_at")
+  updatedAt           DateTime                    @default(now()) @updatedAt @map("updated_at")
+  application         DigitalStudioApplication?   @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  tasks               DigitalStudioProjectTask[]
+
+  @@index([status])
+  @@index([applicationId])
+  @@index([clientEmail])
+  @@map("digital_studio_projects")
+  @@schema("public")
+}
+
+/// Phase 8 — Digital Studio project milestones / tasks.
+model DigitalStudioProjectTask {
+  id          String                 @id @default(uuid())
+  projectId   String                 @map("project_id")
+  title       String
+  taskType    String?                @map("task_type")
+  order       Int
+  status      String                 @default("pending") @map("status")
+  priority    String                 @default("normal") @map("priority")
+  assignedTo  String?                @map("assigned_to")
+  dueAt       DateTime?              @map("due_at")
+  completed   Boolean                @default(false)
+  completedAt DateTime?              @map("completed_at")
+  notes       String?
+  source      String                 @default("system") @map("source")
+  metadata    Json?
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @default(now()) @updatedAt @map("updated_at")
+  project     DigitalStudioProject   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, status])
+  @@index([dueAt])
+  @@map("digital_studio_project_tasks")
+  @@schema("public")
+}
+
+/// Phase 8 — Email send log for notification audit and admin UI.
+model EmailSendLog {
+  id            String    @id @default(uuid())
+  division      String    @default("provisions")
+  templateType  String    @map("template_type")
+  recipient     String
+  subject       String
+  bookingId     String?   @map("booking_id")
+  projectId     String?   @map("project_id")
+  entityType    String?   @map("entity_type")
+  entityId      String?   @map("entity_id")
+  status        String    @default("sent") @map("status")
+  errorMessage  String?   @map("error_message")
+  attemptCount  Int       @default(1) @map("attempt_count")
+  actorName     String?   @map("actor_name")
+  sentAt        DateTime  @default(now()) @map("sent_at")
+
+  @@index([bookingId])
+  @@index([projectId])
+  @@index([status])
+  @@index([templateType])
+  @@index([sentAt])
+  @@map("email_send_log")
   @@schema("public")
 }
 
@@ -1173,14 +1301,23 @@ model EmailSubscriber {
 }
 
 model ActivityLog {
-  id          String   @id @default(cuid())
-  eventType   String   @map("event_type")
-  title       String   @default("")
-  description String
-  division    String
-  metadata    Json?
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  id            String   @id @default(cuid())
+  eventType     String   @map("event_type")
+  title         String   @default("")
+  description   String
+  division      String
+  actorId       String?  @map("actor_id")
+  actorName     String?  @map("actor_name")
+  entityType    String?  @map("entity_type")
+  entityId      String?  @map("entity_id")
+  action        String?  @map("action")
+  previousValue String?  @map("previous_value")
+  newValue      String?  @map("new_value")
+  metadata      Json?
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
 
+  @@index([entityType, entityId])
+  @@index([eventType])
   @@map("activity_log")
   @@schema("public")
 }

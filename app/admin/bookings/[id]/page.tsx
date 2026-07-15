@@ -54,26 +54,6 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   const clientProfileResult = await getClientProfileSummaryForBooking(booking.id)
   const clientProfile = clientProfileResult.success ? clientProfileResult.clientProfile : null
 
-  const eventDateForQuotes = (() => {
-    const raw = booking.event_date || ''
-    const dateOnlyMatch = raw.match(/^\d{4}-\d{2}-\d{2}/)
-    if (dateOnlyMatch) return dateOnlyMatch[0]
-
-    const d = new Date(raw)
-    if (Number.isNaN(d.getTime())) return ''
-    return d.toISOString().slice(0, 10)
-  })()
-
-  const quotesSearch = new URLSearchParams({
-    clientName: booking.name,
-    guestCount: booking.guests != null ? String(booking.guests) : '',
-    eventDate: eventDateForQuotes || booking.event_date,
-  })
-
-  if (!booking.guests || booking.guests <= 0) quotesSearch.delete('guestCount')
-
-  const quotesHref = `/admin/quotes/builder?${quotesSearch.toString()}`
-
   const quoteEmailTestimonial = await getQuoteDepositTestimonialSnippet(booking.id)
 
   const quoteLineItems = booking.quote_line_items
@@ -98,7 +78,7 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
       <AdminBookingHeader
         bookingId={booking.id}
         bookingName={booking.name}
-        quotesHref={quotesHref}
+        showQuoteActions={showFinancials}
         actions={<SignOutButton />}
       />
 

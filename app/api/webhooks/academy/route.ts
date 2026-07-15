@@ -5,6 +5,7 @@ import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
 import { logActivity } from '@/lib/activity-log'
+import { writeStripeWebhookLog } from '@/lib/stripe-webhook-log'
 
 /**
  * Phase A — Academy Stripe webhook
@@ -54,20 +55,40 @@ export async function POST(req: NextRequest) {
   const session = event.data.object as Stripe.Checkout.Session
   const productSlug = session.metadata?.productSlug
   const authUserId = session.client_reference_id
+  const customerEmail =
+    session.customer_email ?? session.customer_details?.email ?? null
 
   if (!productSlug || !authUserId) {
     console.error('Academy webhook: missing productSlug or client_reference_id', {
       productSlug,
       authUserId,
     })
+    await writeStripeWebhookLog({
+      eventType: event.type,
+      stripeEventId: event.id,
+      stripeObjectId: session.id,
+      customerEmail,
+      processingStatus: 'unmatched',
+      paymentType: 'academy',
+      errorMessage: 'Missing productSlug or client_reference_id',
+      rawPayload: event as unknown as object,
+    }).catch(() => {})
     return NextResponse.json({ received: true })
   }
 
-  // TASK 1 — Idempotent: if we already have this session, return 200 immediately
+  // Idempotent: if we already have this session, return 200 immediately
   const existing = await db.academyPurchase.findUnique({
     where: { stripeSessionId: session.id },
   })
   if (existing) {
+    return NextResponse.json({ received: true })
+  }
+
+  // Also check stripe_webhook_events for global idempotency
+  const alreadyProcessed = await db.stripeWebhookEvent.findUnique({
+    where: { id: event.id },
+  }).catch(() => null)
+  if (alreadyProcessed) {
     return NextResponse.json({ received: true })
   }
 
@@ -95,8 +116,20 @@ export async function POST(req: NextRequest) {
       division: 'ACADEMY',
       metadata: { productSlug, stripeSessionId: session.id },
     }).catch(() => {})
+    // Mark globally processed
+    await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
   } catch (err) {
     console.error('Academy webhook: failed to save purchase', err)
+    await writeStripeWebhookLog({
+      eventType: event.type,
+      stripeEventId: event.id,
+      stripeObjectId: session.id,
+      customerEmail,
+      processingStatus: 'error',
+      paymentType: 'academy',
+      errorMessage: err instanceof Error ? err.message : 'Failed to record purchase',
+      rawPayload: event as unknown as object,
+    }).catch(() => {})
     return NextResponse.json({ error: 'Failed to record purchase' }, { status: 500 })
   }
 
@@ -126,6 +159,18 @@ export async function POST(req: NextRequest) {
         : undefined,
     })
   }
+
+  // Reconciliation log (non-blocking)
+  await writeStripeWebhookLog({
+    eventType: event.type,
+    stripeEventId: event.id,
+    stripeObjectId: session.id,
+    amountCents: product.priceCents,
+    customerEmail,
+    processingStatus: 'matched',
+    paymentType: 'academy',
+    rawPayload: event as unknown as object,
+  }).catch(() => {})
 
   return NextResponse.json({ received: true })
 }

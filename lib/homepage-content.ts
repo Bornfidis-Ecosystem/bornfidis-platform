@@ -27,6 +27,7 @@ export const SIGNATURE_EXPERIENCE = {
   photoAlt: 'A Bornfidis private dining course — plated with seasonal vegetables and sauce',
 } as const
 
+/** Legacy PD-first hero kept for private-dining surfaces; homepage uses ECOSYSTEM_HERO. */
 export const HERO = {
   taglineLine1: 'Caribbean Heart.',
   taglineLine2: 'Vermont Hands.',

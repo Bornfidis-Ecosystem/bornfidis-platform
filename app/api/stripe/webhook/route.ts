@@ -4,6 +4,7 @@ import { sendPrivateDiningBookingConfirmedEmail, sendInvoiceEmail } from '@/lib/
 import { getQuoteDepositTestimonialSnippet } from '@/lib/homepage-testimonials'
 import { sendEmail } from '@/lib/email'
 import { bookingNotificationRecipient } from '@/lib/platform-email'
+import { logEmailSend } from '@/lib/email-send-log'
 import { formatUSD } from '@/lib/money'
 import { tryPayoutForBooking } from '@/lib/payout-engine'
 import { tryPayoutsForBooking } from '@/lib/farmer-payout-engine'
@@ -219,6 +220,7 @@ export async function POST(request: NextRequest) {
                             status: 'confirmed',
                             paid_at: new Date().toISOString(),
                             stripe_payment_status: 'deposit_paid',
+                            quote_status: 'accepted',
                         })
                         .eq('id', bookingId)
 
@@ -248,6 +250,15 @@ export async function POST(request: NextRequest) {
                                     quoteEmailTestimonial: testimonialSnippet,
                                 }
                             )
+                            await logEmailSend({
+                                bookingId,
+                                templateType: 'booking_confirmed',
+                                recipient: currentBooking.email,
+                                subject: 'Your private dining is confirmed',
+                                success: depResult.success,
+                                error: depResult.error,
+                                actorName: 'Stripe webhook',
+                            }).catch(() => {})
                             if (depResult.success) {
                                 console.log(`✅ Booking confirmed email sent to ${currentBooking.email}`)
                             } else {

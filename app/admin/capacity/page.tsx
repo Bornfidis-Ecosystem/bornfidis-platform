@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isManagerOrFounder, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { getPlan, getConfig } from './actions'
 import CapacityClient from './CapacityClient'
 import type { CapacityHorizon } from '@/lib/capacity-planning'
@@ -11,13 +11,11 @@ export default async function AdminCapacityPage({
 }: {
   searchParams: Promise<{ horizon?: string }>
 }) {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN' && roleStr !== 'STAFF') {
+  if (!isManagerOrFounder(await resolveAdminPlatformRole())) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Capacity planning is available to Admin and Staff only.</p>
+        <p className="text-gray-600">Capacity planning is available to founder and manager roles only.</p>
         <a href="/admin" className="text-forestDark hover:underline">Back to Dashboard</a>
       </div>
     )

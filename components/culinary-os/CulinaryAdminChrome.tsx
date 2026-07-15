@@ -5,16 +5,23 @@ import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import SignOutButton from '@/components/admin/SignOutButton'
 import AdminPushWrap from '@/components/push/AdminPushWrap'
+import type { NavGroupSection } from '@/lib/filter-nav'
 import type { NavItem } from '@/lib/nav-config'
 
+function pathBase(href: string): string {
+  return href.split('?')[0].split('#')[0]
+}
+
 function linkIsActive(href: string, pathname: string): boolean {
-  if (href === '/admin') return pathname === '/admin'
-  return pathname === href || pathname.startsWith(`${href}/`)
+  const base = pathBase(href)
+  if (base === '/admin') return pathname === '/admin'
+  return pathname === base || pathname.startsWith(`${base}/`)
 }
 
 type CulinaryAdminChromeProps = {
   children: ReactNode
-  navItems: NavItem[]
+  /** Grouped Culinary OS nav (Phase 4). */
+  navGroups: NavGroupSection[]
   user: { email?: string | null }
   role: string | null
   /** Hide Operations Hub / System links for hospitality-only roles (Phase 1.1). */
@@ -31,16 +38,16 @@ function SidebarNavLinks({
   onNavigate?: () => void
 }) {
   return (
-    <ul className="flex flex-col gap-1 p-0">
+    <ul className="flex flex-col gap-0.5 p-0">
       {items.map((item) => {
         const active = linkIsActive(item.href, pathname)
         return (
-          <li key={item.href}>
+          <li key={`${item.href}-${item.label}`}>
             <Link
               href={item.href}
               onClick={onNavigate}
               className={[
-                'flex items-center gap-3 border-l-2 px-4 py-3 font-culinary-sans text-label-caps uppercase tracking-[0.1em] transition-colors',
+                'flex items-center gap-3 border-l-2 px-4 py-2.5 font-culinary-sans text-label-caps uppercase tracking-[0.1em] transition-colors',
                 active
                   ? 'border-culinary-gold-line bg-white font-bold text-culinary-ink'
                   : 'border-transparent text-culinary-text-muted hover:bg-culinary-surface-high hover:text-culinary-ink',
@@ -61,7 +68,7 @@ function SidebarNavLinks({
  */
 export function CulinaryAdminChrome({
   children,
-  navItems,
+  navGroups,
   user,
   role,
   showFinancialShortcuts = false,
@@ -132,7 +139,14 @@ export function CulinaryAdminChrome({
         </div>
 
         <nav className="min-h-0 flex-1 overflow-y-auto px-2" aria-label="Primary">
-          <SidebarNavLinks items={navItems} pathname={pathname} onNavigate={closeMobile} />
+          {navGroups.map((section) => (
+            <div key={section.id} className="mb-stack-md">
+              <p className="px-4 pb-1 font-culinary-sans text-[10px] font-semibold uppercase tracking-[0.14em] text-culinary-text-muted">
+                {section.label}
+              </p>
+              <SidebarNavLinks items={section.items} pathname={pathname} onNavigate={closeMobile} />
+            </div>
+          ))}
         </nav>
 
         <div className="mt-auto flex flex-col gap-stack-sm border-t border-culinary-outline-variant px-4 pt-stack-md">

@@ -50,6 +50,9 @@ export function ConversionCtaBand({
           <Link href={PHASE1_CTA.bookCookingClass.href} className="bf-conversion-cta__link">
             {PHASE1_CTA.bookCookingClass.label}
           </Link>
+          <Link href={PHASE1_CTA.applyDigitalStudio.href} className="bf-conversion-cta__link">
+            {PHASE1_CTA.applyDigitalStudio.label}
+          </Link>
           <Link href={PHASE1_CTA.contactBornfidis.href} className="bf-conversion-cta__link">
             {PHASE1_CTA.contactBornfidis.label}
           </Link>

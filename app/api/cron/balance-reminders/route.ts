@@ -4,6 +4,7 @@ import { isAuthorizedCronRequest } from '@/lib/cron-auth'
 import { sendEmail } from '@/lib/email'
 import { formatUSD } from '@/lib/money'
 import { createBalanceCheckoutSessionForBooking } from '@/lib/stripe-balance-checkout'
+import { logEmailSend } from '@/lib/email-send-log'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -166,6 +167,16 @@ Questions? Just reply to this email.
         subject: 'Balance reminder — Bornfidis Provisions',
         text,
       })
+
+      await logEmailSend({
+        bookingId: booking.id,
+        templateType: 'balance_reminder',
+        recipient: email,
+        subject: 'Balance reminder — Bornfidis Provisions',
+        success: mail.success,
+        error: mail.error,
+        actorName: 'Balance reminder cron',
+      }).catch(() => {})
 
       if (!mail.success) {
         skipped.push({ id: booking.id, reason: mail.error || 'email send failed' })

@@ -9,11 +9,12 @@ import { HomeRoyalCaribbeanDifference } from '@/components/home/HomeRoyalCaribbe
 import { HomeSignatureExperience } from '@/components/home/HomeSignatureExperience'
 import { useHeroParallax, useHomeScrollReveal } from '@/components/home/useHomeMotion'
 import { bornfidisPhotos } from '@/lib/bornfidis-photos'
-import { HERO, PROVISIONS_HOME_STRIP } from '@/lib/homepage-content'
+import { PROVISIONS_HOME_STRIP } from '@/lib/homepage-content'
+import { DIVISION_CARDS, ECOSYSTEM_HERO } from '@/lib/phase1-marketing'
 
 /**
- * Bornfidis — editorial homepage (balanced structure).
- * Guest-first: hero → Chef's Passage → RC proof → guest moment → provisions strip → CTA.
+ * Bornfidis umbrella homepage.
+ * Hero → two operating divisions → Provisions hospitality proof → pantry strip → CTA.
  */
 export default function HomeEditorial() {
   useHomeScrollReveal()
@@ -23,29 +24,24 @@ export default function HomeEditorial() {
     <div className="bf-home">
       <section className="hero">
         <div className="hero-left">
+          <p className="label hero-enter hero-enter--1" style={{ marginBottom: '1.25rem' }}>
+            Bornfidis
+          </p>
           <h1 className="hero-title hero-enter hero-enter--1">
-            {HERO.taglineLine1}
+            {ECOSYSTEM_HERO.headlineLine1}
             <br />
-            <span className="hero-accent">{HERO.taglineLine2}</span>
+            <span className="hero-accent ecosystem-hero-accent">{ECOSYSTEM_HERO.headlineLine2}</span>
           </h1>
           <div className="hero-rule hero-enter hero-enter--2" />
-          <p className="hero-body hero-enter hero-enter--3">{HERO.outcomeLine}</p>
-          <p className="hero-serving-note hero-enter hero-enter--3">{HERO.servingNote}</p>
-          <div className="hero-actions hero-enter hero-enter--4">
-            <Link href={HERO.primaryCta.href} className="btn-primary">
-              {HERO.primaryCta.label}
+          <p className="hero-body hero-enter hero-enter--3">{ECOSYSTEM_HERO.body}</p>
+          <div className="hero-actions hero-enter hero-enter--4 hero-actions--stack">
+            <Link href={ECOSYSTEM_HERO.primaryCta.href} className="btn-primary">
+              {ECOSYSTEM_HERO.primaryCta.label}
+            </Link>
+            <Link href={ECOSYSTEM_HERO.secondaryCta.href} className="btn-secondary-hero">
+              {ECOSYSTEM_HERO.secondaryCta.label}
             </Link>
           </div>
-          <nav className="hero-secondary hero-enter hero-enter--5" aria-label="Secondary offers">
-            {HERO.secondaryLinks.map((link, i) => (
-              <span key={link.href} className="hero-secondary__item">
-                {i > 0 ? <span className="hero-secondary__divider" aria-hidden>|</span> : null}
-                <Link href={link.href} className="hero-secondary__link">
-                  {link.label}
-                </Link>
-              </span>
-            ))}
-          </nav>
         </div>
         <div className="hero-right hero-enter hero-enter--6">
           <div className="hero-photo-wrap">
@@ -61,17 +57,36 @@ export default function HomeEditorial() {
           <div className="hero-overlay" aria-hidden />
           <div className="hero-caption">
             <p className="hero-caption-text">
-              Private dining in your home,
+              Practical systems for food,
               <br />
-              chalet, or Vermont retreat.
+              hospitality, and enterprise.
             </p>
-            <div className="hero-score">
-              <div className="hero-score-num">
-                97<span>.80</span>
-              </div>
-              <div className="hero-score-label">Guest satisfaction average</div>
-              <p className="hero-score-detail">{HERO.guestScoreDetail}</p>
-            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="divisions reveal" aria-labelledby="divisions-title">
+        <div className="divisions__inner">
+          <p className="label">Operating divisions</p>
+          <h2 id="divisions-title" className="divisions__headline">
+            Two clear paths under one ecosystem
+          </h2>
+          <div className="divisions__grid">
+            {DIVISION_CARDS.map((card) => (
+              <article key={card.id} className="division-card">
+                <p className="label">{card.eyebrow}</p>
+                <h3 className="division-card__title">{card.title}</h3>
+                <p className="division-card__body">{card.description}</p>
+                <div className="division-card__actions">
+                  <Link href={card.href} className="btn-primary division-card__cta">
+                    {card.ctaLabel}
+                  </Link>
+                  <Link href={card.secondaryHref} className="division-card__link">
+                    {card.secondaryCtaLabel} &rarr;
+                  </Link>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -90,7 +105,10 @@ export default function HomeEditorial() {
             <Link href={PROVISIONS_HOME_STRIP.href} className="provisions-strip__link">
               {PROVISIONS_HOME_STRIP.linkLabel} &rarr;
             </Link>
-            <Link href={PROVISIONS_HOME_STRIP.requestHref} className="provisions-strip__link provisions-strip__link--secondary">
+            <Link
+              href={PROVISIONS_HOME_STRIP.requestHref}
+              className="provisions-strip__link provisions-strip__link--secondary"
+            >
               {PROVISIONS_HOME_STRIP.requestLabel} &rarr;
             </Link>
           </div>
@@ -108,9 +126,9 @@ export default function HomeEditorial() {
 
       <ConversionCtaBand
         variant="forest"
-        eyebrow="The table is ready"
-        title="Your table is waiting. Let's begin."
-        body="The Chef's Passage from $1,200 in Vermont. We come to you. We bring everything. You sit down."
+        eyebrow="Provisions — primary offer"
+        title="Ready for the table?"
+        body="Book private dining, request a product batch, or apply to the Digital Studio pilot."
         className="reveal"
       />
     </div>

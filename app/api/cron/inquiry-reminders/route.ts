@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { isAuthorizedCronRequest } from '@/lib/cron-auth'
 import { sendInquiryStalenessReminderEmail } from '@/lib/email'
+import { logEmailSend } from '@/lib/email-send-log'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -53,6 +54,15 @@ export async function GET(request: NextRequest) {
           eventDate: b.eventDate,
           eventLocation: b.location,
         })
+        await logEmailSend({
+          bookingId: b.id,
+          templateType: 'inquiry_reminder',
+          recipient: em,
+          subject: "We're still with you — Bornfidis Provisions",
+          success: r.success,
+          error: r.error,
+          actorName: 'Inquiry reminder cron',
+        }).catch(() => {})
         if (!r.success) {
           errors.push(`${b.id}: ${r.error || 'email failed'}`)
           continue

@@ -59,7 +59,7 @@ export default function PublicNav() {
               priority
             />
             <span className="font-display text-[0.9375rem] font-semibold leading-none tracking-[0.02em] text-[var(--color-navy)]">
-              Bornfidis Provisions
+              Bornfidis
             </span>
           </Link>
 

@@ -44,7 +44,7 @@ interface UnifiedBody {
  * **Legacy (unchanged):** `{ priceId }` → one-off Stripe Price → `/passive/success`
  *
  * **Bornfidis:**
- * - `mode: 'deposit'` — fixed Price `STRIPE_DEPOSIT_PRICE_ID` (admin-only; requires `bookingId`)
+ * - `mode: 'deposit'` — dynamic amount from booking deposit fields (admin-only; requires `bookingId`)
  * - `mode: 'balance'` — dynamic `price_data` from **server-calculated** remaining balance (`bookingId`)
  * - `mode: 'consulting'` — fixed Price `STRIPE_CONSULT_PRICE_ID`
  */
@@ -72,6 +72,18 @@ export async function POST(req: NextRequest) {
       body.priceId.length > 0 &&
       body.mode === undefined
     ) {
+      const allowedPriceIds = [
+        process.env.NEXT_PUBLIC_STRIPE_PRICE_PRICING_CALCULATOR,
+        process.env.NEXT_PUBLIC_STRIPE_PRICE_ORDER_AGREEMENT,
+      ].filter((id): id is string => typeof id === 'string' && id.length > 0)
+
+      if (!allowedPriceIds.includes(body.priceId)) {
+        return NextResponse.json(
+          { error: 'Invalid priceId. Only known passive-income products are allowed.' },
+          { status: 400 },
+        )
+      }
+
       const baseUrl =
         process.env.NEXT_PUBLIC_BASE_URL ||
         process.env.NEXT_PUBLIC_SITE_URL ||
@@ -83,6 +95,11 @@ export async function POST(req: NextRequest) {
         line_items: [{ price: body.priceId, quantity: 1 }],
         success_url: `${baseUrl}/passive/success`,
         cancel_url: `${baseUrl}/passive`,
+        metadata: {
+          checkout_mode: 'passive',
+          payment_type: 'passive',
+          price_id: body.priceId,
+        },
       })
 
       return NextResponse.json({ url: session.url })
@@ -123,7 +140,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, url: session.url, session_id: session.id })
     }
 
-    // ─── Deposit: fixed catalog price (admin creates session) ─────────────
+    // ─── Deposit: dynamic amount from booking quote (admin creates session) ──
     if (mode === 'deposit') {
       const user = await getServerAuthUser()
       if (!user) {

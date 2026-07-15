@@ -36,6 +36,12 @@ const nextConfig = {
     return [
       // /story content now lives at /our-story; keep old links working.
       { source: '/story', destination: '/our-story', permanent: true },
+      // Spec alias — live portal lives at /portal/[token].
+      {
+        source: '/client-portal/:token',
+        destination: '/portal/:token',
+        permanent: true,
+      },
       // Supabase may redirect to /auth/callback — alias to the live API route.
       {
         source: '/auth/callback',

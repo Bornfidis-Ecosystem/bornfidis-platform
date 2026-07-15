@@ -5,7 +5,8 @@ import { CulinaryPageHeader } from '@/components/culinary-os'
 type AdminBookingHeaderProps = {
   bookingId: string
   bookingName: string
-  quotesHref: string
+  /** @deprecated Preview builder — no longer linked from header */
+  quotesHref?: string
   showQuoteActions?: boolean
   actions?: ReactNode
 }
@@ -13,7 +14,6 @@ type AdminBookingHeaderProps = {
 export function AdminBookingHeader({
   bookingId,
   bookingName,
-  quotesHref,
   showQuoteActions = true,
   actions,
 }: AdminBookingHeaderProps) {
@@ -39,18 +39,18 @@ export function AdminBookingHeader({
         title={bookingName}
         description={
           showQuoteActions
-            ? 'Booking details — quotes, payments, timeline, and prep.'
+            ? 'Booking details — save quotes and deposits here (live money path). Preview builder is Labs-only.'
             : 'Booking details — timeline, prep, logistics, and client notes.'
         }
         actions={
           <>
             {showQuoteActions ? (
-              <Link
-                href={quotesHref}
+              <a
+                href="#booking-quote"
                 className="inline-flex items-center justify-center rounded-none border border-culinary-gold-line bg-culinary-gold px-4 py-2 font-culinary-sans text-label-caps text-culinary-navy transition refined hover:opacity-90"
               >
-                Create quote from booking
-              </Link>
+                Edit quote on this booking
+              </a>
             ) : null}
             {actions}
           </>

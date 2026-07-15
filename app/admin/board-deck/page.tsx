@@ -1,24 +1,22 @@
 import Link from 'next/link'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { isFounderAdminRole, resolveAdminPlatformRole } from '@/lib/admin-rbac'
 import { getBoardDeckData } from '@/lib/board-deck'
 import type { BoardDeckPeriod } from '@/lib/board-deck'
 import BoardDeckClient from './BoardDeckClient'
 
 export const dynamic = 'force-dynamic'
 
-/** Phase 2AU — Board Deck. Admin only. */
+/** Phase 2AU — Board Deck. Founder admin only. */
 export default async function AdminBoardDeckPage({
   searchParams,
 }: {
   searchParams: Promise<{ period?: string }> | { period?: string }
 }) {
-  const role = await getCurrentUserRole()
-  const roleStr = role ? String(role).toUpperCase() : ''
-  if (roleStr !== 'ADMIN') {
+  if (!isFounderAdminRole(await resolveAdminPlatformRole())) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 p-8">
         <h1 className="text-xl font-semibold text-red-600">Access Denied</h1>
-        <p className="text-gray-600">Board deck is available to Admin only.</p>
+        <p className="text-gray-600">Board deck is available to founder admin only.</p>
         <Link href="/admin" className="text-forestDark hover:underline">Back to Dashboard</Link>
       </div>
     )

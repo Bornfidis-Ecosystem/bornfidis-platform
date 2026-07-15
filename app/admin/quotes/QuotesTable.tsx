@@ -444,10 +444,10 @@ export function QuotesTable() {
                 <td colSpan={6} className="px-gutter py-10 text-center font-culinary-sans text-sm text-culinary-text-muted">
                   <p>No quotes found</p>
                   <Link
-                    href="/admin/quotes/builder"
+                    href="/admin/bookings"
                     className="mt-3 inline-block font-medium text-culinary-navy underline decoration-culinary-gold-line underline-offset-2 hover:text-culinary-text-muted"
                   >
-                    Open manual quote builder
+                    Open bookings to save a live quote
                   </Link>
                 </td>
               </tr>

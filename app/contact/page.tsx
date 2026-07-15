@@ -10,13 +10,14 @@ export const metadata: Metadata = {
 }
 
 type ContactPageProps = {
-  searchParams: Promise<{ service?: string }>
+  searchParams: Promise<{ service?: string; product?: string }>
 }
 
 export default async function ContactPage({ searchParams }: ContactPageProps) {
   const params = await searchParams
   const key = params.service?.toLowerCase() ?? ''
   const presetService = PHASE1_CONTACT_SERVICE_PARAM[key] ?? ''
+  const productSlug = params.product?.trim() ?? ''
 
-  return <ContactPageContent presetService={presetService} />
+  return <ContactPageContent presetService={presetService} productSlug={productSlug} />
 }

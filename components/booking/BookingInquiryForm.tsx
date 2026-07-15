@@ -117,6 +117,8 @@ export function BookingInquiryForm() {
     notes: formData.message,
     upsellInterests: formData.upsellInterests,
     website_url: formData.website_url,
+    referralSource: 'book',
+    leadType: 'private-dining',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
