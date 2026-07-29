@@ -1,4 +1,4 @@
-import Stripe from 'stripe'
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
 import { db } from '@/lib/db'
 
@@ -9,9 +9,8 @@ import { db } from '@/lib/db'
 export async function createBalanceCheckoutSessionForBooking(
   bookingId: string
 ): Promise<{ success: true; url: string } | { success: false; error: string }> {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeSecretKey) {
-    return { success: false, error: 'Stripe is not configured.' }
+  if (!isStripeConfigured('provisions')) {
+    return { success: false, error: 'Stripe is not configured for provisions.' }
   }
 
   const booking = await db.bookingInquiry.findUnique({
@@ -58,9 +57,7 @@ export async function createBalanceCheckoutSessionForBooking(
     return { success: false, error: 'Balance has already been paid.' }
   }
 
-  const stripe = new Stripe(stripeSecretKey, {
-    apiVersion: '2024-11-20.acacia',
-  })
+  const stripe = getStripeClient('provisions')
 
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||

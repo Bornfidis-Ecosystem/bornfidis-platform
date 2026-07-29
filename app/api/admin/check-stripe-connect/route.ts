@@ -2,45 +2,42 @@ export const dynamic = 'force-dynamic'
 
 import { NextRequest, NextResponse } from 'next/server'
 import { requireAdmin } from '@/lib/requireAdmin'
-import Stripe from 'stripe'
-
-function getStripe(): Stripe | null {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeSecretKey) {
-    return null
-  }
-  return new Stripe(stripeSecretKey, {
-    apiVersion: '2024-11-20.acacia',
-  })
-}
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe'
 
 /**
- * Diagnostic endpoint to check Stripe Connect setup
+ * Diagnostic endpoint to check Stripe Connect setup (Provisions account)
  * GET /api/admin/check-stripe-connect
  */
 export async function GET(request: NextRequest) {
   try {
-    // Check admin access
     const authError = await requireAdmin(request)
     if (authError) return authError
 
     const checks: Record<string, { status: 'ok' | 'error' | 'warning'; message: string }> = {}
 
-    // Check STRIPE_SECRET_KEY
-    if (!process.env.STRIPE_SECRET_KEY) {
-      checks.STRIPE_SECRET_KEY = {
+    const provisionsKey =
+      process.env.STRIPE_PROVISIONS_SECRET_KEY?.trim() ||
+      process.env.STRIPE_SECRET_KEY?.trim()
+
+    if (!provisionsKey) {
+      checks.STRIPE_PROVISIONS_SECRET_KEY = {
         status: 'error',
-        message: 'STRIPE_SECRET_KEY is not set in environment variables',
+        message: 'STRIPE_PROVISIONS_SECRET_KEY (or legacy STRIPE_SECRET_KEY) is not set',
       }
     } else {
-      const keyPrefix = process.env.STRIPE_SECRET_KEY.substring(0, 7)
-      checks.STRIPE_SECRET_KEY = {
+      const keyPrefix = provisionsKey.substring(0, 7)
+      checks.STRIPE_PROVISIONS_SECRET_KEY = {
         status: 'ok',
-        message: `Set (${keyPrefix}...) - ${process.env.STRIPE_SECRET_KEY.startsWith('sk_test_') ? 'Test mode' : process.env.STRIPE_SECRET_KEY.startsWith('sk_live_') ? 'Live mode' : 'Unknown format'}`,
+        message: `Set (${keyPrefix}...) - ${
+          provisionsKey.startsWith('sk_test_')
+            ? 'Test mode'
+            : provisionsKey.startsWith('sk_live_')
+              ? 'Live mode'
+              : 'Unknown format'
+        }`,
       }
     }
 
-    // Check NEXT_PUBLIC_SITE_URL
     if (!process.env.NEXT_PUBLIC_SITE_URL) {
       checks.NEXT_PUBLIC_SITE_URL = {
         status: 'error',
@@ -53,12 +50,9 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Try to create a test account to check Connect
-    const stripe = getStripe()
-    if (stripe) {
+    if (isStripeConfigured('provisions')) {
       try {
-        // Try to retrieve account info (this will fail if Connect not enabled)
-        // We'll try creating a test account instead
+        const stripe = getStripeClient('provisions')
         try {
           const testAccount = await stripe.accounts.create({
             type: 'express',
@@ -69,64 +63,32 @@ export async function GET(request: NextRequest) {
               transfers: { requested: true },
             },
           })
-
-          // If successful, delete the test account
           await stripe.accounts.del(testAccount.id)
-
           checks.STRIPE_CONNECT = {
             status: 'ok',
-            message: 'Stripe Connect is enabled and working correctly',
+            message: 'Stripe Connect is enabled on the Provisions account',
           }
-        } catch (error: any) {
-          if (error.message && error.message.includes('Connect')) {
-            checks.STRIPE_CONNECT = {
-              status: 'error',
-              message: 'Stripe Connect is not enabled. Enable it at https://dashboard.stripe.com/connect',
-            }
-          } else {
-            checks.STRIPE_CONNECT = {
-              status: 'warning',
-              message: `Could not verify Connect status: ${error.message}`,
-            }
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Unknown error'
+          checks.STRIPE_CONNECT = {
+            status: 'error',
+            message: `Connect check failed: ${message}`,
           }
         }
-      } catch (error: any) {
-        checks.STRIPE_CONNECT = {
+      } catch (error: unknown) {
+        checks.STRIPE_CLIENT = {
           status: 'error',
-          message: `Error checking Stripe Connect: ${error.message}`,
+          message: error instanceof Error ? error.message : 'Failed to init Stripe client',
         }
-      }
-    } else {
-      checks.STRIPE_CONNECT = {
-        status: 'error',
-        message: 'Cannot check - Stripe client not initialized',
       }
     }
 
-    const allOk = Object.values(checks).every((check) => check.status === 'ok')
-    const hasErrors = Object.values(checks).some((check) => check.status === 'error')
-
-    return NextResponse.json({
-      success: allOk,
-      checks,
-      summary: {
-        allOk,
-        hasErrors,
-        message: allOk
-          ? 'All checks passed! Stripe Connect is ready.'
-          : hasErrors
-          ? 'Some checks failed. Please fix the errors above.'
-          : 'Some warnings detected. Review the checks above.',
-      },
-    })
-  } catch (error: any) {
-    console.error('Error checking Stripe Connect:', error)
+    const hasError = Object.values(checks).some((c) => c.status === 'error')
+    return NextResponse.json({ success: !hasError, checks })
+  } catch (error: unknown) {
     return NextResponse.json(
-      {
-        success: false,
-        error: error.message || 'Failed to check Stripe Connect setup',
-      },
-      { status: 500 }
+      { success: false, error: error instanceof Error ? error.message : 'Check failed' },
+      { status: 500 },
     )
   }
 }

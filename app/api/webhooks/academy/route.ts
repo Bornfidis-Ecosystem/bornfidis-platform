@@ -1,176 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
-import { db } from '@/lib/db'
-import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
-import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
-import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
-import { logActivity } from '@/lib/activity-log'
-import { writeStripeWebhookLog } from '@/lib/stripe-webhook-log'
+import { throwAmbiguousStripeDivision } from '@/lib/stripe'
 
 /**
  * Phase A — Academy Stripe webhook
  * POST /api/webhooks/academy
  *
- * Configure in Stripe Dashboard: Webhooks → Add endpoint → URL this route, event checkout.session.completed.
- * Use the signing secret as STRIPE_ACADEMY_WEBHOOK_SECRET.
+ * AMBIGUOUS: Academy is not assigned to 'provisions' | 'digital-studio'.
+ * Do not guess which Stripe account signed this webhook — returns 500 until assigned.
  *
- * Idempotent: if stripeSessionId already exists, return 200 without writing.
- * Stores product snapshot (title, price in cents) at purchase time.
+ * When Academy is assigned, restore signature verification with that account's
+ * secret + STRIPE_ACADEMY_WEBHOOK_SECRET (or a dedicated academy webhook secret).
  */
-export async function POST(req: NextRequest) {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-  const webhookSecret = process.env.STRIPE_ACADEMY_WEBHOOK_SECRET
-
-  if (!stripeSecretKey) {
-    console.error('STRIPE_SECRET_KEY is not set')
-    return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
-  }
-
-  if (!webhookSecret) {
-    console.error('STRIPE_ACADEMY_WEBHOOK_SECRET is not set')
-    return NextResponse.json({ error: 'Academy webhook secret not configured' }, { status: 500 })
-  }
-
-  const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-04-10' })
-  const body = await req.text()
-  const signature = req.headers.get('stripe-signature')
-
-  if (!signature) {
-    return NextResponse.json({ error: 'No signature' }, { status: 400 })
-  }
-
-  let event: Stripe.Event
+export async function POST(_req: NextRequest) {
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unknown error'
-    console.error('Academy webhook signature verification failed:', message)
-    return NextResponse.json({ error: `Webhook Error: ${message}` }, { status: 400 })
+    throwAmbiguousStripeDivision(
+      'POST /api/webhooks/academy — Academy has no assigned Stripe division. ' +
+        'Assign Academy before enabling this webhook (or point it at an explicit account).',
+    )
+  } catch (e) {
+    console.error(e instanceof Error ? e.message : e)
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : 'Ambiguous Stripe division' },
+      { status: 500 },
+    )
   }
-
-  if (event.type !== 'checkout.session.completed') {
-    return NextResponse.json({ received: true })
-  }
-
-  const session = event.data.object as Stripe.Checkout.Session
-  const productSlug = session.metadata?.productSlug
-  const authUserId = session.client_reference_id
-  const customerEmail =
-    session.customer_email ?? session.customer_details?.email ?? null
-
-  if (!productSlug || !authUserId) {
-    console.error('Academy webhook: missing productSlug or client_reference_id', {
-      productSlug,
-      authUserId,
-    })
-    await writeStripeWebhookLog({
-      eventType: event.type,
-      stripeEventId: event.id,
-      stripeObjectId: session.id,
-      customerEmail,
-      processingStatus: 'unmatched',
-      paymentType: 'academy',
-      errorMessage: 'Missing productSlug or client_reference_id',
-      rawPayload: event as unknown as object,
-    }).catch(() => {})
-    return NextResponse.json({ received: true })
-  }
-
-  // Idempotent: if we already have this session, return 200 immediately
-  const existing = await db.academyPurchase.findUnique({
-    where: { stripeSessionId: session.id },
-  })
-  if (existing) {
-    return NextResponse.json({ received: true })
-  }
-
-  // Also check stripe_webhook_events for global idempotency
-  const alreadyProcessed = await db.stripeWebhookEvent.findUnique({
-    where: { id: event.id },
-  }).catch(() => null)
-  if (alreadyProcessed) {
-    return NextResponse.json({ received: true })
-  }
-
-  const product = await getAcademyProductBySlugPublic(productSlug)
-  if (!product) {
-    console.error('Academy webhook: unknown product slug', productSlug)
-    return NextResponse.json({ received: true })
-  }
-
-  try {
-    await db.academyPurchase.create({
-      data: {
-        authUserId,
-        productSlug,
-        productTitle: product.title,
-        productPrice: product.priceCents,
-        stripeSessionId: session.id,
-        purchasedAt: new Date(),
-      },
-    })
-    logActivity({
-      type: 'ACADEMY_PURCHASE',
-      title: 'Course purchased',
-      description: product.title,
-      division: 'ACADEMY',
-      metadata: { productSlug, stripeSessionId: session.id },
-    }).catch(() => {})
-    // Mark globally processed
-    await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
-  } catch (err) {
-    console.error('Academy webhook: failed to save purchase', err)
-    await writeStripeWebhookLog({
-      eventType: event.type,
-      stripeEventId: event.id,
-      stripeObjectId: session.id,
-      customerEmail,
-      processingStatus: 'error',
-      paymentType: 'academy',
-      errorMessage: err instanceof Error ? err.message : 'Failed to record purchase',
-      rawPayload: event as unknown as object,
-    }).catch(() => {})
-    return NextResponse.json({ error: 'Failed to record purchase' }, { status: 500 })
-  }
-
-  // Purchase confirmation email (library link, download link, suggested product, support contact)
-  const customerEmail = session.customer_email ?? session.customer_details?.email
-  if (customerEmail && typeof customerEmail === 'string') {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
-    const libraryUrl = `${baseUrl}/dashboard/library`
-    const downloadUrl = `${baseUrl}/api/academy/download/${productSlug}`
-    const suggestedSlug = ACADEMY_UPSELL_SUGGESTION[productSlug]
-    const suggestedProduct = suggestedSlug ? await getAcademyProductBySlugPublic(suggestedSlug) : null
-    await sendAcademyPurchaseConfirmationEmail(customerEmail, {
-      productTitle: product.title,
-      amountPaidCents: product.priceCents,
-      libraryUrl,
-      downloadUrl,
-      suggestedProduct: suggestedProduct
-        ? {
-            title: suggestedProduct.title,
-            slug: suggestedProduct.slug,
-            priceDisplay: suggestedProduct.priceDisplay,
-            academyUrl: `${baseUrl}/academy/${suggestedProduct.slug}`,
-          }
-        : undefined,
-    })
-  }
-
-  // Reconciliation log (non-blocking)
-  await writeStripeWebhookLog({
-    eventType: event.type,
-    stripeEventId: event.id,
-    stripeObjectId: session.id,
-    amountCents: product.priceCents,
-    customerEmail,
-    processingStatus: 'matched',
-    paymentType: 'academy',
-    rawPayload: event as unknown as object,
-  }).catch(() => {})
-
-  return NextResponse.json({ received: true })
 }

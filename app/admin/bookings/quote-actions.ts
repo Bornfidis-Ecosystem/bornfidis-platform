@@ -199,11 +199,11 @@ export async function createStripeDepositLink(
   await requireAuth()
 
   try {
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
+    const { isStripeConfigured } = await import('@/lib/stripe')
+    if (!isStripeConfigured('provisions')) {
       return {
         success: false,
-        error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.',
+        error: 'Stripe is not configured for provisions. Set STRIPE_PROVISIONS_SECRET_KEY (or legacy STRIPE_SECRET_KEY).',
       }
     }
 

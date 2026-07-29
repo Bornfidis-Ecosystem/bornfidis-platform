@@ -12,7 +12,7 @@ export default function AdminSystemPage() {
     process.env.VERCEL_ENV ||
     process.env.NODE_ENV ||
     'unknown'
-  const stripeConfigured = !!process.env.STRIPE_SECRET_KEY
+  const stripeConfigured = !!process.env.STRIPE_PROVISIONS_SECRET_KEY || !!process.env.STRIPE_SECRET_KEY
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

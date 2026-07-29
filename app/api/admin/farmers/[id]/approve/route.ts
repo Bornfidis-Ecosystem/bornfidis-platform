@@ -50,9 +50,9 @@ export async function POST(
     // Create Stripe Express account if not exists
     let stripeAccountId = farmer.stripe_account_id
     if (!stripeAccountId) {
-      if (!process.env.STRIPE_SECRET_KEY) {
+      if (!process.env.STRIPE_PROVISIONS_SECRET_KEY && !process.env.STRIPE_SECRET_KEY) {
         return NextResponse.json(
-          { success: false, error: 'STRIPE_SECRET_KEY is not configured' },
+          { success: false, error: 'STRIPE_PROVISIONS_SECRET_KEY is not configured' },
           { status: 500 }
         )
       }

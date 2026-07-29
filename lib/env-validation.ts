@@ -11,9 +11,9 @@ export function validateStripeConnectEnv(): {
   const missing: string[] = []
   const warnings: string[] = []
 
-  // Required for Stripe Connect
-  if (!process.env.STRIPE_SECRET_KEY) {
-    missing.push('STRIPE_SECRET_KEY')
+  // Required for Stripe Connect (Provisions account)
+  if (!process.env.STRIPE_PROVISIONS_SECRET_KEY && !process.env.STRIPE_SECRET_KEY) {
+    missing.push('STRIPE_PROVISIONS_SECRET_KEY (or legacy STRIPE_SECRET_KEY)')
   }
 
   if (!process.env.NEXT_PUBLIC_SITE_URL) {

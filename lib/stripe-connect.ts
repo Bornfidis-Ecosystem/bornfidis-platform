@@ -1,25 +1,19 @@
 /**
  * Phase 5A/5B: Stripe Connect integration for chef partners
  * Handles Express account creation, onboarding, and payouts
+ * Uses Provisions Stripe account (chef payouts are Provisions ops).
  */
 
-import Stripe from 'stripe'
-
-let stripeInstance: Stripe | null = null
+import type Stripe from 'stripe'
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe'
 
 export function getStripe(): Stripe | null {
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
-        return null
-    }
-
-    if (!stripeInstance) {
-        stripeInstance = new Stripe(stripeSecretKey, {
-            apiVersion: '2024-11-20.acacia',
-        })
-    }
-
-    return stripeInstance
+  if (!isStripeConfigured('provisions')) return null
+  try {
+    return getStripeClient('provisions')
+  } catch {
+    return null
+  }
 }
 
 /**

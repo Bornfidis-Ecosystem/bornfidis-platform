@@ -1,95 +1,28 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Stripe from 'stripe'
 import { getCurrentSupabaseUser } from '@/lib/auth'
-import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
-import { getAcademyStorageFilename } from '@/lib/academy-storage'
-
-function getBaseUrl(req: NextRequest): string {
-  try {
-    const u = new URL(req.url)
-    return `${u.protocol}//${u.host}`
-  } catch {
-    // fallback to env
-  }
-  if (process.env.NEXT_PUBLIC_BASE_URL) return process.env.NEXT_PUBLIC_BASE_URL
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return 'http://localhost:3000'
-}
+import { throwAmbiguousStripeDivision } from '@/lib/stripe'
 
 /**
  * POST /api/academy/checkout
- * Body: { productId: string } (product slug)
- * Creates Stripe Checkout session for Academy product. User must be logged in.
- * Success: /academy/success?session_id={CHECKOUT_SESSION_ID}
- * Cancel: back to product detail /academy/[slug]
+ *
+ * AMBIGUOUS: Academy is not assigned to 'provisions' | 'digital-studio'.
+ * Do not guess which Stripe account to charge — returns 500 until assigned.
  */
-export async function POST(req: NextRequest) {
+export async function POST(_req: NextRequest) {
   const user = await getCurrentSupabaseUser()
   if (!user) {
     return NextResponse.json({ error: 'You must be signed in to purchase' }, { status: 401 })
   }
 
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeSecretKey) {
-    return NextResponse.json({ error: 'Stripe is not configured' }, { status: 500 })
-  }
-
-  let body: { productId?: string }
   try {
-    body = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
-
-  const productId = body.productId
-  if (!productId || typeof productId !== 'string') {
-    return NextResponse.json({ error: 'productId is required' }, { status: 400 })
-  }
-
-  const product = await getAcademyProductBySlugPublic(productId)
-  if (!product) {
-    return NextResponse.json({ error: 'Product not found' }, { status: 404 })
-  }
-
-  if (!product.stripePriceId || product.priceDisplay === 'FREE') {
-    return NextResponse.json(
-      { error: 'This product is free; use the Get for free link' },
-      { status: 400 }
+    throwAmbiguousStripeDivision(
+      'POST /api/academy/checkout — Academy has no assigned Stripe division. ' +
+        'Assign Academy to a dedicated account (or explicitly to provisions) before enabling checkout.',
     )
-  }
-
-  const stripe = new Stripe(stripeSecretKey, { apiVersion: '2024-04-10' })
-  const baseUrl = getBaseUrl(req)
-  const storageFile = getAcademyStorageFilename(product.slug)
-
-  try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      line_items: [
-        {
-          price: product.stripePriceId,
-          quantity: 1,
-        },
-      ],
-      success_url: `${baseUrl}/academy/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/academy/${product.slug}`,
-      client_reference_id: user.id,
-      metadata: {
-        productSlug: product.slug,
-        productTitle: product.title,
-        ...(storageFile && { productFile: storageFile }),
-        source: 'academy',
-      },
-    })
-
-    return NextResponse.json({ url: session.url })
-  } catch (error) {
-    console.error('Academy checkout error:', error)
+  } catch (e) {
     return NextResponse.json(
-      { error: 'Unable to create checkout session' },
-      { status: 500 }
+      { error: e instanceof Error ? e.message : 'Ambiguous Stripe division' },
+      { status: 500 },
     )
   }
 }

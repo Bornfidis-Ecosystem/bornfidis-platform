@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerAuthUser } from '@/lib/auth'
 import { createDepositCheckoutSessionForBooking } from '@/lib/stripe-deposit-checkout'
+import { isStripeConfigured } from '@/lib/stripe'
 
 /**
  * DEPRECATED — use POST /api/checkout with mode: 'deposit' instead.
@@ -16,10 +17,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
+    if (!isStripeConfigured('provisions')) {
       return NextResponse.json(
-        { success: false, error: 'Stripe is not configured.' },
+        { success: false, error: 'Stripe is not configured for provisions.' },
         { status: 500 },
       )
     }

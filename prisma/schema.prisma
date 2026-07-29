@@ -1186,6 +1186,41 @@ model EmailSendLog {
   @@schema("public")
 }
 
+/// Phase 9 — Local admin invoice ledger for Stripe-created invoices.
+model AdminInvoice {
+  id                  String    @id @default(uuid())
+  division            String
+  sourceType          String?   @map("source_type")
+  sourceId            String?   @map("source_id")
+  clientId            String?   @map("client_id")
+  bookingId           String?   @map("booking_id")
+  projectId           String?   @map("project_id")
+  stripeAccountId     String    @map("stripe_account_id")
+  stripeCustomerId    String    @map("stripe_customer_id")
+  stripeInvoiceId     String    @unique @map("stripe_invoice_id")
+  invoiceNumber       String?   @map("invoice_number")
+  currency            String    @default("usd")
+  subtotalCents       Int       @map("subtotal_cents")
+  depositAppliedCents Int       @default(0) @map("deposit_applied_cents")
+  amountDueCents      Int       @map("amount_due_cents")
+  dueAt               DateTime? @map("due_at")
+  status              String    @default("draft")
+  hostedInvoiceUrl    String?   @map("hosted_invoice_url")
+  createdBy           String?   @map("created_by")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  sentAt              DateTime? @map("sent_at")
+  paidAt              DateTime? @map("paid_at")
+  metadata            Json?
+
+  @@index([bookingId])
+  @@index([projectId])
+  @@index([sourceType, sourceId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("admin_invoices")
+  @@schema("public")
+}
+
 model AcademyProduct {
   id            String   @id @default(cuid())
   slug          String   @unique

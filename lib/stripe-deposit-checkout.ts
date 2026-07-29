@@ -1,16 +1,9 @@
-import Stripe from 'stripe'
 import { supabaseAdmin } from '@/lib/supabase'
+import { getStripeClient } from '@/lib/stripe'
+import { siteOrigin } from '@/lib/site-url'
 
 function getSiteUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return 'http://localhost:3000'
-}
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY
-  if (!key) throw new Error('STRIPE_SECRET_KEY is not set')
-  return new Stripe(key, { apiVersion: '2024-11-20.acacia' })
+  return siteOrigin()
 }
 
 export type DepositCheckoutOptions = {
@@ -58,7 +51,7 @@ export async function createDepositCheckoutSessionForBooking(
     )
   }
 
-  const stripe = getStripe()
+  const stripe = getStripeClient('provisions')
   const siteUrl = getSiteUrl()
   const customerEmail = options.customerEmail ?? booking.email ?? undefined
   const guestName = options.guestName ?? booking.name ?? ''

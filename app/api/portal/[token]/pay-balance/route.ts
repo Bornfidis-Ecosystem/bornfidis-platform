@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import Stripe from 'stripe'
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe'
 
 /**
  * Phase 4B: Create balance payment session via portal
@@ -24,9 +24,7 @@ export async function POST(
       )
     }
 
-    // Check if Stripe is configured
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
+    if (!isStripeConfigured('provisions')) {
       return NextResponse.json(
         { success: false, error: 'Payments are temporarily unavailable' },
         { status: 503 }
@@ -73,10 +71,8 @@ export async function POST(
       )
     }
 
-    // Initialize Stripe
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2024-11-20.acacia',
-    })
+    // Initialize Stripe (Provisions — private dining balance)
+    const stripe = getStripeClient('provisions')
 
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||

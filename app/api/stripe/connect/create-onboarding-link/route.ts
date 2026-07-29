@@ -15,9 +15,9 @@ export async function POST(request: NextRequest) {
     await requireAuth()
 
     // Validate environment variables
-    if (!process.env.STRIPE_SECRET_KEY) {
+    if (!process.env.STRIPE_PROVISIONS_SECRET_KEY && !process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
-        { success: false, error: 'STRIPE_SECRET_KEY is not configured' },
+        { success: false, error: 'STRIPE_PROVISIONS_SECRET_KEY is not configured' },
         { status: 500 }
       )
     }

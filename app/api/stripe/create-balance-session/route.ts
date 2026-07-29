@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerAuthUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
-import Stripe from 'stripe'
+import { getStripeClient, isStripeConfigured } from '@/lib/stripe'
 
 /**
  * Phase 3B + 3C: Create Stripe Checkout Session for remaining balance payment
@@ -19,11 +19,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if Stripe is configured
-    const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-    if (!stripeSecretKey) {
+    if (!isStripeConfigured('provisions')) {
       return NextResponse.json(
-        { success: false, error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY in environment variables.' },
+        { success: false, error: 'Stripe is not configured for provisions. Set STRIPE_PROVISIONS_SECRET_KEY (or legacy STRIPE_SECRET_KEY).' },
         { status: 500 }
       )
     }
@@ -97,10 +95,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Initialize Stripe
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2024-11-20.acacia',
-    })
+    const stripe = getStripeClient('provisions')
 
     const siteUrl =
       process.env.NEXT_PUBLIC_SITE_URL ||

@@ -2,18 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerAuthUser } from '@/lib/auth'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createDepositCheckoutSessionForBooking } from '@/lib/stripe-deposit-checkout'
-import Stripe from 'stripe'
+import {
+  getStripeClient,
+  isStripeConfigured,
+  throwAmbiguousStripeDivision,
+} from '@/lib/stripe'
+import { siteOrigin } from '@/lib/site-url'
 
 function getSiteUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-  return 'http://localhost:3000'
-}
-
-function getStripe(): Stripe {
-  const key = process.env.STRIPE_SECRET_KEY
-  if (!key) throw new Error('STRIPE_SECRET_KEY is not set')
-  return new Stripe(key, { apiVersion: '2024-11-20.acacia' })
+  return siteOrigin()
 }
 
 function assertEnv(name: string, value: string | undefined): string {
@@ -34,24 +31,25 @@ interface UnifiedBody {
   guest_name?: string
   eventDate?: string
   event_date?: string
-  /** Legacy passive-income checkout */
+  /** Legacy passive-income checkout — AMBIGUOUS division */
   priceId?: string
+  /** Required when calling legacy priceId checkout once assigned */
+  stripeDivision?: 'provisions' | 'digital-studio'
 }
 
 /**
  * POST /api/checkout
  *
- * **Legacy (unchanged):** `{ priceId }` → one-off Stripe Price → `/passive/success`
+ * **Legacy (ambiguous):** `{ priceId }` without explicit `stripeDivision` → 400
  *
- * **Bornfidis:**
+ * **Bornfidis Provisions:**
  * - `mode: 'deposit'` — dynamic amount from booking deposit fields (admin-only; requires `bookingId`)
  * - `mode: 'balance'` — dynamic `price_data` from **server-calculated** remaining balance (`bookingId`)
- * - `mode: 'consulting'` — fixed Price `STRIPE_CONSULT_PRICE_ID`
+ * - `mode: 'consulting'` — fixed Price `STRIPE_CONSULT_PRICE_ID` on Provisions account
  */
 export async function POST(req: NextRequest) {
-  const stripeSecretKey = process.env.STRIPE_SECRET_KEY
-  if (!stripeSecretKey) {
-    return NextResponse.json({ error: 'Stripe is not configured' }, { status: 500 })
+  if (!isStripeConfigured('provisions')) {
+    return NextResponse.json({ error: 'Stripe is not configured for provisions' }, { status: 500 })
   }
 
   let body: UnifiedBody
@@ -64,14 +62,28 @@ export async function POST(req: NextRequest) {
   const siteUrl = getSiteUrl()
 
   try {
-    const stripe = getStripe()
+    const stripe = getStripeClient('provisions')
 
-    // ─── Legacy: passive income (price catalog only) ─────────────────────
+    // ─── Legacy: passive income — AMBIGUOUS without explicit division ────
     if (
       typeof body.priceId === 'string' &&
       body.priceId.length > 0 &&
       body.mode === undefined
     ) {
+      if (body.stripeDivision !== 'provisions' && body.stripeDivision !== 'digital-studio') {
+        try {
+          throwAmbiguousStripeDivision(
+            'POST /api/checkout with priceId (passive income). Pass stripeDivision: "provisions" | "digital-studio".',
+          )
+        } catch (e) {
+          return NextResponse.json(
+            { error: e instanceof Error ? e.message : 'Ambiguous Stripe division' },
+            { status: 400 },
+          )
+        }
+      }
+
+      const divisionStripe = getStripeClient(body.stripeDivision)
       const allowedPriceIds = [
         process.env.NEXT_PUBLIC_STRIPE_PRICE_PRICING_CALCULATOR,
         process.env.NEXT_PUBLIC_STRIPE_PRICE_ORDER_AGREEMENT,
@@ -84,12 +96,9 @@ export async function POST(req: NextRequest) {
         )
       }
 
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL ||
-        process.env.NEXT_PUBLIC_SITE_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+      const baseUrl = siteUrl
 
-      const session = await stripe.checkout.sessions.create({
+      const session = await divisionStripe.checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'payment',
         line_items: [{ price: body.priceId, quantity: 1 }],
@@ -99,6 +108,7 @@ export async function POST(req: NextRequest) {
           checkout_mode: 'passive',
           payment_type: 'passive',
           price_id: body.priceId,
+          division: body.stripeDivision,
         },
       })
 
