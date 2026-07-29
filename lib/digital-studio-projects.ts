@@ -1,5 +1,3 @@
-'use server'
-
 import { db } from '@/lib/db'
 import { logWorkflowTransition } from '@/lib/activity-log'
 
