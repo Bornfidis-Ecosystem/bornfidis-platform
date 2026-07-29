@@ -60,3 +60,8 @@ next-env.d.ts
 # /data/proju-crop-status.json is committed (admin-managed)
 
 .vercel
+
+# Database dumps / backups — never commit (may contain PII/payment data)
+/backups/
+*.dump
+*.backup
