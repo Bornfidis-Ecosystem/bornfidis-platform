@@ -26,16 +26,23 @@ export default async function AdminInvoiceDetailPage({
   const invoice = await db.adminInvoice.findUnique({ where: { id } })
   if (!invoice) notFound()
 
-  const emailLogs = await db.emailSendLog.findMany({
-    where: {
-      entityType: 'admin_invoice',
-      entityId: invoice.stripeInvoiceId,
-    },
-    orderBy: { sentAt: 'desc' },
-  })
+  let emailLogs: Awaited<ReturnType<typeof db.emailSendLog.findMany>> = []
+  let emailLogUnavailable = false
+  try {
+    emailLogs = await db.emailSendLog.findMany({
+      where: {
+        entityType: 'admin_invoice',
+        entityId: invoice.stripeInvoiceId,
+      },
+      orderBy: { sentAt: 'desc' },
+    })
+  } catch (error) {
+    emailLogUnavailable = true
+    console.error('[admin/invoices/[id]] emailSendLog query failed:', error)
+  }
 
   const meta =
-    invoice.metadata && typeof invoice.metadata === 'object'
+    invoice.metadata && typeof invoice.metadata === 'object' && !Array.isArray(invoice.metadata)
       ? (invoice.metadata as Record<string, unknown>)
       : {}
   const emailStatus = typeof meta.emailStatus === 'string' ? meta.emailStatus : null
@@ -139,7 +146,11 @@ export default async function AdminInvoiceDetailPage({
         <div className="border-b border-culinary-outline px-4 py-3">
           <h2 className="font-culinary-display text-title-md text-culinary-navy">Email Log Entries</h2>
         </div>
-        {emailLogs.length === 0 ? (
+        {emailLogUnavailable ? (
+          <div className="px-4 py-4 font-culinary-sans text-sm text-amber-800">
+            Email delivery history is unavailable (email log table missing or unreachable).
+          </div>
+        ) : emailLogs.length === 0 ? (
           <div className="px-4 py-4 font-culinary-sans text-sm text-culinary-text-muted">
             No email log entries for this invoice.
           </div>

@@ -39,32 +39,55 @@ function badgeClasses(status: string) {
 export default async function AdminInvoicesPage() {
   await requireAdminUser()
 
-  const [invoices, emailLogs] = await Promise.all([
-    db.adminInvoice.findMany({ orderBy: { createdAt: 'desc' } }),
-    db.emailSendLog.findMany({
+  let invoices: Awaited<ReturnType<typeof db.adminInvoice.findMany>> = []
+  let emailLogs: Array<{
+    entityId: string | null
+    recipient: string
+    status: string
+    sentAt: Date
+  }> = []
+  let emailLogUnavailable = false
+
+  try {
+    invoices = await db.adminInvoice.findMany({ orderBy: { createdAt: 'desc' } })
+  } catch (error) {
+    console.error('[admin/invoices] adminInvoice.findMany failed:', error)
+    throw error
+  }
+
+  try {
+    emailLogs = await db.emailSendLog.findMany({
       where: { entityType: 'admin_invoice' },
       select: { entityId: true, recipient: true, status: true, sentAt: true },
       orderBy: { sentAt: 'desc' },
-    }),
-  ])
+    })
+  } catch (error) {
+    // Preview/prod may lack email_send_log even when admin_invoices exists.
+    emailLogUnavailable = true
+    console.error('[admin/invoices] emailSendLog query failed; continuing without email logs:', error)
+  }
 
-  const failedInvoiceIds = new Set(
-    emailLogs.filter((log) => log.status === 'failed').map((log) => log.entityId).filter(Boolean)
-  )
+  const failedInvoiceIds = new Set<string>()
+  for (const log of emailLogs) {
+    if (log.status === 'failed' && log.entityId) failedInvoiceIds.add(log.entityId)
+  }
   for (const invoice of invoices) {
     const meta =
-      invoice.metadata && typeof invoice.metadata === 'object'
+      invoice.metadata && typeof invoice.metadata === 'object' && !Array.isArray(invoice.metadata)
         ? (invoice.metadata as Record<string, unknown>)
         : null
-    if (meta?.emailStatus === 'failed') failedInvoiceIds.add(invoice.stripeInvoiceId)
+    if (meta?.emailStatus === 'failed' && invoice.stripeInvoiceId) {
+      failedInvoiceIds.add(invoice.stripeInvoiceId)
+    }
   }
+
   const recipientByInvoiceId = new Map<string, string>()
   for (const invoice of invoices) {
     const meta =
-      invoice.metadata && typeof invoice.metadata === 'object'
+      invoice.metadata && typeof invoice.metadata === 'object' && !Array.isArray(invoice.metadata)
         ? (invoice.metadata as Record<string, unknown>)
         : null
-    if (meta && typeof meta.recipient === 'string' && meta.recipient) {
+    if (meta && typeof meta.recipient === 'string' && meta.recipient && invoice.stripeInvoiceId) {
       recipientByInvoiceId.set(invoice.stripeInvoiceId, meta.recipient)
     }
   }
@@ -73,9 +96,11 @@ export default async function AdminInvoicesPage() {
       recipientByInvoiceId.set(log.entityId, log.recipient)
     }
   }
+
   const grouped = invoices.reduce<Record<string, typeof invoices>>((acc, invoice) => {
-    acc[invoice.division] ||= []
-    acc[invoice.division].push(invoice)
+    const key = invoice.division?.trim() || 'unknown'
+    acc[key] ||= []
+    acc[key].push(invoice)
     return acc
   }, {})
 
@@ -85,6 +110,15 @@ export default async function AdminInvoicesPage() {
         title="Invoices"
         description="Track local admin invoice records, Stripe IDs, delivery status, and recovery actions."
       />
+
+      {emailLogUnavailable ? (
+        <CulinaryCard>
+          <p className="font-culinary-sans text-sm text-amber-800">
+            Email delivery history is temporarily unavailable (email log table missing or unreachable).
+            Invoice records below are still shown from the local ledger.
+          </p>
+        </CulinaryCard>
+      ) : null}
 
       <div className="flex justify-end">
         <Link
@@ -99,7 +133,11 @@ export default async function AdminInvoicesPage() {
         <CulinaryCard key={division} padded={false} className="overflow-hidden">
           <div className="border-b border-culinary-outline px-4 py-3">
             <h2 className="font-culinary-display text-title-md text-culinary-navy">
-              {division === 'digital-studio' ? 'Digital Studio' : 'Provisions'}
+              {division === 'digital-studio'
+                ? 'Digital Studio'
+                : division === 'provisions'
+                  ? 'Provisions'
+                  : division}
             </h2>
           </div>
           <div className="overflow-x-auto">
@@ -119,9 +157,31 @@ export default async function AdminInvoicesPage() {
               <tbody className="divide-y divide-culinary-outline bg-white">
                 {rows.map((invoice) => {
                   const displayStatus = getDisplayStatus(
-                    invoice.status,
-                    failedInvoiceIds.has(invoice.stripeInvoiceId)
+                    invoice.status || 'unknown',
+                    Boolean(invoice.stripeInvoiceId && failedInvoiceIds.has(invoice.stripeInvoiceId)),
                   )
+                  let amountLabel = '—'
+                  try {
+                    amountLabel = formatCurrency(invoice.amountDueCents ?? 0, invoice.currency || 'usd')
+                  } catch (error) {
+                    console.error('[admin/invoices] invalid currency/amount on', invoice.id, error)
+                    amountLabel = `${((invoice.amountDueCents ?? 0) / 100).toFixed(2)} ${invoice.currency || ''}`.trim()
+                  }
+                  let createdLabel = '—'
+                  try {
+                    createdLabel = invoice.createdAt
+                      ? invoice.createdAt.toLocaleString('en-US')
+                      : '—'
+                  } catch (error) {
+                    console.error('[admin/invoices] invalid createdAt on', invoice.id, error)
+                  }
+                  let dueLabel = '—'
+                  try {
+                    dueLabel = invoice.dueAt ? invoice.dueAt.toLocaleDateString('en-US') : '—'
+                  } catch (error) {
+                    console.error('[admin/invoices] invalid dueAt on', invoice.id, error)
+                  }
+
                   return (
                     <tr key={invoice.id} className="align-top">
                       <td className="px-4 py-3">
@@ -129,34 +189,41 @@ export default async function AdminInvoicesPage() {
                           href={`/admin/invoices/${invoice.id}`}
                           className="font-mono text-xs text-culinary-navy hover:underline"
                         >
-                          {invoice.stripeInvoiceId}
+                          {invoice.stripeInvoiceId || invoice.id}
                         </Link>
                       </td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
                         {(invoice.metadata &&
                           typeof invoice.metadata === 'object' &&
+                          !Array.isArray(invoice.metadata) &&
                           'recipient' in invoice.metadata &&
-                          String((invoice.metadata as Record<string, unknown>).recipient)) ||
-                          recipientByInvoiceId.get(invoice.stripeInvoiceId) ||
+                          String((invoice.metadata as Record<string, unknown>).recipient || '')) ||
+                          (invoice.stripeInvoiceId
+                            ? recipientByInvoiceId.get(invoice.stripeInvoiceId)
+                            : undefined) ||
                           '—'}
                       </td>
-                      <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">{invoice.division}</td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
-                        {formatCurrency(invoice.amountDueCents, invoice.currency)}
+                        {invoice.division || '—'}
                       </td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
-                        {invoice.dueAt ? invoice.dueAt.toLocaleDateString('en-US') : '—'}
+                        {amountLabel}
+                      </td>
+                      <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
+                        {dueLabel}
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex rounded-none border px-2 py-1 text-xs font-semibold ${badgeClasses(displayStatus)}`}>
+                        <span
+                          className={`inline-flex rounded-none border px-2 py-1 text-xs font-semibold ${badgeClasses(displayStatus)}`}
+                        >
                           {displayStatus}
                         </span>
                       </td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
-                        {invoice.createdAt.toLocaleString('en-US')}
+                        {createdLabel}
                       </td>
                       <td className="px-4 py-3">
-                        <InvoiceActionButtons id={invoice.id} status={invoice.status} />
+                        <InvoiceActionButtons id={invoice.id} status={invoice.status || 'open'} />
                       </td>
                     </tr>
                   )
