@@ -86,6 +86,8 @@ export const PRIMARY_NAV_ITEMS: NavItem[] = [
 
   // FINANCE
   { label: 'Payments', href: '/admin/payments', roles: FINANCE_ROLES, group: 'finance' },
+  { label: 'Invoices', href: '/admin/invoices', roles: FINANCE_ROLES, group: 'finance' },
+  { label: 'New Invoice', href: '/admin/invoices/new', roles: FINANCE_ROLES, group: 'finance' },
   { label: 'Revenue', href: '/admin/ops', roles: FINANCE_ROLES, group: 'finance' },
   { label: 'Payouts', href: '/admin/payouts', roles: OPS, group: 'finance' },
   { label: 'Costs', href: '/admin/costs', roles: FINANCE_ROLES, group: 'finance' },

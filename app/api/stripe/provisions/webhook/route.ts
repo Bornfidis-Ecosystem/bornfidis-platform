@@ -109,7 +109,9 @@ export async function POST(request: NextRequest) {
             'invoice.finalized': 'open',
             'invoice.sent': 'sent',
             'invoice.paid': 'paid',
+            'invoice.payment_succeeded': 'paid',
             'invoice.voided': 'void',
+            'invoice.marked_uncollectible': 'void',
             'invoice.overdue': 'overdue',
             'invoice.payment_failed': 'payment_failed',
         }
@@ -121,7 +123,10 @@ export async function POST(request: NextRequest) {
                 actorName: 'Stripe webhook',
                 status: nextStatus,
                 sentAt: event.type === 'invoice.sent' ? new Date() : undefined,
-                paidAt: event.type === 'invoice.paid' ? new Date() : undefined,
+                paidAt:
+                    event.type === 'invoice.paid' || event.type === 'invoice.payment_succeeded'
+                        ? new Date()
+                        : undefined,
                 hostedInvoiceUrl: invoice.hosted_invoice_url,
                 invoiceNumber: invoice.number,
             }).catch((error) => console.error('admin invoice sync failed:', error))
