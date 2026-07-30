@@ -15,11 +15,6 @@ export const PIPELINE_COLUMNS = [
       'Contacted',
       'reviewing',
       'reviewed',
-      'Cancelled',
-      'Canceled',
-      'canceled',
-      'cancelled',
-      'declined',
     ],
   },
   {
@@ -47,7 +42,22 @@ export const COLUMN_TO_STATUS: Record<PipelineColumnId, string> = {
   completed: 'completed',
 }
 
-export function getColumnIdForStatus(status: string): PipelineColumnId {
+/**
+ * Cancelled / declined are not shown on the board New column.
+ * They remain in booking history; unknown statuses still fall back to New via getColumnIdForStatus.
+ */
+export function isExcludedFromPipelineBoard(status: string): boolean {
+  const normalized = (status || '').trim().toLowerCase()
+  return (
+    normalized === 'cancelled' ||
+    normalized === 'canceled' ||
+    normalized === 'declined' ||
+    normalized === 'refunded'
+  )
+}
+
+export function getColumnIdForStatus(status: string): PipelineColumnId | null {
+  if (isExcludedFromPipelineBoard(status)) return null
   const normalized = (status || '').trim()
   for (const col of PIPELINE_COLUMNS) {
     if (col.statuses.some((s) => s.toLowerCase() === normalized.toLowerCase())) return col.id

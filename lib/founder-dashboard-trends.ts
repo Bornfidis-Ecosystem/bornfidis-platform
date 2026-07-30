@@ -87,6 +87,7 @@ async function getProvisionsFunnel(): Promise<FunnelStage[]> {
   }
   for (const b of all) {
     const colId = getColumnIdForStatus(b.status)
+    if (!colId) continue
     byColumn[colId] = (byColumn[colId] ?? 0) + 1
   }
 
