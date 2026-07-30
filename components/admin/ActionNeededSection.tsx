@@ -29,6 +29,12 @@ export default function ActionNeededSection({ actionNeeded }: { actionNeeded: Ad
   // id used by Phase 4 Command nav: /admin#action-needed
   const groups: GroupConfig[] = [
     {
+      label: 'New Leads',
+      type: 'lead',
+      items: actionNeeded?.newLeads ?? [],
+      queueHref: '/admin/bookings?status=new',
+    },
+    {
       label: 'Deposit Follow-Up',
       type: 'deposit',
       items: actionNeeded?.depositFollowUps ?? [],
@@ -74,7 +80,7 @@ export default function ActionNeededSection({ actionNeeded }: { actionNeeded: Ad
     <section id="action-needed" className="min-w-0 scroll-mt-24">
       <h2 className={sectionHeading}>Action Needed</h2>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
         {groups.map((group) => (
           <CulinaryCard key={group.label}>
             <h3 className="mb-3 font-culinary-sans text-sm font-semibold text-culinary-navy">{group.label}</h3>
