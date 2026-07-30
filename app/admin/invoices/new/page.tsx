@@ -1,5 +1,5 @@
 import { CulinaryPageHeader } from '@/components/culinary-os'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import { getAdminInvoicePrefillAction } from '../actions'
 import NewInvoiceForm from './NewInvoiceForm'
 
@@ -13,7 +13,7 @@ export default async function AdminNewInvoicePage({
 }: {
   searchParams?: Promise<{ sourceType?: string; sourceId?: string }>
 }) {
-  await requireAdminUser()
+  await requireFinancialPageAccess()
   const params = (await searchParams) || {}
   const sourceType = params.sourceType
   const sourceId = params.sourceId

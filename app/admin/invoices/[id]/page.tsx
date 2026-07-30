@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import { db } from '@/lib/db'
 import { CopyTextButton } from '../CopyTextButton'
 import { InvoiceActionButtons } from '../InvoiceActionButtons'
@@ -20,7 +20,7 @@ export default async function AdminInvoiceDetailPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  await requireAdminUser()
+  await requireFinancialPageAccess()
   const { id } = await params
 
   const invoice = await db.adminInvoice.findUnique({ where: { id } })

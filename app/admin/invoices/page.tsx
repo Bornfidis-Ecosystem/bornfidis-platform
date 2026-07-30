@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
-import { requireAdminUser } from '@/lib/requireAdmin'
+import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import { db } from '@/lib/db'
 import { InvoiceActionButtons } from './InvoiceActionButtons'
 
@@ -37,7 +37,7 @@ function badgeClasses(status: string) {
 }
 
 export default async function AdminInvoicesPage() {
-  await requireAdminUser()
+  await requireFinancialPageAccess()
 
   let invoices: Awaited<ReturnType<typeof db.adminInvoice.findMany>> = []
   let emailLogs: Array<{

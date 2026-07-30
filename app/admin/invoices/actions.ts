@@ -2,8 +2,8 @@
 
 import { requireAuth } from '@/lib/auth'
 import { requireAdminUser } from '@/lib/requireAdmin'
-import { canManageBookings } from '@/lib/authz'
-import { getCurrentUserRole } from '@/lib/get-user-role'
+import { resolveAdminPlatformRole } from '@/lib/admin-rbac'
+import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
 import { getCurrentPrismaUser } from '@/lib/partner'
 import { db } from '@/lib/db'
 import {
@@ -17,6 +17,19 @@ import {
   type AdminInvoiceSourceType,
 } from '@/lib/admin-invoices'
 import { getStripeClient, isStripeConfigured, type StripeDivision } from '@/lib/stripe'
+
+async function requireInvoiceFinanceAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
+  await requireAuth()
+  await requireAdminUser()
+  const platformRole = await resolveAdminPlatformRole()
+  if (!canViewPlatformFinancials(platformRole)) {
+    return {
+      ok: false,
+      error: 'Access denied. Founder or manager financial access is required to manage invoices.',
+    }
+  }
+  return { ok: true }
+}
 
 export type AdminInvoiceLineItem = {
   description: string
@@ -58,7 +71,8 @@ export async function getAdminInvoicePrefillAction(input: {
   sourceType: AdminInvoiceSourceType
   sourceId: string
 }): Promise<AdminInvoicePrefill | null> {
-  await requireAdminUser()
+  const access = await requireInvoiceFinanceAccess()
+  if (!access.ok) return null
   return getAdminInvoicePrefill(input.sourceType, input.sourceId)
 }
 
@@ -69,15 +83,10 @@ function normalizeDivision(value: string): StripeDivision | null {
 export async function createAdminInvoice(
   data: CreateAdminInvoiceInput,
 ): Promise<CreateAdminInvoiceResult> {
-  await requireAuth()
-  await requireAdminUser()
+  const access = await requireInvoiceFinanceAccess()
+  if (!access.ok) return { success: false, error: access.error }
 
   try {
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied.' }
-    }
-
     const division = normalizeDivision(data.division)
     if (!division) {
       return {
@@ -383,9 +392,8 @@ export async function createAdminInvoice(
 }
 
 export async function resendAdminInvoice(localInvoiceId: string): Promise<{ success: boolean; error?: string }> {
-  await requireAdminUser()
-  const userRole = await getCurrentUserRole()
-  if (!canManageBookings(userRole)) return { success: false, error: 'Access denied.' }
+  const access = await requireInvoiceFinanceAccess()
+  if (!access.ok) return { success: false, error: access.error }
 
   const actor = await getCurrentPrismaUser()
   const actorName = actor?.name || actor?.email || 'Admin'
@@ -465,9 +473,8 @@ export async function resendAdminInvoice(localInvoiceId: string): Promise<{ succ
 }
 
 export async function voidAdminInvoice(localInvoiceId: string): Promise<{ success: boolean; error?: string }> {
-  await requireAdminUser()
-  const userRole = await getCurrentUserRole()
-  if (!canManageBookings(userRole)) return { success: false, error: 'Access denied.' }
+  const access = await requireInvoiceFinanceAccess()
+  if (!access.ok) return { success: false, error: access.error }
 
   const actor = await getCurrentPrismaUser()
   const actorName = actor?.name || actor?.email || 'Admin'
