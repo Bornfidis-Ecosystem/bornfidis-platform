@@ -8,6 +8,7 @@ import { formatUSD } from '@/lib/money'
 import { addBookingActivity } from './actions'
 import { createStripeDepositLink } from './quote-actions'
 import type { QuoteLineItem } from '@/types/booking'
+import { canAdvanceToQuoteSent } from '@/lib/booking-pipeline-status'
 
 function parseLineItems(raw: unknown): QuoteLineItem[] {
   if (!raw) return []
@@ -77,6 +78,7 @@ export async function sendBookingQuoteOfferEmail(bookingId: string): Promise<
       quoteLineItems: true,
       quoteNotes: true,
       stripePaymentLinkUrl: true,
+      status: true,
     },
   })
 
@@ -137,18 +139,24 @@ export async function sendBookingQuoteOfferEmail(bookingId: string): Promise<
     return { success: false, error: sendResult.error || 'Failed to send email' }
   }
 
+  const priorStatus = booking.status
+  const advancePipeline = canAdvanceToQuoteSent(priorStatus)
+
   await db.bookingInquiry.update({
     where: { id: bookingId },
     data: {
       quoteStatus: 'sent',
       quoteSentAt: new Date(),
+      ...(advancePipeline ? { status: 'quote_sent' } : {}),
     },
   })
 
   const logResult = await addBookingActivity(bookingId, {
     type: 'quote_sent',
     title: 'Quote email sent',
-    description: `To ${booking.email.trim()}`,
+    description: advancePipeline
+      ? `To ${booking.email.trim()}. Pipeline status set to quote_sent.`
+      : `To ${booking.email.trim()}. Pipeline status left as "${priorStatus}" (not moved backward).`,
   })
 
   if (!logResult.success) {
