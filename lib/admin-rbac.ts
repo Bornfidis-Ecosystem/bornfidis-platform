@@ -126,6 +126,17 @@ export async function requireManagerOrAdmin(): Promise<void> {
 }
 
 /**
+ * Server-action / non-page twin of requireHospitalityOpsPageAccess.
+ * Same roles (founder_admin | manager | operations_coordinator); throws instead of redirecting.
+ */
+export async function requireHospitalityOpsAccess(): Promise<void> {
+  const r = await resolveAdminPlatformRole()
+  if (!isHospitalityOpsPlatformRole(r)) {
+    throw new Error('Access denied: Hospitality operations role required')
+  }
+}
+
+/**
  * Hospitality ops pages: bookings, calendar, clients, prep, timeline, logistics.
  * Blocks legacy `staff` (dashboard-only).
  */

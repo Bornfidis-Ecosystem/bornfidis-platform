@@ -3,12 +3,16 @@
 import { supabaseAdmin } from '@/lib/supabase'
 import { requireAuth } from '@/lib/auth'
 import { requireAdminUser } from '@/lib/requireAdmin'
-import { requireFounderAdmin, resolveAdminPlatformRole } from '@/lib/admin-rbac'
+import {
+  requireFounderAdmin,
+  requireHospitalityOpsAccess,
+  resolveAdminPlatformRole,
+} from '@/lib/admin-rbac'
 import { isHospitalityOpsPlatformRole } from '@/lib/ops-coordinator-access'
 import { db } from '@/lib/db'
 import { BookingInquiry, BookingStatus, QuoteLineItem } from '@/types/booking'
 import { quoteLineItemSchema, updateQuoteSummarySchema } from '@/lib/validation'
-import { canManageBookings, canAssignFarmers } from '@/lib/authz'
+import { canAssignFarmers } from '@/lib/authz'
 import { getCurrentUserRole } from '@/lib/get-user-role'
 import { getCurrentPrismaUser } from '@/lib/partner'
 import { acknowledgeSla } from '@/lib/sla'
@@ -25,6 +29,15 @@ import {
   BOOKING_CHECKLIST_ITEM_TITLES,
   type BookingChecklistWritableKey,
 } from '@/lib/bookings/checklist'
+
+async function requireBookingOpsAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireHospitalityOpsAccess()
+    return { ok: true }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Access denied' }
+  }
+}
 
 /**
  * Fetch all booking inquiries for admin dashboard
@@ -310,12 +323,9 @@ export async function updateBooking(
 ): Promise<{ success: boolean; booking?: BookingInquiry; error?: string }> {
   // Require authentication
   await requireAuth()
-  
-  // Phase 4: Check if user can manage bookings
-  const userRole = await getCurrentUserRole()
-  if (!canManageBookings(userRole)) {
-    return { success: false, error: 'Access denied: Insufficient permissions' }
-  }
+
+  const access = await requireBookingOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
 
   try {
     // Get current booking to check if status is changing
@@ -571,10 +581,8 @@ export async function markBookingConfirmedSilently(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   await requireAuth()
-  const userRole = await getCurrentUserRole()
-  if (!canManageBookings(userRole)) {
-    return { success: false, error: 'Access denied: Insufficient permissions' }
-  }
+  const access = await requireBookingOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   try {
     const current = await db.bookingInquiry.findUnique({ where: { id } })
     if (!current) {
@@ -1403,10 +1411,8 @@ export async function sendDepositRequest(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     const { sendBookingDepositRequestEmail } = await import('./outreach-email-actions')
     const result = await sendBookingDepositRequestEmail(bookingId)
     if (!result.success) {
@@ -1426,10 +1432,8 @@ export async function sendQuoteEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     const { sendBookingQuoteOfferEmail } = await import('./outreach-email-actions')
     const result = await sendBookingQuoteOfferEmail(bookingId)
     if (!result.success) {
@@ -1449,10 +1453,8 @@ export async function resendBalanceLink(
 ): Promise<{ success: boolean; url?: string; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     const { createBalanceCheckoutSessionForBooking } = await import('@/lib/stripe-balance-checkout')
     const session = await createBalanceCheckoutSessionForBooking(bookingId)
     if (!session.success) {
@@ -1537,10 +1539,8 @@ export async function updateBookingChecklistItem(payload: {
   | { success: false; error: string }
 > {
   await requireAuth()
-  const userRole = await getCurrentUserRole()
-  if (!canManageBookings(userRole)) {
-    return { success: false, error: 'Access denied: Insufficient permissions' }
-  }
+  const access = await requireBookingOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
 
   const parsed = checklistUpdatePayloadSchema.safeParse(payload)
   if (!parsed.success) {
@@ -1697,10 +1697,8 @@ export async function getClientProfileSummaryForBooking(
 export async function markTestimonialRequested(bookingId: string): Promise<{ success: boolean; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     await db.bookingInquiry.update({
       where: { id: bookingId },
       data: { testimonialRequestedAt: new Date() },
@@ -1723,10 +1721,8 @@ export async function saveTestimonialReceived(payload: {
 }): Promise<{ success: boolean; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     const text = payload.testimonialText.trim()
     await db.bookingInquiry.update({
       where: { id: payload.bookingId },
@@ -1756,10 +1752,8 @@ export async function setTestimonialApproved(payload: {
 }): Promise<{ success: boolean; error?: string }> {
   try {
     await requireAdminUser()
-    const userRole = await getCurrentUserRole()
-    if (!canManageBookings(userRole)) {
-      return { success: false, error: 'Access denied' }
-    }
+    const access = await requireBookingOpsAccess()
+    if (!access.ok) return { success: false, error: access.error }
     await db.bookingInquiry.update({
       where: { id: payload.bookingId },
       data: { testimonialApproved: payload.approved },
