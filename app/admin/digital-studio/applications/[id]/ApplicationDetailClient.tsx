@@ -37,19 +37,24 @@ export default function ApplicationDetailClient({ application, existingProjects 
   const [totalCents, setTotalCents] = useState('')
   const [depositCents, setDepositCents] = useState('')
   const [targetDate, setTargetDate] = useState('')
+  const [error, setError] = useState<string | null>(null)
 
   const handleStatusChange = async (newStatus: string) => {
     setSaving(true)
+    setError(null)
     const result = await updateApplicationStatus(application.id, newStatus)
     if (result.success) {
       setStatus(newStatus)
       router.refresh()
+    } else {
+      setError(result.error ?? 'Could not update status')
     }
     setSaving(false)
   }
 
   const handleConvert = async () => {
     setConverting(true)
+    setError(null)
     const result = await convertToProject(application.id, {
       totalAmountCents: totalCents ? Math.round(parseFloat(totalCents) * 100) : undefined,
       depositAmountCents: depositCents ? Math.round(parseFloat(depositCents) * 100) : undefined,
@@ -57,12 +62,22 @@ export default function ApplicationDetailClient({ application, existingProjects 
     })
     if (result.success && result.projectId) {
       router.push(`/admin/digital-studio/${result.projectId}`)
+    } else {
+      setError(result.error ?? 'Could not create project')
     }
     setConverting(false)
   }
 
   return (
     <div className="space-y-4">
+      {error && (
+        <p
+          role="alert"
+          className="border border-red-200 bg-red-50 px-3 py-2 font-culinary-sans text-sm text-red-800"
+        >
+          {error}
+        </p>
+      )}
       <CulinaryCard>
         <p className="font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">
           Status

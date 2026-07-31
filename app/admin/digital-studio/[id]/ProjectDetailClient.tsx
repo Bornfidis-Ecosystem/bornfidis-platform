@@ -25,30 +25,37 @@ type Props = {
 export default function ProjectDetailClient({ project, tasks, statuses, phases }: Props) {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleStatusChange = async (newStatus: string) => {
+  const run = async (action: () => Promise<{ success: boolean; error?: string }>) => {
     setSaving(true)
-    await changeProjectStatus(project.id, newStatus)
+    setError(null)
+    const result = await action()
+    if (!result.success) {
+      setError(result.error ?? 'Update failed')
+    }
     router.refresh()
     setSaving(false)
   }
 
-  const handlePhaseChange = async (newPhase: string) => {
-    setSaving(true)
-    await changeProjectPhase(project.id, newPhase)
-    router.refresh()
-    setSaving(false)
-  }
+  const handleStatusChange = (newStatus: string) =>
+    run(() => changeProjectStatus(project.id, newStatus))
 
-  const handleToggleTask = async (taskId: string) => {
-    setSaving(true)
-    await toggleProjectTask(taskId)
-    router.refresh()
-    setSaving(false)
-  }
+  const handlePhaseChange = (newPhase: string) =>
+    run(() => changeProjectPhase(project.id, newPhase))
+
+  const handleToggleTask = (taskId: string) => run(() => toggleProjectTask(taskId))
 
   return (
     <div className="space-y-6">
+      {error && (
+        <p
+          role="alert"
+          className="border border-red-200 bg-red-50 px-3 py-2 font-culinary-sans text-sm text-red-800"
+        >
+          {error}
+        </p>
+      )}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <CulinaryCard>
           <label className="font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">

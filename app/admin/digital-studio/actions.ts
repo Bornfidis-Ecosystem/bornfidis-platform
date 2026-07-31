@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
+import { requireHospitalityOpsAccess } from '@/lib/admin-rbac'
 import {
   createProjectFromApplication,
   updateProjectStatus,
@@ -12,11 +13,22 @@ import {
 } from '@/lib/digital-studio-projects'
 import { logWorkflowTransition } from '@/lib/activity-log'
 
+async function requireDsOpsAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await requireHospitalityOpsAccess()
+    return { ok: true }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Access denied' }
+  }
+}
+
 export async function updateApplicationStatus(
   applicationId: string,
   newStatus: string,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAuth()
+  const access = await requireDsOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   try {
     const app = await db.digitalStudioApplication.findUnique({
       where: { id: applicationId },
@@ -58,6 +70,8 @@ export async function convertToProject(
   },
 ): Promise<{ success: boolean; projectId?: string; error?: string }> {
   await requireAuth()
+  const access = await requireDsOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   const result = await createProjectFromApplication(applicationId, {
     totalAmountCents: data.totalAmountCents,
     depositAmountCents: data.depositAmountCents,
@@ -73,6 +87,8 @@ export async function changeProjectStatus(
   status: string,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAuth()
+  const access = await requireDsOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   return updateProjectStatus(projectId, status as DsProjectStatus, 'Admin')
 }
 
@@ -81,6 +97,8 @@ export async function changeProjectPhase(
   phase: string,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAuth()
+  const access = await requireDsOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   return updateProjectPhase(projectId, phase as DsProjectPhase, 'Admin')
 }
 
@@ -88,5 +106,7 @@ export async function toggleProjectTask(
   taskId: string,
 ): Promise<{ success: boolean; error?: string }> {
   await requireAuth()
+  const access = await requireDsOpsAccess()
+  if (!access.ok) return { success: false, error: access.error }
   return completeProjectTask(taskId, 'Admin')
 }
