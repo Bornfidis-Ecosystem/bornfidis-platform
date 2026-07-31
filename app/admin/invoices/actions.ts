@@ -2,8 +2,7 @@
 
 import { requireAuth } from '@/lib/auth'
 import { requireAdminUser } from '@/lib/requireAdmin'
-import { resolveAdminPlatformRole } from '@/lib/admin-rbac'
-import { canViewPlatformFinancials } from '@/lib/ops-coordinator-access'
+import { requireHospitalityOpsAccess } from '@/lib/admin-rbac'
 import { getCurrentPrismaUser } from '@/lib/partner'
 import { db } from '@/lib/db'
 import {
@@ -21,14 +20,15 @@ import { getStripeClient, isStripeConfigured, type StripeDivision } from '@/lib/
 async function requireInvoiceFinanceAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
   await requireAuth()
   await requireAdminUser()
-  const platformRole = await resolveAdminPlatformRole()
-  if (!canViewPlatformFinancials(platformRole)) {
+  try {
+    await requireHospitalityOpsAccess()
+    return { ok: true }
+  } catch {
     return {
       ok: false,
-      error: 'Access denied. Founder or manager financial access is required to manage invoices.',
+      error: 'Access denied: Hospitality operations role required to manage invoices.',
     }
   }
-  return { ok: true }
 }
 
 export type AdminInvoiceLineItem = {
