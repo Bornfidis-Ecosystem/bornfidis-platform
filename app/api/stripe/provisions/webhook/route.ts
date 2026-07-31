@@ -478,6 +478,16 @@ export async function POST(request: NextRequest) {
                             quoteEmailTestimonial: testimonialSnippet,
                         })
 
+                        await logEmailSend({
+                            bookingId,
+                            templateType: 'balance_invoice',
+                            recipient: booking.email,
+                            subject: 'Your Bornfidis invoice',
+                            success: emailResult.success,
+                            error: emailResult.success ? undefined : emailResult.error,
+                            actorName: 'Stripe webhook',
+                        }).catch(() => {})
+
                         if (emailResult.success) {
                             console.log(`✅ Invoice email sent to ${booking.email}`)
                         } else {

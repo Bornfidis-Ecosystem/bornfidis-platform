@@ -9,6 +9,8 @@ import { addBookingActivity } from './actions'
 import { createStripeDepositLink } from './quote-actions'
 import type { QuoteLineItem } from '@/types/booking'
 import { canAdvanceToQuoteSent } from '@/lib/booking-pipeline-status'
+import { logEmailSend } from '@/lib/email-send-log'
+import { getCurrentPrismaUser } from '@/lib/partner'
 
 function parseLineItems(raw: unknown): QuoteLineItem[] {
   if (!raw) return []
@@ -135,6 +137,18 @@ export async function sendBookingQuoteOfferEmail(bookingId: string): Promise<
     quoteEmailTestimonial,
   })
 
+  const actor = await getCurrentPrismaUser().catch(() => null)
+  const actorName = actor?.name || actor?.email || 'Admin'
+  await logEmailSend({
+    bookingId,
+    templateType: 'quote_offer',
+    recipient: booking.email.trim(),
+    subject: 'Your Bornfidis quote',
+    success: sendResult.success,
+    error: sendResult.success ? undefined : sendResult.error,
+    actorName,
+  }).catch(() => {})
+
   if (!sendResult.success) {
     return { success: false, error: sendResult.error || 'Failed to send email' }
   }
@@ -251,6 +265,18 @@ export async function sendBookingDepositRequestEmail(bookingId: string): Promise
     paymentInstructions,
     quoteEmailTestimonial,
   })
+
+  const actor = await getCurrentPrismaUser().catch(() => null)
+  const actorName = actor?.name || actor?.email || 'Admin'
+  await logEmailSend({
+    bookingId,
+    templateType: 'deposit_request',
+    recipient: booking.email.trim(),
+    subject: 'Deposit request — Bornfidis',
+    success: sendResult.success,
+    error: sendResult.success ? undefined : sendResult.error,
+    actorName,
+  }).catch(() => {})
 
   if (!sendResult.success) {
     return { success: false, error: sendResult.error || 'Failed to send email' }
