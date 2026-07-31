@@ -16,6 +16,23 @@ import {
   type AdminInvoiceSourceType,
 } from '@/lib/admin-invoices'
 import { getStripeClient, isStripeConfigured, type StripeDivision } from '@/lib/stripe'
+import type Stripe from 'stripe'
+
+async function voidOrphanStripeInvoice(
+  stripe: Stripe,
+  invoiceId: string,
+  reason: string,
+): Promise<void> {
+  try {
+    await stripe.invoices.voidInvoice(invoiceId)
+    console.warn(`[createAdminInvoice] voided orphan Stripe invoice ${invoiceId}: ${reason}`)
+  } catch (voidErr) {
+    console.error(
+      `[createAdminInvoice] FAILED to void orphan Stripe invoice ${invoiceId} (${reason}):`,
+      voidErr,
+    )
+  }
+}
 
 async function requireInvoiceFinanceAccess(): Promise<{ ok: true } | { ok: false; error: string }> {
   await requireAuth()
@@ -86,6 +103,9 @@ export async function createAdminInvoice(
   const access = await requireInvoiceFinanceAccess()
   if (!access.ok) return { success: false, error: access.error }
 
+  let finalizedInvoiceId: string | null = null
+  let stripeForCleanup: Stripe | null = null
+
   try {
     const division = normalizeDivision(data.division)
     if (!division) {
@@ -148,6 +168,7 @@ export async function createAdminInvoice(
     }
 
     const stripe = getStripeClient(division)
+    stripeForCleanup = stripe
     const stripeAccountId = await getStripeOwnAccountId(division)
 
     const existing = await stripe.customers.list({
@@ -241,47 +262,71 @@ export async function createAdminInvoice(
     })
 
     const finalized = await stripe.invoices.finalizeInvoice(invoice.id)
+    finalizedInvoiceId = finalized.id
     const expectedDue = grossCents - depositCents
     if (finalized.amount_due !== expectedDue) {
+      await voidOrphanStripeInvoice(
+        stripe,
+        finalized.id,
+        `amount_due mismatch (got ${finalized.amount_due}, expected ${expectedDue})`,
+      )
+      finalizedInvoiceId = null
       return {
         success: false,
-        error: `Invoice finalized with unexpected amount ($${(finalized.amount_due / 100).toFixed(2)}). Expected $${(expectedDue / 100).toFixed(2)}. Check Stripe before sending.`,
+        error: `Invoice finalized with unexpected amount ($${(finalized.amount_due / 100).toFixed(2)}). Expected $${(expectedDue / 100).toFixed(2)}. The Stripe invoice was voided.`,
       }
     }
 
     let hostedUrl = finalized.hosted_invoice_url
     let emailSent = false
     const recipient = data.clientEmail.trim()
-    const local = await db.adminInvoice.create({
-      data: {
-        division,
-        sourceType: data.sourceType,
-        sourceId: data.sourceId,
-        clientId: data.clientId?.trim() || null,
-        bookingId: data.bookingId?.trim() || null,
-        projectId: data.projectId?.trim() || null,
-        stripeAccountId,
-        stripeCustomerId: customer.id,
-        stripeInvoiceId: finalized.id,
-        invoiceNumber: finalized.number,
-        currency,
-        subtotalCents: grossCents,
-        depositAppliedCents: depositCents,
-        amountDueCents: finalized.amount_due,
-        dueAt,
-        status: 'open',
-        hostedInvoiceUrl: hostedUrl,
-        createdBy: actor?.id || null,
-        metadata: {
-          sourceType: data.sourceType || null,
-          sourceId: data.sourceId || null,
-          actorName,
-          recipient,
-          clientName: data.clientName.trim(),
-          emailStatus: 'pending',
+
+    let local
+    try {
+      local = await db.adminInvoice.create({
+        data: {
+          division,
+          sourceType: data.sourceType,
+          sourceId: data.sourceId,
+          clientId: data.clientId?.trim() || null,
+          bookingId: data.bookingId?.trim() || null,
+          projectId: data.projectId?.trim() || null,
+          stripeAccountId,
+          stripeCustomerId: customer.id,
+          stripeInvoiceId: finalized.id,
+          invoiceNumber: finalized.number,
+          currency,
+          subtotalCents: grossCents,
+          depositAppliedCents: depositCents,
+          amountDueCents: finalized.amount_due,
+          dueAt,
+          status: 'open',
+          hostedInvoiceUrl: hostedUrl,
+          createdBy: actor?.id || null,
+          metadata: {
+            sourceType: data.sourceType || null,
+            sourceId: data.sourceId || null,
+            actorName,
+            recipient,
+            clientName: data.clientName.trim(),
+            emailStatus: 'pending',
+          },
         },
-      },
-    })
+      })
+    } catch (persistErr) {
+      await voidOrphanStripeInvoice(
+        stripe,
+        finalized.id,
+        persistErr instanceof Error ? persistErr.message : 'local admin_invoices persist failed',
+      )
+      finalizedInvoiceId = null
+      console.error('[createAdminInvoice] local persist failed after finalize:', persistErr)
+      return {
+        success: false,
+        error:
+          'Stripe invoice was created but could not be saved locally. The Stripe invoice was voided so it will not orphan. Retry create.',
+      }
+    }
 
     // Attach local id for webhook/admin reconciliation (created after finalize).
     await stripe.invoices
@@ -372,6 +417,7 @@ export async function createAdminInvoice(
       })
     }
 
+    finalizedInvoiceId = null
     return {
       success: true,
       invoiceId: finalized.id,
@@ -384,6 +430,13 @@ export async function createAdminInvoice(
     }
   } catch (err) {
     console.error('[createAdminInvoice]', err)
+    if (finalizedInvoiceId && stripeForCleanup) {
+      await voidOrphanStripeInvoice(
+        stripeForCleanup,
+        finalizedInvoiceId,
+        err instanceof Error ? err.message : 'createAdminInvoice failed after finalize',
+      )
+    }
     return {
       success: false,
       error: err instanceof Error ? err.message : 'Failed to create invoice',
