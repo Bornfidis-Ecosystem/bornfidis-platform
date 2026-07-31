@@ -39,12 +39,20 @@ export default async function DsProjectDetailPage({
         title={`${project.projectNumber} — ${project.name}`}
         description={`${project.clientName} · ${project.phase} · ${stats.percentComplete}% complete`}
         actions={
-          <Link
-            href="/admin/digital-studio"
-            className="font-culinary-sans text-xs text-culinary-navy underline"
-          >
-            ← All projects
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/admin/invoices/new?sourceType=project&sourceId=${project.id}`}
+              className="font-culinary-sans text-xs font-semibold text-culinary-navy underline"
+            >
+              Create invoice
+            </Link>
+            <Link
+              href="/admin/digital-studio"
+              className="font-culinary-sans text-xs text-culinary-navy underline"
+            >
+              ← All projects
+            </Link>
+          </div>
         }
       />
 

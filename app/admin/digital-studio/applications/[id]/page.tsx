@@ -36,12 +36,20 @@ export default async function DsApplicationDetailPage({
         title={application.businessName}
         description={`Digital Studio application — ${application.status}`}
         actions={
-          <Link
-            href="/admin/digital-studio"
-            className="font-culinary-sans text-xs text-culinary-navy underline"
-          >
-            ← All applications
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/admin/invoices/new?sourceType=proposal&sourceId=${application.id}`}
+              className="font-culinary-sans text-xs font-semibold text-culinary-navy underline"
+            >
+              Create invoice
+            </Link>
+            <Link
+              href="/admin/digital-studio"
+              className="font-culinary-sans text-xs text-culinary-navy underline"
+            >
+              ← All applications
+            </Link>
+          </div>
         }
       />
 

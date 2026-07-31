@@ -137,8 +137,10 @@ export async function getAdminInvoicePrefill(
         {
           description: project.name,
           quantity: 1,
-          unitAmount:
+          unitAmount: Math.max(
             ((project.balanceAmountCents ?? project.totalAmountCents ?? 0) / 100) || 0,
+            1,
+          ),
         },
       ],
       depositReceived: project.depositAmountCents ? project.depositAmountCents / 100 : undefined,
@@ -168,7 +170,13 @@ export async function getAdminInvoicePrefill(
     divisionLocked: true,
     clientName: application.contactName,
     clientEmail: application.contactEmail,
-    lineItems: [{ description: `${application.businessName} website proposal`, unitAmount: 0, quantity: 1 }],
+    lineItems: [
+      {
+        description: `${application.businessName} website proposal (confirm amount before sending)`,
+        unitAmount: 1,
+        quantity: 1,
+      },
+    ],
     dueDate: dueDate.toISOString().slice(0, 10),
   }
 }
