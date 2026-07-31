@@ -11,10 +11,11 @@ export const dynamic = 'force-dynamic'
 export default async function DsProjectDetailPage({
   params,
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }> | { id: string }
 }) {
+  const { id } = await Promise.resolve(params)
   const project = await db.digitalStudioProject.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       tasks: { orderBy: { order: 'asc' } },
       application: { select: { id: true, businessName: true } },
