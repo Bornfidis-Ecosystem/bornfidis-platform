@@ -30,7 +30,7 @@ function fromAddress(division: EmailDivision = 'provisions'): string {
     case 'admin':
       return `Bornfidis <${FROM_ADDRESS}>`
     case 'academy':
-      return `Bornfidis Academy <${FROM_ADDRESS}>`
+      return `Bornfidis Digital Studio <${FROM_ADDRESS}>`
     default:
       return `${BRAND_LEGAL.provisionsDba} <${FROM_ADDRESS}>`
   }
@@ -421,7 +421,7 @@ export async function sendAcademyPurchaseConfirmationEmail(
           </p>
           <p style="margin-top: 8px; color: #666; font-size: 14px;">
             With gratitude,<br/>
-            <strong>Bornfidis Academy</strong>
+            <strong>Bornfidis Digital Studio</strong>
           </p>
           ${emailLegalFooter()}
         </div>

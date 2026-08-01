@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { LeadMagnetSaucesForm } from '@/components/guide/LeadMagnetSaucesForm'
 
 export const metadata: Metadata = {
-  title: 'Free Guide: 5 Caribbean Sauces | Bornfidis Academy',
+  title: 'Free Guide: 5 Caribbean Sauces | Bornfidis Digital Studio',
   description:
     'Traditional flavors, professional techniques, and the chef secrets behind the Caribbean\'s most essential condiments. Free PDF guide by Brian Maylor.',
 }
@@ -18,7 +18,7 @@ export default function GuideFiveCaribbeanSaucesPage() {
     <main className="max-w-3xl mx-auto px-6 py-16 md:py-20">
       <header className="mb-12 text-center">
         <p className="text-forest text-sm font-medium uppercase tracking-wide mb-2">
-          Free guide · Bornfidis Academy
+          Free guide · Bornfidis Digital Studio
         </p>
         <h1 className="text-3xl md:text-4xl font-bold text-navy mb-4">
           5 Caribbean Sauces Every Home Cook Should Know
@@ -63,7 +63,7 @@ export default function GuideFiveCaribbeanSaucesPage() {
 
       <p className="text-center text-sm text-gray-500 mt-10">
         <a href="/academy" className="text-forest hover:underline">
-          Explore Academy courses
+          Explore Digital Studio
         </a>
       </p>
     </main>

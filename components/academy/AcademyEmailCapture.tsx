@@ -51,7 +51,7 @@ export function AcademyEmailCapture() {
         New guides &amp; updates
       </h2>
       <p className={`${academyBody} mx-auto mt-3 max-w-md text-center text-sm`}>
-        Get notified when we release new manuals and Academy updates. No spam.
+        Get notified when we release new manuals and Digital Studio updates. No spam.
       </p>
       <form onSubmit={handleSubmit} className="mx-auto mt-8 flex max-w-md flex-col gap-4 sm:flex-row">
         <label htmlFor="academy-email" className="sr-only">

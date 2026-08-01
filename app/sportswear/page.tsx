@@ -46,7 +46,7 @@ export default function SportswearPage() {
           href="/academy"
           className="text-forest font-medium hover:underline"
         >
-          ← Back to Academy
+          ← Back to Digital Studio
         </Link>
       </div>
     </main>

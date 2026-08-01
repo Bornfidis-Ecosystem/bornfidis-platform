@@ -110,7 +110,7 @@ export function AcademyProductDetail({ product, purchaseCount }: AcademyProductD
       <section className={`${academySection} border-t-0 pt-28 md:pt-32`}>
         <PageContainer wide>
           <Link href="/academy" className={academyLinkBack}>
-            ← Back to Academy
+            ← Back to Digital Studio
           </Link>
 
           {!rich ? (

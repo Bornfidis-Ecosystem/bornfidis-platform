@@ -22,7 +22,7 @@ import { getAcademyStats } from '@/lib/academy-stats'
 
 export const dynamic = 'force-dynamic'
 
-const ACADEMY_TITLE = 'Bornfidis Academy | Structured Operating Systems for Entrepreneurs, Farmers, Chefs, and Contractors'
+const ACADEMY_TITLE = 'Bornfidis Digital Studio | Structured Operating Systems for Entrepreneurs, Farmers, Chefs, and Contractors'
 const ACADEMY_DESCRIPTION =
   'Transform chaotic hustle into sustainable enterprise. Discipline-based manuals for Jamaican entrepreneurs, farmers, chefs, and Vermont contractors. $39-79.'
 
@@ -90,7 +90,7 @@ export default async function AcademyPage({ searchParams }: PageProps) {
       <section className={`${academySection} border-t-0 pt-28 md:pt-32`}>
         <PageContainer wide>
           <header className="mb-14 text-center">
-            <p className={academyEyebrow}>Bornfidis Academy</p>
+            <p className={academyEyebrow}>Bornfidis Digital Studio</p>
             <h1 className={`${academyHeadline} mx-auto mt-4 max-w-4xl text-[clamp(2rem,5vw,3.25rem)]`}>
               Structured Operating Systems for Entrepreneurs, Farmers &amp; Chefs
             </h1>
@@ -102,7 +102,7 @@ export default async function AcademyPage({ searchParams }: PageProps) {
           </header>
 
           <section id="featured" className="mb-16">
-            <h2 className="sr-only">Academy products</h2>
+            <h2 className="sr-only">Digital Studio products</h2>
             {products.length === 0 ? (
               <div className="border border-gold/35 p-12 text-center">
                 <p className={`${academyHeadline} text-xl`}>No products available yet</p>

@@ -32,7 +32,7 @@ function LibraryErrorUI({ message }: { message: string }) {
             href="/academy"
             className="inline-flex items-center justify-center font-semibold rounded-xl px-6 py-2.5 border-2 border-forest text-forest hover:bg-forest/10 transition"
           >
-            Back to Academy
+            Back to Digital Studio
           </Link>
         </div>
       </div>
@@ -111,7 +111,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
       <header className="mb-8">
         <h1 className="text-4xl font-bold text-forest mb-4">My Library</h1>
         <p className="text-gray-600">
-          Your purchased Academy products. Download your PDFs or open course links below.
+          Your purchased Digital Studio products. Download your PDFs or open course links below.
         </p>
       </header>
 
@@ -119,7 +119,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
         <div className="rounded-2xl border border-gray-200 bg-card p-10 text-center">
           <p className="text-gray-600 mb-6">No purchases yet. Your purchased manuals and courses will appear here after you buy.</p>
           <Button href="/academy" variant="primary">
-            Browse Academy
+            Browse Digital Studio
           </Button>
         </div>
       ) : (
@@ -265,7 +265,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
 
       <p className="mt-8 text-center text-sm text-gray-500">
         <Link href="/academy" className="text-forest hover:underline">
-          Back to Academy
+          Back to Digital Studio
         </Link>
       </p>
     </main>
