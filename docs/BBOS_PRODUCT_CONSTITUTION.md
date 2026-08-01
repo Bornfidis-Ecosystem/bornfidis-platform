@@ -54,7 +54,7 @@ Practical systems informed by real operating experience, refined for a global sm
 | # | Module | Core outcome |
 |---|--------|--------------|
 | 1 | **Business Foundation** | The owner can state their core offer, ideal customer, and current operating reality on one page. |
-| 2 | **Offer and Revenue Engine** | A structured offer and a visible pipeline with a follow-up cadence. |
+| 2 | **Offer and Sales System** | A structured offer and a visible pipeline with a follow-up cadence. |
 | 3 | **Pricing With Dignity** | A documented, margin-aware pricing method the owner can defend. |
 | 4 | **Weekly Operating Rhythm** | A repeatable weekly cadence: plan, do, follow-up, close. |
 | 5 | **Money and Metrics** | Weekly review of a small Core Number Set (revenue, margin, cash, runway). |

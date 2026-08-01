@@ -225,7 +225,7 @@ A clear core offer answers:
 - **Who it is for** (your ideal customer).
 - **What outcome it produces** (the real job from Chapter 1.2).
 
-You will design your full offer set and pricing later — the **Offer and Revenue Engine** (Module 2) and **Pricing With Dignity** (Module 3) go deep on this, and you will build your **Offer One-Pager** then. Right now you only need to name your core offer clearly enough to put it on one line.
+You will design your full offer set and pricing later — the **Offer and Sales System** (Module 2) and **Pricing With Dignity** (Module 3) go deep on this, and you will build your **Offer One-Pager** then. Right now you only need to name your core offer clearly enough to put it on one line.
 
 > **WARNING**
 > Do not confuse "core offer" with "only offer." Having a clear core does not stop you from selling other things. It gives you an anchor — the offer everything else supports. Owners without an anchor drift, and drifting is exhausting.
@@ -236,7 +236,7 @@ Write two short blocks:
 1. **Ideal customer:** who they are, what they need most, why you fit, and who is a poor fit.
 2. **Core offer:** the one main thing you sell them, what it includes, and the outcome it produces.
 
-Keep both tight. These become sections of your One-Page Business Snapshot next — and your ideal customer and core offer are the direct inputs you will carry into Module 2 (Offer and Revenue Engine), where you turn them into a structured offer and a visible pipeline.
+Keep both tight. These become sections of your One-Page Business Snapshot next — and your ideal customer and core offer are the direct inputs you will carry into Module 2 (Offer and Sales System), where you turn them into a structured offer and a visible pipeline.
 
 ---
 
@@ -332,7 +332,7 @@ Once this cycle is running, the business stops lurching from crisis to crisis. E
 Each module installs one part of the operating system. They build in order:
 
 - **Module 1 — Business Foundation (this module):** see your business clearly; choose your first weakness. *Output: One-Page Business Snapshot.*
-- **Module 2 — Offer and Revenue Engine:** turn scattered services into a clear offer and a visible **pipeline** with a **Follow-Up Cadence**.
+- **Module 2 — Offer and Sales System:** turn scattered services into a clear offer and a visible **pipeline** with a **Follow-Up Cadence**.
 - **Module 3 — Pricing With Dignity:** replace guesswork with a documented **Cost Stack → Target Margin → Price** method you can defend.
 - **Module 4 — Weekly Operating Rhythm:** install the BBOS Week so the business runs on a cadence, not on adrenaline.
 - **Module 5 — Money and Metrics:** review your **Core Number Set** (revenue, margin, cash, and runway — how long your current cash can support the business at its present spending level) each week so money stops being a mystery.
@@ -391,7 +391,7 @@ You have completed Module 1 when you can point to three finished outputs and one
 - A completed **One-Page Business Snapshot** (all 6 sections).
 - A chosen **first weakness to fix**, written as one specific sentence.
 
-When these exist and are saved where you will see them weekly, your foundation is set. You are ready to move into Module 2 (Offer and Revenue Engine) when the 13-week journey brings you there.
+When these exist and are saved where you will see them weekly, your foundation is set. You are ready to move into Module 2 (Offer and Sales System) when the 13-week journey brings you there.
 
 > **DO THIS NOW**
 > Re-read your One-Page Business Snapshot one more time. Confirm your "first weakness to fix" still feels true. This single sentence is the thread you will follow through the rest of BBOS.
