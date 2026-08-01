@@ -8,7 +8,10 @@ import {
   createProjectFromApplication,
   updateProjectStatus,
 } from '@/lib/digital-studio-projects'
-import { logWorkflowTransition } from '@/lib/activity-log'
+import { logActivity, logWorkflowTransition } from '@/lib/activity-log'
+import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
+import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
 
 /**
  * Digital Studio Stripe webhook.
@@ -163,6 +166,159 @@ export async function POST(request: NextRequest) {
           customerEmail,
           processingStatus: 'matched',
           paymentType: paymentType || 'ds_deposit',
+        })
+      } else if (paymentType === 'academy') {
+        // Academy product line (rides on the Digital Studio account).
+        const authUserId =
+          meta.auth_user_id || meta.authUserId || session.client_reference_id || null
+        const productSlug = meta.product_slug || meta.productSlug || null
+
+        // Never fulfill an unattributed purchase.
+        if (!authUserId || !productSlug) {
+          await writeStripeWebhookLog({
+            eventType: event.type,
+            stripeEventId: event.id,
+            stripeObjectId: session.id,
+            paymentIntentId,
+            amountCents: session.amount_total ?? null,
+            customerEmail,
+            processingStatus: 'unmatched',
+            errorMessage: `Academy session missing ${!authUserId ? 'auth_user_id' : 'product_slug'}`,
+            paymentType: 'academy',
+          })
+          await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
+          return NextResponse.json({ received: true, ignored: true })
+        }
+
+        // Only fulfill fully-paid sessions (guards async/unpaid methods).
+        if (session.payment_status && session.payment_status !== 'paid') {
+          await writeStripeWebhookLog({
+            eventType: event.type,
+            stripeEventId: event.id,
+            stripeObjectId: session.id,
+            paymentIntentId,
+            amountCents: session.amount_total ?? null,
+            customerEmail,
+            processingStatus: 'unmatched',
+            errorMessage: `Academy session not paid (payment_status=${session.payment_status})`,
+            paymentType: 'academy',
+          })
+          await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
+          return NextResponse.json({ received: true, pending: true })
+        }
+
+        // Verify the product server-side; do not trust metadata alone.
+        const product = await getAcademyProductBySlugPublic(productSlug)
+        if (!product) {
+          await writeStripeWebhookLog({
+            eventType: event.type,
+            stripeEventId: event.id,
+            stripeObjectId: session.id,
+            paymentIntentId,
+            amountCents: session.amount_total ?? null,
+            customerEmail,
+            processingStatus: 'unmatched',
+            errorMessage: `Academy product not found for slug="${productSlug}"`,
+            paymentType: 'academy',
+          })
+          await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
+          return NextResponse.json({ received: true, ignored: true })
+        }
+
+        const paidAmountCents = session.amount_total ?? product.priceCents
+        if (
+          typeof session.amount_total === 'number' &&
+          session.amount_total !== product.priceCents
+        ) {
+          // Not a hard failure (record the amount actually paid), but worth flagging.
+          console.warn(
+            `[digital-studio webhook] academy amount mismatch for ${product.slug}: paid=${session.amount_total} expected=${product.priceCents}`,
+          )
+        }
+
+        // Fulfillment: creating the AcademyPurchase row IS the entitlement — the
+        // library and secure download route both gate on it. Unique stripeSessionId
+        // makes this idempotent for redelivered / duplicate-session events.
+        try {
+          await db.academyPurchase.create({
+            data: {
+              authUserId,
+              productSlug: product.slug,
+              productTitle: product.title,
+              productPrice: paidAmountCents,
+              stripeSessionId: session.id,
+              purchasedAt: new Date(),
+            },
+          })
+        } catch (createErr) {
+          const code = (createErr as { code?: string })?.code
+          if (code === 'P2002') {
+            // Already fulfilled for this checkout session — idempotent no-op.
+            await writeStripeWebhookLog({
+              eventType: event.type,
+              stripeEventId: event.id,
+              stripeObjectId: session.id,
+              paymentIntentId,
+              amountCents: session.amount_total ?? null,
+              customerEmail,
+              processingStatus: 'matched',
+              errorMessage: 'Academy purchase already recorded for this session',
+              paymentType: 'academy',
+            })
+            await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})
+            return NextResponse.json({ received: true, duplicate: true })
+          }
+          throw createErr
+        }
+
+        logActivity({
+          type: 'ACADEMY_PURCHASE',
+          title: 'Course purchased',
+          description: product.title,
+          division: 'ACADEMY',
+          metadata: { productSlug: product.slug, stripeSessionId: session.id },
+        }).catch(() => {})
+
+        // Confirmation email — a send failure must NOT roll back paid fulfillment
+        // or cause Stripe to retry (which would risk duplicate side effects).
+        if (customerEmail) {
+          try {
+            const baseUrl =
+              process.env.NEXT_PUBLIC_BASE_URL ||
+              process.env.NEXT_PUBLIC_SITE_URL ||
+              (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+            const suggestedSlug = ACADEMY_UPSELL_SUGGESTION[product.slug] ?? 'llc-starter-kit'
+            const suggested = await getAcademyProductBySlugPublic(suggestedSlug)
+            await sendAcademyPurchaseConfirmationEmail(customerEmail, {
+              productTitle: product.title,
+              amountPaidCents: paidAmountCents,
+              libraryUrl: `${baseUrl}/dashboard/library`,
+              suggestedProduct: suggested
+                ? {
+                    title: suggested.title,
+                    slug: suggested.slug,
+                    priceDisplay: suggested.priceDisplay,
+                    academyUrl: `${baseUrl}/academy/${suggested.slug}`,
+                  }
+                : undefined,
+            })
+          } catch (emailErr) {
+            console.error(
+              '[digital-studio webhook] academy confirmation email failed:',
+              emailErr instanceof Error ? emailErr.message : emailErr,
+            )
+          }
+        }
+
+        await writeStripeWebhookLog({
+          eventType: event.type,
+          stripeEventId: event.id,
+          stripeObjectId: session.id,
+          paymentIntentId,
+          amountCents: session.amount_total ?? null,
+          customerEmail,
+          processingStatus: 'matched',
+          paymentType: 'academy',
         })
       } else {
         await writeStripeWebhookLog({
