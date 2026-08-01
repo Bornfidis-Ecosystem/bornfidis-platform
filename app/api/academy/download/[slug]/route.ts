@@ -5,6 +5,7 @@ import { getCurrentSupabaseUser } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { getAcademyStorageFilename } from '@/lib/academy-storage'
 import { getBundleSlugs, getIncludedSlugs } from '@/lib/academy-bundles'
+import { createSignedDownloadUrl, isObjectStorageSlug } from '@/lib/academy-object-storage'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,6 +65,20 @@ export async function GET(
 
   if (!hasAccess) {
     return NextResponse.json({ error: 'Forbidden: purchase required' }, { status: 403 })
+  }
+
+  // Object-storage products (e.g., BBOS) are delivered from a private Supabase
+  // bucket via a short-lived signed URL. Entitlement has already been verified
+  // above, so an unauthenticated or unentitled user can never reach this point.
+  // The ZIP is never buffered in the route and no permanent public URL is exposed.
+  if (isObjectStorageSlug(slug)) {
+    const signed = await createSignedDownloadUrl(slug)
+    if (!signed.ok) {
+      // Never logs the signed URL (there is none on failure) or any secret.
+      console.error(LOG_LABEL, 'object-storage signing failed', { slug })
+      return NextResponse.json({ error: 'File temporarily unavailable' }, { status: 502 })
+    }
+    return NextResponse.redirect(signed.url, 302)
   }
 
   const filename = getAcademyStorageFilename(slug)
