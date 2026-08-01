@@ -22,7 +22,7 @@ You will not "learn about business" here. You will produce three concrete output
 By the end of Module 1 you will have created and saved:
 
 1. **Your Cost-of-Disorder Audit** — a short, honest list of what the current chaos is costing you in time, money, and missed work.
-2. **Your Owner's Time Map** — one week of where your hours actually go, sorted into four simple categories.
+2. **Your Owner's Time Map** — one week of where your hours actually go, sorted into 4 simple categories.
 3. **Your One-Page Business Snapshot** — a single page that states your core offer, your ideal customer, and your current operating reality.
 
 You will also choose one thing: **your first weakness to fix.** That single choice sets your direction for the weeks ahead.
@@ -71,7 +71,7 @@ For each of the three currencies, write down two or three specific, recent examp
 - **Money leaks:** Where did you underprice, discount under pressure, miss a follow-up, or lose track of a cost?
 - **Capacity leaks:** What work did you turn down, drop, or delay because you had no room or no system?
 
-Then, next to each entry, add a rough estimate: hours per week, or an approximate money amount, or "one lost job." Round numbers are fine. The goal is a total you can feel.
+Then, next to each entry, add a rough estimate: hours per week, or an approximate money amount, or "one lost job." Round numbers are fine. Time, money, and capacity are **separate currencies** — do not add them into one number. You cannot sum hours, dollars, and lost jobs into a single figure, and you should not try. The goal is to understand the **scale of each type of loss** on its own, so you can see which one is hurting you most.
 
 Finally, write one sentence at the bottom: **"The single most expensive pattern here is ______."** That sentence matters more than the totals. It points at your first weakness.
 
@@ -83,7 +83,17 @@ Finally, write one sentence at the bottom: **"The single most expensive pattern 
 
 **Exercise 1.1 — Complete your Cost-of-Disorder Audit**
 
-Write your audit now. Aim for six to nine specific entries across the three currencies, each with a rough estimate, and one closing sentence naming your most expensive pattern. Keep it to one page. You will revisit this at the end of the 90-day journey to see what changed.
+Write your audit now. Aim for 6 to 9 specific entries across the three currencies, each with a rough estimate, and one closing sentence naming your most expensive pattern. Keep it to one page. You will revisit this at the end of the 90-day journey to see what changed.
+
+*Example — Maya's Property Services (fictional; a few rows from her audit):*
+
+| Leak | Currency | Rough estimate | Only I can handle it? |
+|------|----------|----------------|-----------------------|
+| Re-answering the same client questions by text | Time | ~4 hours/week | No — could be a saved FAQ |
+| Under-quoted 2 turnover cleans (guessed the price) | Money | ~1 job's margin/month | Yes — only I set prices today |
+| Forgot to follow up with a property manager asking about weekly service | Capacity | 1 lost recurring client | No — a follow-up list would catch it |
+
+*Maya's closing line:* "The single most expensive pattern here is **guessing at prices**, because it costs me margin on almost every job." *(All figures are fictional examples.)*
 
 ### The hidden cost of being the owner-bottleneck
 
@@ -96,9 +106,9 @@ You will address this directly in Module 6 (Systems and Delegation). For now, si
 
 ### Why disorder compounds
 
-The reason disorder is so dangerous is that it grows on itself. A missed follow-up becomes a lost customer, which becomes pressure to take a poor-fit job, which becomes a rushed delivery, which becomes a complaint, which eats the time you needed to follow up with the next lead. Each leak feeds the next. Left alone, the pattern does not stay the same size — it slowly gets heavier, and the owner works longer hours just to stay in place.
+The reason disorder is so dangerous is that it grows on itself. A missed follow-up becomes a lost customer. That loss becomes pressure to take a poor-fit job. The poor-fit job becomes a rushed delivery, then a complaint, and the complaint eats the time you needed to follow up with the next lead. Each leak feeds the next. Left alone, the pattern does not stay the same size — it slowly gets heavier, and the owner works longer hours just to stay in place.
 
-This is also why systems pay off so strongly. When you fix one part of the cycle, the benefit compounds in the opposite direction. A reliable Follow-Up Cadence protects revenue, which relieves the pressure to take bad work, which protects your delivery standard, which earns referrals, which fills your pipeline with better-fit customers. You are not just removing a cost. You are reversing the direction the whole system is moving. That is the quiet power behind the 90-day journey: small, ordered fixes that build on each other.
+The good news is that this works in reverse too. Fix one part of the cycle and the benefit spreads: a reliable Follow-Up Cadence protects revenue, which eases the pressure to take bad work, which protects your delivery standard. You will see how BBOS turns this into steady, compounding progress in Chapter 1.5.
 
 ### Framework: The Owner's Time Map
 
@@ -106,7 +116,7 @@ The audit tells you what disorder costs. The **Owner's Time Map** shows you wher
 
 **How to build your time map**
 
-For one normal week, log your working hours into four simple buckets. You do not need special tools. A note on your phone or a sheet of paper is enough. At the end of each day, jot down roughly how many hours fell into each bucket.
+For one normal week, log your working hours into 4 simple buckets. You do not need special tools. A note on your phone or a sheet of paper is enough. At the end of each day, jot down roughly how many hours fell into each bucket.
 
 1. **Doing** — the actual paid work (cleaning, delivering, servicing the customer).
 2. **Selling** — quoting, following up, talking to leads, sending proposals.
@@ -118,12 +128,23 @@ At the end of the week, total each bucket and look at the shape. Two questions m
 - **How many hours went to "Building"?** For most owners in disorder, the answer is close to zero. That is the problem in one number: there is no time set aside to improve the business, so nothing improves.
 - **How much "Running" is rework?** Not all admin is bad, but a lot of it is repeated, avoidable friction — the exact thing systems remove.
 
+*Example — Maya's Property Services (fictional; one normal week):*
+
+| Bucket | Hours that week |
+|--------|-----------------|
+| Doing (cleaning, turnovers) | 26 |
+| Selling (quotes, follow-ups) | 4 |
+| Running (admin, scheduling, supplies) | 12 |
+| Building (improving the business) | 0 |
+
+*What surprised Maya:* "The bucket that surprised me most was **Building — zero hours**. I never stop long enough to fix the things that keep costing me." *(Illustrative figures only.)*
+
 > **TIP**
-> Do not redesign your week yet. Just record it truthfully for seven days. An accurate map of a messy week is far more useful than a tidy guess.
+> Do not redesign your week yet. Just record it truthfully for 7 days. An accurate map of a messy week is far more useful than a tidy guess.
 
 **Exercise 1.2 — Start your Owner's Time Map**
 
-Begin logging today. Track for seven days using the four buckets. At the end, write your four totals and one sentence: **"The bucket that surprised me most was ______, because ______."** You will use this map again in Module 4 when you design your Weekly Operating Rhythm, and in Module 6 when you decide what to delegate.
+Begin logging today. Track for 7 days using the 4 buckets. At the end, write your 4 totals and one sentence: **"The bucket that surprised me most was ______, because ______."** You will use this map again in Module 4 when you design your Weekly Operating Rhythm, and in Module 6 when you decide what to delegate.
 
 > **NOTE**
 > If a full week feels like too much right now, log three days honestly. Three real days beats zero perfect ones. BBOS is built to fit around a business you are still actively running.
@@ -215,7 +236,7 @@ Write two short blocks:
 1. **Ideal customer:** who they are, what they need most, why you fit, and who is a poor fit.
 2. **Core offer:** the one main thing you sell them, what it includes, and the outcome it produces.
 
-Keep both tight. These become sections of your One-Page Business Snapshot next.
+Keep both tight. These become sections of your One-Page Business Snapshot next — and your ideal customer and core offer are the direct inputs you will carry into Module 2 (Offer and Revenue Engine), where you turn them into a structured offer and a visible pipeline.
 
 ---
 
@@ -231,19 +252,27 @@ One page forces clarity. A business plan that runs 30 pages hides the truth in d
 
 ### Framework: The One-Page Business Snapshot
 
-Your Snapshot has six short sections. Keep each to a few lines.
+Your Snapshot is one page with 6 fillable fields. Keep each to a few lines. Fill them in exactly as labeled:
 
-1. **The business I am really in** — your one-sentence answer from Chapter 1.2.
-2. **My ideal customer** — who you serve best, and who is a poor fit (from Chapter 1.3).
-3. **My core offer** — the main thing you sell, what is included, and the outcome (from Chapter 1.3).
-4. **How I run today (honest)** — a plain description of your current operating reality: how you get work, how you price, how you follow up, how you track money, and what only you can do.
-5. **My biggest costs of disorder** — the top two or three findings from your Cost-of-Disorder Audit (Chapter 1.1).
-6. **My first weakness to fix** — the single operating weakness you will address first.
+1. **The business I am really in:** ________________________ *(your one-sentence answer from Chapter 1.2)*
+2. **My ideal customer — and who is a poor fit:** ________________________ *(from Chapter 1.3)*
+3. **My core offer — what's included + the outcome:** ________________________ *(from Chapter 1.3)*
+4. **How I run today (honest):** ________________________ *(how you get work, how you price, how you follow up, how you track money, and what only you can do)*
+5. **My biggest costs of disorder (top 2–3):** ________________________ *(from your Cost-of-Disorder Audit, Chapter 1.1)*
+6. **My first weakness to fix:** ________________________ *(the single operating weakness you will address first)*
 
 Section 4 is where most owners feel discomfort, because it asks for honesty about the messy present. Write it plainly, without judgment. "I price by guessing each time" is a perfectly good, useful entry. Naming reality is what makes it fixable.
 
-> **EXAMPLE — Maya's Property Services**
-> Maya fills in her Snapshot. Section 4, written honestly, reads: *"I get most work from word of mouth and one host who refers me. I price each job by guessing, and I discount when people push. I follow up only when I remember. I don't track my margin — I just look at what's in the account. Only I know how each client wants their turnover done."* It is uncomfortable to write, but now it is visible. Her Section 6 — first weakness to fix — becomes: *"Inconsistent pricing, because it costs me money on every job and stresses me out."* That choice will point her toward Module 3 when the time comes. *(Example only.)*
+*Example — Maya's Property Services (fictional; her filled Snapshot):*
+
+1. **Business I'm really in:** "I help homeowners and short-term rental hosts keep properties consistently guest-ready."
+2. **Ideal customer / poor fit:** STR hosts and small property managers with 2–5 properties / poor fit: one-off "come today for cheap" callers.
+3. **Core offer:** Reliable, scheduled turnover cleans that leave a rental guest-ready on time.
+4. **How I run today (honest):** "Work comes from word of mouth. I price by guessing and discount when pushed. I follow up only when I remember. I don't track margin. Only I know how each client wants their turnover done."
+5. **Biggest costs of disorder:** Guessing at prices (lost margin); missed follow-ups (lost recurring clients).
+6. **First weakness to fix:** "Inconsistent pricing — it costs me margin on almost every job."
+
+Section 4 is the uncomfortable one, because it names the messy present plainly — but now it is visible and fixable. Maya's first weakness points her toward Module 3 (Pricing With Dignity) when the journey reaches it. *(Example only.)*
 
 > **NOTE**
 > Your Snapshot is a private working document. Do not include client names, private client financial details, passwords, or sensitive information. It describes *your* business, not your customers' private data.
@@ -265,7 +294,7 @@ The best first weakness usually sits where "most costly" and "most realistic" ov
 
 **Exercise 1.5 — Build your One-Page Business Snapshot**
 
-Complete all six sections on a single page, pulling from the work you did in Chapters 1.1–1.3. End by circling or bolding your **first weakness to fix.** This page is your Module 1 milestone output.
+Complete all 6 sections on a single page, pulling from the work you did in Chapters 1.1–1.3. End by circling or bolding your **first weakness to fix.** This page is your Module 1 milestone output.
 
 > **DO THIS NOW**
 > Put your finished Snapshot somewhere you will see it every week — pinned above your desk, saved to your phone home screen, or taped inside a folder you open daily. In Module 4, this page moves into your Weekly Operating Rhythm as the reference you plan against.
@@ -296,7 +325,7 @@ The BBOS Week has four repeating parts:
 Once this cycle is running, the business stops lurching from crisis to crisis. Each week starts already planned and ends already reviewed. That single change removes an enormous amount of the disorder you audited in Chapter 1.1.
 
 > **TIP**
-> You do not need the whole system to feel relief. Even installing just the Weekly Close — one honest end-of-week review — gives most owners noticeably more control within a few weeks.
+> You do not need the whole system before it helps. Even installing just the Weekly Close — one honest end-of-week review — can give you a clearer sense of control over how your week runs.
 
 ### How the eight modules fit together
 
@@ -306,12 +335,14 @@ Each module installs one part of the operating system. They build in order:
 - **Module 2 — Offer and Revenue Engine:** turn scattered services into a clear offer and a visible **pipeline** with a **Follow-Up Cadence**.
 - **Module 3 — Pricing With Dignity:** replace guesswork with a documented **Cost Stack → Target Margin → Price** method you can defend.
 - **Module 4 — Weekly Operating Rhythm:** install the BBOS Week so the business runs on a cadence, not on adrenaline.
-- **Module 5 — Money and Metrics:** review your **Core Number Set** (revenue, margin, cash, runway) each week so money stops being a mystery.
+- **Module 5 — Money and Metrics:** review your **Core Number Set** (revenue, margin, cash, and runway — how long your current cash can support the business at its present spending level) each week so money stops being a mystery.
 - **Module 6 — Systems and Delegation:** move knowledge out of your head into **SOPs** (Standard Operating Procedures) others can run.
 - **Module 7 — Reputation and Customer Retention:** turn finished work into referrals and repeat business through a repeatable cadence.
 - **Module 8 — The 90-Day Implementation Plan:** the 13-week journey that installs all of the above at a realistic pace.
 
-Notice the logic. You cannot price well (Module 3) until you know your offer and customer (Modules 1–2). You cannot run a steady weekly rhythm (Module 4) until you have work flowing in (Module 2). You cannot delegate (Module 6) until something is worth documenting. BBOS is ordered on purpose so each step makes the next one possible.
+Notice the logic. You cannot price well (Module 3) until you know your offer and customer (Modules 1–2). You cannot delegate (Module 6) until something is worth documenting. BBOS is ordered on purpose so each step makes the next one possible.
+
+A quick note on the weekly rhythm: a **basic Weekly Operating Rhythm can begin immediately** — you do not need every other system in place first. It simply becomes more effective as you install your offer, pipeline, pricing, and financial systems in later weeks. That is why the 13-week journey has you start a light version of the rhythm early and keep strengthening it as the other pieces come online.
 
 > **NOTE**
 > The **companion assets** — the Weekly Operating Rhythm workbook, the Pricing and Margin calculator, the Cash-Flow and Runway calculator, the SOP template, the Client proposal template, the Offer One-Pager, the Weekly Close checklist, and the BBOS AI Prompt Pack — are the tools that turn each module's ideas into a visible output. You do not need them all today. Each module tells you exactly which one to use and when.
@@ -334,7 +365,20 @@ When you face an operating decision later — whether to discount, whether to ta
 BBOS will give you control, clarity, and a business that runs on systems instead of stress. It will not hand you a specific income figure, guarantee new customers, or replace professional legal, tax, or accounting advice. What it promises is what you can actually control: installed habits and systems, built at a realistic pace, within 90 days. That honesty is the point. A promise you can keep is worth more than a promise that sounds impressive.
 
 > **EXAMPLE — Maya's Property Services**
-> Maya can now see the road. Her first weakness is inconsistent pricing, so she knows Module 3 will matter most to her — but she also sees she needs the pipeline from Module 2 and the weekly rhythm from Module 4 to hold it all together. Instead of feeling overwhelmed, she feels oriented. She has a Snapshot on her wall, a time map in progress, and one clear first weakness. That is a foundation. *(Example only.)*
+> Maya can now see the road. Her first weakness is inconsistent pricing, so she knows Module 3 will matter most to her — but she also sees she needs the pipeline from Module 2 and a basic weekly rhythm from Module 4 to hold it all together. Instead of feeling overwhelmed, she feels oriented. She has a Snapshot on her wall, a time map in progress, and one clear first weakness. That is a foundation. *(Example only.)*
+
+**Exercise 1.6 — Point your first weakness at the module that fixes it**
+
+This is a light closing action, not a full framework. Look at your One-Page Business Snapshot, then:
+
+1. **Choose the module** that most directly addresses your first weakness (use the module list above).
+2. **Schedule one 30-minute Building block this week** — an actual date and time on your calendar — to begin on it.
+3. Write **one sentence** describing what you will work on in that block.
+
+Your visible output is three lines: the module you chose, the date and time you scheduled, and the one sentence. This is your first deliberate hour of "Building" time — the bucket that was likely empty on your Owner's Time Map.
+
+> **EXAMPLE — Maya's Property Services**
+> *Chosen module:* Module 3 (Pricing With Dignity). *Scheduled:* Thursday, 4:00–4:30 pm. *What I'll work on:* "List what a standard turnover clean actually costs me so I can stop guessing at prices." *(Example only.)*
 
 ---
 
@@ -344,7 +388,7 @@ You have completed Module 1 when you can point to three finished outputs and one
 
 - A completed **Cost-of-Disorder Audit** (one page).
 - A started **Owner's Time Map** (at least three honest days, ideally a full week).
-- A completed **One-Page Business Snapshot** (all six sections).
+- A completed **One-Page Business Snapshot** (all 6 sections).
 - A chosen **first weakness to fix**, written as one specific sentence.
 
 When these exist and are saved where you will see them weekly, your foundation is set. You are ready to move into Module 2 (Offer and Revenue Engine) when the 13-week journey brings you there.
@@ -360,13 +404,14 @@ When these exist and are saved where you will see them weekly, your foundation i
 - [ ] I opened the **Start Here guide** and understand how the 13-week journey works.
 - [ ] I completed my **Cost-of-Disorder Audit** with specific, recent examples and rough estimates.
 - [ ] I named my single most expensive pattern of disorder.
-- [ ] I started my **Owner's Time Map** (three or more honest days logged into the four buckets).
+- [ ] I started my **Owner's Time Map** (3 or more honest days logged into the 4 buckets).
 - [ ] I wrote the one-sentence answer to "What business am I really in?"
 - [ ] I defined my **ideal customer** (including who is a poor fit).
 - [ ] I named my **core offer** clearly.
-- [ ] I completed all six sections of my **One-Page Business Snapshot**, honestly.
+- [ ] I completed all 6 sections of my **One-Page Business Snapshot**, honestly.
 - [ ] I chose and wrote down my **first weakness to fix** as one specific sentence.
 - [ ] I saved my Snapshot somewhere I will see it every week.
+- [ ] I chose the module that addresses my first weakness and scheduled one 30-minute Building block this week (Exercise 1.6).
 
 When every box is checked, Module 1 is complete.
 

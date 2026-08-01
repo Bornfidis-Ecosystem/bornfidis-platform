@@ -75,7 +75,12 @@ Three overlapping brand systems exist in the repository. BBOS canonicalizes as f
 - **Spacing:** space after H1 = 24 pt, H2 = 12 pt, H3 = 8 pt; 6 pt between paragraphs.
 - **Lists:** bullets for unordered, numbers for sequences/steps; markers in Ink or Gold; never mix marker styles within one list.
 - **Emphasis:** **bold** for key terms/actions; *italic* for first-use definitions and light emphasis; never underline (reserved for links). No color-only emphasis.
-- **Every chapter ends with:** an Exercise block and a Completion Milestone line (fixed pattern across all modules).
+- **Action & milestone standard:**
+  - Every chapter must lead to a practical **action, decision, or reflection**.
+  - **Major framework chapters** must produce a **visible output**.
+  - Every **module** ends with **one** formal **Completion Milestone** and a completion checklist.
+  - A formal milestone line is **not** required after every chapter (no per-chapter micro-milestones).
+  - **Orientation or synthesis chapters** may use a lighter closing action rather than a full framework exercise.
 
 ---
 
