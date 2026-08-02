@@ -1,7 +1,7 @@
 # BBOS Version 1 Release Register
 
 **Version:** 1.0  
-**Status:** Internal Draft  
+**Status:** Internal Draft (core modules + pricing calculator frozen)  
 **Product:** Bornfidis Business Operating System (BBOS)  
 **Purpose:** Single source of truth for what belongs in Version 1. Prevents scope creep.
 
@@ -21,6 +21,26 @@
 | ✓ Calculator Specification | Frozen in Module 3 + Module 3 blueprint |
 | ✓ Proposed-stage definition | Canonical (priced rung awaiting decision) |
 | ✓ Maya running example profile | Constitution §11; figures locked in Module 3 |
+| ✓ **Pricing & Margin Calculator — Frozen V1.0** | See freeze record below |
+
+---
+
+## Pricing & Margin Calculator — Freeze Record
+
+| Field | Value |
+|---|---|
+| **Status** | **Frozen V1.0** |
+| **Version** | 1.0 |
+| **Date locked** | 2026-08-01 |
+| **Filename** | `content/bbos/bbos-pricing-margin-calculator-v1.xlsx` |
+| **Build script** | `scripts/build-bbos-pricing-calculator.py` |
+| **Validation script** | `scripts/validate-bbos-pricing-calculator.py` |
+| **Formula standard** | `Price = Cost Stack ÷ (1 − Target Margin)` · `Margin = (Price − Cost Stack) ÷ Price` (margin only; never markup) |
+| **Maya example baseline** | Core Cost Stack **$105** → exact price **$150** (30% Target Margin); Guardrail 20% exact floor **$131.25** / practical **$132**; Scenario C exact **$161.54** / quote **$162**; Entry **$70→$100**; Premium **$175→$250**; Optionals **$21→$30**, **$14→$20**, **$7→$10** (illustrative USD) |
+| **Manual test** | Opened and tested by product owner — no genuine spreadsheet defect reported |
+| **Automated validation** | Maya lock figures + 10 fictional scenarios — ALL CHECKS PASSED |
+| **Sheet titles** | Start Here · Inputs · Results · Example · Notes and Disclaimer *(Excel-safe name for Notes/Disclaimer)* |
+| **Change control** | Do not alter formulas, Maya baseline, or frozen rules without explicit executive unlock |
 
 ---
 
@@ -28,10 +48,8 @@
 
 | Asset | Status |
 |---|---|
-| ✓ Pricing & Margin Calculator V1 (`.xlsx`) | `content/bbos/bbos-pricing-margin-calculator-v1.xlsx` — built; awaiting executive freeze confirmation |
-| □ Calculator V1 freeze confirmation | Validate in Excel desktop; then mark frozen |
-| □ Worksheet Pack (Snapshot, Offer Builder, Ladder, Pipeline, Cadence, etc.) | After calculator |
-| □ Module 4 — Weekly Operating Rhythm | After calculator |
+| □ Worksheet Pack (Snapshot, Offer Builder, Ladder, Pipeline, Cadence, etc.) | After calculator freeze |
+| □ Module 4 — Weekly Operating Rhythm | **Next** — architecture may begin |
 | □ Module 5 — Money and Metrics | After Module 4 |
 | □ Module 6 — Systems and Delegation | After Module 5 |
 | □ Module 7 — Reputation and Customer Retention | After Module 6 |
@@ -75,8 +93,8 @@ Planning only — does not expand V1 content requirements:
 
 ## Production sequence (current)
 
-1. **Now:** Build and freeze Pricing & Margin Calculator V1.  
-2. **Next:** Module 4 — Weekly Operating Rhythm.  
+1. ~~Build and freeze Pricing & Margin Calculator V1.~~ **Done — Frozen V1.0 (2026-08-01).**  
+2. **Next:** Module 4 — Weekly Operating Rhythm (architecture).  
 3. **Then:** Modules 5–8 and remaining companion assets per Constitution §9.
 
 ---
@@ -86,5 +104,6 @@ Planning only — does not expand V1 content requirements:
 - Locked assets are not rewritten without an explicit executive unlock.
 - Narrow factual reconciliations (terminology, Proposed-stage) require written authorization.
 - New features move to Future Enhancements unless Constitution §9 is amended first.
+- The Pricing & Margin Calculator Frozen V1.0 must not invent behavior beyond Module 3.
 
-**Last updated:** 2026-08-01 · Internal Draft
+**Last updated:** 2026-08-01 · Calculator Frozen V1.0
