@@ -9,6 +9,7 @@ import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { isBundleSlug, getIncludedSlugs } from '@/lib/academy-bundles'
 import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
+import { BBOS_PRODUCT_SLUG, isBbosProductSlug } from '@/lib/bbos-library-manifest'
 
 export const dynamic = 'force-dynamic'
 
@@ -184,6 +185,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
               )
             }
 
+            const isBbos = isBbosProductSlug(p.productSlug)
             const isCourse = product?.type === 'COURSE'
             const href = isCourse && product
               ? `/academy/course/${product.slug}`
@@ -214,8 +216,26 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                       {priceDisplay !== 'FREE' && ` · ${priceDisplay}`}
                     </p>
                   </div>
-                  <div className="flex gap-3">
-                    {!fileAvailable ? (
+                  <div className="flex flex-wrap gap-3">
+                    {isBbos ? (
+                      <>
+                        <Link
+                          href="/dashboard/library/bbos"
+                          className="inline-block bg-forest text-goldAccent font-semibold px-4 py-2 rounded-xl hover:opacity-90 transition text-sm"
+                        >
+                          Open library →
+                        </Link>
+                        <TrackedDownloadLink
+                          href={`/api/academy/download/${BBOS_PRODUCT_SLUG}`}
+                          productSlug={BBOS_PRODUCT_SLUG}
+                          productTitle={p.productTitle}
+                          source="library"
+                          className="inline-block border-2 border-forest text-forest font-semibold px-4 py-2 rounded-xl hover:bg-forest/5 transition text-sm"
+                        >
+                          Download full package
+                        </TrackedDownloadLink>
+                      </>
+                    ) : !fileAvailable ? (
                       <span className="text-sm text-gray-500" title="Download not available for this product. Contact support if you need help.">
                         Download not available
                       </span>

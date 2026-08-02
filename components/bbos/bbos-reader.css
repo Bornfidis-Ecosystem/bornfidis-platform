@@ -1,0 +1,164 @@
+/* BBOS library reader — scoped under .bbos-reader */
+
+.bbos-reader {
+  color: #1c1c1c;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.bbos-reader .bbos-h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1a3c34;
+  margin: 0 0 1rem;
+  line-height: 1.25;
+}
+
+.bbos-reader .bbos-h2 {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: #1a3c34;
+  margin: 2rem 0 0.75rem;
+  scroll-margin-top: 5rem;
+  line-height: 1.3;
+}
+
+.bbos-reader .bbos-h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1a3c34;
+  margin: 1.5rem 0 0.5rem;
+  scroll-margin-top: 5rem;
+}
+
+.bbos-reader .bbos-p {
+  margin: 0 0 1rem;
+}
+
+.bbos-reader .bbos-ul,
+.bbos-reader .bbos-ol {
+  margin: 0 0 1rem 1.25rem;
+  padding: 0;
+}
+
+.bbos-reader .bbos-ul {
+  list-style: disc;
+}
+
+.bbos-reader .bbos-ol {
+  list-style: decimal;
+}
+
+.bbos-reader li {
+  margin-bottom: 0.35rem;
+}
+
+.bbos-reader .bbos-hr {
+  border: 0;
+  border-top: 1px solid #e5e3dc;
+  margin: 1.75rem 0;
+}
+
+.bbos-reader .bbos-pre {
+  background: #f5f1e6;
+  border: 1px solid #e5e3dc;
+  border-radius: 0.5rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.bbos-reader .bbos-code-inline {
+  background: #f5f1e6;
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+}
+
+.bbos-reader .bbos-link {
+  color: #1a3c34;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bbos-reader .bbos-link:hover {
+  opacity: 0.85;
+}
+
+.bbos-reader .bbos-blockquote {
+  border-left: 3px solid #c9a84c;
+  background: #f5f1e6;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+}
+
+.bbos-reader .bbos-callout {
+  border-left: 3px solid #c9a84c;
+  background: #f5f1e6;
+  margin: 0 0 1rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.bbos-reader .bbos-callout-warning {
+  border-left-color: #b45309;
+}
+
+.bbos-reader .bbos-callout-action {
+  border-left-color: #1a3c34;
+}
+
+.bbos-reader .bbos-callout-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #1a3c34;
+  margin: 0 0 0.35rem;
+}
+
+.bbos-reader .bbos-callout p {
+  margin: 0 0 0.5rem;
+}
+
+.bbos-reader .bbos-callout p:last-child {
+  margin-bottom: 0;
+}
+
+.bbos-reader .bbos-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 0 0 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bbos-reader .bbos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 280px;
+}
+
+.bbos-reader .bbos-table th,
+.bbos-reader .bbos-table td {
+  border: 1px solid #e5e3dc;
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.bbos-reader .bbos-table th {
+  background: #1a3c34;
+  color: #fff;
+  font-weight: 600;
+}
+
+.bbos-reader .bbos-table tr:nth-child(even) td {
+  background: #faf9f6;
+}
