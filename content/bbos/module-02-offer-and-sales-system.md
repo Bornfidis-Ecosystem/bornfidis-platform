@@ -228,7 +228,7 @@ Each opportunity sits in exactly one stage. An opportunity moves forward only wh
 
 - **Lead** — someone has shown interest, but you have not yet decided whether to pursue them. *Entry test:* a real person or business has made contact or been identified as a possible customer.
 - **Qualified** — you have decided this is a real, good-fit opportunity worth your time. *Entry test:* the opportunity passes the **Should I Say Yes?** filter with a **Yes** (see below).
-- **Proposed** — you have put a concrete offer in front of them and are awaiting their decision. *Entry test:* you have presented a defined scope from your offer (the price is filled in once Module 3 is complete; until then, note the rung and mark the price as pending).
+- **Proposed** — the customer has received a specific Offer Ladder rung at a defined price and you are awaiting their decision. *Entry test:* a specific rung at a defined price has been presented (priced with Cost Stack → Target Margin → Price from Module 3).
 - **Won** — they have agreed and confirmed the work. *Entry test:* a clear yes and a booked or scheduled commitment.
 - **Lost** — they declined, went silent past your follow-up window, or turned out not to be a fit. *Entry test:* a clear no, or your follow-up attempts have run their course.
 

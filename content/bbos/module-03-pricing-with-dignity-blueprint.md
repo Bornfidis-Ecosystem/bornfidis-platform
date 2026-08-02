@@ -75,9 +75,15 @@ Margin and markup are **not** the same. No alternate conflicting formula.
 
 **Tabs (fixed order):** `Start Here` → `Inputs` → `Results` → `Example` → `Notes / Disclaimer`
 
-**Inputs (only editable cells):** currency symbol (one parameter — currency-neutral); direct-cost lines; labor hours + labor cost/hour; overhead allocation; contingency %; Target Margin %; Margin Guardrail %; Entry/Premium scope relative to Core; Optional-item cost inputs.
+**Inputs (only editable cells):** currency symbol (one parameter — currency-neutral); direct-cost lines; labor hours + labor cost/hour; overhead allocation (per-job or per-hour); contingency ($ or % → $); Target Margin %; Margin Guardrail %; **full Cost Stack inputs for Entry, Core, and Premium**; Optional items (name + Cost Stack).
 
-**Outputs (locked):** Cost Stack total; Price at Target Margin; verified Margin; prices at Guardrail (floor reference); Entry / Core / Premium prices; Optional-item prices; scenario columns A/B/C; plain-language status text (never color alone).
+**Outputs (locked):** Cost Stack total; exact Price at Target Margin; verified Margin; exact Guardrail floor; Entry / Core / Premium prices; Optional-item prices; scenario columns A/B/C (exact results); status text: At target / Between guardrail and target / Below guardrail.
+
+**Frozen rules:** margin only (never markup); show exact results first; allow deliberate upward quote rounding; never round down through the Guardrail; warn below exact Guardrail floor; Optional items never auto-include into Core; Example tab matches Main Guide Maya figures exactly.
+
+**Approved Maya rounding conventions:**
+- Scenario C exact **$161.54** → intentional quote **$162**
+- Guardrail exact floor **$131.25** → practical minimum quote **$132** (round upward only)
 
 **Example tab:** Maya's Property Services with the **same figures** as the Main Guide (illustrative USD labeled).
 
@@ -85,7 +91,7 @@ Margin and markup are **not** the same. No alternate conflicting formula.
 
 **Protection:** lock non-input cells; Gold-bordered unlocked inputs; Paper-filled calculated cells.
 
-**Do not create the spreadsheet in this production pass.** The module defines exact requirements; the spreadsheet is built after prose and numbers are locked.
+The module defines the spreadsheet — the spreadsheet must not invent behavior. Build the spreadsheet only after Module 3 prose and numbers are locked.
 
 ## 8. Currency convention
 
@@ -109,7 +115,7 @@ Margin and markup are **not** the same. No alternate conflicting formula.
 
 > An opportunity officially enters Proposed when the customer has received a specific Offer Ladder rung at a defined price and the owner is awaiting the customer's decision.
 
-Do **not** edit locked Module 2 during this draft pass. When Module 3 is approved for locking, perform a **narrow reference-only reconciliation** in Module 2 as part of the final Module 3 lock pass. No other Module 2 edits authorized.
+**Lock-pass reconciliation:** Module 2's Proposed entry test is updated by narrow reference-only edit to this canonical definition when Module 3 locks. No other Module 2 edits authorized.
 
 ## 11. Claims and advice boundaries
 

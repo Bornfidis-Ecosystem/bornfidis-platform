@@ -117,6 +117,8 @@ Do not split every bill across seventeen categories. Do not wait for perfect boo
 
 Contingency works the same way. Choose a small buffer that reflects how often jobs overrun in *your* business — then convert it to money and add it to the stack. Label it as an estimate. False precision helps no one.
 
+**Contingency protects the job from unexpected costs. Target Margin rewards the business after all planned costs have been covered.** They are not the same buffer. Contingency sits inside the Cost Stack. Target Margin sits above it.
+
 > **TIP**
 > Round your inputs. A Cost Stack that pretends to be exact to the last cent creates false confidence. Honest, round estimates you will actually use beat precise numbers you abandon.
 
@@ -140,7 +142,7 @@ You are not inventing a fake expense. You are refusing to treat your life as an 
 >
 > | Layer | What she includes | Amount |
 > |---|---|---|
-> | Direct costs | Cleaning supplies + linen laundering for one turnover | $20 |
+> | Direct costs | Cleaning supplies + standard property linen processing for one turnover | $20 |
 > | Labor | 3 hours × $20/hour (her time counts) | $60 |
 > | Overhead allocation | Simple per-job share of transport, phone, basic running costs | $15 |
 > | Contingency | Small buffer for overruns / redo risk | $10 |
@@ -230,6 +232,14 @@ This pair of decisions is your Chapter 3.3 output.
 
 You now have a Cost Stack and a Target Margin. The BBOS pricing method turns them into a price.
 
+> **BBOS Pricing Principles**
+>
+> - Price from your costs, not your emotions.
+> - Protect your standards before protecting the sale.
+> - Margin is planned — not guessed.
+> - Discounts are intentional decisions, never automatic reactions.
+> - A sustainable business serves more people than an exhausted owner.
+
 ### Framework: Cost Stack → Target Margin → Price
 
 Use these formulas consistently:
@@ -265,7 +275,7 @@ This is the most important distinction in the module.
 
 They are not interchangeable. A 30% **margin** is not the same as a 30% **markup**.
 
-Quick check with round numbers: if cost is $100 and you want a **30% margin**, price is $100 ÷ 0.70 ≈ $143 — not $130. Adding 30% on top of cost ($130) only yields about a **23% margin**. If you confuse the two, you will systematically under-price while believing you hit your target.
+Quick check with round numbers: if cost is $100 and you want a **30% margin**, exact price is $100 ÷ 0.70 = **$142.86** (about $143 if you round for speech) — not $130. Adding 30% on top of cost ($130) only yields about a **23% margin**. If you confuse the two, you will systematically under-price while believing you hit your target.
 
 BBOS always prices to **margin**, then verifies with the margin formula.
 
@@ -283,7 +293,11 @@ BBOS always prices to **margin**, then verifies with the margin formula.
 > - Price = 105 ÷ (1 − 0.30) = 105 ÷ 0.70 = **$150**
 > - Verify: Margin = (150 − 105) ÷ 150 = 45 ÷ 150 = **30%**
 >
-> For reference only, her **Margin Guardrail (20%)** implies a floor of 105 ÷ 0.80 = **$131.25**. She treats **$132** as the lowest Core quote she will consider without Exception Approval (rounded up from the exact floor for simplicity).
+> Her **Margin Guardrail (20%)**:
+> - Exact Guardrail floor: 105 ÷ 0.80 = **$131.25**
+> - Practical minimum quoted price: **$132**
+>
+> Maya rounds **upward** to $132 so she does not move below the Guardrail. $131.25 and $132 are not the same number — the exact floor is the math; $132 is the quote she will actually say.
 >
 > Fictional illustration only — not a recommended rate. *(Example only.)*
 
@@ -297,11 +311,13 @@ Before you lock a number, compare 2–3 scenarios. Same Cost Stack; different Ta
 >
 > Cost Stack held at **$105**:
 >
-> | Scenario | Target Margin | Price (Cost ÷ (1 − margin)) | Notes |
+> | Scenario | Target Margin | Exact calculated price | Notes |
 > |---|---|---|---|
-> | A | 25% | $140 | Above her 20% guardrail; tighter than she wants day to day |
-> | B | 30% | $150 | Her chosen Target Margin |
-> | C | 35% | ≈ $162 | Higher cushion; she decides it may price her out of some hosts |
+> | A | 25% | $140.00 | Above her Guardrail; tighter than she wants day to day |
+> | B | 30% | $150.00 | Her chosen Target Margin |
+> | C | 35% | $161.54 | Higher cushion; she decides it may price her out of some hosts |
+>
+> For Scenario C: exact calculated price = **$161.54**. Maya intentionally quotes **$162** by rounding upward. After that deliberate round, margin is about **35.2%** — still the higher-cushion choice, not a new Target Margin.
 >
 > Maya selects **Scenario B — $150** as her standard Core price. Scenario comparison helped her choose; it did not promise any sales outcome. *(Example only.)*
 
@@ -311,11 +327,34 @@ BBOS includes a **Pricing & Margin Calculator** companion spreadsheet (built aft
 
 **Required tabs (fixed order):** `Start Here` → `Inputs` → `Results` → `Example` → `Notes / Disclaimer`
 
-**Inputs (only editable cells):** one currency-symbol field (currency-neutral for all users); direct-cost lines; labor hours and labor cost per hour; overhead allocation; contingency; Target Margin %; Margin Guardrail %; Entry/Premium scope relative to Core; Optional-item cost inputs.
+**Inputs (only editable cells):**
+- One currency-symbol field (currency-neutral for all users).
+- Direct-cost lines (summed).
+- Labor hours and labor cost per hour.
+- Overhead allocation (per-job **or** per-hour — one method).
+- Contingency as $ or % converted to $.
+- Target Margin % and Margin Guardrail %.
+- **Full Cost Stack inputs for Entry, Core, and Premium** (not Core × a hidden multiplier).
+- Optional items: name + Cost Stack (or mini layers).
 
-**Calculated outputs (locked):** Cost Stack total; Price at Target Margin using `Cost ÷ (1 − Target Margin)`; verified margin using `(Price − Cost) ÷ Price`; guardrail floor reference; Entry / Core / Premium prices; Optional-item prices; scenario columns; plain-language status text (never color alone).
+**Calculated outputs (locked):**
+- Cost Stack total.
+- Exact Price at Target Margin using `Cost ÷ (1 − Target Margin)`.
+- Verified margin using `(Price − Cost) ÷ Price`.
+- Exact Guardrail floor using `Cost ÷ (1 − Margin Guardrail)`.
+- Entry / Core / Premium prices from their own Cost Stacks.
+- Optional-item prices from their own Cost Stacks.
+- Scenario columns A/B/C (exact formula results).
+- Plain-language status text (never color alone): **At target** / **Between guardrail and target** / **Below guardrail**.
 
-**Example tab:** Maya's Property Services using the **same figures** as this module (illustrative USD, labeled).
+**Frozen calculator rules (the guide defines the spreadsheet):**
+- Margin only — never markup.
+- Show **exact** formula results first.
+- Allow deliberate **upward** quote rounding (e.g. $161.54 → $162; $131.25 → $132); re-verify margin after rounding.
+- **Never round down through the Guardrail.**
+- Warn if a quoted or exception price is below the exact Guardrail floor; require an Exception flag to proceed.
+- Optional items never auto-include into Core.
+- Example tab must match this module’s Maya figures exactly (illustrative USD, labeled).
 
 **Rules:** no macros; offline-usable; lock non-input cells; Gold border on inputs; Paper fill on calculated cells; disclaimer that results are for planning only — not tax, accounting, financial, or legal advice.
 
@@ -373,13 +412,15 @@ Then run the same price formula. If an Optional item takes almost no extra cost,
 >
 > **Optional add-ons** (each priced separately at 30% Target Margin):
 >
-> | Optional item | Cost Stack | Price |
+> | Optional item | Cost Stack (summary) | Price |
 > |---|---|---|
-> | Inside-oven / fridge deep clean | $21 | **$30** |
-> | Laundry service | $14 | **$20** |
-> | Consumables restock | $7 | **$10** |
+> | Inside-oven / fridge deep clean | Labor-heavy add-on ≈ $21 | **$30** |
+> | Additional guest/owner laundry *(outside normal turnover linen processing)* | ≈ $14 | **$20** |
+> | Consumables restock | ≈ $7 | **$10** |
 >
-> Verify Core again: (150 − 105) ÷ 150 = 30%. Entry: (100 − 70) ÷ 100 = 30%. Premium: (250 − 175) ÷ 250 = 30%.
+> Core already includes **standard property linen processing**. Optional laundry is **additional guest or owner laundry** outside that normal turnover scope — not a second charge for the same linens.
+>
+> Verify Core again: (150 − 105) ÷ 150 = 30%. Entry: (100 − 70) ÷ 100 = 30%. Premium: (250 − 175) ÷ 250 = 30%. Optional oven: 21 ÷ 0.70 = $30.
 >
 > Fictional, illustrative figures only — not recommended rates. *(Example only.)*
 
@@ -495,8 +536,9 @@ Dignity includes the courage to say no. It also includes the discipline to say y
 >
 > Maya checks her tools:
 > - Core standard price = **$150** (30% Target Margin on $105 Cost Stack).
-> - Guardrail floor ≈ **$132** (20% Margin Guardrail).
-> - **$120** is below the guardrail — she will not go there.
+> - Exact Guardrail floor: **$131.25** (20% Margin Guardrail).
+> - Practical minimum quoted price: **$132** (rounded upward so she does not move below the Guardrail).
+> - **$120** is below the exact Guardrail floor — she will not go there.
 >
 > She does **not** match the unnamed competitor. She offers two clean paths:
 > 1. Hold **$150** and deliver the full Included scope; or
@@ -516,7 +558,7 @@ With prices set, an opportunity can now enter **Proposed** in the full sense:
 
 > An opportunity officially enters **Proposed** when the customer has received a specific Offer Ladder rung at a **defined price** and the owner is awaiting the customer's decision.
 
-(Module 2 used a transitional definition while prices were still pending. The definition above is the canonical BBOS meaning once pricing exists.)
+(This is the canonical BBOS definition. Module 2's pipeline entry test is reconciled to match it when Module 3 locks.)
 
 You will run priced proposals and follow-up inside your **Weekly Operating Rhythm** in Module 4. You will compare planned pricing to actual margin, cash, and runway in Module 5. Do not try to build those measurement systems here.
 
