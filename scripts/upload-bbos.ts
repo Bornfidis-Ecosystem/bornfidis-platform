@@ -1,12 +1,15 @@
 // scripts/upload-bbos.ts
 //
-// Operations-only. Uploads the paid BBOS package to the PRIVATE Supabase
+// Operations-only. Uploads the paid BBOS package (ZIP) to the PRIVATE Supabase
 // Storage bucket used for digital-product delivery.
 //
 // This script is intentionally NOT wired into build / install / seed / deploy.
 // Run it manually and explicitly:
 //
 //   npx tsx scripts/upload-bbos.ts <path-to-bbos.zip> [--upsert]
+//
+// Individual tools (calculator / workbook) use scripts/upload-bbos-assets.ts.
+// Do not upload real assets until authorized after code review.
 //
 // If no path argument is supplied, it falls back to the documented local
 // constant below. It never prints credentials or signed URLs.

@@ -1,84 +1,70 @@
 import { NextResponse } from 'next/server'
 import path from 'path'
 import fs from 'fs'
-import { getCurrentSupabaseUser } from '@/lib/auth'
-import { db } from '@/lib/db'
+import { checkAcademyEntitlement } from '@/lib/academy-entitlement'
 import { getAcademyStorageFilename } from '@/lib/academy-storage'
-import { getBundleSlugs, getIncludedSlugs } from '@/lib/academy-bundles'
-import { createSignedDownloadUrl, isObjectStorageSlug } from '@/lib/academy-object-storage'
+import {
+  createSignedDownloadUrl,
+  isObjectStorageSlug,
+  resolveObjectStorageDownload,
+} from '@/lib/academy-object-storage'
 
 export const dynamic = 'force-dynamic'
 
 /**
  * Secure download: only if the user has an AcademyPurchase for this product.
- * Reads from private storage (storage/academy-products/), not public.
+ * Object-storage products (e.g. BBOS) use short-lived signed URLs.
+ * Optional ?asset= for BBOS individual tools (allowlisted).
  */
 const LOG_LABEL = 'ACADEMY_DOWNLOAD'
 
 export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ slug: string }> }
+  request: Request,
+  { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params
+  const assetParam = new URL(request.url).searchParams.get('asset')
 
-  let user: Awaited<ReturnType<typeof getCurrentSupabaseUser>>
-  try {
-    user = await getCurrentSupabaseUser()
-  } catch (err) {
-    console.error(LOG_LABEL, 'getCurrentSupabaseUser threw', err)
-    return NextResponse.json({ error: 'Authentication error' }, { status: 500 })
-  }
+  const entitlement = await checkAcademyEntitlement(slug)
 
-  if (!user) {
-    const loginUrl = new URL('/admin/login', _request.url)
-    loginUrl.searchParams.set('next', '/dashboard/library')
-    return NextResponse.redirect(loginUrl, 302)
-  }
-
-  let hasAccess = false
-  try {
-    const direct = await db.academyPurchase.findFirst({
-      where: { authUserId: user.id, productSlug: slug },
-    })
-    if (direct) {
-      hasAccess = true
-    } else {
-      const bundleSlugs = getBundleSlugs()
-      const bundlePurchases = await db.academyPurchase.findMany({
-        where: { authUserId: user.id, productSlug: { in: bundleSlugs } },
-      })
-      for (const p of bundlePurchases) {
-        if (getIncludedSlugs(p.productSlug).includes(slug)) {
-          hasAccess = true
-          break
-        }
-      }
+  if (!entitlement.ok) {
+    if (entitlement.reason === 'unauthenticated') {
+      const loginUrl = new URL('/admin/login', request.url)
+      loginUrl.searchParams.set('next', '/dashboard/library')
+      return NextResponse.redirect(loginUrl, 302)
     }
-  } catch (err) {
-    console.error(LOG_LABEL, 'access check failed', {
-      slug,
-      userId: user.id,
-      error: err instanceof Error ? err.message : String(err),
-    })
-    return NextResponse.json({ error: 'Unable to verify purchase' }, { status: 500 })
-  }
-
-  if (!hasAccess) {
+    if (entitlement.reason === 'error') {
+      return NextResponse.json({ error: 'Unable to verify purchase' }, { status: 500 })
+    }
     return NextResponse.json({ error: 'Forbidden: purchase required' }, { status: 403 })
   }
 
-  // Object-storage products (e.g., BBOS) are delivered from a private Supabase
-  // bucket via a short-lived signed URL. Entitlement has already been verified
-  // above, so an unauthenticated or unentitled user can never reach this point.
-  // The ZIP is never buffered in the route and no permanent public URL is exposed.
+  // Object-storage products (e.g., BBOS) — entitlement already verified.
   if (isObjectStorageSlug(slug)) {
-    const signed = await createSignedDownloadUrl(slug)
+    if (assetParam?.trim()) {
+      const resolved = resolveObjectStorageDownload(slug, assetParam)
+      if (!resolved) {
+        return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
+      }
+    }
+
+    const signed = await createSignedDownloadUrl(slug, assetParam)
     if (!signed.ok) {
-      // Never logs the signed URL (there is none on failure) or any secret.
-      console.error(LOG_LABEL, 'object-storage signing failed', { slug })
+      if (signed.error === 'unknown_asset') {
+        return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
+      }
+      console.error(LOG_LABEL, 'object-storage signing failed', {
+        slug,
+        asset: assetParam?.trim() || 'zip',
+      })
       return NextResponse.json({ error: 'File temporarily unavailable' }, { status: 502 })
     }
     return NextResponse.redirect(signed.url, 302)
+  }
+
+  // Asset query is only valid for object-storage (BBOS) products.
+  if (assetParam?.trim()) {
+    return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
   }
 
   const filename = getAcademyStorageFilename(slug)
@@ -99,14 +85,18 @@ export async function GET(
   }
 
   if (process.env.NODE_ENV === 'development') {
-    console.info(LOG_LABEL, 'serving file', { slug, userId: user.id })
+    console.info(LOG_LABEL, 'serving file', { slug, userId: entitlement.userId })
   }
 
   let buffer: Buffer
   try {
     buffer = fs.readFileSync(filePath)
   } catch (err) {
-    console.error(LOG_LABEL, 'readFileSync failed', { slug, filePath, error: err instanceof Error ? err.message : String(err) })
+    console.error(LOG_LABEL, 'readFileSync failed', {
+      slug,
+      filePath,
+      error: err instanceof Error ? err.message : String(err),
+    })
     return NextResponse.json({ error: 'File not available' }, { status: 404 })
   }
 
