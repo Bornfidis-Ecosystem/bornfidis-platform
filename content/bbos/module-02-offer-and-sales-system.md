@@ -84,7 +84,7 @@ Together, **Included / Optional / Not Included** are the boundaries of your offe
 
 > **EXAMPLE — Maya's Property Services**
 > Maya packages her core turnover clean with the Offer Builder *(fictional example)*:
-> - **Who it is for:** short-term rental hosts and small property managers with 2–5 properties who need dependable, on-time turnovers.
+> - **Who it is for:** short-term rental hosts and small property managers with 2–5 properties, plus homeowners who need dependable, on-time cleaning.
 > - **Intended outcome:** a rental that is consistently guest-ready on time, so the host never scrambles before a check-in.
 > - **Included:** full turnover clean (kitchen, bathrooms, floors, surfaces), fresh linen reset, trash removal, and a guest-ready walkthrough check.
 > - **Optional:** inside-oven and inside-fridge deep clean, laundry service, and consumables restock (coffee, paper goods). *Prices set in Module 3.*
@@ -109,11 +109,11 @@ The **Offer Ladder** solves this without turning you into a business with a hund
 
 ### Framework: The Offer Ladder
 
-Your ladder has exactly 3 rungs:
+Your ladder has exactly 3 rungs. For each rung, capture two things: **what it is** and **who it suits**.
 
-1. **Entry** — a low-commitment first step. This is the easiest way for a new customer to try you with little risk. It is smaller in scope than your core offer, and it exists to build trust and open the door.
-2. **Core** — the main offer you structured in Chapter 2.1. This is what you want to sell most often. It is the center of your business and the rung everything else supports.
-3. **Premium** — a fuller, larger, or recurring version for customers who want more. This might mean more frequency, more properties, more scope, or an ongoing arrangement. It is for your best-fit customers who value what you do and want more of it.
+1. **Entry** — a low-commitment first step. This is the easiest way for a new customer to try you with little risk. It is smaller in scope than your core offer, and it exists to build trust and open the door. *Who it suits:* cautious first-time customers.
+2. **Core** — the main offer you structured in Chapter 2.1. This is what you want to sell most often. It is the center of your business and the rung everything else supports. *Who it suits:* customers who already know what they need.
+3. **Premium** — a fuller, larger, or recurring version for customers who want more. This might mean more frequency, more properties, more scope, or an ongoing arrangement. *Who it suits:* your best-fit customers who value what you do and want more of it.
 
 Every rung uses a **price placeholder**, never a number:
 
@@ -134,19 +134,16 @@ A ladder is not about selling more for its own sake. It is about meeting custome
 A single offer forces every customer through the same narrow door. A ladder gives three doors — while your delivery stays built around one clear core.
 
 > **TIP**
-> Do not over-build the ladder. Three rungs is enough for Version 1 of your business. If you find yourself designing five or six rungs, you are adding complexity you will have to price, deliver, and explain. Keep it to entry, core, and premium.
+> Do not over-build the ladder — 3 rungs is enough for Version 1. If you find yourself designing five or six, you are adding complexity you will have to price, deliver, and explain. And keep the rungs genuinely different, not "small, medium, large" versions of the same thing: the entry rung should be an easy first step; the premium rung should serve a clearly different, deeper need.
 
 > **WARNING**
 > A ladder is for the customer's benefit, not a pressure tactic. The goal is to meet people where they are, not to push everyone to the top rung. If a customer's best fit is the entry rung, that is a win — trust now often becomes core work later.
 
-> **TIP**
-> Keep the rungs genuinely different, not "small, medium, large" versions of the same thing. The entry rung should be an easy first step; the premium rung should serve a clearly different, deeper need.
-
 > **EXAMPLE — Maya's Property Services**
 > Maya builds her 3-rung ladder around her turnover clean *(fictional example)*:
-> - **Entry:** a one-time trial turnover for a new host — a single clean so they can see her standard before committing. `[price — set in Module 3]`
-> - **Core:** scheduled turnover cleans, booked around the host's check-in calendar. `[price — set in Module 3]`
-> - **Premium:** recurring multi-property support for hosts or property managers with several units — regular turnovers plus priority scheduling. `[price — set in Module 3]`
+> - **Entry:** a one-time trial turnover for a new host — a single clean so they can see her standard before committing. *Who it suits:* cautious first-time hosts. `[price — set in Module 3]`
+> - **Core:** scheduled turnover cleans, booked around the host's check-in calendar. *Who it suits:* hosts with a regular rental. `[price — set in Module 3]`
+> - **Premium:** recurring multi-property support for hosts or property managers with several units — regular turnovers plus priority scheduling. *Who it suits:* multi-property managers. `[price — set in Module 3]`
 >
 > Each rung is a real, different level of commitment. None of them has a price yet — that is Module 3's job. *(Example only.)*
 
@@ -196,7 +193,7 @@ Everything on the page should earn its place. If a line does not help the custom
 > **EXAMPLE — Maya's Property Services**
 > Maya drafts her Offer One-Pager *(fictional example)*:
 > - **Headline:** "Turnovers that leave your rental guest-ready, every time — so you never scramble before a check-in."
-> - **Who it is for:** short-term rental hosts and small property managers with 2–5 properties.
+> - **Who it is for:** short-term rental hosts and small property managers with 2–5 properties, and homeowners who want a dependable clean.
 > - **What you get:** full turnover clean, fresh linen reset, trash removal, and a guest-ready walkthrough check — done to the same standard every visit.
 > - **Optional add-ons:** inside-oven/fridge deep clean, laundry service, consumables restock.
 > - **Options:** start with a one-time trial turnover, move to scheduled turnovers, or set up recurring multi-property support.
@@ -237,6 +234,8 @@ Each opportunity sits in exactly one stage. An opportunity moves forward only wh
 
 Won and Lost are both *closes* — they end an opportunity's journey. Losing is not a failure; a clean Lost is far better than an opportunity that lingers forever draining your attention.
 
+A **"Not now" opportunity stays in the Lead stage with a scheduled revisit date.** It is not Qualified (you have not said Yes yet) and it is not Lost (you have not ruled it out). It simply waits in Lead until its revisit date, when you decide again.
+
 > **NOTE**
 > A pipeline is a visibility tool, not a forecast. Do not try to total up what your pipeline is "worth" — that would be a revenue guess, and BBOS does not deal in projected income. The pipeline's only job is to show you what is live and what to do next.
 
@@ -250,13 +249,13 @@ Not every lead deserves your time. The fastest way to protect your business is t
 4. **Margin-viable** — can this be delivered inside my offer in a way that could be priced to a healthy margin? This is a **yes/no feasibility check only** — you are not calculating anything. You are asking, "Is this the kind of work that can pay properly?" The actual pricing happens in Module 3.
 5. **Red flags** — are there poor-fit signals? Chronic pressure for discounts, chaos, disrespect for your time, or endless scope creep. One or two small flags may be fine; a pile of them is a clear signal.
 
-Based on the checks, record **one decision** with **a one-line reason**:
+Based on the checks, record **one decision** with **a one-line reason**. Use this simple rule to turn the 5 checks into a decision:
 
-- **Yes** — a good fit worth pursuing. Move the opportunity to Qualified. *(Reason example: "Ideal customer, matches core offer, clear scope.")*
-- **Not now** — a possible fit, but the timing, capacity, or information is not right yet. Park it with a reason and a date to revisit. *(Reason example: "Good fit but I'm at capacity until next month.")*
-- **No** — not a fit. Decline respectfully and move it to Lost. *(Reason example: "Mostly Not-Included work and heavy discount pressure.")*
+- **No** — the opportunity fails **Fit** or **Margin-viable**, or it carries several red flags. It is not right for your business. Decline respectfully. *(Reason example: "Mostly Not-Included work and heavy discount pressure.")*
+- **Not now** — it passes Fit, Boundary, and Margin-viable, but **Capacity** or timing is wrong right now. It is a good fit at the wrong moment. Park it with a revisit date. *(Reason example: "Good fit but I'm at capacity until next month.")*
+- **Yes** — it passes all 5 checks. Pursue it and move it to Qualified. *(Reason example: "Ideal customer, matches core offer, clear scope.")*
 
-The one-line reason matters. It turns a gut feeling into a decision you can review later, and it makes it easy to be consistent and fair.
+In short: a failed Fit or Margin-viable check (or a stack of red flags) is a **No**; a good fit blocked only by capacity or timing is a **Not now**; a clean pass on all five is a **Yes**. The one-line reason matters — it turns a gut feeling into a decision you can review later, and it makes it easy to be consistent and fair.
 
 ### Working your pipeline
 
@@ -269,6 +268,22 @@ This is where Module 2 connects to Module 4. In **Module 4 (Weekly Operating Rhy
 > **TIP**
 > Keep the pipeline where you will actually see it — the same place you keep your One-Page Business Snapshot. A pipeline hidden in a file you never open cannot do its job. Visibility is the entire point.
 
+To keep it simple to run, your Pipeline Tracker uses 6 columns:
+
+**Opportunity · Stage · Decision (Yes / Not now / No) · One-line reason · Next action · Next follow-up / revisit date**
+
+> **EXAMPLE — Maya's Property Services**
+> Maya's pipeline in tracker form *(fictional example)*:
+>
+> | Opportunity | Stage | Decision | Reason | Next action | Date |
+> |---|---|---|---|---|---|
+> | Property manager, 3 rentals | Qualified | Yes | Ideal customer, recurring | Send scope for weekly turnovers | Mon |
+> | Homeowner, one-time deep clean | Qualified | Yes | Good entry-rung fit | Confirm date | Tue |
+> | "Cheap same-day" caller | Lost | No | Poor fit, discount pressure | Declined — none | — |
+> | Host wanting turnovers + mowing | Lead | Not now | Mowing is Not Included | Revisit turnovers-only | Next week |
+>
+> *(Example only.)*
+
 > **WARNING**
 > "Not now" is not a polite way of avoiding a decision forever. Every "Not now" must carry a revisit date. Without one, it becomes a quiet "No" that the customer never heard — and a lingering maybe in your head.
 
@@ -277,7 +292,7 @@ This is where Module 2 connects to Module 4. In **Module 4 (Weekly Operating Rhy
 > - **A property manager with 3 short-term rentals**, asking about weekly turnovers → **Qualified**. *Decision: **Yes** — "Ideal customer, matches core offer, wants recurring work."*
 > - **A homeowner wanting a one-time deep clean before a party** → **Lead**, then **Qualified** as entry-rung work. *Decision: **Yes** — "Good entry-rung fit; could become regular."*
 > - **A caller who wants a same-day clean "as cheap as possible"** → **Lost**. *Decision: **No** — "Not ideal customer; heavy discount pressure; one-off with red flags."*
-> - **A host who wants turnovers plus regular lawn mowing** → parked. *Decision: **Not now** — "Turnovers fit, but mowing is Not Included; revisit turnovers-only next week."*
+> - **A host who wants turnovers plus regular lawn mowing** → stays in **Lead** with a revisit date. *Decision: **Not now** — "Turnovers fit, but mowing is Not Included; revisit turnovers-only next week."*
 >
 > In minutes, Maya has a clear pipeline and a logged reason for every opportunity. Nothing is floating in her head anymore. *(Example only.)*
 
@@ -297,7 +312,7 @@ Your visible pipeline, with a logged decision for every live opportunity, is you
 
 ## Chapter 2.5 — The Follow-Up Cadence
 
-Here is a hard truth most owners learn the expensive way: the majority of opportunities are not lost to a competitor. They are lost to silence. A lead replies with interest, you get busy, days pass, and the moment cools. The work was there. The follow-up was not.
+Here is a hard truth most owners learn the expensive way: many opportunities are lost not to a competitor but to silence. A lead replies with interest, you get busy, days pass, and the moment cools. The work was there. The follow-up was not.
 
 A **Follow-Up Cadence** removes the guesswork and the guilt from staying in touch. It is a small set of rules that tells you exactly when and how to follow up, so you never have to wonder "should I message them again?" — the system already decided. Following up stops being nagging and becomes a normal, professional part of how you work.
 
@@ -312,6 +327,8 @@ Trigger → Action → Timing
 - **Trigger** — the event that starts a follow-up. (A new lead arrives; a proposal has been sent; a customer has gone quiet.)
 - **Action** — what you actually do. (Send a short intro and one qualifying question; check in on the proposal; send a friendly final nudge.)
 - **Timing** — when you do it, and when you stop. (Within 24 hours; after 3 days; a final follow-up after 7 days, then move to Lost.)
+
+Optionally, add a fourth column — **Pipeline stage** — so each rule is tied to where the opportunity sits (Lead, Qualified, or Proposed). This keeps your cadence and your pipeline pointing at the same opportunities.
 
 Write a few of these rules — enough to cover your common situations, not so many that you cannot keep them. The power is in the *timing*, especially knowing when to stop. A cadence that never ends becomes pestering; a cadence with a clear final step keeps you respectful and lets you close opportunities cleanly to Lost.
 
@@ -337,9 +354,9 @@ The best Follow-Up Cadence is the one you will actually use. A complicated set o
 
 > **EXAMPLE — Maya's Property Services**
 > Maya writes her Follow-Up Cadence for active opportunities *(fictional example)*:
-> - **Trigger:** new lead arrives → **Action:** reply with a short intro and one question ("What's your next check-out date?") → **Timing:** within 24 hours.
-> - **Trigger:** proposal/scope sent, no reply → **Action:** friendly check-in offering to answer questions → **Timing:** after 3 days.
-> - **Trigger:** still no reply → **Action:** short final message ("Happy to help whenever you're ready") → **Timing:** after 7 days, then move to Lost.
+> - **Trigger:** new lead arrives → **Action:** reply with a short intro and one question ("What's your next check-out date?") → **Timing:** within 24 hours. *(Stage: Lead)*
+> - **Trigger:** proposal/scope sent, no reply → **Action:** friendly check-in offering to answer questions → **Timing:** after 3 days. *(Stage: Proposed)*
+> - **Trigger:** still no reply → **Action:** short final message ("Happy to help whenever you're ready") → **Timing:** after 7 days, then move to Lost. *(Stage: Proposed)*
 >
 > Now Maya never wonders whether to follow up. The cadence decides, and stalled opportunities close cleanly instead of haunting her to-do list. *(Example only.)*
 
