@@ -2,40 +2,45 @@
  * Operations-only. Upload individual BBOS downloadable assets to the private
  * academy-products bucket. Not wired into build/install/seed/deploy.
  *
- *   npx tsx scripts/upload-bbos-assets.ts <assetId> <local-file> [--upsert]
+ *   npx tsx scripts/upload-bbos-assets.ts <assetId> <local-file> [--upsert] [--allow-production]
  *
  * assetId: calculator | weekly-rhythm-workbook
- *
- * Do not upload real customer assets until authorized after code review.
- * For signing smoke tests only, a small placeholder file may be used in
- * non-production.
  */
-import { createClient } from '@supabase/supabase-js'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as dotenv from 'dotenv'
 import { getBbosAssetByQueryId } from '../lib/bbos-library-manifest'
+import {
+  ACADEMY_PRODUCTS_BUCKET,
+  assertAllowedStorageTarget,
+  ensureAcademyProductsBucket,
+  getServiceRoleClient,
+  inspectAcademyBucket,
+} from './academy-storage-bucket'
 
 dotenv.config({ path: '.env.local' })
-
-const BUCKET = 'academy-products'
-const MAX_BYTES = 50 * 1024 * 1024
 
 async function main() {
   const assetId = process.argv[2]
   const localArg = process.argv[3]
   const allowUpsert = process.argv.includes('--upsert')
+  const allowProduction = process.argv.includes('--allow-production')
 
   if (!assetId || !localArg || assetId.startsWith('--') || localArg.startsWith('--')) {
     console.error(
-      'Usage: npx tsx scripts/upload-bbos-assets.ts <calculator|weekly-rhythm-workbook> <local-file> [--upsert]',
+      'Usage: npx tsx scripts/upload-bbos-assets.ts <calculator|weekly-rhythm-workbook> <local-file> [--upsert] [--allow-production]',
     )
     process.exit(1)
   }
 
+  if (assetId === 'full-package' || assetId === 'tools-bundle') {
+    console.error('Use scripts/upload-bbos.ts for ZIP packages')
+    process.exit(1)
+  }
+
   const asset = getBbosAssetByQueryId(assetId)
-  if (!asset) {
-    console.error(`Unknown asset id: ${assetId}`)
+  if (!asset || !asset.available) {
+    console.error(`Unknown or unavailable asset id: ${assetId}`)
     process.exit(1)
   }
 
@@ -46,6 +51,9 @@ async function main() {
     process.exit(1)
   }
 
+  const { ref, isProduction } = assertAllowedStorageTarget(url, { allowProduction })
+  console.log(`• Target Supabase project: ${ref}${isProduction ? ' (PRODUCTION)' : ' (non-prod)'}`)
+
   const localPath = path.resolve(localArg)
   if (!fs.existsSync(localPath)) {
     console.error(`File not found: ${localPath}`)
@@ -53,36 +61,41 @@ async function main() {
   }
 
   const buf = fs.readFileSync(localPath)
-  if (buf.byteLength > MAX_BYTES) {
-    console.error('File exceeds max size')
-    process.exit(1)
+  const client = getServiceRoleClient(url, key)
+
+  const existing = await inspectAcademyBucket(client)
+  if (existing) {
+    console.log('• Existing bucket inspection:', {
+      name: existing.name,
+      public: existing.public,
+      fileSizeLimit: existing.fileSizeLimit,
+    })
   }
 
-  const supabase = createClient(url, key, {
-    auth: { autoRefreshToken: false, persistSession: false },
-  })
+  await ensureAcademyProductsBucket(client, { uploadBytes: buf.byteLength })
 
-  const contentType =
-    asset.customerFilename.endsWith('.xlsx')
-      ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      : 'application/octet-stream'
+  const contentType = asset.customerFilename.endsWith('.xlsx')
+    ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    : 'application/octet-stream'
 
-  const { error } = await supabase.storage.from(BUCKET).upload(asset.storageObjectPath, buf, {
-    contentType,
-    upsert: allowUpsert,
-  })
+  const { error } = await client.storage
+    .from(ACADEMY_PRODUCTS_BUCKET)
+    .upload(asset.storageObjectPath, buf, {
+      contentType,
+      upsert: allowUpsert,
+    })
 
   if (error) {
     console.error('Upload failed:', error.message)
     process.exit(1)
   }
 
-  console.log(`✓ Uploaded → ${BUCKET}/${asset.storageObjectPath}`)
+  console.log(`✓ Uploaded → ${ACADEMY_PRODUCTS_BUCKET}/${asset.storageObjectPath}`)
   console.log(`  Customer filename: ${asset.customerFilename}`)
   console.log('  Never log signed URLs. Delivery is entitlement-gated.')
 }
 
 main().catch((e) => {
-  console.error(e)
+  console.error(e instanceof Error ? e.message : e)
   process.exit(1)
 })
