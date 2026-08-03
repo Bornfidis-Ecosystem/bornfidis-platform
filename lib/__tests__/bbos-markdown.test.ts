@@ -49,4 +49,31 @@ describe('bbos-markdown', () => {
     assert.equal(toc.length, 2)
     assert.notEqual(toc[0].id, toc[1].id)
   })
+
+  it('skips a matching leading H1 when requested (module reader chrome)', () => {
+    const md = `# Module 1 — Business Foundation
+
+*Subtitle*
+
+## Module purpose
+
+Body.
+`
+    const { html, toc } = bbosMarkdownToHtml(md, {
+      skipLeadingH1Matching: 'Module 1 — Business Foundation',
+    })
+    assert.ok(!html.includes('bbos-h1'))
+    assert.ok(!html.includes('<h1'))
+    assert.ok(html.includes('bbos-h2'))
+    assert.ok(html.includes('Module purpose'))
+    assert.ok(html.includes('Subtitle'))
+    assert.equal(toc[0]?.text, 'Module purpose')
+  })
+
+  it('keeps leading H1 when skip text does not match', () => {
+    const { html } = bbosMarkdownToHtml('# Module 1 — Business Foundation\n\n## Next\n', {
+      skipLeadingH1Matching: 'Some Other Title',
+    })
+    assert.ok(html.includes('bbos-h1'))
+  })
 })

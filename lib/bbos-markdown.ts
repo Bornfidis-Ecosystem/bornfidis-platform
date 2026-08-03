@@ -116,10 +116,29 @@ export function extractBbosToc(markdown: string): BbosTocItem[] {
   return toc
 }
 
-export function bbosMarkdownToHtml(markdown: string): { html: string; toc: BbosTocItem[] } {
+export type BbosMarkdownToHtmlOptions = {
+  /**
+   * When set, skip the first `#` heading if its text matches (after trimming).
+   * Used by the module reader so page chrome owns the single H1.
+   */
+  skipLeadingH1Matching?: string
+}
+
+function normalizeHeadingText(text: string): string {
+  return text.replace(/\*\*/g, '').replace(/\s+/g, ' ').trim().toLowerCase()
+}
+
+export function bbosMarkdownToHtml(
+  markdown: string,
+  options?: BbosMarkdownToHtmlOptions,
+): { html: string; toc: BbosTocItem[] } {
   const toc = extractBbosToc(markdown)
   const tocIds = toc.map((t) => t.id)
   let tocIdx = 0
+  let skippedLeadingH1 = false
+  const skipMatch = options?.skipLeadingH1Matching
+    ? normalizeHeadingText(options.skipLeadingH1Matching)
+    : null
 
   const lines = markdown.replace(/\r\n/g, '\n').split('\n')
   const out: string[] = []
@@ -156,6 +175,16 @@ export function bbosMarkdownToHtml(markdown: string): { html: string; toc: BbosT
     if (hm) {
       const level = hm[1].length
       const text = hm[2].trim()
+      if (
+        !skippedLeadingH1 &&
+        skipMatch &&
+        level === 1 &&
+        normalizeHeadingText(text) === skipMatch
+      ) {
+        skippedLeadingH1 = true
+        i += 1
+        continue
+      }
       const tag = `h${level}`
       let idAttr = ''
       if (level >= 2 && tocIdx < tocIds.length) {

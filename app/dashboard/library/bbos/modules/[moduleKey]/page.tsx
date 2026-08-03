@@ -42,9 +42,12 @@ export default async function BbosModuleReaderPage({ params }: PageProps) {
     notFound()
   }
 
-  const { html, toc } = bbosMarkdownToHtml(loaded.markdown)
   const { prev, next } = getAdjacentBbosModules(moduleKey)
   const heading = `Module ${loaded.module.number} — ${loaded.module.title}`
+  // Page chrome owns the single H1; skip the matching leading `#` from Markdown.
+  const { html, toc } = bbosMarkdownToHtml(loaded.markdown, {
+    skipLeadingH1Matching: heading,
+  })
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
