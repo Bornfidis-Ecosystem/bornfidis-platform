@@ -38,16 +38,21 @@ describe('BBOS signed download (mocked / no real assets)', () => {
     }
   })
 
-  it('workbook and zip default fail closed the same way without env', async () => {
+  it('workbook fails closed without env; no-asset and full-package are unavailable', async () => {
     const prevUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const prevKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     try {
       delete process.env.NEXT_PUBLIC_SUPABASE_URL
       delete process.env.SUPABASE_SERVICE_ROLE_KEY
       const wb = await createSignedDownloadUrl(BBOS_PRODUCT_SLUG, 'weekly-rhythm-workbook')
-      const zip = await createSignedDownloadUrl(BBOS_PRODUCT_SLUG, null)
+      const noAsset = await createSignedDownloadUrl(BBOS_PRODUCT_SLUG, null)
+      const full = await createSignedDownloadUrl(BBOS_PRODUCT_SLUG, 'full-package')
       assert.equal(wb.ok, false)
-      assert.equal(zip.ok, false)
+      if (!wb.ok) assert.equal(wb.error, 'storage_not_configured')
+      assert.equal(noAsset.ok, false)
+      if (!noAsset.ok) assert.equal(noAsset.error, 'asset_unavailable')
+      assert.equal(full.ok, false)
+      if (!full.ok) assert.equal(full.error, 'asset_unavailable')
     } finally {
       if (prevUrl !== undefined) process.env.NEXT_PUBLIC_SUPABASE_URL = prevUrl
       else delete process.env.NEXT_PUBLIC_SUPABASE_URL

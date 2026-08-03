@@ -10,8 +10,10 @@ import {
   bbosDownloadHref,
   getAdjacentBbosModules,
   getBbosAssetByQueryId,
+  getBbosFullPackageAsset,
   getBbosManifest,
   getBbosModuleByKey,
+  getBbosToolsBundleAsset,
   isBbosProductSlug,
 } from '../bbos-library-manifest'
 import { loadBbosModuleMarkdown } from '../bbos-module-content'
@@ -54,14 +56,44 @@ describe('bbos-library-manifest', () => {
     assert.equal(last.prev?.key, 'module-03')
   })
 
-  it('resolves download asset query ids and zip href', () => {
+  it('separates tools-bundle from unavailable full-package', () => {
+    const tools = getBbosToolsBundleAsset()
+    assert.equal(tools.id, 'tools-bundle')
+    assert.equal(tools.available, true)
+    assert.equal(tools.customerFilename, 'BBOS-Tools-Bundle-v1.zip')
+    assert.equal(
+      tools.storageObjectPath,
+      'bornfidis-business-operating-system/v1/bbos-tools-bundle-v1.zip',
+    )
+    assert.match(bbosDownloadHref(tools), /\?asset=tools-bundle/)
+
+    const full = getBbosFullPackageAsset()
+    assert.equal(full.id, 'full-package')
+    assert.equal(full.available, false)
+    assert.equal(full.customerFilename, 'Bornfidis-Business-Operating-System-v1.zip')
+    assert.equal(
+      full.storageObjectPath,
+      'bornfidis-business-operating-system/v1/bornfidis-business-operating-system-v1.zip',
+    )
+  })
+
+  it('resolves download asset query ids', () => {
     assert.ok(getBbosAssetByQueryId('calculator'))
     assert.ok(getBbosAssetByQueryId('weekly-rhythm-workbook'))
+    assert.ok(getBbosAssetByQueryId('tools-bundle'))
+    assert.ok(getBbosAssetByQueryId('full-package'))
     assert.equal(getBbosAssetByQueryId('unknown'), null)
     assert.equal(getBbosAssetByQueryId('zip'), null)
     const calc = getBbosAssetByQueryId('calculator')!
     assert.match(bbosDownloadHref(calc), /\?asset=calculator/)
     assert.ok(isBbosProductSlug(BBOS_PRODUCT_SLUG))
     assert.equal(isBbosProductSlug('llc-starter-kit'), false)
+  })
+
+  it('release notes do not claim a complete offline package is available', () => {
+    const notes = getBbosManifest().releaseNotes.join(' ')
+    assert.match(notes, /Tools Bundle/i)
+    assert.match(notes, /not yet available/i)
+    assert.ok(!/Download full package/i.test(notes))
   })
 })
