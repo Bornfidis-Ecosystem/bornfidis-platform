@@ -9,7 +9,11 @@ import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
 import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { isBundleSlug, getIncludedSlugs } from '@/lib/academy-bundles'
 import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
-import { BBOS_PRODUCT_SLUG, isBbosProductSlug } from '@/lib/bbos-library-manifest'
+import {
+  BBOS_PRODUCT_SLUG,
+  getBbosManifest,
+  isBbosProductSlug,
+} from '@/lib/bbos-library-manifest'
 
 export const dynamic = 'force-dynamic'
 
@@ -186,6 +190,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
             }
 
             const isBbos = isBbosProductSlug(p.productSlug)
+            const bbosManifest = isBbos ? getBbosManifest() : null
             const isCourse = product?.type === 'COURSE'
             const href = isCourse && product
               ? `/academy/course/${product.slug}`
@@ -211,6 +216,11 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                 <div className="flex-1 p-4 flex flex-wrap items-center justify-between gap-4">
                   <div>
                     <h2 className="font-bold text-forest">{p.productTitle}</h2>
+                    {bbosManifest && (
+                      <p className="mt-0.5 text-xs font-medium uppercase tracking-wide text-gray-500">
+                        {bbosManifest.releaseLabel} · Version {bbosManifest.version}
+                      </p>
+                    )}
                     <p className="text-sm text-gray-500">
                       Purchased {new Date(p.purchasedAt).toLocaleDateString()}
                       {priceDisplay !== 'FREE' && ` · ${priceDisplay}`}
