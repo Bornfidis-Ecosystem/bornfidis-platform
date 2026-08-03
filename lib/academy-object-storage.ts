@@ -14,11 +14,13 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import {
   BBOS_PRODUCT_SLUG,
   getBbosAssetByQueryId,
-  getBbosZipAsset,
+  isBbosProductSlug,
 } from '@/lib/bbos-library-manifest'
 
 /** Signed-URL lifetime. Deliberately short so a leaked link is useless quickly. */
 export const SIGNED_URL_TTL_SECONDS = 60
+
+export const ACADEMY_PRODUCTS_BUCKET = 'academy-products'
 
 export interface ObjectStorageProduct {
   /** Private Supabase Storage bucket. */
@@ -30,29 +32,21 @@ export interface ObjectStorageProduct {
 }
 
 /**
- * Server-controlled registry of object-storage-backed products, keyed by the
- * same slug used for AcademyPurchase entitlement. Register a product here only
- * after its asset has been uploaded to the private bucket by an operator.
- *
- * BBOS individual tools are resolved via the BBOS manifest asset registry
- * (see resolveObjectStorageDownload).
+ * BBOS is object-storage backed. There is no silent default ZIP — callers must
+ * pass an allowlisted ?asset= id for an available asset.
  */
-const OBJECT_STORAGE_PRODUCTS: Record<string, ObjectStorageProduct> = {
-  [BBOS_PRODUCT_SLUG]: {
-    bucket: 'academy-products',
-    objectPath: getBbosZipAsset().storageObjectPath,
-    downloadFilename: getBbosZipAsset().customerFilename,
-  },
-}
-
-/** Returns the registered default (ZIP) object-storage product for a slug, or null. */
-export function getObjectStorageProduct(slug: string): ObjectStorageProduct | null {
-  return OBJECT_STORAGE_PRODUCTS[(slug || '').trim()] ?? null
-}
-
-/** True if the slug is delivered via private object storage (vs. legacy disk). */
 export function isObjectStorageSlug(slug: string): boolean {
-  return getObjectStorageProduct(slug) !== null
+  return isBbosProductSlug(slug)
+}
+
+/** Returns a bucket marker for BBOS (no default object path). */
+export function getObjectStorageProduct(slug: string): ObjectStorageProduct | null {
+  if (!isObjectStorageSlug(slug)) return null
+  return {
+    bucket: ACADEMY_PRODUCTS_BUCKET,
+    objectPath: '',
+    downloadFilename: '',
+  }
 }
 
 export type SignedDownloadResult =
@@ -60,34 +54,36 @@ export type SignedDownloadResult =
   | { ok: false; error: string }
 
 /**
- * Resolve a storage object for a product slug and optional asset query id.
- * Unknown asset ids return null (caller should 404).
+ * Resolve a storage object for a product slug and required asset query id.
+ * - Missing asset / unavailable full-package → null (caller fail-closed)
+ * - Unknown asset ids → null
  */
 export function resolveObjectStorageDownload(
   slug: string,
   assetQueryId?: string | null,
 ): ObjectStorageProduct | null {
   const trimmed = (slug || '').trim()
-  const product = getObjectStorageProduct(trimmed)
-  if (!product) return null
+  if (!isObjectStorageSlug(trimmed)) return null
 
   const assetId = (assetQueryId || '').trim()
-  if (!assetId) {
-    return product
-  }
-
-  if (trimmed !== BBOS_PRODUCT_SLUG) {
-    return null
-  }
+  if (!assetId) return null
 
   const asset = getBbosAssetByQueryId(assetId)
-  if (!asset) return null
+  if (!asset || !asset.available) return null
 
   return {
-    bucket: product.bucket,
+    bucket: ACADEMY_PRODUCTS_BUCKET,
     objectPath: asset.storageObjectPath,
     downloadFilename: asset.customerFilename,
   }
+}
+
+/** True when the asset exists in the registry but is intentionally unavailable. */
+export function isUnavailableBbosAsset(assetQueryId?: string | null): boolean {
+  const id = (assetQueryId || '').trim()
+  if (!id) return true // no-asset default = full package unavailable
+  const asset = getBbosAssetByQueryId(id)
+  return !!asset && !asset.available
 }
 
 function getServiceRoleClient(): SupabaseClient {
@@ -103,8 +99,7 @@ function getServiceRoleClient(): SupabaseClient {
 
 /**
  * Create a short-lived signed download URL for a registered object-storage
- * product (and optional BBOS asset). The caller MUST have already verified
- * the user's entitlement.
+ * product asset. The caller MUST have already verified the user's entitlement.
  *
  * Never logs the signed URL or the service-role key. Returns a typed result;
  * signing failures resolve to { ok: false } rather than throwing.
@@ -113,11 +108,15 @@ export async function createSignedDownloadUrl(
   slug: string,
   assetQueryId?: string | null,
 ): Promise<SignedDownloadResult> {
+  if (isUnavailableBbosAsset(assetQueryId) && isObjectStorageSlug(slug)) {
+    return { ok: false, error: 'asset_unavailable' }
+  }
+
   const product = resolveObjectStorageDownload(slug, assetQueryId)
-  if (!product) {
+  if (!product || !product.objectPath) {
     return {
       ok: false,
-      error: assetQueryId?.trim() ? 'unknown_asset' : 'not_object_storage_product',
+      error: assetQueryId?.trim() ? 'unknown_asset' : 'asset_unavailable',
     }
   }
 
@@ -139,7 +138,7 @@ export async function createSignedDownloadUrl(
       console.error('[academy-object-storage] signing failed', {
         slug,
         bucket: product.bucket,
-        asset: assetQueryId?.trim() || 'zip',
+        asset: assetQueryId?.trim() || '(none)',
         reason: error?.message ?? 'no signed url returned',
       })
       return { ok: false, error: 'signing_failed' }
@@ -155,7 +154,7 @@ export async function createSignedDownloadUrl(
     console.error('[academy-object-storage] signing threw', {
       slug,
       bucket: product.bucket,
-      asset: assetQueryId?.trim() || 'zip',
+      asset: assetQueryId?.trim() || '(none)',
       reason: err instanceof Error ? err.message : 'unknown',
     })
     return { ok: false, error: 'signing_failed' }

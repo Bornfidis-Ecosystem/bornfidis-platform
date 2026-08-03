@@ -10,7 +10,11 @@ export const BBOS_UPDATE_POLICY =
 
 export type BbosModuleKey = 'module-01' | 'module-02' | 'module-03' | 'module-04'
 
-export type BbosAssetId = 'calculator' | 'weekly-rhythm-workbook' | 'zip'
+export type BbosAssetId =
+  | 'calculator'
+  | 'weekly-rhythm-workbook'
+  | 'tools-bundle'
+  | 'full-package'
 
 export interface BbosModuleEntry {
   key: BbosModuleKey
@@ -25,10 +29,12 @@ export interface BbosDownloadAsset {
   id: BbosAssetId
   label: string
   description: string
-  /** Query value for ?asset= — omit for default ZIP. */
-  queryAssetId: string | null
+  /** Query value for ?asset= — required for downloadable assets. */
+  queryAssetId: string
   customerFilename: string
   storageObjectPath: string
+  /** When false, download route must fail closed (no signed URL). */
+  available: boolean
 }
 
 export interface BbosLibraryManifest {
@@ -92,6 +98,7 @@ export const BBOS_LIBRARY_MANIFEST: BbosLibraryManifest = {
       customerFilename: 'BBOS-Pricing-Margin-Calculator-v1.xlsx',
       storageObjectPath:
         'bornfidis-business-operating-system/v1/bbos-pricing-margin-calculator-v1.xlsx',
+      available: true,
     },
     {
       id: 'weekly-rhythm-workbook',
@@ -101,22 +108,36 @@ export const BBOS_LIBRARY_MANIFEST: BbosLibraryManifest = {
       customerFilename: 'BBOS-Weekly-Operating-Rhythm-Workbook-v1.xlsx',
       storageObjectPath:
         'bornfidis-business-operating-system/v1/bbos-weekly-operating-rhythm-workbook-v1.xlsx',
+      available: true,
     },
     {
-      id: 'zip',
-      label: 'Full package (ZIP)',
-      description: 'Complete BBOS package download for offline use.',
-      queryAssetId: null,
+      id: 'tools-bundle',
+      label: 'BBOS Tools Bundle',
+      description:
+        'Download the BBOS Pricing & Margin Calculator and Weekly Operating Rhythm Workbook together.',
+      queryAssetId: 'tools-bundle',
+      customerFilename: 'BBOS-Tools-Bundle-v1.zip',
+      storageObjectPath:
+        'bornfidis-business-operating-system/v1/bbos-tools-bundle-v1.zip',
+      available: true,
+    },
+    {
+      id: 'full-package',
+      label: 'Full offline package',
+      description: 'Complete offline BBOS package, including module PDFs and tools.',
+      queryAssetId: 'full-package',
       customerFilename: 'Bornfidis-Business-Operating-System-v1.zip',
       storageObjectPath:
         'bornfidis-business-operating-system/v1/bornfidis-business-operating-system-v1.zip',
+      available: false,
     },
   ],
   releaseNotes: [
     'Phase One operational foundation locked (tag bbos-v1-phase1).',
     'Modules 1–4: Business Foundation, Offer and Sales System, Pricing With Dignity, Weekly Operating Rhythm.',
     'Companion tools: Pricing & Margin Calculator V1.0 and Weekly Operating Rhythm Workbook V1.0.',
-    'Library experience: read modules online and download individual tools (entitlement required).',
+    'Library experience: read modules online; download tools individually or via the Tools Bundle.',
+    'Complete offline package with module PDFs is reserved and not yet available.',
     'BBOS remains inactive for public checkout until Stripe Price alignment and E2E testing pass.',
   ],
 }
@@ -126,9 +147,7 @@ const MODULE_BY_KEY: Record<string, BbosModuleEntry> = Object.fromEntries(
 )
 
 const ASSET_BY_QUERY: Record<string, BbosDownloadAsset> = Object.fromEntries(
-  BBOS_LIBRARY_MANIFEST.assets
-    .filter((a) => a.queryAssetId)
-    .map((a) => [a.queryAssetId as string, a]),
+  BBOS_LIBRARY_MANIFEST.assets.map((a) => [a.queryAssetId, a]),
 )
 
 export function getBbosManifest(): BbosLibraryManifest {
@@ -164,20 +183,26 @@ export function getAdjacentBbosModules(moduleKey: string): {
   }
 }
 
-/** Resolve a downloadable asset by query id (calculator | weekly-rhythm-workbook). */
+/** Resolve a downloadable asset by query id. */
 export function getBbosAssetByQueryId(assetQueryId: string): BbosDownloadAsset | null {
   const id = (assetQueryId || '').trim()
   if (!id) return null
   return ASSET_BY_QUERY[id] ?? null
 }
 
+export function getBbosToolsBundleAsset(): BbosDownloadAsset {
+  return BBOS_LIBRARY_MANIFEST.assets.find((a) => a.id === 'tools-bundle')!
+}
+
+export function getBbosFullPackageAsset(): BbosDownloadAsset {
+  return BBOS_LIBRARY_MANIFEST.assets.find((a) => a.id === 'full-package')!
+}
+
+/** @deprecated Use getBbosToolsBundleAsset — kept briefly for call-site migration. */
 export function getBbosZipAsset(): BbosDownloadAsset {
-  return BBOS_LIBRARY_MANIFEST.assets.find((a) => a.id === 'zip')!
+  return getBbosToolsBundleAsset()
 }
 
 export function bbosDownloadHref(asset: BbosDownloadAsset): string {
-  if (!asset.queryAssetId) {
-    return `/api/academy/download/${BBOS_PRODUCT_SLUG}`
-  }
   return `/api/academy/download/${BBOS_PRODUCT_SLUG}?asset=${encodeURIComponent(asset.queryAssetId)}`
 }

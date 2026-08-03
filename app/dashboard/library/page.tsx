@@ -11,7 +11,9 @@ import { isBundleSlug, getIncludedSlugs } from '@/lib/academy-bundles'
 import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
 import {
   BBOS_PRODUCT_SLUG,
+  bbosDownloadHref,
   getBbosManifest,
+  getBbosToolsBundleAsset,
   isBbosProductSlug,
 } from '@/lib/bbos-library-manifest'
 
@@ -236,13 +238,13 @@ export default async function LibraryPage({ searchParams }: PageProps) {
                           Open library →
                         </Link>
                         <TrackedDownloadLink
-                          href={`/api/academy/download/${BBOS_PRODUCT_SLUG}`}
+                          href={bbosDownloadHref(getBbosToolsBundleAsset())}
                           productSlug={BBOS_PRODUCT_SLUG}
-                          productTitle={p.productTitle}
+                          productTitle={getBbosToolsBundleAsset().label}
                           source="library"
                           className="inline-block border-2 border-forest text-forest font-semibold px-4 py-2 rounded-xl hover:bg-forest/5 transition text-sm"
                         >
-                          Download full package
+                          Download tools bundle
                         </TrackedDownloadLink>
                       </>
                     ) : !fileAvailable ? (

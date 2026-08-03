@@ -24,8 +24,19 @@ export default async function BbosLibraryHubPage() {
   }
 
   const m = getBbosManifest()
-  const toolAssets = m.assets.filter((a) => a.id !== 'zip')
-  const zipAsset = m.assets.find((a) => a.id === 'zip')!
+  const downloadableTools = m.assets.filter(
+    (a) =>
+      a.available &&
+      (a.id === 'calculator' || a.id === 'weekly-rhythm-workbook' || a.id === 'tools-bundle'),
+  )
+  const fullPackage = m.assets.find((a) => a.id === 'full-package')!
+
+  const downloadCtaLabel = (id: string) => {
+    if (id === 'calculator') return 'Download pricing calculator'
+    if (id === 'weekly-rhythm-workbook') return 'Download weekly rhythm workbook'
+    if (id === 'tools-bundle') return 'Download tools bundle'
+    return 'Download'
+  }
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-12 sm:px-6 sm:py-16">
@@ -89,9 +100,11 @@ export default async function BbosLibraryHubPage() {
               delivery week.
             </p>
             <p>
-              <strong className="text-forest">How to download tools.</strong> Download the
-              calculator and workbook from the tools section. You can also download the full
-              package ZIP for offline use. Downloads require this same library access.
+              <strong className="text-forest">How to download tools.</strong> Read Modules 1–4
+              online in your BBOS Library. Download the calculator and workbook individually, or
+              use the Tools Bundle to download both tools together. A complete offline package
+              with module PDFs will be released separately when ready. Downloads require this
+              same library access.
             </p>
             <p>
               <strong className="text-forest">How Version 1.x updates work.</strong>{' '}
@@ -129,7 +142,7 @@ export default async function BbosLibraryHubPage() {
             Downloadable tools
           </h2>
           <ul className="mt-4 space-y-3">
-            {toolAssets.map((asset) => (
+            {downloadableTools.map((asset) => (
               <li
                 key={asset.id}
                 className="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
@@ -146,32 +159,23 @@ export default async function BbosLibraryHubPage() {
                   source="library"
                   className="inline-flex shrink-0 items-center justify-center rounded-xl bg-forest px-4 py-2 text-sm font-semibold text-goldAccent transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2"
                 >
-                  Download
+                  {downloadCtaLabel(asset.id)}
                 </TrackedDownloadLink>
               </li>
             ))}
           </ul>
         </section>
 
-        <section aria-labelledby="bbos-zip">
-          <h2 id="bbos-zip" className="text-xl font-bold text-forest">
-            Full package
+        <section aria-labelledby="bbos-full-package">
+          <h2 id="bbos-full-package" className="text-xl font-bold text-forest">
+            Full offline package
           </h2>
-          <div className="mt-4 flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h3 className="font-semibold text-forest">{zipAsset.label}</h3>
-              <p className="text-sm text-gray-600">{zipAsset.description}</p>
-              <p className="mt-1 text-xs text-gray-500">{zipAsset.customerFilename}</p>
-            </div>
-            <TrackedDownloadLink
-              href={bbosDownloadHref(zipAsset)}
-              productSlug={BBOS_PRODUCT_SLUG}
-              productTitle={zipAsset.label}
-              source="library"
-              className="inline-flex shrink-0 items-center justify-center rounded-xl border-2 border-forest px-4 py-2 text-sm font-semibold text-forest transition hover:bg-forest/5 focus:outline-none focus-visible:ring-2 focus-visible:ring-forest focus-visible:ring-offset-2"
-            >
-              Download full package
-            </TrackedDownloadLink>
+          <div className="mt-4 rounded-xl border border-dashed border-gray-300 bg-card p-4">
+            <h3 className="font-semibold text-forest">{fullPackage.label}</h3>
+            <p className="mt-1 text-sm text-gray-600">{fullPackage.description}</p>
+            <p className="mt-3 text-sm font-medium text-gray-500">
+              Full offline package — not yet available
+            </p>
           </div>
         </section>
 

@@ -6,6 +6,7 @@ import { getAcademyStorageFilename } from '@/lib/academy-storage'
 import {
   createSignedDownloadUrl,
   isObjectStorageSlug,
+  isUnavailableBbosAsset,
   resolveObjectStorageDownload,
 } from '@/lib/academy-object-storage'
 
@@ -14,9 +15,14 @@ export const dynamic = 'force-dynamic'
 /**
  * Secure download: only if the user has an AcademyPurchase for this product.
  * Object-storage products (e.g. BBOS) use short-lived signed URLs.
- * Optional ?asset= for BBOS individual tools (allowlisted).
+ * Optional ?asset= for BBOS tools / tools-bundle (allowlisted).
  */
 const LOG_LABEL = 'ACADEMY_DOWNLOAD'
+
+const FULL_PACKAGE_UNAVAILABLE = {
+  error: 'The complete offline BBOS package is not currently available',
+  code: 'full_package_unavailable',
+} as const
 
 export async function GET(
   request: Request,
@@ -41,21 +47,29 @@ export async function GET(
 
   // Object-storage products (e.g., BBOS) — entitlement already verified.
   if (isObjectStorageSlug(slug)) {
-    if (assetParam?.trim()) {
-      const resolved = resolveObjectStorageDownload(slug, assetParam)
-      if (!resolved) {
-        return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
-      }
+    const assetId = assetParam?.trim() || ''
+
+    // No asset / unavailable full-package: fail closed — never serve the reserved path.
+    if (!assetId || isUnavailableBbosAsset(assetId)) {
+      return NextResponse.json(FULL_PACKAGE_UNAVAILABLE, { status: 409 })
     }
 
-    const signed = await createSignedDownloadUrl(slug, assetParam)
+    const resolved = resolveObjectStorageDownload(slug, assetId)
+    if (!resolved) {
+      return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
+    }
+
+    const signed = await createSignedDownloadUrl(slug, assetId)
     if (!signed.ok) {
+      if (signed.error === 'asset_unavailable') {
+        return NextResponse.json(FULL_PACKAGE_UNAVAILABLE, { status: 409 })
+      }
       if (signed.error === 'unknown_asset') {
         return NextResponse.json({ error: 'File not available for this product' }, { status: 404 })
       }
       console.error(LOG_LABEL, 'object-storage signing failed', {
         slug,
-        asset: assetParam?.trim() || 'zip',
+        asset: assetId || '(none)',
       })
       return NextResponse.json({ error: 'File temporarily unavailable' }, { status: 502 })
     }
