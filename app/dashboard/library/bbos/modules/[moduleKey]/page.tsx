@@ -10,6 +10,7 @@ import { loadBbosModuleMarkdown } from '@/lib/bbos-module-content'
 import { bbosMarkdownToHtml } from '@/lib/bbos-markdown'
 import { BbosModuleBody } from '@/components/bbos/BbosModuleBody'
 import { BbosTableOfContents } from '@/components/bbos/BbosTableOfContents'
+import { customerLoginHref } from '@/lib/safe-next-path'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,9 +26,7 @@ export default async function BbosModuleReaderPage({ params }: PageProps) {
   const entitlement = await checkAcademyEntitlement(BBOS_PRODUCT_SLUG)
   if (!entitlement.ok) {
     if (entitlement.reason === 'unauthenticated') {
-      redirect(
-        `/admin/login?next=${encodeURIComponent(`/dashboard/library/bbos/modules/${moduleKey}`)}`,
-      )
+      redirect(customerLoginHref(`/dashboard/library/bbos/modules/${moduleKey}`))
     }
     redirect('/dashboard/library')
   }

@@ -9,6 +9,7 @@ import {
   isUnavailableBbosAsset,
   resolveObjectStorageDownload,
 } from '@/lib/academy-object-storage'
+import { customerLoginHref } from '@/lib/safe-next-path'
 
 export const dynamic = 'force-dynamic'
 
@@ -35,9 +36,10 @@ export async function GET(
 
   if (!entitlement.ok) {
     if (entitlement.reason === 'unauthenticated') {
-      const loginUrl = new URL('/admin/login', request.url)
-      loginUrl.searchParams.set('next', '/dashboard/library')
-      return NextResponse.redirect(loginUrl, 302)
+      return NextResponse.redirect(
+        new URL(customerLoginHref('/dashboard/library'), request.url),
+        302,
+      )
     }
     if (entitlement.reason === 'error') {
       return NextResponse.json({ error: 'Unable to verify purchase' }, { status: 500 })

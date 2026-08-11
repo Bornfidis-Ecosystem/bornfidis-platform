@@ -7,6 +7,7 @@ import {
   getBbosManifest,
 } from '@/lib/bbos-library-manifest'
 import { TrackedDownloadLink } from '@/components/academy/TrackedDownloadLink'
+import { customerLoginHref } from '@/lib/safe-next-path'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,7 +16,7 @@ export default async function BbosLibraryHubPage() {
 
   if (!entitlement.ok) {
     if (entitlement.reason === 'unauthenticated') {
-      redirect(`/admin/login?next=${encodeURIComponent('/dashboard/library/bbos')}`)
+      redirect(customerLoginHref('/dashboard/library/bbos'))
     }
     if (entitlement.reason === 'error') {
       redirect('/dashboard/library')

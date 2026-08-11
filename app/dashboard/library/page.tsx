@@ -16,6 +16,7 @@ import {
   getBbosToolsBundleAsset,
   isBbosProductSlug,
 } from '@/lib/bbos-library-manifest'
+import { customerLoginHref } from '@/lib/safe-next-path'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,7 +33,7 @@ function LibraryErrorUI({ message }: { message: string }) {
         <h1 className="text-xl font-bold text-red-800 mb-2">Something went wrong</h1>
         <p className="text-red-700 mb-6">{message}</p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Button href="/admin/login?next=%2Fdashboard%2Flibrary" variant="primary">
+          <Button href={customerLoginHref('/dashboard/library')} variant="primary">
             Log in again
           </Button>
           <Link
@@ -58,7 +59,7 @@ export default async function LibraryPage({ searchParams }: PageProps) {
     }
 
     if (!user) {
-      redirect(`/admin/login?next=${encodeURIComponent('/dashboard/library')}`)
+      redirect(customerLoginHref('/dashboard/library'))
     }
 
     let sp: { [key: string]: string | string[] | undefined }

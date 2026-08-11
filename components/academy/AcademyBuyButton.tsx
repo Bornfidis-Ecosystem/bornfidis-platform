@@ -7,6 +7,7 @@ import { academyBtnPrimary } from '@/components/academy/academy-culinary-classes
 import { Spinner } from '@/components/ui/Spinner'
 import { trackAcademyBuyClick } from '@/lib/academy-analytics'
 import type { AcademyProduct } from '@/lib/academy-products'
+import { customerLoginHref } from '@/lib/safe-next-path'
 
 interface AcademyBuyButtonProps {
   product: AcademyProduct
@@ -67,8 +68,7 @@ export default function AcademyBuyButton({
       const data = await res.json()
       if (!res.ok) {
         if (res.status === 401) {
-          const next = encodeURIComponent(window.location.pathname)
-          window.location.href = `/admin/login?next=${next}`
+          window.location.href = customerLoginHref(window.location.pathname || '/academy')
           return
         }
         const msg = data.error ?? 'Checkout failed'
