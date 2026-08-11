@@ -49,19 +49,19 @@ function LibraryErrorUI({ message }: { message: string }) {
 }
 
 export default async function LibraryPage({ searchParams }: PageProps) {
+  let user: Awaited<ReturnType<typeof getCurrentSupabaseUser>>
   try {
-    let user: Awaited<ReturnType<typeof getCurrentSupabaseUser>>
-    try {
-      user = await getCurrentSupabaseUser()
-    } catch (err) {
-      console.error(LIBRARY_LOAD_ERROR, err)
-      return <LibraryErrorUI message="We couldn’t verify your session. Please log in again." />
-    }
+    user = await getCurrentSupabaseUser()
+  } catch (err) {
+    console.error(LIBRARY_LOAD_ERROR, err)
+    return <LibraryErrorUI message="We couldn’t verify your session. Please log in again." />
+  }
 
-    if (!user) {
-      redirect(customerLoginHref('/dashboard/library'))
-    }
+  if (!user) {
+    redirect(customerLoginHref('/dashboard/library'))
+  }
 
+  try {
     let sp: { [key: string]: string | string[] | undefined }
     try {
       sp = await searchParams
