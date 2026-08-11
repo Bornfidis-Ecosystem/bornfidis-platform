@@ -1079,6 +1079,61 @@ export async function sendChefOnboardingEmail(
 }
 
 /**
+ * Customer magic link — Academy / My Library (no admin allowlist; caller sends to any email).
+ */
+export async function sendCustomerMagicLinkEmail({
+  to,
+  magicLink,
+}: {
+  to: string
+  magicLink: string
+}): Promise<{ success: boolean; error?: string }> {
+  if (!resend) {
+    console.warn('⚠️ RESEND_API_KEY not set — customer magic link email skipped')
+    return { success: false, error: 'Email service not configured' }
+  }
+  if (!to || !to.includes('@')) {
+    return { success: false, error: 'Invalid email address' }
+  }
+  const safeLink = escapeHtmlForEmail(magicLink)
+  try {
+    await resend.emails.send({
+      from: fromAddress('academy'),
+      to,
+      subject: 'Sign in to your Bornfidis library',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px;">
+          <h2 style="color: ${brand.navy}; margin-bottom: 16px;">Bornfidis Digital Studio</h2>
+          <p>Click below to sign in and open your library. This link expires shortly and can only be used once.</p>
+          <p>
+            <a href="${safeLink}"
+               style="display:inline-block;padding:12px 20px;
+                      background:${brand.navy};color:${brand.ivory};
+                      text-decoration:none;border-radius:4px;
+                      font-weight:600;">
+              Open my library
+            </a>
+          </p>
+          <p style="font-size:12px;color:#666;">
+            If the button does not work, copy and paste this URL into your browser:<br />
+            ${safeLink}
+          </p>
+          <p style="font-size:12px;color:#666;">
+            If you did not request this, you can ignore this email.
+          </p>
+          ${emailLegalFooter()}
+        </div>
+      `,
+    })
+    return { success: true }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to send email'
+    console.error('❌ Error sending customer magic link email:', error)
+    return { success: false, error: message }
+  }
+}
+
+/**
  * Admin magic link — sent via Resend with bornfidis.com redirect (bypasses Supabase default email).
  */
 export async function sendAdminMagicLinkEmail({

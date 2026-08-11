@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { defaultAdminNext, safeNextPath } from '@/lib/safe-next-path'
 
 /**
  * Middleware — Bornfidis Auth + Roles (Phase 1)
@@ -85,10 +86,7 @@ export async function middleware(request: NextRequest) {
     const callbackUrl = new URL('/api/auth/callback', request.url)
     callbackUrl.searchParams.set('code', authCode)
     const nextParam = request.nextUrl.searchParams.get('next')
-    callbackUrl.searchParams.set(
-      'next',
-      nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/admin'
-    )
+    callbackUrl.searchParams.set('next', safeNextPath(nextParam, defaultAdminNext()))
     return NextResponse.redirect(callbackUrl)
   }
 

@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClientSupabaseClient, getClientAuthUser } from '@/lib/auth-client'
+import { defaultAdminNext, safeNextPath } from '@/lib/safe-next-path'
 
 /**
  * Admin Login Form Component
@@ -99,12 +100,7 @@ function AdminLoginForm() {
             if (data.user) {
               // Clean up URL hash
               window.history.replaceState({}, document.title, window.location.pathname)
-              const next = searchParams.get('next')
-              const redirectTo =
-                next && next.startsWith('/') && !next.startsWith('//')
-                  ? next
-                  : '/admin'
-              window.location.href = redirectTo
+              window.location.href = safeNextPath(searchParams.get('next'), defaultAdminNext())
               return
             }
           } catch (clientError: any) {
@@ -125,12 +121,7 @@ function AdminLoginForm() {
           if (!isMounted) return
           
           if (user) {
-            const next = searchParams.get('next')
-            const redirectTo =
-              next && next.startsWith('/') && !next.startsWith('//')
-                ? next
-                : '/admin'
-            window.location.href = redirectTo
+            window.location.href = safeNextPath(searchParams.get('next'), defaultAdminNext())
           } else {
             setIsCheckingAuth(false)
           }
@@ -164,9 +155,7 @@ function AdminLoginForm() {
     setMessage(null)
 
     try {
-      const next = searchParams.get('next')
-      const nextPath =
-        next && next.startsWith('/') && !next.startsWith('//') ? next : '/admin'
+      const nextPath = safeNextPath(searchParams.get('next'), defaultAdminNext())
 
       const res = await fetch('/api/admin/auth/magic-link', {
         method: 'POST',

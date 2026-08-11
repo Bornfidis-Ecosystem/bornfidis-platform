@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { canReceiveAdminMagicLink } from '@/lib/admin-magic-link-access'
 import { buildAuthCallbackUrl, generateAdminMagicLink } from '@/lib/auth-magic-link'
 import { sendAdminMagicLinkEmail } from '@/lib/email'
+import { defaultAdminNext, safeNextPath } from '@/lib/safe-next-path'
 
 /**
  * Server-side admin magic link.
@@ -27,9 +28,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true })
     }
 
-    const nextPath =
-      nextRaw.startsWith('/') && !nextRaw.startsWith('//') ? nextRaw : '/admin'
-    const redirectTo = buildAuthCallbackUrl(nextPath)
+    const nextPath = safeNextPath(nextRaw, defaultAdminNext())
+    const redirectTo = buildAuthCallbackUrl(nextPath, {
+      requestOrigin: request.nextUrl.origin,
+    })
 
     const generated = await generateAdminMagicLink(email, redirectTo)
     if ('error' in generated) {
