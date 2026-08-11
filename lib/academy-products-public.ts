@@ -53,7 +53,7 @@ export async function getAcademyProductsFromDb(): Promise<AcademyProduct[]> {
 
 /**
  * Resolve a product by slug: DB first (active only), then static config.
- * Use for checkout, claim, download, and product detail page so slug-based flows keep working.
+ * Use for storefront, claim, download, and product detail so inactive products stay hidden.
  */
 export async function getAcademyProductBySlugPublic(
   slug: string
@@ -63,6 +63,25 @@ export async function getAcademyProductBySlugPublic(
 
   const fromDb = await db.academyProduct.findFirst({
     where: { slug: trimmed, active: true },
+  })
+  if (fromDb) return mapDbToPublic(fromDb)
+
+  return getAcademyProductBySlug(trimmed)
+}
+
+/**
+ * Checkout-only resolution: DB by slug regardless of `active`, then static config.
+ * Lets founders wire a Stripe Price and run test-mode checkout while the product
+ * stays off the public Academy grid (`active: false`).
+ */
+export async function getAcademyProductBySlugForCheckout(
+  slug: string
+): Promise<AcademyProduct | null> {
+  const trimmed = (slug || '').trim()
+  if (!trimmed) return null
+
+  const fromDb = await db.academyProduct.findFirst({
+    where: { slug: trimmed },
   })
   if (fromDb) return mapDbToPublic(fromDb)
 

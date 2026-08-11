@@ -9,7 +9,10 @@ import {
   updateProjectStatus,
 } from '@/lib/digital-studio-projects'
 import { logActivity, logWorkflowTransition } from '@/lib/activity-log'
-import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import {
+  getAcademyProductBySlugForCheckout,
+  getAcademyProductBySlugPublic,
+} from '@/lib/academy-products-public'
 import { ACADEMY_UPSELL_SUGGESTION } from '@/lib/academy-products'
 import { sendAcademyPurchaseConfirmationEmail } from '@/lib/email'
 
@@ -208,7 +211,9 @@ export async function POST(request: NextRequest) {
         }
 
         // Verify the product server-side; do not trust metadata alone.
-        const product = await getAcademyProductBySlugPublic(productSlug)
+        // Use checkout resolver so test purchases can fulfill while the product
+        // remains inactive on the public Academy grid.
+        const product = await getAcademyProductBySlugForCheckout(productSlug)
         if (!product) {
           await writeStripeWebhookLog({
             eventType: event.type,

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import { getCurrentSupabaseUser } from '@/lib/auth'
 import { getStripeClient } from '@/lib/stripe'
-import { getAcademyProductBySlugPublic } from '@/lib/academy-products-public'
+import { getAcademyProductBySlugForCheckout } from '@/lib/academy-products-public'
 
 export const dynamic = 'force-dynamic'
 
@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'productId is required' }, { status: 400 })
   }
 
-  const product = await getAcademyProductBySlugPublic(slug)
+  // Checkout may resolve inactive products so Price wiring / test E2E can run
+  // before storefront activation (`active: true`).
+  const product = await getAcademyProductBySlugForCheckout(slug)
   if (!product) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
   }
