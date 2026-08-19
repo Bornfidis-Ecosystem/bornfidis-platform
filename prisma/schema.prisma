@@ -942,6 +942,8 @@ model StripeWebhookLog {
   processingStatus  String    @default("received") @map("processing_status") // received | matched | unmatched | error
   errorMessage      String?   @map("error_message")
   paymentType       String?   @map("payment_type") // deposit | balance | consulting | unknown
+  /** Stripe platform account: provisions | digital-studio (null = legacy unlabeled). */
+  division          String?
   rawPayload        Json?     @map("raw_payload")
   receivedAt        DateTime  @default(now()) @map("received_at")
   matchedBooking    BookingInquiry? @relation(fields: [matchedBookingId], references: [id], onDelete: SetNull)
@@ -950,6 +952,7 @@ model StripeWebhookLog {
   @@index([processingStatus])
   @@index([customerEmail])
   @@index([receivedAt])
+  @@index([division])
   @@map("stripe_webhook_log")
   @@schema("public")
 }

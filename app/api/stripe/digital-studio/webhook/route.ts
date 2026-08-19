@@ -108,6 +108,7 @@ export async function POST(request: NextRequest) {
     try {
       if (division && division !== 'digital-studio') {
         await writeStripeWebhookLog({
+          division: 'digital-studio',
           eventType: event.type,
           stripeEventId: event.id,
           stripeObjectId: session.id,
@@ -155,6 +156,7 @@ export async function POST(request: NextRequest) {
         }
 
         await writeStripeWebhookLog({
+          division: 'digital-studio',
           eventType: event.type,
           stripeEventId: event.id,
           stripeObjectId: session.id,
@@ -166,6 +168,7 @@ export async function POST(request: NextRequest) {
         })
       } else {
         await writeStripeWebhookLog({
+          division: 'digital-studio',
           eventType: event.type,
           stripeEventId: event.id,
           stripeObjectId: session.id,
@@ -182,6 +185,7 @@ export async function POST(request: NextRequest) {
     } catch (err) {
       console.error('[digital-studio webhook] processing error:', err)
       await writeStripeWebhookLog({
+        division: 'digital-studio',
         eventType: event.type,
         stripeEventId: event.id,
         stripeObjectId: session.id,

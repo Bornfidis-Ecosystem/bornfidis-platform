@@ -4,7 +4,6 @@
  */
 
 import type Stripe from 'stripe'
-import { isStripeConfigured } from '@/lib/stripe'
 
 export function sessionPaymentIntentId(session: Stripe.Checkout.Session): string | null {
   const pi = session.payment_intent
@@ -37,9 +36,15 @@ export function customerEmailFromSession(session: Stripe.Checkout.Session): stri
 }
 
 /** Live vs test Stripe Dashboard deep link for a PaymentIntent. */
-export function stripePaymentDashboardUrl(paymentIntentId: string): string {
-  const live = isStripeConfigured('provisions') &&
-    ((process.env.STRIPE_PROVISIONS_SECRET_KEY || process.env.STRIPE_SECRET_KEY || '').startsWith('sk_live_'))
+export function stripePaymentDashboardUrl(
+  paymentIntentId: string,
+  division: 'provisions' | 'digital-studio' = 'provisions',
+): string {
+  const key =
+    division === 'digital-studio'
+      ? process.env.STRIPE_DIGITAL_STUDIO_SECRET_KEY || ''
+      : process.env.STRIPE_PROVISIONS_SECRET_KEY || process.env.STRIPE_SECRET_KEY || ''
+  const live = key.trim().startsWith('sk_live_')
   const base = live ? 'https://dashboard.stripe.com' : 'https://dashboard.stripe.com/test'
   return `${base}/payments/${paymentIntentId}`
 }

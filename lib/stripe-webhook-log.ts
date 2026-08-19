@@ -1,4 +1,5 @@
 import { db } from '@/lib/db'
+import type { StripeDivision } from '@/lib/stripe'
 
 export type WebhookLogStatus = 'received' | 'matched' | 'unmatched' | 'error'
 
@@ -13,6 +14,8 @@ export async function writeStripeWebhookLog(input: {
   processingStatus: WebhookLogStatus
   errorMessage?: string | null
   paymentType?: string | null
+  /** Which Stripe platform account received this event. */
+  division?: StripeDivision | null
   rawPayload?: unknown
 }): Promise<string | null> {
   try {
@@ -28,6 +31,7 @@ export async function writeStripeWebhookLog(input: {
         processingStatus: input.processingStatus,
         errorMessage: input.errorMessage ?? undefined,
         paymentType: input.paymentType ?? undefined,
+        division: input.division ?? undefined,
         rawPayload: input.rawPayload === undefined ? undefined : (input.rawPayload as object),
       },
       select: { id: true },
@@ -43,6 +47,7 @@ export async function writeStripeWebhookLog(input: {
             processingStatus: input.processingStatus,
             matchedBookingId: input.matchedBookingId ?? undefined,
             errorMessage: input.errorMessage ?? undefined,
+            division: input.division ?? undefined,
           },
         })
       } catch (updateErr) {

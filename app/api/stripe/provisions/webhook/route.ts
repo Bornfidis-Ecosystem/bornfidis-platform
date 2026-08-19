@@ -173,6 +173,7 @@ export async function POST(request: NextRequest) {
                 }
                 console.log('✅ Consulting checkout completed (admin notified)')
                 await writeStripeWebhookLog({
+                    division: 'provisions',
                     eventType: event.type,
                     stripeEventId: event.id,
                     stripeObjectId: session.id,
@@ -194,6 +195,7 @@ export async function POST(request: NextRequest) {
         if (!bookingId) {
             console.log('Unmatched checkout.session.completed — no booking_id', session.id)
             await writeStripeWebhookLog({
+                division: 'provisions',
                 eventType: event.type,
                 stripeEventId: event.id,
                 stripeObjectId: session.id,
@@ -216,6 +218,7 @@ export async function POST(request: NextRequest) {
         if (!isDeposit && !isFullOrBalance) {
             console.log(`Unmatched session — unknown payment type: ${checkoutMode || '(empty)'}`)
             await writeStripeWebhookLog({
+                division: 'provisions',
                 eventType: event.type,
                 stripeEventId: event.id,
                 stripeObjectId: session.id,
@@ -324,6 +327,7 @@ export async function POST(request: NextRequest) {
 
                 console.log(`✅ Deposit payment completed for booking ${bookingId}`)
                 await writeStripeWebhookLog({
+                    division: 'provisions',
                     eventType: event.type,
                     stripeEventId: event.id,
                     stripeObjectId: session.id,
@@ -501,6 +505,7 @@ export async function POST(request: NextRequest) {
                 }
 
                 await writeStripeWebhookLog({
+                    division: 'provisions',
                     eventType: event.type,
                     stripeEventId: event.id,
                     stripeObjectId: session.id,
@@ -517,6 +522,7 @@ export async function POST(request: NextRequest) {
         } catch (error: any) {
             console.error('Error processing payment webhook:', error)
             await writeStripeWebhookLog({
+                division: 'provisions',
                 eventType: event.type,
                 stripeEventId: event.id,
                 stripeObjectId: session.id,
@@ -551,6 +557,7 @@ export async function POST(request: NextRequest) {
 
         if (!bookingId) {
             await writeStripeWebhookLog({
+                division: 'provisions',
                 eventType: event.type,
                 stripeEventId: event.id,
                 stripeObjectId: pi.id,
@@ -575,6 +582,7 @@ export async function POST(request: NextRequest) {
         })
         if (existing) {
             await writeStripeWebhookLog({
+                division: 'provisions',
                 eventType: event.type,
                 stripeEventId: event.id,
                 stripeObjectId: pi.id,
@@ -592,6 +600,7 @@ export async function POST(request: NextRequest) {
         }
 
         await writeStripeWebhookLog({
+            division: 'provisions',
             eventType: event.type,
             stripeEventId: event.id,
             stripeObjectId: pi.id,

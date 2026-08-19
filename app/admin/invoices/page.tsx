@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
 import { requireFinancialPageAccess } from '@/lib/admin-rbac'
 import { db } from '@/lib/db'
+import { stripeDivisionLabel, stripeDivisionShortHint } from '@/lib/stripe-division-labels'
 import { InvoiceActionButtons } from './InvoiceActionButtons'
 
 export const dynamic = 'force-dynamic'
@@ -108,9 +109,18 @@ export default async function AdminInvoicesPage() {
     <div className="space-y-6">
       <CulinaryPageHeader
         title="Invoices"
-        description="Track local admin invoice records, Stripe IDs, delivery status, and recovery actions."
+        description="Track local admin invoice records by Stripe account (Provisions vs Digital Studio), delivery status, and recovery actions."
       />
 
+      <CulinaryCard>
+        <p className="font-culinary-sans text-sm text-culinary-ink">
+          Invoices are created on a specific Stripe account. Provisions and Digital Studio balances
+          are not interchangeable.
+        </p>
+        <p className="mt-1 font-culinary-sans text-xs text-culinary-text-muted">
+          Sportswear is not part of this invoice ledger. {stripeDivisionShortHint('sportswear')}.
+        </p>
+      </CulinaryCard>
       {emailLogUnavailable ? (
         <CulinaryCard>
           <p className="font-culinary-sans text-sm text-amber-800">
@@ -133,12 +143,11 @@ export default async function AdminInvoicesPage() {
         <CulinaryCard key={division} padded={false} className="overflow-hidden">
           <div className="border-b border-culinary-outline px-4 py-3">
             <h2 className="font-culinary-display text-title-md text-culinary-navy">
-              {division === 'digital-studio'
-                ? 'Digital Studio'
-                : division === 'provisions'
-                  ? 'Provisions'
-                  : division}
+              {stripeDivisionLabel(division)} Stripe account
             </h2>
+            <p className="mt-0.5 font-culinary-sans text-xs text-culinary-text-muted">
+              {stripeDivisionShortHint(division)}
+            </p>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-culinary-outline">
@@ -146,7 +155,7 @@ export default async function AdminInvoicesPage() {
                 <tr className="font-culinary-sans text-left text-xs uppercase tracking-wider text-culinary-text-muted">
                   <th className="px-4 py-3">Invoice ID (Stripe)</th>
                   <th className="px-4 py-3">Client Email</th>
-                  <th className="px-4 py-3">Division</th>
+                  <th className="px-4 py-3">Stripe account</th>
                   <th className="px-4 py-3">Amount Due</th>
                   <th className="px-4 py-3">Due Date</th>
                   <th className="px-4 py-3">Status</th>
@@ -204,7 +213,14 @@ export default async function AdminInvoicesPage() {
                           '—'}
                       </td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
-                        {invoice.division || '—'}
+                        <span title={invoice.stripeAccountId || undefined}>
+                          {stripeDivisionLabel(invoice.division)}
+                        </span>
+                        {invoice.stripeAccountId ? (
+                          <span className="mt-0.5 block font-mono text-[10px] text-culinary-text-muted">
+                            {invoice.stripeAccountId}
+                          </span>
+                        ) : null}
                       </td>
                       <td className="px-4 py-3 font-culinary-sans text-sm text-culinary-ink">
                         {amountLabel}

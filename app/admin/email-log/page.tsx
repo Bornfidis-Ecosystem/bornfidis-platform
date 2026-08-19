@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getEmailSendLogs, getFailedEmailCount } from '@/lib/email-send-log'
+import { stripeDivisionLabel } from '@/lib/stripe-division-labels'
 import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
 
 export const dynamic = 'force-dynamic'
@@ -41,7 +42,7 @@ export default async function AdminEmailLogPage() {
               <thead>
                 <tr className="border-b border-culinary-outline bg-culinary-surface-low">
                   <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Status</th>
-                  <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Division</th>
+                  <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Stripe account</th>
                   <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Template</th>
                   <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Recipient</th>
                   <th className="px-3 py-2 font-culinary-sans text-[10px] font-bold uppercase tracking-wider text-culinary-text-muted">Subject</th>
@@ -67,7 +68,7 @@ export default async function AdminEmailLogPage() {
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-2 font-culinary-sans text-xs text-culinary-text-muted">
-                      {log.division}
+                      {stripeDivisionLabel(log.division)}
                     </td>
                     <td className="whitespace-nowrap px-3 py-2 font-culinary-sans text-xs text-culinary-ink">
                       {log.templateType}
