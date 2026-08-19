@@ -129,6 +129,7 @@ export async function POST(request: NextRequest) {
                         : undefined,
                 hostedInvoiceUrl: invoice.hosted_invoice_url,
                 invoiceNumber: invoice.number,
+                stripeInvoice: invoice,
             }).catch((error) => console.error('admin invoice sync failed:', error))
         }
 

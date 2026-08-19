@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
             : undefined,
         hostedInvoiceUrl: invoice.hosted_invoice_url,
         invoiceNumber: invoice.number,
+        stripeInvoice: invoice,
       }).catch((error) => console.error('digital studio invoice sync failed:', error))
     }
     await db.stripeWebhookEvent.create({ data: { id: event.id } }).catch(() => {})

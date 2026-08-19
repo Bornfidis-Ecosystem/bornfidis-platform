@@ -37,7 +37,9 @@ export async function logEmailSend(entry: EmailSendLogEntry): Promise<void> {
         errorMessage: entry.error,
         actorName: entry.actorName || 'System',
       },
-    }).catch(() => {})
+    }).catch((err) => {
+      console.error('[email-send-log] email_send_log insert failed:', err)
+    })
 
     if (entry.bookingId) {
       await db.bookingActivity.create({

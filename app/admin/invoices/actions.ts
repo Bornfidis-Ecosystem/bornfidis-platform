@@ -8,7 +8,9 @@ import { db } from '@/lib/db'
 import {
   ADMIN_INVOICE_CURRENCIES,
   getAdminInvoicePrefill,
+  getConfiguredStripeKeyMode,
   getStripeOwnAccountId,
+  importAdminInvoicesFromStripe,
   logAdminInvoiceEmail,
   syncAdminInvoiceRecord,
   type AdminInvoiceCurrency,
@@ -422,6 +424,8 @@ export async function createAdminInvoice(
       success: true,
       invoiceId: finalized.id,
       amountDue: finalized.amount_due,
+      // TODO(invoice-types): Stripe `hosted_invoice_url` is `string | null | undefined`;
+      // result type expects `string | null`. Compile-time only — does not affect totals/line math.
       hostedInvoiceUrl: hostedUrl,
       customerEmail: data.clientEmail.trim(),
       emailSent,
@@ -557,4 +561,35 @@ export async function voidAdminInvoice(localInvoiceId: string): Promise<{ succes
     status: 'void',
   })
   return { success: true }
+}
+
+/**
+ * Pull invoices from the configured Stripe account/mode into admin_invoices.
+ * Uses whatever key mode is in env (test or live) — does not switch modes.
+ */
+export async function importAdminInvoicesFromStripeAction(
+  divisionRaw: string,
+): Promise<{ success: boolean; error?: string; imported?: number; updated?: number; scanned?: number; mode?: string }> {
+  const access = await requireInvoiceFinanceAccess()
+  if (!access.ok) return { success: false, error: access.error }
+
+  const division = normalizeDivision(divisionRaw)
+  if (!division) {
+    return { success: false, error: 'Division must be provisions or digital-studio.' }
+  }
+  if (!isStripeConfigured(division)) {
+    return { success: false, error: `Stripe is not configured for ${division}.` }
+  }
+
+  try {
+    const mode = getConfiguredStripeKeyMode(division)
+    const result = await importAdminInvoicesFromStripe(division)
+    return { success: true, mode, ...result }
+  } catch (error) {
+    console.error('[importAdminInvoicesFromStripeAction]', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Stripe import failed',
+    }
+  }
 }

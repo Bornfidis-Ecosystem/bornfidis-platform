@@ -181,6 +181,39 @@ export async function getAdminInvoicePrefill(
   }
 }
 
+function stripeCustomerId(invoice: Stripe.Invoice): string | null {
+  if (typeof invoice.customer === 'string') return invoice.customer
+  if (invoice.customer && typeof invoice.customer === 'object' && 'id' in invoice.customer) {
+    return (invoice.customer as Stripe.Customer).id
+  }
+  return null
+}
+
+function mapStripeInvoiceStatus(
+  stripeStatus: Stripe.Invoice.Status | null | undefined,
+  fallback?: AdminInvoiceStatus,
+): AdminInvoiceStatus {
+  switch (stripeStatus) {
+    case 'draft':
+      return 'draft'
+    case 'open':
+      return 'open'
+    case 'paid':
+      return 'paid'
+    case 'void':
+      return 'void'
+    case 'uncollectible':
+      return 'void'
+    default:
+      return fallback || 'open'
+  }
+}
+
+/**
+ * Upsert local admin_invoices from a Stripe invoice event.
+ * Previously this only updateMany'd — invoices created outside the admin UI
+ * (scripts, Dashboard, other tools) never appeared in the ledger.
+ */
 export async function syncAdminInvoiceRecord(params: {
   stripeInvoiceId: string
   division: StripeDivision
@@ -190,6 +223,8 @@ export async function syncAdminInvoiceRecord(params: {
   paidAt?: Date | null
   hostedInvoiceUrl?: string | null
   invoiceNumber?: string | null
+  /** When provided, creates a local row if none exists (Stripe → ledger sync). */
+  stripeInvoice?: Stripe.Invoice
 }) {
   const data: Record<string, unknown> = {}
   if (params.status) data.status = params.status
@@ -198,12 +233,60 @@ export async function syncAdminInvoiceRecord(params: {
   if (params.hostedInvoiceUrl !== undefined) data.hostedInvoiceUrl = params.hostedInvoiceUrl
   if (params.invoiceNumber !== undefined) data.invoiceNumber = params.invoiceNumber
 
-  if (Object.keys(data).length === 0) return
+  const updated =
+    Object.keys(data).length === 0
+      ? { count: 0 }
+      : await db.adminInvoice.updateMany({
+          where: { stripeInvoiceId: params.stripeInvoiceId, division: params.division },
+          data,
+        })
 
-  await db.adminInvoice.updateMany({
-    where: { stripeInvoiceId: params.stripeInvoiceId, division: params.division },
-    data,
-  })
+  if (updated.count === 0 && params.stripeInvoice) {
+    const invoice = params.stripeInvoice
+    const customerId = stripeCustomerId(invoice)
+    if (!customerId) {
+      console.error(
+        `[syncAdminInvoiceRecord] cannot create local row for ${params.stripeInvoiceId}: missing customer`,
+      )
+    } else {
+      const stripeAccountId = await getStripeOwnAccountId(params.division)
+      const status = params.status || mapStripeInvoiceStatus(invoice.status)
+      const meta = invoice.metadata || {}
+      await db.adminInvoice.create({
+        data: {
+          division: params.division,
+          sourceType: typeof meta.source_type === 'string' ? meta.source_type : null,
+          sourceId: typeof meta.source_id === 'string' ? meta.source_id : null,
+          bookingId: typeof meta.booking_id === 'string' ? meta.booking_id || null : null,
+          projectId: typeof meta.project_id === 'string' ? meta.project_id || null : null,
+          stripeAccountId,
+          stripeCustomerId: customerId,
+          stripeInvoiceId: invoice.id,
+          invoiceNumber: params.invoiceNumber ?? invoice.number,
+          currency: (invoice.currency || 'usd').toLowerCase(),
+          subtotalCents: invoice.subtotal ?? invoice.total ?? 0,
+          depositAppliedCents: 0,
+          amountDueCents: invoice.amount_due ?? 0,
+          dueAt: invoice.due_date ? new Date(invoice.due_date * 1000) : null,
+          status,
+          hostedInvoiceUrl: params.hostedInvoiceUrl ?? invoice.hosted_invoice_url,
+          sentAt: params.sentAt ?? null,
+          paidAt: params.paidAt ?? null,
+          metadata: {
+            recipient: invoice.customer_email || null,
+            clientName: invoice.customer_name || null,
+            livemode: invoice.livemode,
+            syncedFrom: 'stripe_webhook',
+            actorName: params.actorName || 'System',
+          },
+        },
+      })
+    }
+  } else if (updated.count === 0 && Object.keys(data).length > 0) {
+    console.warn(
+      `[syncAdminInvoiceRecord] no local row for ${params.stripeInvoiceId} (${params.division}); update skipped (no Stripe payload to upsert)`,
+    )
+  }
 
   if (params.status) {
     await logWorkflowTransition({
@@ -216,6 +299,104 @@ export async function syncAdminInvoiceRecord(params: {
       newValue: params.status,
     })
   }
+}
+
+/** Import invoices from the configured Stripe account/mode into the local ledger. */
+export async function importAdminInvoicesFromStripe(
+  division: StripeDivision,
+  options?: { limit?: number },
+): Promise<{ imported: number; updated: number; scanned: number }> {
+  const stripe = getStripeClient(division)
+  const limit = Math.min(Math.max(options?.limit ?? 100, 1), 100)
+  let imported = 0
+  let updated = 0
+  let scanned = 0
+  let starting_after: string | undefined
+
+  for (let page = 0; page < 10; page++) {
+    const list = await stripe.invoices.list({ limit, starting_after })
+    for (const invoice of list.data) {
+      scanned += 1
+      const existing = await db.adminInvoice.findFirst({
+        where: { stripeInvoiceId: invoice.id, division },
+        select: { id: true },
+      })
+      const status = mapStripeInvoiceStatus(invoice.status)
+      await syncAdminInvoiceRecord({
+        stripeInvoiceId: invoice.id,
+        division,
+        actorName: 'Stripe import',
+        status,
+        hostedInvoiceUrl: invoice.hosted_invoice_url,
+        invoiceNumber: invoice.number,
+        paidAt: invoice.status === 'paid' && invoice.status_transitions?.paid_at
+          ? new Date(invoice.status_transitions.paid_at * 1000)
+          : undefined,
+        stripeInvoice: invoice,
+      })
+      if (existing) updated += 1
+      else imported += 1
+    }
+    if (!list.has_more || list.data.length === 0) break
+    starting_after = list.data[list.data.length - 1]?.id
+  }
+
+  return { imported, updated, scanned }
+}
+
+export type StripeKeyMode = 'test' | 'live' | 'unknown'
+
+export function getConfiguredStripeKeyMode(division: StripeDivision): StripeKeyMode {
+  const key =
+    division === 'provisions'
+      ? process.env.STRIPE_PROVISIONS_SECRET_KEY || process.env.STRIPE_SECRET_KEY || ''
+      : process.env.STRIPE_DIGITAL_STUDIO_SECRET_KEY || ''
+  const trimmed = key.trim()
+  if (trimmed.startsWith('sk_test_')) return 'test'
+  if (trimmed.startsWith('sk_live_')) return 'live'
+  return 'unknown'
+}
+
+/**
+ * Probe whether local ledger Stripe IDs are reachable with the configured key mode.
+ * Detects the common gap: live invoices stored locally while env uses sk_test_ (or reverse).
+ */
+export async function diagnoseAdminInvoiceStripeAccess(
+  division: StripeDivision,
+  stripeInvoiceIds: string[],
+): Promise<{
+  mode: StripeKeyMode
+  checked: number
+  reachable: number
+  modeMismatch: number
+  missing: number
+  sampleError?: string
+}> {
+  const mode = getConfiguredStripeKeyMode(division)
+  const ids = stripeInvoiceIds.filter(Boolean).slice(0, 5)
+  if (ids.length === 0) {
+    return { mode, checked: 0, reachable: 0, modeMismatch: 0, missing: 0 }
+  }
+
+  const stripe = getStripeClient(division)
+  let reachable = 0
+  let modeMismatch = 0
+  let missing = 0
+  let sampleError: string | undefined
+
+  for (const id of ids) {
+    try {
+      await stripe.invoices.retrieve(id)
+      reachable += 1
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err)
+      if (!sampleError) sampleError = message
+      if (/live mode|test mode/i.test(message)) modeMismatch += 1
+      else missing += 1
+    }
+  }
+
+  return { mode, checked: ids.length, reachable, modeMismatch, missing, sampleError }
 }
 
 export async function logAdminInvoiceEmail(params: {

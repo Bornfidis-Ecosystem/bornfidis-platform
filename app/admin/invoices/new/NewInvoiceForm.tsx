@@ -109,6 +109,8 @@ export default function NewInvoiceForm({ initialPrefill }: Props) {
       clientName: clientName.trim(),
       clientEmail: clientEmail.trim(),
       bookingId: bookingId.trim() || undefined,
+      // TODO(invoice-types): prefill `projectId` is `string | null | undefined` vs input `string | undefined`.
+      // Compile-time only — unrelated to deposit/line-item total math.
       projectId: projectId.trim() || initialPrefill?.projectId,
       clientId: initialPrefill?.clientId || undefined,
       sourceType: initialPrefill?.sourceType,

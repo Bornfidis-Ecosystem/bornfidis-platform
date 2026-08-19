@@ -28,6 +28,7 @@ export default async function AdminInvoiceDetailPage({
 
   let emailLogs: Awaited<ReturnType<typeof db.emailSendLog.findMany>> = []
   let emailLogUnavailable = false
+  let emailLogErrorDetail: string | null = null
   try {
     emailLogs = await db.emailSendLog.findMany({
       where: {
@@ -38,6 +39,10 @@ export default async function AdminInvoiceDetailPage({
     })
   } catch (error) {
     emailLogUnavailable = true
+    const message = error instanceof Error ? error.message : String(error)
+    emailLogErrorDetail = /email_send_log|does not exist|P2021|relation/i.test(message)
+      ? 'The email_send_log table is missing on this database. Apply migration 20260731200000_add_email_send_log.'
+      : 'Email delivery history is unavailable (database error reading email_send_log).'
     console.error('[admin/invoices/[id]] emailSendLog query failed:', error)
   }
 
@@ -148,7 +153,8 @@ export default async function AdminInvoiceDetailPage({
         </div>
         {emailLogUnavailable ? (
           <div className="px-4 py-4 font-culinary-sans text-sm text-amber-800">
-            Email delivery history is unavailable (email log table missing or unreachable).
+            {emailLogErrorDetail ||
+              'Email delivery history is unavailable (email log table missing or unreachable).'}
           </div>
         ) : emailLogs.length === 0 ? (
           <div className="px-4 py-4 font-culinary-sans text-sm text-culinary-text-muted">

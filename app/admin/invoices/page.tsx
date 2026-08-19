@@ -1,8 +1,13 @@
 import Link from 'next/link'
 import { CulinaryCard, CulinaryPageHeader } from '@/components/culinary-os'
 import { requireFinancialPageAccess } from '@/lib/admin-rbac'
+import {
+  diagnoseAdminInvoiceStripeAccess,
+  getConfiguredStripeKeyMode,
+} from '@/lib/admin-invoices'
 import { db } from '@/lib/db'
 import { InvoiceActionButtons } from './InvoiceActionButtons'
+import { InvoiceSyncFromStripeButton } from './InvoiceSyncFromStripeButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,6 +41,17 @@ function badgeClasses(status: string) {
   }
 }
 
+function classifyEmailLogError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error)
+  if (/email_send_log|does not exist|P2021|relation/i.test(message)) {
+    return 'The email_send_log table is missing. Apply migration 20260731200000_add_email_send_log on this database.'
+  }
+  if (/P1001|can't reach|ECONNREFUSED|timeout/i.test(message)) {
+    return 'Database unreachable while reading email_send_log. Check DATABASE_URL / pooler connectivity.'
+  }
+  return 'Email delivery history is temporarily unavailable. Invoice records below are still shown from the local ledger.'
+}
+
 export default async function AdminInvoicesPage() {
   await requireFinancialPageAccess()
 
@@ -47,6 +63,7 @@ export default async function AdminInvoicesPage() {
     sentAt: Date
   }> = []
   let emailLogUnavailable = false
+  let emailLogErrorDetail: string | null = null
 
   try {
     invoices = await db.adminInvoice.findMany({ orderBy: { createdAt: 'desc' } })
@@ -62,8 +79,8 @@ export default async function AdminInvoicesPage() {
       orderBy: { sentAt: 'desc' },
     })
   } catch (error) {
-    // Preview/prod may lack email_send_log even when admin_invoices exists.
     emailLogUnavailable = true
+    emailLogErrorDetail = classifyEmailLogError(error)
     console.error('[admin/invoices] emailSendLog query failed; continuing without email logs:', error)
   }
 
@@ -104,6 +121,25 @@ export default async function AdminInvoicesPage() {
     return acc
   }, {})
 
+  const provisionsMode = getConfiguredStripeKeyMode('provisions')
+  const digitalStudioMode = getConfiguredStripeKeyMode('digital-studio')
+
+  const provisionsIds = invoices
+    .filter((i) => i.division === 'provisions')
+    .map((i) => i.stripeInvoiceId)
+  const digitalStudioIds = invoices
+    .filter((i) => i.division === 'digital-studio')
+    .map((i) => i.stripeInvoiceId)
+
+  const [provisionsDiag, digitalStudioDiag] = await Promise.all([
+    provisionsIds.length
+      ? diagnoseAdminInvoiceStripeAccess('provisions', provisionsIds)
+      : Promise.resolve(null),
+    digitalStudioIds.length
+      ? diagnoseAdminInvoiceStripeAccess('digital-studio', digitalStudioIds)
+      : Promise.resolve(null),
+  ])
+
   return (
     <div className="space-y-6">
       <CulinaryPageHeader
@@ -111,11 +147,47 @@ export default async function AdminInvoicesPage() {
         description="Track local admin invoice records, Stripe IDs, delivery status, and recovery actions."
       />
 
+      <CulinaryCard>
+        <p className="font-culinary-sans text-sm text-culinary-ink">
+          Configured Stripe key mode — Provisions: <strong>{provisionsMode}</strong>
+          {' · '}
+          Digital Studio: <strong>{digitalStudioMode}</strong>
+        </p>
+        <p className="mt-1 font-culinary-sans text-xs text-culinary-text-muted">
+          The ledger only syncs with invoices in the same Stripe mode as these keys. Live invoices will
+          not appear when the app is using test keys (and the reverse).
+        </p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <InvoiceSyncFromStripeButton division="provisions" mode={provisionsMode} />
+          <InvoiceSyncFromStripeButton division="digital-studio" mode={digitalStudioMode} />
+        </div>
+      </CulinaryCard>
+
+      {provisionsDiag && provisionsDiag.modeMismatch > 0 ? (
+        <CulinaryCard>
+          <p className="font-culinary-sans text-sm text-amber-900">
+            Provisions ledger has {provisionsDiag.modeMismatch} sample invoice
+            {provisionsDiag.modeMismatch === 1 ? '' : 's'} that exist in the other Stripe mode (not
+            reachable with the current <strong>{provisionsDiag.mode}</strong> key). Those rows will
+            look “out of sync” until you use matching keys or recreate invoices in this mode.
+          </p>
+        </CulinaryCard>
+      ) : null}
+
+      {digitalStudioDiag && digitalStudioDiag.modeMismatch > 0 ? (
+        <CulinaryCard>
+          <p className="font-culinary-sans text-sm text-amber-900">
+            Digital Studio ledger has mode-mismatched Stripe invoice IDs under the current{' '}
+            <strong>{digitalStudioDiag.mode}</strong> key.
+          </p>
+        </CulinaryCard>
+      ) : null}
+
       {emailLogUnavailable ? (
         <CulinaryCard>
           <p className="font-culinary-sans text-sm text-amber-800">
-            Email delivery history is temporarily unavailable (email log table missing or unreachable).
-            Invoice records below are still shown from the local ledger.
+            {emailLogErrorDetail ||
+              'Email delivery history is temporarily unavailable (email log table missing or unreachable).'}
           </p>
         </CulinaryCard>
       ) : null}
