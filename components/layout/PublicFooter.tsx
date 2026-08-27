@@ -3,8 +3,7 @@ import Link from 'next/link'
 
 import { brandAssets } from '@/lib/brand-assets'
 import { brandCopyrightLine, brandLocationsLine, BRAND_LEGAL } from '@/lib/brand-legal'
-import { PHASE1_CTA, PHASE1_FOOTER_LINKS, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
-import { PROVISIONS_BATCH_LINE } from '@/lib/provisions-products'
+import { PHASE1_CTA, PHASE1_PRIMARY_PRODUCTS } from '@/lib/phase1-marketing'
 
 /**
  * Global public footer — navy canvas, gold accents, umbrella brand.
@@ -16,20 +15,22 @@ const EXPERIENCE_LINKS = [
   { href: PHASE1_CTA.bookNow.href, label: PHASE1_CTA.bookNow.label },
 ] as const
 
+/** Bornfidis column — Digital Studio stays here, not in the primary header. */
 const BORNFIDIS_LINKS = [
   { href: '/our-story', label: 'Our Story' },
-  { href: '/digital-studio', label: 'Digital Studio' },
-  ...PHASE1_FOOTER_LINKS,
   { href: '/contact', label: 'Contact' },
+  { href: '/journal', label: 'Journal' },
+  { href: '/digital-studio', label: 'Digital Studio' },
+  { href: '/partners', label: 'Work with Bornfidis' },
 ] as const
 
 const linkClass =
-  'font-sans text-[0.9375rem] text-white/50 no-underline transition-colors duration-200 hover:text-[var(--color-bone)]'
+  'font-sans text-[0.9375rem] text-white/75 no-underline transition-colors duration-200 hover:text-[var(--color-bone)]'
 const colTitleClass =
   'mb-6 font-sans text-[0.5625rem] font-semibold uppercase tracking-[0.2em] text-[var(--color-gold)]'
 
 const legalLinkClass =
-  'font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25 no-underline transition-colors duration-200 hover:text-[var(--color-gold)] active:text-[var(--color-gold)] focus-visible:text-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-navy)]'
+  'font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/45 no-underline transition-colors duration-200 hover:text-[var(--color-gold)] active:text-[var(--color-gold)] focus-visible:text-[var(--color-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-navy)]'
 
 export default function PublicFooter() {
   return (
@@ -43,9 +44,10 @@ export default function PublicFooter() {
                 {BRAND_LEGAL.umbrellaName}
               </span>
             </div>
-            <p className="max-w-sm font-sans text-sm leading-relaxed text-white/55">
-              {BRAND_LEGAL.umbrellaName} — chef-led hospitality and digital operating systems from{' '}
-              {brandLocationsLine()}. {PROVISIONS_BATCH_LINE}
+            <p className="max-w-sm font-sans text-sm leading-relaxed text-white/75">
+              {BRAND_LEGAL.umbrellaName} brings Jamaican heritage and Vermont ingredients to private
+              tables through chef-led hospitality and small-batch provisions. We prepare every
+              experience with warmth, intention, and respect for the people we serve.
             </p>
           </div>
 
@@ -101,10 +103,10 @@ export default function PublicFooter() {
 
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
           <div className="max-w-2xl space-y-1">
-            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25">
+            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/45">
               {brandCopyrightLine()}
             </p>
-            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/25">
+            <p className="font-sans text-[0.625rem] font-medium tracking-[0.1em] text-white/45">
               {brandLocationsLine()}
             </p>
           </div>

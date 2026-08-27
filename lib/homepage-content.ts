@@ -1,10 +1,81 @@
 /**
  * Homepage copy & structure — editorial route only (`/` → HomeEditorial).
  * Vermont-first operations; Jamaica via partner intake (not on-site promise).
+ *
+ * Note: `SIGNATURE_EXPERIENCE` below is shared with `/private-dining`.
+ * Homepage-only signature/inclusions copy lives in `HOME_*` constants so Phase 1
+ * guest IA does not rewrite the private-dining page.
  */
 import { bornfidisPhotos } from '@/lib/bornfidis-photos'
 import { PHASE1_CTA } from '@/lib/phase1-marketing'
 
+/** Homepage hero — private dining front door (Fall–Winter 2026). */
+export const HOME_GUEST_HERO = {
+  eyebrow: 'Private Dining in Vermont',
+  headline: 'Your evening. Beautifully handled.',
+  body:
+    'A Jamaican–Vermont private dining experience served in your home, chalet, or retreat. Chef Brian and the Bornfidis team handle the food, service, and kitchen cleanup so you can remain present with your guests.',
+  primaryCta: { label: 'Check Your Date', href: '/book' },
+  secondaryCta: { label: 'Explore the Experience', href: '/private-dining' },
+  trustLine: 'Experiences from $1,200 · Vermont and select New England locations',
+  photoSrc: bornfidisPhotos.table.vermontCabin,
+  photoAlt: 'A Bornfidis private dining table set inside a Vermont log cabin',
+  caption: 'Chef-led hospitality at your table.',
+} as const
+
+/** Emotional guest journey — overview + how the evening feels. */
+export const HOME_EXPERIENCE_JOURNEY = {
+  eyebrow: 'The experience',
+  headline: 'You host. We carry the evening.',
+  lead:
+    'Bornfidis Provisions brings chef-led private dining to your space—warm, intentional, and designed so you stay with your guests.',
+  steps: [
+    'We arrive and prepare the space.',
+    'Jamaican heritage meets Vermont ingredients.',
+    'Each course is served with warmth and intention.',
+    'Signature tableside moments bring the table together.',
+    'We leave the kitchen clean.',
+  ],
+} as const
+
+/**
+ * Homepage signature positioning only.
+ * Do not replace `SIGNATURE_EXPERIENCE` (used by `/private-dining`).
+ */
+export const HOME_SIGNATURE_EXPERIENCE = {
+  name: "The Chef's Passage",
+  eyebrow: 'Signature experience',
+  tagline:
+    'A chef-led journey from the Caribbean to Vermont, told through food and generous hospitality.',
+  authority: 'Luxury-ship training. Your table.',
+  description:
+    "Thirteen years of luxury hospitality at sea, brought to your Vermont table. The Chef's Passage is Bornfidis's signature private dining experience—seasonal courses rooted in Jamaican heritage and Vermont ingredients, served by Chef Brian and the Bornfidis team in your home, chalet, or retreat.",
+  priceFraming:
+    'Experiences from $1,200 in Vermont — final quote based on guest count and menu selections.',
+  ctaLabel: 'Check Your Date',
+  ctaHref: '/book',
+  photoSrc: bornfidisPhotos.food.guestPlatedCourse,
+  photoAlt: 'A Bornfidis private dining course — plated with seasonal vegetables and sauce',
+} as const
+
+/** Inclusions and clear boundaries for the homepage. */
+export const HOME_INCLUSIONS = {
+  eyebrow: 'What is included',
+  headline: 'Handled with care—and clear boundaries.',
+  items: [
+    'Menu planning within the selected seasonal experience',
+    'Ingredients and standard culinary equipment',
+    'Onsite preparation',
+    'Tableside or family-style service, depending on the experience',
+    'Standard kitchen cleanup',
+  ],
+  boundary:
+    'Specialty rentals, extensive tablescapes, travel outside the core service area, premium ingredient upgrades, and additional staffing are quoted separately.',
+  dietary:
+    'Tell us about allergies and dietary needs during your inquiry. We will confirm what can be safely accommodated before your booking is finalized.',
+} as const
+
+/** Shared with `/private-dining` — leave structure stable; homepage uses `HOME_SIGNATURE_EXPERIENCE`. */
 export const SIGNATURE_EXPERIENCE = {
   name: "The Chef's Passage",
   eyebrow: 'Signature experience',
@@ -27,7 +98,7 @@ export const SIGNATURE_EXPERIENCE = {
   photoAlt: 'A Bornfidis private dining course — plated with seasonal vegetables and sauce',
 } as const
 
-/** Legacy PD-first hero kept for private-dining surfaces; homepage uses ECOSYSTEM_HERO. */
+/** Legacy PD-first hero kept for private-dining surfaces; homepage uses HOME_GUEST_HERO. */
 export const HERO = {
   taglineLine1: 'Caribbean Heart.',
   taglineLine2: 'Vermont Hands.',
@@ -44,15 +115,33 @@ export const HERO = {
 } as const
 
 export const PROVISIONS_HOME_STRIP = {
-  eyebrow: 'From the pantry',
-  headline:
-    'Maple Jerk Rub, Green Seasoning, Sorrel Gastrique, and Maple Escovitch — request a batch when orders align.',
+  eyebrow: 'Provisions',
+  headline: 'A taste to carry home.',
+  body:
+    'Selected Bornfidis provisions may be included as guest gifts or requested in small batches when available—an extension of the evening, not a separate destination.',
   href: '/provisions',
   requestHref: PHASE1_CTA.requestProduct.href,
-  linkLabel: 'View all provisions',
-  requestLabel: 'Request a batch',
+  linkLabel: 'View provisions',
+  requestLabel: 'Request a small batch',
   image: '/images/provisions/provisions-gift-basket.jpg',
   imageAlt: 'Bornfidis Guest Welcome Package — four provisions in a wicker basket',
+} as const
+
+export const HOME_FINAL_CTA = {
+  eyebrow: 'Fall–Winter 2026',
+  title: 'Ready to check your date?',
+  body:
+    'Share your gathering details and we will confirm availability for chef-led private dining in Vermont and select New England locations.',
+  primaryCta: { label: 'Check Your Date', href: '/book' },
+  secondaryCta: { label: 'Explore the Experience', href: '/private-dining' },
+} as const
+
+/** Orphan teaser component support — not rendered on Phase 1 homepage. */
+export const JOURNAL_HOME_TEASER = {
+  eyebrow: 'Journal',
+  headline: 'Notes from the table — hospitality, place, and the craft of gathering.',
+  href: '/journal',
+  linkLabel: 'Read the journal',
 } as const
 
 export type HomeStat = {
@@ -104,17 +193,19 @@ export const ROYAL_CARIBBEAN_HOME_CREDENTIALS = [
 export const ROYAL_CARIBBEAN_PROGRESSION =
   'Culinary Trainee → Chef de Partie-1 → Level 5 Waiter Lead & Host'
 
-/** Set `pendingGuestApproval` false once Samantha confirms name/photo use. */
+/**
+ * Homepage guest-experience moment — visual only.
+ * Direct quotations / named attribution stay on /book and /private-dining
+ * until written homepage permission is definitively recorded.
+ */
 export const FEATURED_GUEST_MOMENT = {
-  pendingGuestApproval: true,
-  eyebrow: 'Featured guest moment',
-  guestName: 'Samantha',
-  eventDetail: 'Private dining · April 22, 2026 · 5 guests',
-  quote:
-    'The tableside crème brûlée was the moment everyone stopped talking — five guests, one table, and a chef who made the evening feel effortless.',
-  momentLabel: 'Plated to the table',
+  eyebrow: 'The moment at the table',
+  headline: 'Hospitality guests remember.',
+  body:
+    'The courses matter. So does the feeling around the table—the welcome, the pacing, the conversation, and the moment everyone becomes fully present.',
+  momentLabel: 'At the table',
   imageSrc: bornfidisPhotos.food.guestPlatedChicken,
-  imageAlt: 'Bornfidis private dining — a guest course plated with herbs and sauce',
+  imageAlt: 'A Bornfidis private dining course plated with herbs and sauce',
 } as const
 
 /** Used on /our-story — not on homepage. */

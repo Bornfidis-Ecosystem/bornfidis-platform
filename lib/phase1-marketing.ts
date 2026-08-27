@@ -4,10 +4,10 @@
  * Do not add Sportswear or Academy to primary nav until those offers are production-ready.
  */
 
+/** Primary public header — hospitality-first; Digital Studio lives in the footer only. */
 export const PHASE1_NAV_LINKS = [
-  { href: '/provisions', label: 'Provisions' },
   { href: '/private-dining', label: 'Private Dining' },
-  { href: '/digital-studio', label: 'Digital Studio' },
+  { href: '/provisions', label: 'Provisions' },
   { href: '/our-story', label: 'Our Story' },
   { href: '/contact', label: 'Contact' },
 ] as const
@@ -46,7 +46,7 @@ export const PHASE1_PRIMARY_PRODUCTS = [
 ] as const
 
 export const PHASE1_CTA = {
-  bookNow: { label: 'BOOK NOW', href: '/book' },
+  bookNow: { label: 'CHECK YOUR DATE', href: '/book' },
   bookYourTable: { label: 'Book Your Table', href: '/book' },
   bookPrivateDining: {
     label: 'Book a Private Dining Experience',
@@ -96,16 +96,25 @@ export const PHASE1_CONVERSION_ACTIONS = [
 
 export const SIGNATURE_PRODUCT_NAME = "The Chef's Passage"
 
-/** Homepage umbrella hero (Phase 1 IA). */
+/**
+ * Legacy umbrella hero constants — homepage Phase 1 uses `HOME_GUEST_HERO`
+ * in `lib/homepage-content.ts`. Kept for any residual references; Digital Studio
+ * is not a homepage primary CTA.
+ */
 export const ECOSYSTEM_HERO = {
-  headlineLine1: 'One Ecosystem.',
-  headlineLine2: 'Practical Systems for Food, Hospitality and Enterprise.',
+  headlineLine1: 'Your evening.',
+  headlineLine2: 'Beautifully handled.',
   body:
-    'Bornfidis brings together chef-led hospitality and digital operating systems—built to help people serve well, grow responsibly and create lasting value.',
-  primaryCta: PHASE1_CTA.exploreProvisions,
-  secondaryCta: PHASE1_CTA.exploreDigitalStudio,
+    'A Jamaican–Vermont private dining experience served in your home, chalet, or retreat.',
+  primaryCta: { label: 'Check Your Date', href: '/book' },
+  secondaryCta: { label: 'Explore the Experience', href: '/private-dining' },
 } as const
 
+/**
+ * Legacy division cards — no longer rendered on the homepage (Digital Studio
+ * must not compete with private dining in the first viewport or division grid).
+ * Digital Studio remains reachable via the public footer, not the primary header.
+ */
 export const DIVISION_CARDS = [
   {
     id: 'provisions',

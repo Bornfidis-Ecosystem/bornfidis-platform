@@ -3,8 +3,7 @@ import Image from 'next/image'
 import { FEATURED_GUEST_MOMENT } from '@/lib/homepage-content'
 
 export function HomeFeaturedGuestMoment() {
-  const { pendingGuestApproval, eyebrow, guestName, eventDetail, quote, momentLabel, imageSrc, imageAlt } =
-    FEATURED_GUEST_MOMENT
+  const { eyebrow, headline, body, momentLabel, imageSrc, imageAlt } = FEATURED_GUEST_MOMENT
 
   return (
     <section className="featured-guest" aria-labelledby="featured-guest-title">
@@ -18,15 +17,9 @@ export function HomeFeaturedGuestMoment() {
         <div className="featured-guest__copy reveal reveal-delay-1">
           <p className="label">{eyebrow}</p>
           <h2 id="featured-guest-title" className="featured-guest__title">
-            &ldquo;{quote}&rdquo;
+            {headline}
           </h2>
-          <footer className="featured-guest__footer">
-            <cite className="featured-guest__name not-italic">{guestName}</cite>
-            <p className="featured-guest__detail">{eventDetail}</p>
-            {pendingGuestApproval ? (
-              <p className="featured-guest__note">Guest quote pending final approval.</p>
-            ) : null}
-          </footer>
+          <p className="featured-guest__body">{body}</p>
         </div>
       </div>
     </section>
