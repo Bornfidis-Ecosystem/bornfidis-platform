@@ -60,10 +60,9 @@ const OCCASION_OPTIONS = [
 ] as const
 
 const EXPERIENCE_OPTIONS = [
-  'The Gathering — 4-course ($150/person)',
-  'The Reserve — 6-course tasting ($220/person)',
-  'The Retreat — Group dining 10+ ($130/person)',
-  "Not sure yet — let's discuss",
+  "The Chef's Passage — signature experience (from $1,200)",
+  'Retreat or group table — custom proposal',
+  "Not sure yet — guide me",
 ] as const
 
 const initialForm = {
@@ -224,7 +223,7 @@ export default function PrivateDining() {
     <div className="bf-pd">
       {/* Sticky CTA */}
       <a ref={stickyRef} href="#book" className="bf-pd-sticky-cta">
-        Book Private Dining &darr;
+        Check Your Date &darr;
       </a>
 
       {/* ── Page hero ───────────────────────────────────────── */}
@@ -285,9 +284,9 @@ export default function PrivateDining() {
       {/* ── Experience strip ────────────────────────────────── */}
       <div className="experience-strip">
         <div className="exp-item reveal">
-          <div className="exp-icon">We bring</div>
-          <div className="exp-title">Everything</div>
-          <div className="exp-desc">Equipment, ingredients, linens on request. You provide the space.</div>
+          <div className="exp-icon">We include</div>
+          <div className="exp-title">The essentials</div>
+          <div className="exp-desc">Ingredients and standard culinary equipment for the confirmed experience.</div>
         </div>
         <div className="exp-item reveal reveal-delay-1">
           <div className="exp-icon">We leave</div>
@@ -296,8 +295,8 @@ export default function PrivateDining() {
         </div>
         <div className="exp-item reveal reveal-delay-2">
           <div className="exp-icon">You receive</div>
-          <div className="exp-title">A custom menu</div>
-          <div className="exp-desc">Built around your guests, your occasion, your season.</div>
+          <div className="exp-title">A seasonal menu</div>
+          <div className="exp-desc">Planned around the experience, occasion, season, and confirmed dietary needs.</div>
         </div>
         <div className="exp-item reveal reveal-delay-3">
           <div className="exp-icon">Jamaica</div>
@@ -335,31 +334,31 @@ export default function PrivateDining() {
             <div className="step-title">You inquire</div>
             <p className="step-desc">
               Fill in the form below — or send a note to hello@bornfidis.com. Tell us the date, the
-              occasion, the number of guests. Dietary needs welcome.
+              occasion, the number of guests, and any allergies or dietary needs.
             </p>
           </div>
           <div className="process-step reveal reveal-delay-1">
             <span className="step-number">02</span>
             <div className="step-title">We speak</div>
             <p className="step-desc">
-              Brian responds within 24 hours to discuss your evening. The call takes 20 minutes. We
+              Brian normally responds within one business day to arrange a brief conversation. We
               learn what matters to you and what your guests expect.
             </p>
           </div>
           <div className="process-step reveal reveal-delay-2">
             <span className="step-number">03</span>
-            <div className="step-title">We design your menu</div>
+            <div className="step-title">We confirm your experience</div>
             <p className="step-desc">
-              A week before the event, we send a culinary note — the direction of the menu, the key
-              dishes, any questions. This is the most personal part of the process.
+              Your proposal confirms the seasonal menu direction, service format, inclusions, and
+              any separately quoted requirements before you pay the deposit.
             </p>
           </div>
           <div className="process-step reveal reveal-delay-3">
             <span className="step-number">04</span>
             <div className="step-title">We arrive. You sit down.</div>
             <p className="step-desc">
-              We arrive 60–90 minutes before your table time. Set up. Cook. Serve. Leave the kitchen
-              clean. The only thing left is the memory of the evening.
+              We arrive at the agreed preparation time. Set up. Cook. Serve. Leave the kitchen clean.
+              The only thing left is the memory of the evening.
             </p>
           </div>
         </div>
@@ -373,9 +372,9 @@ export default function PrivateDining() {
               A sample menu
             </p>
             <h2 className="menu-heading reveal reveal-delay-1">
-              No two menus
+              Seasonal by
               <br />
-              are the <em>same.</em>
+              <em>design.</em>
             </h2>
           </div>
           <div className="sample-menu reveal reveal-delay-2">
@@ -417,8 +416,8 @@ export default function PrivateDining() {
               </div>
             </div>
             <p className="menu-note">
-              This menu is an example only. Yours will be different — built for your guests, your
-              season, your occasion.
+              This menu is an example only. Your confirmed proposal will reflect the selected
+              experience, the season, availability, and dietary needs we can safely accommodate.
             </p>
           </div>
         </div>
@@ -444,12 +443,12 @@ export default function PrivateDining() {
             room before we write the menu.
           </p>
           <ul className="menu-detail-list reveal reveal-delay-3">
-            <li>Custom menus for every event — no fixed options</li>
-            <li>Seasonal Vermont ingredients sourced locally when available</li>
+            <li>Seasonal menu planning within the confirmed experience</li>
+            <li>Vermont ingredients sourced locally when available</li>
             <li>Caribbean spice provisions made in our own kitchen</li>
-            <li>All dietary restrictions accommodated on request</li>
-            <li>Wine and beverage pairing guidance available</li>
-            <li>Provisions gifting available for guests to take home</li>
+            <li>Allergies and dietary needs reviewed before confirmation</li>
+            <li>Beverage pairing guidance available</li>
+            <li>Provisions gifting available by advance request</li>
           </ul>
         </div>
       </section>
@@ -562,79 +561,64 @@ export default function PrivateDining() {
               Investment
             </p>
             <h2 className="section-title reveal reveal-delay-1">
-              Simple, transparent
+              One signature
               <br />
-              pricing.
+              experience.
             </h2>
           </div>
           <p className="section-desc reveal reveal-delay-2">
-            All pricing is per person. A 30% deposit secures your date. The balance is due 14 days
-            before the event. No hidden fees. No service charge on top of the menu price.
+            The Chef&apos;s Passage begins at $1,200 in Vermont. A 30% deposit secures your date,
+            and the balance is due 14 days before service. Your proposal confirms every included
+            and separately quoted cost before the deposit is paid.
           </p>
         </div>
         <div className="pricing-grid">
-          <div className="pricing-card reveal">
-            <div className="pricing-tier">The Gathering</div>
-            <div className="pricing-name">Four-Course Dinner</div>
+          <div className="pricing-card featured reveal">
+            <div className="pricing-tier">The Chef&apos;s Passage</div>
+            <div className="pricing-name">Seasonal Private Dining</div>
             <div className="pricing-price">
-              $150 <span>per person</span>
+              From $1,200 <span>per event · Vermont</span>
             </div>
             <p className="pricing-desc">
-              A four-course private dining experience. Custom menu. Full service from setup through
-              cleanup. Minimum 4 guests.
+              A chef-led journey from the Caribbean to Vermont, planned for your occasion and
+              delivered in your home, chalet, or retreat.
             </p>
             <ul className="pricing-includes">
-              <li>Custom 4-course menu</li>
-              <li>All equipment and ingredients</li>
-              <li>Full table service</li>
-              <li>Complete kitchen cleanup</li>
-              <li>Dietary accommodations</li>
+              <li>Seasonal menu planning within the confirmed experience</li>
+              <li>Ingredients and standard culinary equipment</li>
+              <li>Onsite preparation and agreed service format</li>
+              <li>Standard kitchen cleanup</li>
+              <li>Dietary needs reviewed before confirmation</li>
             </ul>
             <a href="#book" className="pricing-inquire">
-              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
+              Check Your Date &rarr;
             </a>
           </div>
-          <div className="pricing-card featured reveal reveal-delay-1">
-            <div className="pricing-tier">The Reserve</div>
-            <div className="pricing-name">Six-Course Tasting</div>
-            <div className="pricing-price">
-              $220 <span>per person</span>
-            </div>
+          <div className="pricing-card reveal reveal-delay-1">
+            <div className="pricing-tier">Included clearly</div>
+            <div className="pricing-name">No guessing before deposit</div>
             <p className="pricing-desc">
-              Our full tasting menu. Six courses, including a palate cleanser and a petit fours
-              close. The complete Bornfidis experience.
+              Your written proposal confirms the full operating plan before you secure the date.
             </p>
             <ul className="pricing-includes">
-              <li>Custom 6-course tasting menu</li>
-              <li>Amuse-bouche + mignardises</li>
-              <li>Beverage pairing guidance</li>
-              <li>Provisions parting gift</li>
-              <li>All of The Gathering inclusions</li>
+              <li>Seasonal menu direction</li>
+              <li>Confirmed guest count and service style</li>
+              <li>Standard equipment and cleanup</li>
+              <li>Deposit, balance, and cancellation terms</li>
             </ul>
-            <a href="#book" className="pricing-inquire">
-              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
-            </a>
           </div>
           <div className="pricing-card reveal reveal-delay-2">
-            <div className="pricing-tier">The Retreat</div>
-            <div className="pricing-name">Group Dining (10+)</div>
-            <div className="pricing-price">
-              $130 <span>per person</span>
-            </div>
+            <div className="pricing-tier">Quoted when needed</div>
+            <div className="pricing-name">Special requirements</div>
             <p className="pricing-desc">
-              For groups of ten or more. Family-style serving, communal presentation. The long
-              table. The meal that becomes the memory of the weekend.
+              Requirements outside the standard experience appear as separate lines in your proposal.
             </p>
             <ul className="pricing-includes">
-              <li>Custom communal menu</li>
-              <li>Family-style presentation</li>
-              <li>Staffing for larger groups</li>
-              <li>Full setup and cleanup</li>
-              <li>Dietary accommodations</li>
+              <li>Travel outside the core service area</li>
+              <li>Specialty rentals or extensive tablescapes</li>
+              <li>Premium ingredient upgrades</li>
+              <li>Additional service or culinary staffing</li>
             </ul>
-            <a href="#book" className="pricing-inquire">
-              {PHASE1_CTA.bookPrivateDining.shortLabel} &rarr;
-            </a>
           </div>
         </div>
       </section>
@@ -658,8 +642,8 @@ export default function PrivateDining() {
             <div className="assurance">
               <div className="assurance-dash" />
               <div className="assurance-text">
-                <strong>We respond within 24 hours</strong>
-                Brian reads every inquiry personally and replies the same day.
+                <strong>Personal follow-up</strong>
+                Brian reviews each inquiry and normally responds within one business day.
               </div>
             </div>
             <div className="assurance">
@@ -672,15 +656,15 @@ export default function PrivateDining() {
             <div className="assurance">
               <div className="assurance-dash" />
               <div className="assurance-text">
-                <strong>All dietary needs accommodated</strong>
-                Share everything. Nothing is too complex or too specific.
+                <strong>Dietary needs reviewed</strong>
+                Tell us about allergies and dietary needs. We confirm what can be safely accommodated.
               </div>
             </div>
             <div className="assurance">
               <div className="assurance-dash" />
               <div className="assurance-text">
                 <strong>We travel to you</strong>
-                Your home, your chalet, your retreat venue. We bring everything.
+                Your home, chalet, or retreat venue. Special travel and equipment needs are quoted clearly.
               </div>
             </div>
           </div>
@@ -688,7 +672,7 @@ export default function PrivateDining() {
 
         <div className="booking-form reveal reveal-delay-1">
           <div className="form-title">Request a Private Dining Date</div>
-          <div className="form-subtitle">We will be in touch within 24 hours</div>
+          <div className="form-subtitle">We normally respond within one business day</div>
 
           <form onSubmit={handleSubmit} noValidate>
             {/* Honeypot */}
@@ -833,7 +817,7 @@ export default function PrivateDining() {
               <textarea
                 id="notes"
                 name="notes"
-                placeholder="Dietary restrictions, allergies, the story behind the occasion, anything that will help us prepare something made for you…"
+                placeholder="Allergies, dietary needs, the story behind the occasion, and anything else that will help us understand your table…"
                 value={form.notes}
                 onChange={handleChange}
               />
@@ -844,8 +828,8 @@ export default function PrivateDining() {
             </button>
             {error ? <p className="form-error">{error}</p> : null}
             <p className="form-note">
-              We respond within 24 hours. Your inquiry is not a commitment — it is the beginning of a
-              conversation.
+              We normally respond within one business day. Your inquiry is not a commitment — it is
+              the beginning of a conversation.
             </p>
           </form>
         </div>

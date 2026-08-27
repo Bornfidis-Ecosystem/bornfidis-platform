@@ -9,8 +9,8 @@ export function BookingPricingGuide() {
         <SectionHeading
           theme="culinary"
           eyebrow="Investment"
-          title="A Premium Experience, Tailored to You"
-          subtitle="Each Bornfidis Provisions experience is carefully curated based on your preferences, guest count, and event style. Most private dining experiences begin at $150–$300 per person."
+          title="The Chef's Passage Begins at $1,200"
+          subtitle="Your proposal confirms the seasonal menu direction, guest count, service format, and every included or separately quoted requirement before you pay the 30% deposit."
         />
       </PageContainer>
     </section>

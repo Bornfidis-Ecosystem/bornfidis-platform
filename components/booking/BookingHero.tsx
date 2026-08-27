@@ -19,8 +19,8 @@ export function BookingHero() {
               Book Your Private Dining Experience
             </h1>
             <p className={`${bookBody} mx-auto mt-6 max-w-xl lg:mx-0`}>
-              Chef-led private dining designed for intimate celebrations, elegant gatherings, and unforgettable
-              evenings.
+              The Chef&apos;s Passage brings Jamaican heritage and Vermont ingredients to your home,
+              chalet, or retreat, with experiences beginning at $1,200.
             </p>
             <p className={`${bookBody} mx-auto mt-3 max-w-xl text-sm lg:mx-0`}>
               Serving Vermont now. Jamaica and select travel engagements by advance request.
