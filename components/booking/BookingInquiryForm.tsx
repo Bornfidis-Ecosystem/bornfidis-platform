@@ -17,19 +17,17 @@ import { bookEyebrow, bookSection } from '@/components/booking/book-culinary-cla
 import { JAMAICA_PARTNER_HELPER, SERVICE_REGIONS } from '@/lib/homepage-content'
 
 const budgetTiers = [
-  { value: '', label: 'Select budget tier' },
-  { value: '150_200', label: '$150–$200 per person' },
-  { value: '200_250', label: '$200–$250 per person' },
-  { value: '250_300_plus', label: '$250–$300+ per person' },
+  { value: '', label: 'Select estimated event investment' },
+  { value: '1200_1500', label: '$1,200–$1,500 total' },
+  { value: '1500_2000', label: '$1,500–$2,000 total' },
+  { value: '2000_3000', label: '$2,000–$3,000 total' },
+  { value: '3000_plus', label: '$3,000+ total' },
 ]
 
 const experienceTypeOptions = [
   { value: '', label: 'Select experience type' },
-  { value: "The Chef's Passage", label: "The Chef's Passage — 5-course signature" },
-  { value: 'Private Dinner', label: 'Private Dinner' },
-  { value: 'Weekend Retreat', label: 'Weekend Retreat' },
-  { value: 'Retreat & Events', label: 'Retreat & Events' },
-  { value: 'Gathering & Celebrations', label: 'Gathering & Celebrations' },
+  { value: "The Chef's Passage", label: "The Chef's Passage — signature private dining" },
+  { value: 'Retreat or Group Table', label: 'Retreat or group table — custom proposal' },
   { value: 'Not sure yet — guide me', label: 'Not sure yet — guide me' },
 ]
 
@@ -173,7 +171,7 @@ export function BookingInquiryForm() {
           theme="culinary"
           eyebrow="Inquiry"
           title="Request Your Experience"
-          subtitle="Tell us about your event and we'll prepare a custom dining experience for you."
+          subtitle="Tell us about your event and we'll prepare the right seasonal proposal for your table."
         />
         <BrandedCard theme="culinary" className="mt-10">
           {error ? (
@@ -318,7 +316,7 @@ export function BookingInquiryForm() {
                 </SelectField>
                 <SelectField
                   theme="culinary"
-                  label="Budget Tier"
+                  label="Estimated Event Investment"
                   id="budgetTier"
                   name="budgetTier"
                   required
