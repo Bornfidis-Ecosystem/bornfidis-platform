@@ -5,23 +5,27 @@ import { bookSection } from '@/components/booking/book-culinary-classes'
 const FAQS: { q: string; a: string }[] = [
   {
     q: 'How does the booking process work?',
-    a: 'Once you submit your inquiry, we review your event details and prepare a custom menu and proposal. A deposit is required to secure your date.',
+    a: 'Once you submit your inquiry, we review the date, location, guest count, occasion, and dietary needs. Your proposal confirms the seasonal menu direction, service format, inclusions, and any separately quoted requirements.',
   },
   {
     q: 'Is a deposit required?',
-    a: 'Yes. A deposit is required to confirm all bookings and secure your event date.',
+    a: 'Yes. A 30% deposit secures your date. The remaining balance is due 14 days before service unless your written proposal states otherwise.',
   },
   {
-    q: 'Are menus customizable?',
-    a: 'Absolutely. Every experience is tailored to your preferences, dietary needs, and event style.',
+    q: 'Can the menu accommodate dietary needs?',
+    a: 'Tell us about allergies and dietary needs during your inquiry. We review them before confirmation and clearly explain what can be safely accommodated within the seasonal experience.',
   },
   {
     q: 'Do you travel?',
-    a: 'Yes. We serve Vermont and the Northeast directly. New Jersey and select destinations by arrangement. Jamaica private dining is partner-led — submit an inquiry and we connect you with our Jamaica team.',
+    a: 'Yes. Vermont is our core service area, with select Northeast destinations by arrangement. Travel outside the core area is quoted separately. Jamaica private dining is partner-led through our local network.',
+  },
+  {
+    q: 'What is the starting investment?',
+    a: "The Chef's Passage begins at $1,200 in Vermont. Specialty rentals, extensive tablescapes, travel outside the core service area, premium ingredient upgrades, and additional staffing are quoted separately.",
   },
   {
     q: 'When will I receive my quote?',
-    a: 'Most proposals are delivered within 24–48 hours after your inquiry is submitted.',
+    a: 'We normally respond within one business day. Proposal timing depends on the event details and any special sourcing, staffing, travel, or rental requirements.',
   },
 ]
 
