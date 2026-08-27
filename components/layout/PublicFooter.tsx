@@ -25,7 +25,7 @@ const BORNFIDIS_LINKS = [
 ] as const
 
 const linkClass =
-  'font-sans text-[0.9375rem] text-white/72 no-underline transition-colors duration-200 hover:text-[var(--color-bone)]'
+  'font-sans text-[0.9375rem] text-white/75 no-underline transition-colors duration-200 hover:text-[var(--color-bone)]'
 const colTitleClass =
   'mb-6 font-sans text-[0.5625rem] font-semibold uppercase tracking-[0.2em] text-[var(--color-gold)]'
 
