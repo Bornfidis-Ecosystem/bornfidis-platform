@@ -96,16 +96,25 @@ export const PHASE1_CONVERSION_ACTIONS = [
 
 export const SIGNATURE_PRODUCT_NAME = "The Chef's Passage"
 
-/** Homepage umbrella hero (Phase 1 IA). */
+/**
+ * Legacy umbrella hero constants — homepage Phase 1 uses `HOME_GUEST_HERO`
+ * in `lib/homepage-content.ts`. Kept for any residual references; Digital Studio
+ * is not a homepage primary CTA.
+ */
 export const ECOSYSTEM_HERO = {
-  headlineLine1: 'One Ecosystem.',
-  headlineLine2: 'Practical Systems for Food, Hospitality and Enterprise.',
+  headlineLine1: 'Your evening.',
+  headlineLine2: 'Beautifully handled.',
   body:
-    'Bornfidis brings together chef-led hospitality and digital operating systems—built to help people serve well, grow responsibly and create lasting value.',
-  primaryCta: PHASE1_CTA.exploreProvisions,
-  secondaryCta: PHASE1_CTA.exploreDigitalStudio,
+    'A Jamaican–Vermont private dining experience served in your home, chalet, or retreat.',
+  primaryCta: { label: 'Check Your Date', href: '/book' },
+  secondaryCta: { label: 'Explore the Experience', href: '/private-dining' },
 } as const
 
+/**
+ * Legacy division cards — no longer rendered on the homepage (Digital Studio
+ * must not compete with private dining in the first viewport or division grid).
+ * Nav/footer still link to Digital Studio via PHASE1_NAV_LINKS.
+ */
 export const DIVISION_CARDS = [
   {
     id: 'provisions',

@@ -4,9 +4,9 @@ import HomeEditorial from '@/components/home/HomeEditorial'
 import '@/components/home/home-editorial.css'
 
 export const metadata: Metadata = {
-  title: 'Bornfidis — Practical Systems for Food, Hospitality and Enterprise',
+  title: 'Private Dining in Vermont | Bornfidis',
   description:
-    'Bornfidis brings together chef-led hospitality (Provisions) and digital operating systems (Digital Studio)—built to help people serve well, grow responsibly and create lasting value.',
+    'Jamaican–Vermont private dining in your home, chalet, or retreat. Chef-led food, tableside hospitality, setup, service, and kitchen cleanup.',
   alternates: { canonical: 'https://bornfidis.com' },
 }
 

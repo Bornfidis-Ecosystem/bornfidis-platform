@@ -7,13 +7,14 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 .bf-home {
-  --green: var(--color-navy);
-  --gold: var(--color-gold);
-  --bone: var(--color-bone);
-  --slate: var(--color-slate);
-  --muted: var(--color-muted);
-  --light: var(--color-light);
-  --mid: var(--color-mid);
+  /* Homepage Phase 1 palette — forest front door; navy only via legacy tokens elsewhere */
+  --green: #1a3c34;
+  --gold: #c9a84c;
+  --bone: #fdf8f8;
+  --slate: #2c2c2c;
+  --muted: #5c5c5c;
+  --light: #f7f1f1;
+  --mid: #e8e0e0;
   --serif: var(--font-serif), ui-sans-serif, sans-serif;
   --sans: var(--font-sans), sans-serif;
   --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -25,6 +26,7 @@
   color: var(--slate);
   line-height: 1;
   position: relative;
+  overflow-x: clip;
 }
 
 .bf-home a {
@@ -80,32 +82,44 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5rem 4rem 5rem 5rem;
+  padding: 3.25rem 3rem 3.25rem 3.5rem;
   position: relative;
   z-index: 1;
 }
 
-/* Hero load — staggered fade/slide-up (600–800ms) */
+/*
+  Hero entrance: content stays fully readable from first paint.
+  Motion is a short soft rise only — no opacity:0 blank state.
+  prefers-reduced-motion disables the animation entirely below.
+*/
 .bf-home .hero-enter {
-  opacity: 0;
-  transform: translateY(12px);
-  animation: bfHeroEnter var(--motion-enter) var(--ease) forwards;
+  opacity: 1;
+  transform: translateY(0);
+  animation: none;
 }
 
-.bf-home .hero-enter--1 { animation-delay: 0ms; }
-.bf-home .hero-enter--2 { animation-delay: 100ms; }
-.bf-home .hero-enter--3 { animation-delay: 200ms; }
-.bf-home .hero-enter--4 { animation-delay: 320ms; }
-.bf-home .hero-enter--5 { animation-delay: 420ms; }
-.bf-home .hero-enter--6 { animation-delay: 280ms; animation-name: bfHeroEnterSoft; }
+@media (prefers-reduced-motion: no-preference) {
+  .bf-home .hero-enter {
+    transform: translateY(8px);
+    animation: bfHeroEnterRise 480ms var(--ease) forwards;
+  }
+
+  .bf-home .hero-enter--1 { animation-delay: 0ms; }
+  .bf-home .hero-enter--2 { animation-delay: 60ms; }
+  .bf-home .hero-enter--3 { animation-delay: 110ms; }
+  .bf-home .hero-enter--4 { animation-delay: 160ms; }
+  .bf-home .hero-enter--5 { animation-delay: 200ms; }
+  .bf-home .hero-enter--6 { animation-delay: 100ms; }
+}
 
 .bf-home .hero-title {
   font-family: var(--serif);
-  font-size: clamp(3.25rem, 6vw, 5.5rem);
+  font-size: clamp(2.35rem, 4.2vw, 3.65rem);
   font-weight: 600;
-  line-height: 1.06;
+  line-height: 1.1;
   color: var(--bone);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
+  max-width: 14ch;
 }
 
 .bf-home .hero-title em,
@@ -118,17 +132,28 @@
   width: 48px;
   height: 1px;
   background: var(--gold);
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 
 .bf-home .hero-body {
   font-family: var(--sans);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.75;
-  color: rgba(250, 246, 240, 0.72);
-  max-width: 40ch;
-  margin-bottom: 1rem;
+  line-height: 1.65;
+  color: rgba(253, 248, 248, 0.82);
+  max-width: 42ch;
+  margin-bottom: 0.65rem;
+}
+
+.bf-home .hero-trust {
+  font-family: var(--sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  color: rgba(201, 168, 76, 0.95);
+  max-width: 42ch;
+  margin-bottom: 1.15rem;
 }
 
 .bf-home .hero-jamaica-note,
@@ -144,15 +169,18 @@
 .bf-home .hero-actions {
   display: flex;
   align-items: stretch;
-  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.5rem;
   width: 100%;
-  max-width: 22rem;
+  max-width: 36rem;
 }
 
 .bf-home .hero-actions--stack {
-  flex-direction: column;
-  gap: 0.75rem;
-  max-width: 28rem;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  max-width: 36rem;
 }
 
 .bf-home .ecosystem-hero-accent {
@@ -161,27 +189,32 @@
   line-height: 1.2;
 }
 
-/* Ivory CTA on navy hero — primary action reads at full weight */
+/* Bone CTA on forest hero — primary action reads at full weight */
 .bf-home .hero .btn-primary {
   background: var(--bone);
   color: var(--green);
-  width: 100%;
+  flex: 1 1 10.5rem;
+  width: auto;
   text-align: center;
   justify-content: center;
+  min-height: 2.85rem;
+  padding: 0.85rem 1.25rem;
 }
 
 .bf-home .btn-secondary-hero {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 0.95rem 1.75rem;
+  flex: 1 1 10.5rem;
+  width: auto;
+  min-height: 2.85rem;
+  padding: 0.85rem 1.25rem;
   font-family: var(--sans);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1px solid rgba(250, 246, 240, 0.45);
+  border: 1px solid rgba(253, 248, 248, 0.5);
   color: var(--bone);
   background: transparent;
   transition: opacity 0.2s var(--ease);
@@ -191,14 +224,236 @@
   opacity: 0.85;
 }
 
-@media (min-width: 640px) {
-  .bf-home .hero .btn-primary,
-  .bf-home .btn-secondary-hero {
-    width: auto;
+@media (min-width: 1025px) {
+  .bf-home .hero-actions--stack {
+    flex-direction: row;
   }
 }
 
-/* ── Division cards ─────────────────────────────────────────── */
+/* Short laptop viewports — keep primary CTA + trust in first fold */
+@media (min-width: 1025px) and (max-height: 820px) {
+  .bf-home .hero-left {
+    padding: 2.35rem 2.75rem 2.35rem 3rem;
+  }
+
+  .bf-home .hero-title {
+    font-size: clamp(2.2rem, 3.2vw, 3.15rem);
+    max-width: 15ch;
+  }
+
+  .bf-home .hero-rule {
+    margin: 0.75rem 0;
+  }
+
+  .bf-home .hero-body {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    margin-bottom: 0.45rem;
+  }
+
+  .bf-home .hero-trust {
+    margin-bottom: 0.85rem;
+  }
+}
+
+/* ── Experience journey ─────────────────────────────────────── */
+.bf-home .experience-journey {
+  background: var(--bone);
+  padding: 5.5rem 1.5rem;
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-home .experience-journey__inner {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.bf-home .experience-journey__headline {
+  font-family: var(--serif);
+  font-size: clamp(1.85rem, 3.4vw, 2.65rem);
+  font-weight: 600;
+  color: var(--slate);
+  margin: 0.75rem 0 1.25rem;
+  line-height: 1.2;
+  max-width: 18ch;
+}
+
+.bf-home .experience-journey__lead {
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--muted);
+  margin-bottom: 2.25rem;
+  max-width: 48ch;
+}
+
+.bf-home .experience-journey__steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  counter-reset: journey;
+}
+
+.bf-home .experience-journey__steps li {
+  counter-increment: journey;
+  position: relative;
+  padding-left: 3rem;
+  font-family: var(--serif);
+  font-size: clamp(1.05rem, 2vw, 1.2rem);
+  line-height: 1.55;
+  color: var(--slate);
+}
+
+.bf-home .experience-journey__steps li::before {
+  content: counter(journey, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  font-family: var(--sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+}
+
+/* ── Home inclusions ────────────────────────────────────────── */
+.bf-home .home-inclusions {
+  background: var(--light);
+  padding: 5.5rem 1.5rem;
+  border-bottom: 1px solid var(--mid);
+}
+
+.bf-home .home-inclusions__inner {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.bf-home .home-inclusions__headline {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-weight: 600;
+  color: var(--slate);
+  margin: 0.75rem 0 2rem;
+  line-height: 1.2;
+  max-width: 22ch;
+}
+
+.bf-home .home-inclusions__list {
+  margin: 0 0 2rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.bf-home .home-inclusions__list li {
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--slate);
+  padding-left: 1rem;
+  border-left: 2px solid rgba(201, 168, 76, 0.55);
+}
+
+.bf-home .home-inclusions__boundary,
+.bf-home .home-inclusions__dietary {
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 52ch;
+}
+
+.bf-home .home-inclusions__boundary {
+  margin-bottom: 1.25rem;
+}
+
+/* ── Home final CTA ─────────────────────────────────────────── */
+.bf-home .home-final-cta {
+  background: var(--green);
+  padding: 5.5rem 1.5rem;
+}
+
+.bf-home .home-final-cta__inner {
+  max-width: 40rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bf-home .home-final-cta__eyebrow {
+  color: var(--gold);
+}
+
+.bf-home .home-final-cta__title {
+  font-family: var(--serif);
+  font-size: clamp(1.85rem, 3.5vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--bone);
+  margin: 0.85rem 0 1.15rem;
+}
+
+.bf-home .home-final-cta__body {
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: rgba(253, 248, 248, 0.78);
+  margin: 0 auto 2rem;
+  max-width: 42ch;
+}
+
+.bf-home .home-final-cta__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.85rem;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+.bf-home .home-final-cta__primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.95rem 1.75rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: var(--bone);
+  color: var(--green);
+}
+
+.bf-home .home-final-cta__secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.95rem 1.75rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border: 1px solid rgba(253, 248, 248, 0.45);
+  color: var(--bone);
+}
+
+@media (min-width: 640px) {
+  .bf-home .home-final-cta__actions {
+    flex-direction: row;
+    justify-content: center;
+    max-width: none;
+  }
+}
+
+/* ── Division cards (legacy; unused on Phase 1 homepage) ────── */
 .bf-home .divisions {
   background: var(--bone);
   padding: 5rem 1.5rem;
@@ -338,6 +593,28 @@
   transform: translateY(1px);
 }
 
+.bf-home .btn-primary:focus-visible,
+.bf-home .btn-secondary-hero:focus-visible,
+.bf-home .signature-experience__cta:focus-visible,
+.bf-home .home-final-cta__primary:focus-visible,
+.bf-home .home-final-cta__secondary:focus-visible,
+.bf-home .provisions-strip__link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.bf-home .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .bf-home .btn-ghost {
   font-family: var(--sans);
   font-size: 0.6875rem;
@@ -384,8 +661,8 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0, 39, 71, 0.15),
-    rgba(0, 39, 71, 0.65)
+    rgba(26, 60, 52, 0.12),
+    rgba(26, 60, 52, 0.62)
   );
   z-index: 1;
   pointer-events: none;
@@ -1120,6 +1397,11 @@
   overflow: hidden;
 }
 
+.bf-home .signature-experience__media--full {
+  min-height: 100%;
+  flex: 1 1 auto;
+}
+
 .bf-home .signature-experience__photo {
   object-fit: cover;
   object-position: center;
@@ -1152,6 +1434,16 @@
   line-height: 1.45;
   color: var(--gold);
   max-width: 36ch;
+}
+
+.bf-home .signature-experience__authority {
+  margin-top: 1rem;
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .bf-home .signature-experience__lead {
@@ -1374,11 +1666,20 @@
 
 .bf-home .featured-guest__title {
   font-family: var(--serif);
-  font-size: clamp(1.375rem, 2.5vw, 1.875rem);
-  font-weight: 500;
-  line-height: 1.45;
+  font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+  font-weight: 600;
+  line-height: 1.25;
   color: var(--slate);
   margin-top: 0.75rem;
+}
+
+.bf-home .featured-guest__body {
+  margin-top: 1rem;
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 42ch;
 }
 
 .bf-home .featured-guest__name {
@@ -1569,7 +1870,16 @@
   line-height: 1.35;
   color: var(--bone);
   margin-top: 0.75rem;
-  max-width: 36ch;
+  max-width: 20ch;
+}
+
+.bf-home .provisions-strip__body {
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(253, 248, 248, 0.78);
+  margin-top: 1rem;
+  max-width: 42ch;
 }
 
 .bf-home .provisions-strip__link {
@@ -1848,6 +2158,16 @@
   }
 }
 
+/* Phase 1.2 — readable first paint; transform only */
+@keyframes bfHeroEnterRise {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes bfFadeUp {
   from {
     opacity: 0;
@@ -1909,9 +2229,37 @@
 @media (max-width: 1024px) {
   .bf-home .hero {
     grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .bf-home .hero-left {
+    padding: 2.25rem 1.5rem 1.5rem;
+    justify-content: flex-start;
+  }
+  .bf-home .hero-title {
+    font-size: clamp(2.25rem, 7.5vw, 2.85rem);
+    max-width: 16ch;
+  }
+  .bf-home .hero-body {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+  .bf-home .hero-trust {
+    margin-bottom: 0.9rem;
+  }
+  .bf-home .hero-actions--stack {
+    flex-direction: column;
+    max-width: 22rem;
+  }
+  .bf-home .hero .btn-primary,
+  .bf-home .btn-secondary-hero {
+    width: 100%;
+    flex: none;
   }
   .bf-home .hero-right {
-    display: none;
+    display: flex;
+    min-height: min(42vw, 16rem);
+    padding: 1.15rem;
   }
   .bf-home .signature-experience__inner {
     grid-template-columns: 1fr;
@@ -1922,6 +2270,9 @@
   }
   .bf-home .signature-experience__copy {
     padding: 2.5rem 2rem;
+  }
+  .bf-home .signature-experience__media--full {
+    min-height: 16rem;
   }
   .bf-home .featured-guest__inner,
   .bf-home .meet-brian__inner {
@@ -1964,7 +2315,16 @@
 
 @media (max-width: 640px) {
   .bf-home .hero-left {
-    padding: 4rem 1.5rem;
+    padding: 1.75rem 1.15rem 1.1rem;
+  }
+  .bf-home .hero-title {
+    font-size: clamp(2.15rem, 8.2vw, 2.55rem);
+  }
+  .bf-home .hero-rule {
+    margin: 0.75rem 0;
+  }
+  .bf-home .hero-right {
+    min-height: 11.5rem;
   }
   .bf-home .signature-experience,
   .bf-home .rc-difference,
