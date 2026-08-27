@@ -223,7 +223,7 @@ export default function PrivateDining() {
     <div className="bf-pd">
       {/* Sticky CTA */}
       <a ref={stickyRef} href="#book" className="bf-pd-sticky-cta">
-        Book Private Dining &darr;
+        Check Your Date &darr;
       </a>
 
       {/* ── Page hero ───────────────────────────────────────── */}
@@ -341,7 +341,7 @@ export default function PrivateDining() {
             <span className="step-number">02</span>
             <div className="step-title">We speak</div>
             <p className="step-desc">
-              Brian responds within 24 hours to discuss your evening. The call takes 20 minutes. We
+              Brian normally responds within one business day to arrange a brief conversation. We
               learn what matters to you and what your guests expect.
             </p>
           </div>
@@ -598,17 +598,27 @@ export default function PrivateDining() {
             <div className="pricing-tier">Included clearly</div>
             <div className="pricing-name">No guessing before deposit</div>
             <p className="pricing-desc">
-              Your written proposal confirms the menu direction, guest count, service style,
-              standard equipment, payment schedule, and cancellation terms.
+              Your written proposal confirms the full operating plan before you secure the date.
             </p>
+            <ul className="pricing-includes">
+              <li>Seasonal menu direction</li>
+              <li>Confirmed guest count and service style</li>
+              <li>Standard equipment and cleanup</li>
+              <li>Deposit, balance, and cancellation terms</li>
+            </ul>
           </div>
           <div className="pricing-card reveal reveal-delay-2">
             <div className="pricing-tier">Quoted when needed</div>
             <div className="pricing-name">Special requirements</div>
             <p className="pricing-desc">
-              Travel outside the core service area, specialty rentals, extensive tablescapes,
-              premium ingredient upgrades, and additional staffing are quoted separately.
+              Requirements outside the standard experience appear as separate lines in your proposal.
             </p>
+            <ul className="pricing-includes">
+              <li>Travel outside the core service area</li>
+              <li>Specialty rentals or extensive tablescapes</li>
+              <li>Premium ingredient upgrades</li>
+              <li>Additional service or culinary staffing</li>
+            </ul>
           </div>
         </div>
       </section>
