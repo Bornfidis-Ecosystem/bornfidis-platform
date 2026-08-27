@@ -2,10 +2,10 @@ import { PageContainer } from '@/components/ui/PageContainer'
 import { bookEyebrow, bookHeadline, bookSection } from '@/components/booking/book-culinary-classes'
 
 const ITEMS = [
-  'Customized menus written for your table',
-  'Premium private dining — chef-led from arrival to last course',
-  'Deposit-secured bookings with clear communication',
-  'Named sourcing — every key ingredient traced to a farm or fisherman',
+  'Seasonal menu planning within the confirmed experience',
+  'Chef-led hospitality from agreed arrival through kitchen cleanup',
+  'A 30% deposit secures the date with clear written terms',
+  'Vermont ingredients sourced locally when available',
 ] as const
 
 export function BookingTrustBar() {
