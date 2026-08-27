@@ -4,10 +4,10 @@
  * Do not add Sportswear or Academy to primary nav until those offers are production-ready.
  */
 
+/** Primary public header — hospitality-first; Digital Studio lives in the footer only. */
 export const PHASE1_NAV_LINKS = [
-  { href: '/provisions', label: 'Provisions' },
   { href: '/private-dining', label: 'Private Dining' },
-  { href: '/digital-studio', label: 'Digital Studio' },
+  { href: '/provisions', label: 'Provisions' },
   { href: '/our-story', label: 'Our Story' },
   { href: '/contact', label: 'Contact' },
 ] as const
@@ -46,7 +46,7 @@ export const PHASE1_PRIMARY_PRODUCTS = [
 ] as const
 
 export const PHASE1_CTA = {
-  bookNow: { label: 'BOOK NOW', href: '/book' },
+  bookNow: { label: 'CHECK YOUR DATE', href: '/book' },
   bookYourTable: { label: 'Book Your Table', href: '/book' },
   bookPrivateDining: {
     label: 'Book a Private Dining Experience',
@@ -113,7 +113,7 @@ export const ECOSYSTEM_HERO = {
 /**
  * Legacy division cards — no longer rendered on the homepage (Digital Studio
  * must not compete with private dining in the first viewport or division grid).
- * Nav/footer still link to Digital Studio via PHASE1_NAV_LINKS.
+ * Digital Studio remains reachable via the public footer, not the primary header.
  */
 export const DIVISION_CARDS = [
   {
